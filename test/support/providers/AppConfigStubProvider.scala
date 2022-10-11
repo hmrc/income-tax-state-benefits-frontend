@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package models.authorisation
+package support.providers
 
-sealed class EnrolmentPair(val key: String, val value: String)
+import config.AppConfig
+import support.stubs.AppConfigStub
 
-case object IndividualEnrolment extends EnrolmentPair(key = "HMRC-MTD-IT", value = "MTDITID")
-case object AgentEnrolment extends EnrolmentPair(key = "HMRC-AS-AGENT", value = "AgentReferenceNumber")
-case object NinoEnrolment extends EnrolmentPair(key = "HMRC-NI", value = "NINO")
+trait AppConfigStubProvider {
+
+  lazy val appConfigStub: AppConfig = new AppConfigStub().config()
+}

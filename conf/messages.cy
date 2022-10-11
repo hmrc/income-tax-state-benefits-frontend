@@ -7,6 +7,35 @@ betaBar.beta = beta
 service.govUkExtension = GOV.UK
 service.name = Update and submit an Income Tax Return
 
+#################       Common messages       ########################################
+common.january = Ionawr
+common.february = Chwefror
+common.march = Mawrth
+common.april = Ebrill
+common.may = Mai
+common.june = Mehefin
+common.july = Gorffennaf
+common.august = Awst
+common.september = Medi
+common.october = Hydref
+common.november = Tachwedd
+common.december = Rhagfyr
+common.taxMonth = 5 {0} {1}
+
+common.addedByHmrc = Added by HMRC
+common.back = Back
+common.caption = State benefits for 6 April {0} to 5 April {1}
+common.change = Change
+common.completed = Completed
+common.continue = Continue
+common.help.getHelpWithThisPage = Get help with this page
+common.inProgress = In progress
+common.jobSeekersAllowance = Jobseeker’s Allowance
+common.notStarted = Not started
+common.opensInNewTab = (opens in new tab)
+common.return.to.overview = Return to overview
+common.stateBenefits = State benefits
+
 #################       Error messages        ########################################
 
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use

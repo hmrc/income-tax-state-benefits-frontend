@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package support.helpers
+package support.builders.models.requests
 
-import java.time.LocalDate
+import models.requests.UserPriorDataRequest
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
+import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.models.UserBuilder.aUser
 
-object TaxYearUtils {
+object UserPriorDataRequestBuilder {
 
-  private val dateNow: LocalDate = LocalDate.now()
-  private val taxYearCutoffDate: LocalDate = LocalDate.parse(s"${dateNow.getYear}-04-05")
-
-  val taxYear: Int = if (dateNow.isAfter(taxYearCutoffDate)) LocalDate.now().getYear + 1 else LocalDate.now().getYear
-  val taxYearEOY: Int = taxYear - 1
+  val aUserPriorDataRequest: UserPriorDataRequest[AnyContentAsEmpty.type] = UserPriorDataRequest(
+    incomeTaxUserData = anIncomeTaxUserData,
+    user = aUser,
+    request = FakeRequest()
+  )
 }

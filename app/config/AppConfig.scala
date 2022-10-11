@@ -26,6 +26,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
+  private lazy val stateBenefitsUrlKey = "microservice.services.income-tax-state-benefits.url"
+
   private lazy val incomeTaxSubmissionFrontendUrlKey = "microservice.services.income-tax-submission-frontend.url"
   private lazy val basGatewayFrontendUrlKey = "microservice.services.bas-gateway-frontend.url"
   private lazy val feedbackFrontendUrlKey = "microservice.services.feedback-frontend.url"
@@ -78,6 +80,8 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
     val contactFormService = contactFormServiceIdentifier(isAgent)
     s"$contactFrontEndUrl/contact/beta-feedback?service=$contactFormService&backUrl=$requestUri"
   }
+
+  lazy val stateBenefitsServiceBaseUrl: String = s"${servicesConfig.getString(stateBenefitsUrlKey)}/income-tax-state-benefits"
 
   def taxYearErrorFeature: Boolean = servicesConfig.getBoolean("taxYearErrorFeatureSwitch")
 

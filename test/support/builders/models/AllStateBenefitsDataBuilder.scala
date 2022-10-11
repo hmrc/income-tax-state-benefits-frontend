@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package support.helpers
+package support.builders.models
 
-trait TaxYearProvider {
+import models.AllStateBenefitsData
+import support.builders.models.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
+import support.builders.models.StateBenefitsDataBuilder.aStateBenefitsData
 
-  protected val taxYear: Int = TaxYearUtils.taxYear
-  protected val taxYearEOY: Int = TaxYearUtils.taxYearEOY
+object AllStateBenefitsDataBuilder {
 
-  protected val taxYearEndOfYearMinusOne: Int = taxYearEOY - 1
-
-  protected val validTaxYearListSingle: Seq[Int] = Seq(taxYear)
-  protected val validTaxYearList: Seq[Int] = Seq(taxYearEndOfYearMinusOne, taxYearEOY, taxYear)
+  val anAllStateBenefitsData: AllStateBenefitsData = AllStateBenefitsData(
+    stateBenefitsData = aStateBenefitsData,
+    customerAddedStateBenefitsData = Some(aCustomerAddedStateBenefitsData)
+  )
 }
