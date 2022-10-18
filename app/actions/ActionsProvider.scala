@@ -16,13 +16,24 @@
 
 package actions
 
-import models.requests.AuthorisationRequest
+import config.{AppConfig, ErrorHandler}
+import models.requests.UserPriorDataRequest
 import play.api.mvc.{ActionBuilder, AnyContent}
+import services.StateBenefitsService
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class ActionsProvider @Inject()(authAction: AuthorisedAction) {
+class ActionsProvider @Inject()(authAction: AuthorisedAction,
+                                stateBenefitsService: StateBenefitsService,
+                                errorHandler: ErrorHandler,
+                                appConfig: AppConfig)
+                               (implicit ec: ExecutionContext) {
 
-  def authorisedAction(): ActionBuilder[AuthorisationRequest, AnyContent] = authAction
+  def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] = {
+    authAction
+      .andThen(TaxYearAction(taxYear, appConfig, ec))
+      .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
+  }
 }

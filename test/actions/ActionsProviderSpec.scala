@@ -16,17 +16,69 @@
 
 package actions
 
+import controllers.errors.routes.UnauthorisedUserErrorController
+import models.IncomeTaxUserData
+import models.authorisation.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
+import models.errors.HttpParserError
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.mvc.Results.{InternalServerError, Ok, Redirect}
+import play.api.mvc.{AnyContent, Request}
+import play.api.test.Helpers.status
 import support.ControllerUnitTest
-import support.mocks.MockAuthorisedAction
+import support.builders.models.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.models.UserBuilder.aUser
+import support.mocks.{MockAuthorisedAction, MockErrorHandler, MockStateBenefitsService}
 
 class ActionsProviderSpec extends ControllerUnitTest
-  with MockAuthorisedAction {
+  with MockAuthorisedAction
+  with MockStateBenefitsService
+  with MockErrorHandler {
 
-  private val underTest = new ActionsProvider(mockAuthorisedAction)
+  private val anyBlock = (_: Request[AnyContent]) => Ok("any-result")
+  private val validTaxYears = validTaxYearList.mkString(",")
 
-  ".authorisedAction" should {
-    "return the given authorisedAction" in {
-      underTest.authorisedAction() shouldBe mockAuthorisedAction
+  private val actionsProvider = new ActionsProvider(
+    mockAuthorisedAction,
+    mockStateBenefitsService,
+    mockErrorHandler,
+    appConfig
+  )
+
+  ".userPriorDataFor(taxYear)" should {
+    "redirect to UnauthorisedUserErrorController when authentication fails" in {
+      mockFailToAuthenticate()
+
+      val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+    }
+
+    "handle internal server error when getPriorData result in error" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYear, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
+
+      val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+    }
+
+    "return successful response when in year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYear, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
+
+      val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+
+    "return successful response when end of year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYearEOY, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
+
+      val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }
   }
 }

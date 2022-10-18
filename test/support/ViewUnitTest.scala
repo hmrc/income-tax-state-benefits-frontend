@@ -17,14 +17,16 @@
 package support
 
 import config.AppConfig
-import models.requests.AuthorisationRequest
+import models.requests.{AuthorisationRequest, UserPriorDataRequest}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContent
 import play.api.test.Injecting
+import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.models.UserBuilder.aUser
 import support.builders.models.requests.AuthorisationRequestBuilder.anAuthorisationRequest
-import support.helpers.{FakeRequestHelper, TaxYearProvider, UserScenarios, ViewHelper}
+import support.helpers.{UserScenarios, ViewHelper}
+import support.providers.{FakeRequestProvider, TaxYearProvider}
 import support.stubs.AppConfigStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 
@@ -34,9 +36,9 @@ trait ViewUnitTest extends UnitTest
   with GuiceOneAppPerSuite
   with Injecting
   with TaxYearProvider
-  with FakeRequestHelper {
+  with FakeRequestProvider {
 
-  protected implicit val mockAppConfig: AppConfig = new AppConfigStub().config()
+  protected implicit val appConfig: AppConfig = new AppConfigStub().config()
   protected implicit lazy val messagesApi: MessagesApi = inject[MessagesApi]
 
   protected lazy val defaultMessages: Messages = messagesApi.preferred(fakeRequest)
@@ -49,4 +51,11 @@ trait ViewUnitTest extends UnitTest
 
   protected def getAuthRequest(isAgent: Boolean): AuthorisationRequest[AnyContent] =
     if (isAgent) agentUserRequest else anAuthorisationRequest.copy[AnyContent]()
+
+  protected def getUserPriorDataRequest(isAgent: Boolean): UserPriorDataRequest[AnyContent] =
+    if (isAgent) {
+      UserPriorDataRequest(anIncomeTaxUserData, agentUserRequest.user, agentUserRequest.request)
+    } else {
+      UserPriorDataRequest(anIncomeTaxUserData, anAuthorisationRequest.user, anAuthorisationRequest.request)
+    }
 }

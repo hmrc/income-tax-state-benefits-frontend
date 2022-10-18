@@ -57,4 +57,11 @@ class YesNoFormSpec extends UnitTest {
       }
     }
   }
+
+  ".formatter(...)" should {
+    "return an formatter with relevant unbind implementation" in {
+      val anyBoolean = true
+      formatter("any-string").unbind("some-key", anyBoolean) shouldBe Map("some-key" -> "true")
+    }
+  }
 }

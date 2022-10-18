@@ -12,6 +12,9 @@ GET   /keep-alive                       controllers.SessionExpiredController.kee
 
 GET   /timeout                          controllers.SessionExpiredController.timeout
 
+###########################     Summary pages     ###########################
+GET         /:taxYear/summary           controllers.SummaryController.show(taxYear: Int)
+
 ###########################     Error pages     ####################################
 GET        /error/you-need-to-sign-up                                               controllers.errors.IndividualAuthErrorController.show
 

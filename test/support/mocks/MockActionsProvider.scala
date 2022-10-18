@@ -17,30 +17,34 @@
 package support.mocks
 
 import actions.ActionsProvider
-import models.requests.AuthorisationRequest
-import org.scalamock.handlers.CallHandler0
+import models.IncomeTaxUserData
+import models.requests.UserPriorDataRequest
+import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc._
 import support.builders.models.UserBuilder.aUser
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockActionsProvider extends MockFactory {
+trait MockActionsProvider extends MockFactory
+  with MockAuthorisedAction
+  with MockErrorHandler {
 
   protected val mockActionsProvider: ActionsProvider = mock[ActionsProvider]
 
-  def mockAuthorisedAction(): CallHandler0[ActionBuilder[AuthorisationRequest, AnyContent]] = {
-    val actionBuilder: ActionBuilder[AuthorisationRequest, AnyContent] = new ActionBuilder[AuthorisationRequest, AnyContent] {
+  def mockUserPriorDataFor(taxYear: Int,
+                           result: IncomeTaxUserData): CallHandler1[Int, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
+    val actionBuilder: ActionBuilder[UserPriorDataRequest, AnyContent] = new ActionBuilder[UserPriorDataRequest, AnyContent] {
       override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
 
-      override def invokeBlock[A](request: Request[A], block: AuthorisationRequest[A] => Future[Result]): Future[Result] =
-        block(AuthorisationRequest(aUser, request))
+      override def invokeBlock[A](request: Request[A], block: UserPriorDataRequest[A] => Future[Result]): Future[Result] =
+        block(UserPriorDataRequest(result, aUser, request))
 
       override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
     }
 
-    (() => mockActionsProvider.authorisedAction())
-      .expects()
+    (mockActionsProvider.userPriorDataFor(_: Int))
+      .expects(taxYear)
       .returns(value = actionBuilder)
   }
 }

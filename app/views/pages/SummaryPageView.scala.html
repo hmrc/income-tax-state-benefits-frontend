@@ -1,0 +1,80 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.pages.elements.TaskListItem
+@import models.pages.elements.TaskListTag._
+@import models.pages.SummaryPage
+@import models.requests.UserPriorDataRequest
+
+@import views.html.templates.Layout
+@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Button
+
+@this(
+    layout: Layout,
+    heading: Heading,
+    govukTag: GovukTag,
+    button: Button
+)
+
+@(pageModel: SummaryPage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
+
+@titleText = @{ messages("common.stateBenefits") }
+
+@taskList(taskListItems: Seq[TaskListItem]) = {
+    <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
+        @taskListItem(taskListItems.head)
+    </ol>
+}
+
+@taskListItem(taskListItem: TaskListItem) = {
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a class="govuk-link" id="@{taskListItem.benefitType.typeName}_link" href="@taskListItem.call">@messages(s"common.${taskListItem.benefitType.typeName}")</a>
+        </span>
+        <span class="hmrc-status-tag">
+        @{
+            val tag = taskListItem.taskListTag match {
+                case Completed => Tag(content = Text(messages("common.completed")), classes = "govuk-tag--turquoise")
+                case CustomerOrHmrcAdded => Tag(content = Text(messages("common.addedByHmrc")), classes = "govuk-tag--red")
+                case HmrcAdded => Tag(content = Text(messages("common.addedByHmrc")), classes = "govuk-tag--red")
+                case InProgress => Tag(content = Text(messages("common.inProgress")), classes = "govuk-tag--blue")
+                case NotStarted => Tag(content = Text(messages("common.notStarted")), classes = "govuk-tag--grey")
+            }
+
+            govukTag(tag)
+        }
+        </span>
+    </li>
+}
+
+@layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
+
+    @heading(titleText, Some(messages("common.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+
+    @taskList(pageModel.taskListItems)
+
+    @button(
+        href = Some(appConfig.incomeTaxSubmissionOverviewUrl(pageModel.taxYear)),
+        alternativeText = "common.return.to.overview",
+        attributes = Map("id" -> "return-to-overview-button-id")
+    )
+
+}
+
+@{
+// $COVERAGE-OFF$
+}
