@@ -16,7 +16,7 @@
 
 package views.pages
 
-import controllers.routes.SummaryController
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -44,7 +44,6 @@ class SummaryPageViewSpec extends ViewUnitTest {
   trait CommonExpectedResults {
     val expectedTitle: String
     val expectedHeading: String
-    val expectedAlternativeHeading: String => String
     val expectedCaption: Int => String
 
     val jobSeekersAllowance: String
@@ -57,7 +56,6 @@ class SummaryPageViewSpec extends ViewUnitTest {
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedTitle: String = "State benefits"
     override val expectedHeading: String = "State benefits"
-    override val expectedAlternativeHeading: String => String = (employerRef: String) => s"Contractor: $employerRef"
     override val expectedCaption: Int => String = (taxYear: Int) => s"State benefits for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val jobSeekersAllowance: String = "Jobseeker’s Allowance"
     override val notStartedText: String = "Not started"
@@ -67,7 +65,6 @@ class SummaryPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedTitle: String = "State benefits"
     override val expectedHeading: String = "State benefits"
-    override val expectedAlternativeHeading: String => String = (employerRef: String) => s"Contractwr: $employerRef"
     override val expectedCaption: Int => String = (taxYear: Int) => s"State benefits for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val jobSeekersAllowance: String = "Jobseeker’s Allowance"
     override val notStartedText: String = "Not started"
@@ -75,10 +72,8 @@ class SummaryPageViewSpec extends ViewUnitTest {
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, Unit]] = Seq(
-    UserScenario(isWelsh = false, isAgent = false, CommonExpectedEN),
     UserScenario(isWelsh = false, isAgent = true, CommonExpectedEN),
-    UserScenario(isWelsh = true, isAgent = false, CommonExpectedCY),
-    UserScenario(isWelsh = true, isAgent = true, CommonExpectedCY)
+    UserScenario(isWelsh = true, isAgent = false, CommonExpectedCY)
   )
 
   userScenarios.foreach { userScenario =>
@@ -94,7 +89,7 @@ class SummaryPageViewSpec extends ViewUnitTest {
         captionCheck(userScenario.commonExpectedResults.expectedCaption(taxYear))
         h1Check(userScenario.commonExpectedResults.expectedHeading)
         textOnPageCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceSelector)
-        linkCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceLinkSelector, SummaryController.show(taxYear).url)
+        linkCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceLinkSelector, JobSeekersAllowanceController.show(taxYear).url)
         textOnPageCheck(userScenario.commonExpectedResults.notStartedText, Selectors.jobSeekersAllowanceStatusSelector)
         buttonCheck(userScenario.commonExpectedResults.buttonText, Selectors.buttonSelector, Some(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
       }

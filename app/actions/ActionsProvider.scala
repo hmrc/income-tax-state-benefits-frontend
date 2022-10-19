@@ -20,6 +20,7 @@ import config.{AppConfig, ErrorHandler}
 import models.requests.UserPriorDataRequest
 import play.api.mvc.{ActionBuilder, AnyContent}
 import services.StateBenefitsService
+import utils.InYearUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -27,6 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ActionsProvider @Inject()(authAction: AuthorisedAction,
                                 stateBenefitsService: StateBenefitsService,
+                                inYearUtil: InYearUtil,
                                 errorHandler: ErrorHandler,
                                 appConfig: AppConfig)
                                (implicit ec: ExecutionContext) {
@@ -34,6 +36,7 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
   def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] = {
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
+      .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
   }
 }

@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package support.builders.models.pages.jobseekers
 
-import models.BenefitType._
-import support.UnitTest
+import models.pages.jobseekers.JobSeekersAllowancePage
+import support.builders.models.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
+import support.utils.TaxYearUtils.taxYear
 
-class BenefitTypeSpec extends UnitTest {
+object JobSeekersAllowancePageBuilder {
 
-  "BenefitType objects" should {
-    "have correct type names" in {
-      StatePension.typeName shouldBe "statePension"
-      StatePensionLumpSum.typeName shouldBe "statePensionLumpSum"
-      EmploymentSupportAllowance.typeName shouldBe "employmentSupportAllowance"
-      JobSeekersAllowance.typeName shouldBe "jobSeekersAllowance"
-      OtherStateBenefits.typeName shouldBe "otherStateBenefits"
-    }
-  }
+  val aJobSeekersAllowancePage: JobSeekersAllowancePage = JobSeekersAllowancePage(
+    taxYear = taxYear,
+    summaryListDataRows = Seq(aBenefitSummaryListRowData)
+  )
 }

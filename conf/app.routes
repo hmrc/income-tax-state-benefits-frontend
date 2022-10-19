@@ -12,8 +12,11 @@ GET   /keep-alive                       controllers.SessionExpiredController.kee
 
 GET   /timeout                          controllers.SessionExpiredController.timeout
 
-###########################     Summary pages     ###########################
+###########################     Summary Endpoints     ###########################
 GET         /:taxYear/summary           controllers.SummaryController.show(taxYear: Int)
+
+###########################     JobSeeker's Allowance Endpoints     ###########################
+GET         /:taxYear/jobseekers-allowance/claims           controllers.jobseekers.JobSeekersAllowanceController.show(taxYear: Int)
 
 ###########################     Error pages     ####################################
 GET        /error/you-need-to-sign-up                                               controllers.errors.IndividualAuthErrorController.show

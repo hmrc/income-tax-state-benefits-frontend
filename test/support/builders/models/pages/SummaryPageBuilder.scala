@@ -16,6 +16,7 @@
 
 package support.builders.models.pages
 
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.BenefitType._
 import models.pages.SummaryPage
 import models.pages.elements.TaskListItem
@@ -27,12 +28,10 @@ object SummaryPageBuilder {
   val aSummaryPage: SummaryPage = SummaryPage(
     taxYear = taxYear,
     taskListItems = Seq(
-      //      TaskListItem(IncapacityBenefit, controllers.routes.SummaryController.show(taxYear), Completed),
       //      TaskListItem(StatePension, controllers.routes.SummaryController.show(taxYear), CustomerOrHmrcAdded),
       //      TaskListItem(StatePensionLumpSum, controllers.routes.SummaryController.show(taxYear), HmrcAdded),
       //      TaskListItem(EmploymentSupportAllowance, controllers.routes.SummaryController.show(taxYear), InProgress),
-      TaskListItem(JobSeekersAllowance, controllers.routes.SummaryController.show(taxYear), NotStarted)
-      //      TaskListItem(BereavementAllowance, controllers.routes.SummaryController.show(taxYear), Completed),
+      TaskListItem(JobSeekersAllowance, JobSeekersAllowanceController.show(taxYear), NotStarted)
       //      TaskListItem(OtherStateBenefits, controllers.routes.SummaryController.show(taxYear), Completed)
     )
   )

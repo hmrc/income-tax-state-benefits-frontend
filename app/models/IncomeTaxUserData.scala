@@ -18,7 +18,17 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class IncomeTaxUserData(stateBenefits: Option[AllStateBenefitsData] = None)
+case class IncomeTaxUserData(stateBenefits: Option[AllStateBenefitsData] = None) {
+
+  lazy val hmrcJobSeekersAllowances: Set[StateBenefit] = stateBenefits
+    .flatMap(_.stateBenefitsData.jobSeekersAllowances)
+    .getOrElse(Set.empty)
+
+  lazy val customerJobSeekersAllowances: Set[CustomerAddedStateBenefit] = stateBenefits
+    .flatMap(_.customerAddedStateBenefitsData)
+    .flatMap(_.jobSeekersAllowances)
+    .getOrElse(Set.empty)
+}
 
 object IncomeTaxUserData {
   implicit val formats: OFormat[IncomeTaxUserData] = Json.format[IncomeTaxUserData]
