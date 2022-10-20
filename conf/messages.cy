@@ -24,10 +24,10 @@ common.taxMonth = 5 {0} {1}
 
 common.addedByHmrc = Added by HMRC
 common.back = Back
-common.caption = State benefits for 6 April {0} to 5 April {1}
 common.change = Change
 common.completed = Completed
 common.continue = Continue
+common.dateRange = {0} to {1}
 common.help.getHelpWithThisPage = Get help with this page
 common.inProgress = In progress
 common.jobSeekersAllowance = Jobseeker’s Allowance
@@ -35,6 +35,16 @@ common.notStarted = Not started
 common.opensInNewTab = (opens in new tab)
 common.return.to.overview = Return to overview
 common.stateBenefits = State benefits
+common.view = View
+
+#################       State Benefits Page       ########################################
+stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
+
+#################       Jobseeker’s Allowance Page       ########################################
+jobseekersAllowance.caption = Jobseeker’s Allowance for 6 April {0} to 5 April {1}
+jobseekersAllowance.p1.removed.claim.text.individual = You have removed this claim and it will not be included in your return.
+jobseekersAllowance.p1.removed.claim.text.agent = You have removed this claim and it will not be included in your client’s return.
+jobseekersAllowance.addMissingClaim.link.text = Add missing claim
 
 #################       Error messages        ########################################
 

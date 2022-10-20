@@ -1,0 +1,84 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.jobseekers.routes.JobSeekersAllowanceController
+
+@import models.pages.jobseekers.JobSeekersAllowancePage
+@import models.requests.UserPriorDataRequest
+
+@import utils.ViewUtils.bigDecimalCurrency
+@import utils.ViewUtils.translatedDateFormatter
+
+@import views.html.templates.Layout
+@import views.html.templates.helpers.Button
+@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Link
+
+
+@this(
+    layout: Layout,
+    heading: Heading,
+    govukSummaryList: GovukSummaryList,
+    link: Link,
+    button: Button
+)
+
+@(pageModel: JobSeekersAllowancePage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
+
+@titleText = @{ messages("common.jobSeekersAllowance") }
+
+@layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
+
+    @heading(titleText, Some(messages("jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+
+    @if(pageModel.summaryListDataRows.nonEmpty){
+    <dl class="govuk-summary-list govuk-!-margin-bottom-3 ">
+        @for(rowData <- pageModel.summaryListDataRows) {
+        <div style="width:630px; border-bottom: 1px solid #b1b4b6;">
+            <div class="govuk-summary-list__row" style="border-bottom: 0px;">
+                <dt class="govuk-summary-list__key govuk-!-width-one-quarters govuk-!-font-weight-regular " style="vertical-align:middle;">
+                    @rowData.amount.map(amount => bigDecimalCurrency(amount.toString))
+                </dt>
+                <dt class="govuk-summary-list__key govuk-!-width-three-quarters govuk-!-font-weight-regular " style="vertical-align:middle;">
+                    @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
+                </dt>
+                <dd class="govuk-summary-list__actions">
+                    @link(JobSeekersAllowanceController.show(pageModel.taxYear).url, "common.view")
+                </dd>
+            </div>
+            @if(rowData.isIgnored){
+            <div>
+                <p class="govuk-body govuk-!-margin-bottom-2">@messages(s"jobseekersAllowance.p1.removed.claim.text.${if(request.user.isAgent) "agent" else "individual"}")</p>
+            </div>
+            }
+        </div>
+        }
+    </dl>
+    }
+
+    <p class="govuk-body govuk-!-padding-bottom-3">@link(JobSeekersAllowanceController.show(pageModel.taxYear).url,"jobseekersAllowance.addMissingClaim.link.text",Some("add-missing-claim-link"))</p>
+
+    @button(
+        href = None,
+        alternativeText = "common.continue",
+        attributes = Map("id" -> "continue-button-id")
+    )
+
+}
+
+@{
+// $COVERAGE-OFF$
+}

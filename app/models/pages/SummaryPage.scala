@@ -16,7 +16,7 @@
 
 package models.pages
 
-import controllers.routes.SummaryController
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.BenefitType.JobSeekersAllowance
 import models.pages.elements.TaskListItem
 import models.pages.elements.TaskListTag.Completed
@@ -27,7 +27,7 @@ object SummaryPage {
 
   def apply(taxYear: Int): SummaryPage = {
     val taskListItems: Seq[TaskListItem] = Seq(
-      TaskListItem(JobSeekersAllowance, SummaryController.show(taxYear), Completed)
+      TaskListItem(JobSeekersAllowance, JobSeekersAllowanceController.show(taxYear), Completed)
     )
 
     SummaryPage(taxYear, taskListItems)

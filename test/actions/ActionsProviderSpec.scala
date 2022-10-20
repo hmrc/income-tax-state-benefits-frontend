@@ -28,6 +28,7 @@ import support.ControllerUnitTest
 import support.builders.models.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.models.UserBuilder.aUser
 import support.mocks.{MockAuthorisedAction, MockErrorHandler, MockStateBenefitsService}
+import utils.InYearUtil
 
 class ActionsProviderSpec extends ControllerUnitTest
   with MockAuthorisedAction
@@ -40,6 +41,7 @@ class ActionsProviderSpec extends ControllerUnitTest
   private val actionsProvider = new ActionsProvider(
     mockAuthorisedAction,
     mockStateBenefitsService,
+    new InYearUtil(),
     mockErrorHandler,
     appConfig
   )
@@ -53,23 +55,23 @@ class ActionsProviderSpec extends ControllerUnitTest
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
 
-    "handle internal server error when getPriorData result in error" in {
+    "redirect to Income Tax Submission Overview when in year" in {
       mockAuthAsIndividual(Some(aUser.nino))
-      mockGetPriorData(aUser, taxYear, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
-      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
       val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
     }
 
-    "return successful response when in year" in {
+    "handle internal server error when getPriorData result in error" in {
       mockAuthAsIndividual(Some(aUser.nino))
-      mockGetPriorData(aUser, taxYear, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
+      mockGetPriorData(aUser, taxYearEOY, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
-      val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
+      val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
 
-      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
     }
 
     "return successful response when end of year" in {

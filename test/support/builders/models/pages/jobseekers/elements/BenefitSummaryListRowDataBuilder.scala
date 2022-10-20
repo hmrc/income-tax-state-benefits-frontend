@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package support.builders.models.pages.jobseekers.elements
 
-import models.BenefitType._
-import support.UnitTest
+import models.pages.elements.BenefitSummaryListRowData
+import support.utils.TaxYearUtils.taxYearEOY
 
-class BenefitTypeSpec extends UnitTest {
+import java.time.LocalDate
 
-  "BenefitType objects" should {
-    "have correct type names" in {
-      StatePension.typeName shouldBe "statePension"
-      StatePensionLumpSum.typeName shouldBe "statePensionLumpSum"
-      EmploymentSupportAllowance.typeName shouldBe "employmentSupportAllowance"
-      JobSeekersAllowance.typeName shouldBe "jobSeekersAllowance"
-      OtherStateBenefits.typeName shouldBe "otherStateBenefits"
-    }
-  }
+object BenefitSummaryListRowDataBuilder {
+
+  val aBenefitSummaryListRowData: BenefitSummaryListRowData = BenefitSummaryListRowData(
+    amount = Some(100.00),
+    startDate = LocalDate.parse(s"$taxYearEOY-01-01"),
+    endDate = LocalDate.parse(s"$taxYearEOY-04-05"),
+    isIgnored = false
+  )
 }

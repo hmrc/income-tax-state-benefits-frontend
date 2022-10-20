@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.jobseekers
 
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -23,16 +23,17 @@ import support.IntegrationTest
 import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.models.UserBuilder.aUser
 
-class SummaryControllerISpec extends IntegrationTest {
+class JobSeekersAllowanceControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int): String = {
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/summary"
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/claims"
   }
 
   ".show" should {
-    "render the contractor summary page for in year" in {
+    "render the Jobseeker's Allowance page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
+        userDataStub(anIncomeTaxUserData, aUser.nino, taxYear)
         urlGet(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -40,7 +41,7 @@ class SummaryControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "render the contractor summary page for end of year" in {
+    "render the Jobseeker's Allowance page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userDataStub(anIncomeTaxUserData, aUser.nino, taxYearEOY)

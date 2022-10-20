@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package models.pages
+package models.pages.jobseekers
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
-import models.BenefitType.JobSeekersAllowance
-import models.pages.elements.TaskListItem
-import models.pages.elements.TaskListTag.Completed
+import models.pages.elements.BenefitSummaryListRowData
 import support.UnitTest
+import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.providers.TaxYearProvider
 
-class SummaryPageSpec extends UnitTest
+class JobSeekersAllowancePageSpec extends UnitTest
   with TaxYearProvider {
 
   ".apply" should {
-    "create SummaryPage with relevant task list items" in {
-      SummaryPage.apply(taxYear = taxYear) shouldBe SummaryPage(
+    "create correct JobSeekersAllowancePage object" in {
+      val hmrcData = anIncomeTaxUserData.hmrcJobSeekersAllowances
+        .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
+
+      val customerData = anIncomeTaxUserData.customerJobSeekersAllowances
+        .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
+
+      JobSeekersAllowancePage.apply(taxYear = taxYear, incomeTaxUserData = anIncomeTaxUserData) shouldBe JobSeekersAllowancePage(
         taxYear = taxYear,
-        taskListItems = Seq(
-          TaskListItem(JobSeekersAllowance, JobSeekersAllowanceController.show(taxYear), Completed)
-        )
+        summaryListDataRows = hmrcData ++ customerData
       )
     }
   }

@@ -19,11 +19,9 @@ package models
 sealed abstract class BenefitType(val typeName: String)
 
 object BenefitType {
-  case object IncapacityBenefit extends BenefitType(typeName = "incapacityBenefit")
   case object StatePension extends BenefitType(typeName = "statePension")
   case object StatePensionLumpSum extends BenefitType(typeName = "statePensionLumpSum")
   case object EmploymentSupportAllowance extends BenefitType(typeName = "employmentSupportAllowance")
   case object JobSeekersAllowance extends BenefitType(typeName = "jobSeekersAllowance")
-  case object BereavementAllowance extends BenefitType(typeName = "bereavementAllowance")
   case object OtherStateBenefits extends BenefitType(typeName = "otherStateBenefits")
 }
