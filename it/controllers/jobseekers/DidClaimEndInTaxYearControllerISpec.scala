@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, EndDateController}
+import controllers.jobseekers.routes.{AmountController, DidClaimEndInTaxYearController, EndDateController}
 import forms.YesNoForm
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -81,7 +81,7 @@ class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe EndDateController.show(taxYearEOY, sessionDataId).url
     }
 
-    "redirect To Same (for now... it will be updated) page when answer is No" in {
+    "redirect To amount page when answer is No" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(sessionDataId, aStateBenefitsUserData)
@@ -90,7 +90,7 @@ class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe DidClaimEndInTaxYearController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe AmountController.show(taxYearEOY, sessionDataId).url
     }
   }
 }

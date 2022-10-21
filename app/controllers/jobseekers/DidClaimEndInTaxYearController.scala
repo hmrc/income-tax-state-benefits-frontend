@@ -18,7 +18,7 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.AppConfig
-import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, EndDateController}
+import controllers.jobseekers.routes.{AmountController, DidClaimEndInTaxYearController, EndDateController}
 import forms.FormsProvider
 import models.pages.jobseekers.DidClaimEndInTaxYearPage
 import play.api.i18n.I18nSupport
@@ -29,28 +29,24 @@ import views.html.pages.jobseekers.DidClaimEndInTaxYearPageView
 
 import java.util.UUID
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DidClaimEndInTaxYearController @Inject()(actionsProvider: ActionsProvider,
                                                formsProvider: FormsProvider,
                                                pageView: DidClaimEndInTaxYearPageView)
-                                              (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
+                                              (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formsProvider.didClaimEndInTaxYearForm(taxYear))))
+    Ok(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formsProvider.endDateYesNoForm(taxYear))))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    formsProvider.didClaimEndInTaxYearForm(taxYear).bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
-      yesNoAnswer => if (yesNoAnswer) {
-        Future(Redirect(EndDateController.show(taxYear, sessionDataId)))
-      } else {
-        Future(Redirect(DidClaimEndInTaxYearController.show(taxYear, sessionDataId)))
-      }
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+    formsProvider.endDateYesNoForm(taxYear).bindFromRequest().fold(
+      formWithErrors => BadRequest(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formWithErrors))),
+      yesNoAnswer =>
+        if (yesNoAnswer) Redirect(EndDateController.show(taxYear, sessionDataId)) else Redirect(AmountController.show(taxYear, sessionDataId))
     )
   }
 }

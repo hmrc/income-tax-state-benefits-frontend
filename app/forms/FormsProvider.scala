@@ -21,8 +21,13 @@ import play.api.data.Form
 import javax.inject.Singleton
 
 @Singleton
-class FormsProvider {
+class FormsProvider() {
 
-  def didClaimEndInTaxYearForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm("jobseekers.didClaimEndInTaxYear.error", Seq(taxYear.toString))
+  def endDateYesNoForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
+    missingInputError = "jobseekers.didClaimEndInTaxYear.error", Seq(taxYear.toString)
+  )
 
+  def jsaAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
+    emptyFieldKey = "jobseekers.amountPage.empty.amount.error"
+  )
 }

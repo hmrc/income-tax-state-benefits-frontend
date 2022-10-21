@@ -33,7 +33,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
 
   object Selectors {
     val continueButtonFormSelector = "#main-content > div > div > form"
-    val expectedErrorHref = "#value"
+    val errorHref = "#value"
     val buttonSelector: String = "#continue"
   }
 
@@ -113,7 +113,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText(taxYearEOY), Selectors.expectedErrorHref)
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText(taxYearEOY), Selectors.errorHref)
         errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText(taxYearEOY))
       }
     }

@@ -16,8 +16,9 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{AmountController, EndDateController}
-import forms.DateForm._
+import controllers.jobseekers.routes.AmountController
+import forms.AmountForm._
+import forms.FormsProvider
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.Results.{InternalServerError, Redirect}
@@ -26,21 +27,21 @@ import sttp.model.Method.POST
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
-import views.html.pages.jobseekers.EndDatePageView
+import views.html.pages.jobseekers.AmountPageView
 
-import java.time.LocalDate
 import java.util.UUID
 
-class EndDateControllerSpec extends ControllerUnitTest
+class AmountControllerSpec extends ControllerUnitTest
   with MockActionsProvider
   with MockClaimService
   with MockErrorHandler {
 
-  private val pageView = inject[EndDatePageView]
+  private val pageView = inject[AmountPageView]
   private val sessionDataId = UUID.randomUUID()
 
-  private val underTest = new EndDateController(
+  private val underTest = new AmountController(
     mockActionsProvider,
+    new FormsProvider(),
     pageView,
     mockClaimService,
     mockErrorHandler
@@ -61,7 +62,7 @@ class EndDateControllerSpec extends ControllerUnitTest
     "render page with error when validation of form fails" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$formValuesPrefix-$day" -> "")
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
 
       status(result) shouldBe BAD_REQUEST
@@ -70,22 +71,22 @@ class EndDateControllerSpec extends ControllerUnitTest
       document.select("#error-summary-title").isEmpty shouldBe false
     }
 
-    "handle internal server error when updating end date fails" in {
+    "handle internal server error when updating amount fails" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateEndDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Left(()))
+      mockUpdateAmount(aStateBenefitsUserData, amount = 100, Left(()))
       mockInternalServerError(InternalServerError)
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "redirect to Next Page on successful end date update" in {
+    "redirect to next Page on successful amount update" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateEndDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Right(sessionDataId))
+      mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(sessionDataId))
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
 
       await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
         Redirect(AmountController.show(taxYearEOY, sessionDataId))

@@ -40,9 +40,9 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val inputMonthField: String = s"#${DateForm.month}"
     val inputYearField: String = s"#${DateForm.year}"
     val buttonSelector: String = "#continue"
-    val expectedInvalidDateErrorHref: String = "#invalidDate"
-    val expectedMustBeSameAsOrBeforeErrorHref: String = "#mustBeEndOfYear"
-    val expectedMustBeAfterStartDateErrorHref: String = "#mustBeAfterStartDate"
+    val invalidDateErrorHref: String = "#invalidDate"
+    val mustBeSameAsOrBeforeErrorHref: String = "#mustBeEndOfYear"
+    val mustBeAfterStartDateErrorHref: String = "#mustBeAfterStartDate"
   }
 
   trait SpecificExpectedResults {
@@ -160,7 +160,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedInvalidDateErrorText, Selectors.expectedInvalidDateErrorHref)
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedInvalidDateErrorText, Selectors.invalidDateErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "dd")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "mm")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "yyyy")
@@ -176,7 +176,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYearEOY), Selectors.expectedMustBeSameAsOrBeforeErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYearEOY), Selectors.mustBeSameAsOrBeforeErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "6")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "4")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
@@ -199,7 +199,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeAfterStartDateErrorText(startDate), Selectors.expectedMustBeAfterStartDateErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeAfterStartDateErrorText(startDate), Selectors.mustBeAfterStartDateErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "1")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)

@@ -16,22 +16,23 @@
 
 package utils
 
-import java.time.{LocalDateTime, ZoneId}
-import javax.inject.{Inject, Singleton}
+import java.time.{LocalDate, LocalDateTime, ZoneId}
 
-@Singleton
-class InYearUtil @Inject()() {
+object InYearUtil {
 
+  private val londonZoneId = ZoneId.of("Europe/London")
   private val taxYearStartDay = 6
   private val taxYearStartMonth = 4
   private val taxYearStartHour = 0
   private val taxYearStartMinute = 0
 
   def inYear(taxYear: Int, now: LocalDateTime = LocalDateTime.now): Boolean = {
-    def zonedDateTime(time: LocalDateTime): LocalDateTime = time.atZone(ZoneId.of("Europe/London")).toLocalDateTime
+    val endOfYearCutOffDate = LocalDateTime.of(taxYear, taxYearStartMonth, taxYearStartDay, taxYearStartHour, taxYearStartMinute)
+    now.atZone(londonZoneId).isBefore(endOfYearCutOffDate.atZone(londonZoneId))
+  }
 
-    val endOfYearCutOffDate: LocalDateTime = LocalDateTime.of(taxYear, taxYearStartMonth, taxYearStartDay, taxYearStartHour, taxYearStartMinute)
-
-    zonedDateTime(now).isBefore(zonedDateTime(endOfYearCutOffDate))
+  def toDateWithinTaxYear(taxYear: Int, localDate: LocalDate): LocalDate = {
+    val startOfFinancialYear = LocalDateTime.of(taxYear - 1, taxYearStartMonth, taxYearStartDay, taxYearStartHour, taxYearStartMinute)
+    if (localDate.atStartOfDay(londonZoneId).isBefore(startOfFinancialYear.atZone(londonZoneId))) startOfFinancialYear.toLocalDate else localDate
   }
 }

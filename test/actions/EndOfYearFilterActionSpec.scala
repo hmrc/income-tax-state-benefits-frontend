@@ -28,12 +28,11 @@ class EndOfYearFilterActionSpec extends UnitTest
   with TaxYearProvider
   with AppConfigStubProvider {
 
-  private val inYearUtil = new InYearUtil()
   private val executionContext = ExecutionContext.global
 
   ".executionContext" should {
     "return the given execution context" in {
-      val underTest = EndOfYearFilterAction(taxYear = taxYear, inYearUtil = inYearUtil, appConfig = appConfigStub)(executionContext)
+      val underTest = EndOfYearFilterAction(taxYear = taxYear, appConfig = appConfigStub)(executionContext)
 
       underTest.executionContext shouldBe executionContext
     }
@@ -41,13 +40,13 @@ class EndOfYearFilterActionSpec extends UnitTest
 
   ".filter" should {
     "return a redirect to Income Tax Submission Overview when taxYear is in year" in {
-      val underTest = EndOfYearFilterAction(taxYear = taxYear, inYearUtil = inYearUtil, appConfig = appConfigStub)(executionContext)
+      val underTest = EndOfYearFilterAction(taxYear = taxYear, appConfig = appConfigStub)(executionContext)
 
       await(underTest.filter(anAuthorisationRequest)) shouldBe Some(Redirect(appConfigStub.incomeTaxSubmissionOverviewUrl(taxYear)))
     }
 
     "return None when taxYear is end of year" in {
-      val underTest = EndOfYearFilterAction(taxYear = taxYearEOY, inYearUtil = inYearUtil, appConfig = appConfigStub)(executionContext)
+      val underTest = EndOfYearFilterAction(taxYear = taxYearEOY, appConfig = appConfigStub)(executionContext)
 
       await(underTest.filter(anAuthorisationRequest)) shouldBe None
     }

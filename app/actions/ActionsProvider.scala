@@ -29,7 +29,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ActionsProvider @Inject()(authAction: AuthorisedAction,
                                 stateBenefitsService: StateBenefitsService,
-                                inYearUtil: InYearUtil,
                                 errorHandler: ErrorHandler,
                                 appConfig: AppConfig)
                                (implicit ec: ExecutionContext) {
@@ -37,17 +36,17 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
   def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
-      .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
+      .andThen(EndOfYearFilterAction(taxYear, appConfig))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
 
   def userSessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
-      .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
+      .andThen(EndOfYearFilterAction(taxYear, appConfig))
       .andThen(UserSessionDataRequestRefinerAction(sessionDataId, stateBenefitsService, errorHandler))
 
   def endOfYear(taxYear: Int): ActionBuilder[AuthorisationRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
-      .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
+      .andThen(EndOfYearFilterAction(taxYear, appConfig))
 }

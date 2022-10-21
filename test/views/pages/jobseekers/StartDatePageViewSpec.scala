@@ -39,8 +39,8 @@ class StartDatePageViewSpec extends ViewUnitTest {
     val inputMonthField: String = s"#${DateForm.month}"
     val inputYearField: String = s"#${DateForm.year}"
     val buttonSelector: String = "#continue"
-    val expectedInvalidDateErrorHref: String = "#invalidDate"
-    val expectedMustBeSameAsOrBeforeErrorHref: String = "#mustBeSameAsOrBefore"
+    val invalidDateErrorHref: String = "#invalidDate"
+    val mustBeSameAsOrBeforeErrorHref: String = "#mustBeSameAsOrBefore"
   }
 
   trait SpecificExpectedResults {
@@ -149,7 +149,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedInvalidDateErrorText, Selectors.expectedInvalidDateErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedInvalidDateErrorText, Selectors.invalidDateErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "dd")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "mm")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "yyyy")
@@ -165,7 +165,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYearEOY), Selectors.expectedMustBeSameAsOrBeforeErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYearEOY), Selectors.mustBeSameAsOrBeforeErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "6")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "4")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)

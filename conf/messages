@@ -1,5 +1,4 @@
 #################       Service messages       ########################################
-
 betaBar.banner.message.1 = This is a new service – your
 betaBar.banner.message.2 = feedback
 betaBar.banner.message.3 = will help us to improve it.
@@ -41,6 +40,9 @@ common.stateBenefits = State benefits
 common.view = View
 common.yes = Yes
 
+common.error.amountMaxLimit = Enter an amount less than £100,000,000,000
+common.error.invalid_currency_format = Enter the amount in the correct format
+
 #################       State Benefits Page       ########################################
 stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
 
@@ -69,8 +71,16 @@ jobseekers.endDatePage.mustBeAfterStartDate.date.error.individual = The date you
 jobseekers.didClaimEndInTaxYear.title = Did this claim end in the tax year ending 5 April {0}?
 jobseekers.didClaimEndInTaxYear.error = Select yes if this claim ended in the tax year ending 5 April {0}
 
-#################       Error messages        ########################################
+#################       Jobseeker’s Allowance - Amount Page       ########################################
+jobseekers.amountPage.title.agent = How much Jobseeker’s Allowance did your client get between {0} and {1}?
+jobseekers.amountPage.title.individual = How much Jobseeker’s Allowance did you get between {0} and {1}?
+jobseekers.amountPage.p1.agent = This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax.
+jobseekers.amountPage.p1.individual = This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax.
+jobseekers.amountPage.textbox.label = Amount of Jobseeker’s allowance
+jobseekers.amountPage.textbox.hint = For Example, £123.56
+jobseekers.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
 
+#################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use
 common.error.self-assessment.paragraph.1.2 = Self Assessment: general enquiries
 common.error.self-assessment.paragraph.1.3 = to speak to someone about your income tax
@@ -104,7 +114,6 @@ taxYear-error-template.paragraph.1.single = You can only enter information for a
 taxYear-error-template.paragraph.2 = Check that you’ve entered the correct web address.
 
 #################       Timeout messages        ########################################
-
 timeout.button = Sign in
 timeout.heading = For your security, we signed you out
 timeout.p1 = We did not save your answers.

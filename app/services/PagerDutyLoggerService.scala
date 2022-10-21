@@ -27,7 +27,8 @@ import javax.inject.Singleton
 class PagerDutyLoggerService() extends Logging {
 
   def pagerDutyLog(httpResponse: HttpResponse, parserName: String): Unit = {
-    logger.error(message = messageToLog(httpResponse, parserName))
+    val logMessage = messageToLog(httpResponse, parserName)
+    logger.error(message = logMessage)
   }
 
   private[services] def messageToLog(httpResponse: HttpResponse, parserName: String): String = {
