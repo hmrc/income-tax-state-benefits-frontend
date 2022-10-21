@@ -33,4 +33,7 @@ class FormsProvider() {
   def taxTakenOffForm(isAgent: Boolean): Form[Boolean] = YesNoForm.yesNoForm(
     s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}")
 
+  def jsaAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
+    emptyFieldKey = "jobseekers.amountPage.empty.amount.error"
+  )
 }
