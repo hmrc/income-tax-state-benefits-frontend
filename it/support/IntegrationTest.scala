@@ -25,10 +25,10 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.HeaderNames
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.ws.{WSClient, WSResponse}
+import play.api.libs.ws.{BodyWritable, WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.{Application, Environment, Mode}
-import support.builders.models.UserBuilder.aUser
+import support.builders.UserBuilder.aUser
 import support.helpers.{PlaySessionCookieBaker, WireMockServer}
 import support.providers.TaxYearProvider
 import support.stubs.WireMockStubs
@@ -87,6 +87,18 @@ trait IntegrationTest extends AnyWordSpec
   protected def urlGet(url: String, welsh: Boolean = false, follow: Boolean = false, headers: Seq[(String, String)] = Seq())(implicit wsClient: WSClient): WSResponse = {
     val newHeaders = if (welsh) Seq(HeaderNames.ACCEPT_LANGUAGE -> "cy") ++ headers else headers
     await(wsClient.url(fullUrl(url)).withFollowRedirects(follow).withHttpHeaders(newHeaders: _*).get())
+  }
+
+  def urlPost[T](url: String,
+                 body: T,
+                 welsh: Boolean = false,
+                 follow: Boolean = false,
+                 headers: Seq[(String, String)] = Seq())
+                (implicit wsClient: WSClient, bodyWritable: BodyWritable[T]): WSResponse = {
+
+    val headersWithNoCheck = headers ++ Seq("Csrf-Token" -> "nocheck")
+    val newHeaders = if (welsh) Seq(HeaderNames.ACCEPT_LANGUAGE -> "cy") ++ headersWithNoCheck else headersWithNoCheck
+    await(wsClient.url(fullUrl(url)).withFollowRedirects(follow).withHttpHeaders(newHeaders: _*).post(body))
   }
 
   private def fullUrl(endOfUrl: String): String = s"http://localhost:$port" + endOfUrl

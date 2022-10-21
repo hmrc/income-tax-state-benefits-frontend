@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package support.builders.models
+package support.builders.requests
 
-import models.AllStateBenefitsData
-import support.builders.models.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
-import support.builders.models.StateBenefitsDataBuilder.aStateBenefitsData
+import models.requests.UserSessionDataRequest
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
+import support.builders.UserBuilder.aUser
 
-object AllStateBenefitsDataBuilder {
+object UserSessionDataRequestBuilder {
 
-  val anAllStateBenefitsData: AllStateBenefitsData = AllStateBenefitsData(
-    stateBenefitsData = aStateBenefitsData,
-    customerAddedStateBenefitsData = Some(aCustomerAddedStateBenefitsData)
+  val aUserSessionDataRequest: UserSessionDataRequest[AnyContent] = UserSessionDataRequest(
+    stateBenefitsUserData = aStateBenefitsUserData,
+    user = aUser,
+    request = FakeRequest()
   )
 }

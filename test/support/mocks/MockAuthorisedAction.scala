@@ -22,7 +22,7 @@ import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.stubMessagesControllerComponents
 import services.AuthorisationService
-import support.builders.models.UserBuilder.aUser
+import support.builders.UserBuilder.aUser
 import support.providers.AppConfigStubProvider
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate

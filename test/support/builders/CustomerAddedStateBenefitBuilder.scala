@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package support.builders.models
+package support.builders
 
 import models.CustomerAddedStateBenefit
 import support.utils.TaxYearUtils.taxYearEOY

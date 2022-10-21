@@ -24,8 +24,8 @@ import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.status
 import support.UnitTest
-import support.builders.models.UserBuilder.aUser
-import support.builders.models.requests.AuthorisationRequestBuilder.anAuthorisationRequest
+import support.builders.UserBuilder.aUser
+import support.builders.requests.AuthorisationRequestBuilder.anAuthorisationRequest
 import support.providers.{FakeRequestProvider, TaxYearProvider}
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -15,6 +15,7 @@
  *@
 
 @import controllers.jobseekers.routes.JobSeekersAllowanceController
+@import controllers.session.routes.UserSessionDataController
 
 @import models.pages.jobseekers.JobSeekersAllowancePage
 @import models.requests.UserPriorDataRequest
@@ -33,6 +34,8 @@
     heading: Heading,
     govukSummaryList: GovukSummaryList,
     link: Link,
+    govukButton : GovukButton,
+    formWithCSRF: FormWithCSRF,
     button: Button
 )
 
@@ -42,7 +45,7 @@
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
-    @heading(titleText, Some(messages("jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
     @if(pageModel.summaryListDataRows.nonEmpty){
     <dl class="govuk-summary-list govuk-!-margin-bottom-3 ">
@@ -61,7 +64,7 @@
             </div>
             @if(rowData.isIgnored){
             <div>
-                <p class="govuk-body govuk-!-margin-bottom-2">@messages(s"jobseekersAllowance.p1.removed.claim.text.${if(request.user.isAgent) "agent" else "individual"}")</p>
+                <p class="govuk-body govuk-!-margin-bottom-4">@messages(s"jobseekersAllowance.p1.removed.claim.text.${if(request.user.isAgent) "agent" else "individual"}")</p>
             </div>
             }
         </div>
@@ -69,13 +72,17 @@
     </dl>
     }
 
-    <p class="govuk-body govuk-!-padding-bottom-3">@link(JobSeekersAllowanceController.show(pageModel.taxYear).url,"jobseekersAllowance.addMissingClaim.link.text",Some("add-missing-claim-link"))</p>
+    @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear)) {
+        @govukButton(Button(
+            classes = "govuk-button--secondary",
+            content = Text(messages("jobseekersAllowance.addMissingClaim.button.text")),
+            attributes = Map("id" -> "add-missing-claim-button-id")
+        ))
+    }
 
-    @button(
-        href = None,
-        alternativeText = "common.continue",
-        attributes = Map("id" -> "continue-button-id")
-    )
+    <div class="govuk-button-group govuk-!-margin-top-4">
+        @button(href = None, alternativeText = "common.continue", attributes = Map("id" -> "continue-button-id"))
+    </div>
 
 }
 

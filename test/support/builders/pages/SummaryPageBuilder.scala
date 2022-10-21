@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package support.builders.models.pages
+package support.builders.pages
 
 import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.BenefitType._

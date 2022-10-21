@@ -18,7 +18,7 @@ package models.pages.jobseekers
 
 import models.pages.elements.BenefitSummaryListRowData
 import support.UnitTest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.providers.TaxYearProvider
 
 class JobSeekersAllowancePageSpec extends UnitTest

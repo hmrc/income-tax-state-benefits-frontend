@@ -19,7 +19,7 @@ package support.mocks
 import models.authorisation.Enrolment.{Agent, Individual, Nino}
 import org.scalamock.handlers.CallHandler4
 import services.AuthorisationService
-import support.builders.models.UserBuilder.{aUser, anAgentUser}
+import support.builders.UserBuilder.{aUser, anAgentUser}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval

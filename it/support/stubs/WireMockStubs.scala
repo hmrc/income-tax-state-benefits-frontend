@@ -20,12 +20,14 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.IncomeTaxUserData
 import models.authorisation.Enrolment.Agent
+import models.{IncomeTaxUserData, StateBenefitsUserData}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.{JsObject, Json}
-import support.builders.models.UserBuilder.aUser
+import support.builders.UserBuilder.aUser
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+
+import java.util.UUID
 
 trait WireMockStubs {
 
@@ -120,13 +122,46 @@ trait WireMockStubs {
     )
   )
 
-  protected def userDataStub(incomeTaxUserData: IncomeTaxUserData, nino: String, taxYear: Int): StubMapping = {
+  protected def userPriorDataStub(incomeTaxUserData: IncomeTaxUserData, nino: String, taxYear: Int): StubMapping = {
     stubGetWithHeadersCheck(
       url = s"/income-tax-state-benefits/prior-data/nino/$nino/tax-year/$taxYear",
       status = OK,
       responseBody = Json.toJson(incomeTaxUserData).toString(),
       sessionHeader = "X-Session-ID" -> aUser.sessionId,
       mtditidHeader = "mtditid" -> aUser.mtditid
+    )
+  }
+
+  protected def userSessionDataStub(sessionDataId: UUID,
+                                    response: StateBenefitsUserData): StubMapping = {
+    stubGetWithHeadersCheck(
+      url = s"/income-tax-state-benefits/session-data/$sessionDataId",
+      status = OK,
+      responseBody = Json.toJson(response).toString(),
+      sessionHeader = "X-Session-ID" -> aUser.sessionId,
+      mtditidHeader = "mtditid" -> aUser.mtditid
+    )
+  }
+
+  protected def createOrUpdateUserDataStub(stateBenefitsUserData: StateBenefitsUserData,
+                                           result: UUID): StubMapping = {
+    stubFor(post(urlMatching(s"/income-tax-state-benefits/session-data"))
+      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
+      .withHeader("mtditid", equalTo(aUser.mtditid))
+      .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
+      .willReturn(aResponse().withStatus(OK).withBody(Json.toJson(result).toString())))
+  }
+
+  protected def createUserSessionDataStub(url: String,
+                                          status: Int,
+                                          responseBody: String,
+                                          sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
+                                          mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
+                                         ): StubMapping = {
+    stubFor(post(urlMatching(url))
+      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
+      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
+      .willReturn(aResponse().withStatus(status).withBody(responseBody))
     )
   }
 }

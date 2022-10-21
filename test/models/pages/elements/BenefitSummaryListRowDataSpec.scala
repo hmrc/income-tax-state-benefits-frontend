@@ -17,8 +17,8 @@
 package models.pages.elements
 
 import support.UnitTest
-import support.builders.models.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
-import support.builders.models.StateBenefitBuilder.aStateBenefit
+import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
+import support.builders.StateBenefitBuilder.aStateBenefit
 import support.providers.TaxYearProvider
 
 import java.time.LocalDate

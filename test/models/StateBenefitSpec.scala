@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.Json
 import support.UnitTest
-import support.builders.models.StateBenefitBuilder.aStateBenefit
+import support.builders.StateBenefitBuilder.aStateBenefit
 
 import java.time.{Instant, LocalDate}
 import java.util.UUID

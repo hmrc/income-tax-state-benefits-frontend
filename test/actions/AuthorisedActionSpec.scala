@@ -27,7 +27,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.status
 import support.ControllerUnitTest
-import support.builders.models.UserBuilder.{aUser, anAgentUser}
+import support.builders.UserBuilder.{aUser, anAgentUser}
 import support.mocks.MockAuthorisationService
 import support.providers.FakeRequestProvider
 import uk.gov.hmrc.auth.core._

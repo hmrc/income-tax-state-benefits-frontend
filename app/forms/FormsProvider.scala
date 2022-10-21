@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package support.builders.models.pages.jobseekers
+package forms
 
-import models.pages.jobseekers.JobSeekersAllowancePage
-import support.builders.models.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
-import support.utils.TaxYearUtils.taxYear
+class FormsProvider {
 
-object JobSeekersAllowancePageBuilder {
-
-  val aJobSeekersAllowancePage: JobSeekersAllowancePage = JobSeekersAllowancePage(
-    taxYear = taxYear,
-    summaryListDataRows = Seq(aBenefitSummaryListRowData)
-  )
 }

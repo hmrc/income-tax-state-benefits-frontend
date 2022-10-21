@@ -17,13 +17,14 @@
 package support.mocks
 
 import actions.ActionsProvider
-import models.IncomeTaxUserData
-import models.requests.UserPriorDataRequest
-import org.scalamock.handlers.CallHandler1
+import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
+import models.{IncomeTaxUserData, StateBenefitsUserData}
+import org.scalamock.handlers.{CallHandler1, CallHandler2}
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc._
-import support.builders.models.UserBuilder.aUser
+import support.builders.UserBuilder.aUser
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockActionsProvider extends MockFactory
@@ -47,4 +48,37 @@ trait MockActionsProvider extends MockFactory
       .expects(taxYear)
       .returns(value = actionBuilder)
   }
+
+  def mockUserSessionDataFor(taxYear: Int,
+                             sessionDataId: UUID,
+                             result: StateBenefitsUserData): CallHandler2[Int, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+    val actionBuilder: ActionBuilder[UserSessionDataRequest, AnyContent] = new ActionBuilder[UserSessionDataRequest, AnyContent] {
+      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
+
+      override def invokeBlock[A](request: Request[A], block: UserSessionDataRequest[A] => Future[Result]): Future[Result] =
+        block(UserSessionDataRequest(result, aUser, request))
+
+      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
+    }
+
+    (mockActionsProvider.userSessionDataFor(_: Int, _: UUID))
+      .expects(taxYear, sessionDataId)
+      .returns(value = actionBuilder)
+  }
+
+  def mockEndOfYear(taxYear: Int): CallHandler1[Int, ActionBuilder[AuthorisationRequest, AnyContent]] = {
+    (mockActionsProvider.endOfYear(_: Int))
+      .expects(taxYear)
+      .returns(value = authorisationRequestActionBuilder)
+  }
+
+  private def authorisationRequestActionBuilder: ActionBuilder[AuthorisationRequest, AnyContent] =
+    new ActionBuilder[AuthorisationRequest, AnyContent] {
+      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
+
+      override def invokeBlock[A](request: Request[A], block: AuthorisationRequest[A] => Future[Result]): Future[Result] =
+        block(AuthorisationRequest(aUser, request))
+
+      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
+    }
 }

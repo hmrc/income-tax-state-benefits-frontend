@@ -25,10 +25,13 @@ import play.api.mvc.Results.{InternalServerError, Ok, Redirect}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.status
 import support.ControllerUnitTest
-import support.builders.models.AllStateBenefitsDataBuilder.anAllStateBenefitsData
-import support.builders.models.UserBuilder.aUser
+import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
+import support.builders.UserBuilder.aUser
 import support.mocks.{MockAuthorisedAction, MockErrorHandler, MockStateBenefitsService}
 import utils.InYearUtil
+
+import java.util.UUID
 
 class ActionsProviderSpec extends ControllerUnitTest
   with MockAuthorisedAction
@@ -37,6 +40,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
   private val anyBlock = (_: Request[AnyContent]) => Ok("any-result")
   private val validTaxYears = validTaxYearList.mkString(",")
+  private val sessionDataId = UUID.randomUUID()
 
   private val actionsProvider = new ActionsProvider(
     mockAuthorisedAction,
@@ -79,6 +83,71 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetPriorData(aUser, taxYearEOY, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
 
       val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+  }
+
+  ".userSessionDataFor(taxYear)" should {
+    "redirect to UnauthorisedUserErrorController when authentication fails" in {
+      mockFailToAuthenticate()
+
+      val underTest = actionsProvider.userSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+    }
+
+    "redirect to Income Tax Submission Overview when in year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+
+      val underTest = actionsProvider.userSessionDataFor(taxYear, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
+    }
+
+    "handle internal server error when getUserSessionData result in error" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
+
+      val underTest = actionsProvider.userSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+    }
+
+    "return successful response when end of year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
+
+      val underTest = actionsProvider.userSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+  }
+
+  ".createUserSessionDataFor(taxYear)" should {
+    "redirect to UnauthorisedUserErrorController when authentication fails" in {
+      mockFailToAuthenticate()
+
+      val underTest = actionsProvider.endOfYear(taxYearEOY)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+    }
+
+    "redirect to Income Tax Submission Overview when in year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+
+      val underTest = actionsProvider.endOfYear(taxYear)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
+    }
+
+    "return successful response when end of year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+
+      val underTest = actionsProvider.endOfYear(taxYearEOY)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }

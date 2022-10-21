@@ -17,14 +17,15 @@
 package views.pages.jobseekers
 
 import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.session.routes.UserSessionDataController
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.models.pages.jobseekers.JobSeekersAllowancePageBuilder.aJobSeekersAllowancePage
-import support.builders.models.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
+import support.builders.pages.jobseekers.JobSeekersAllowancePageBuilder.aJobSeekersAllowancePage
+import support.builders.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
 import views.html.pages.jobseekers.JobSeekersAllowancePageView
 
 import java.time.LocalDate
@@ -37,7 +38,8 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     val summaryListRowSelector: Int => String = (row: Int) => s".govuk-summary-list > div:nth-child($row) > div.govuk-summary-list__row"
     val summaryListRowViewLinkSelector: Int => String = (row: Int) => s".govuk-summary-list > div:nth-child($row) > div.govuk-summary-list__row > dd > a"
     val summaryListRowRemovedSelector: Int => String = (row: Int) => s".govuk-summary-list > div:nth-child($row) > div > p"
-    val addMissingClaimLinkSelector = "p > a#add-missing-claim-link"
+    val addMissingClaimButtonSelector = "#add-missing-claim-button-id"
+    val addMissingClaimFormSelector = "#main-content > div > div > form"
     val buttonSelector = "#continue-button-id"
   }
 
@@ -52,9 +54,8 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     val expectedViewLinkText: String
     val expectedSummaryListRow1Text: String
     val expectedSummaryListRow2Text: String
-    val expectedAddMissingClaimLinkText: String
+    val expectedAddMissingClaimButtonText: String
     val expectedButtonText: String
-
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -64,7 +65,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     override val expectedViewLinkText: String = "View"
     override val expectedSummaryListRow1Text = "£100 1 January 2022 to 31 January 2022 View"
     override val expectedSummaryListRow2Text = "£200.20 1 February 2022 to 5 April 2022 View"
-    override val expectedAddMissingClaimLinkText: String = "Add missing claim"
+    override val expectedAddMissingClaimButtonText: String = "Add missing claim"
     override val expectedButtonText: String = "Continue"
   }
 
@@ -75,7 +76,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     override val expectedViewLinkText: String = "View"
     override val expectedSummaryListRow1Text = "£100 1 Ionawr 2022 to 31 Ionawr 2022 View"
     override val expectedSummaryListRow2Text = "£200.20 1 Chwefror 2022 to 5 Ebrill 2022 View"
-    override val expectedAddMissingClaimLinkText: String = "Add missing claim"
+    override val expectedAddMissingClaimButtonText: String = "Add missing claim"
     override val expectedButtonText: String = "Continue"
   }
 
@@ -118,7 +119,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         captionCheck(expectedCaption(taxYear))
         h1Check(expectedHeading)
         elementNotOnPageCheck(Selectors.summaryListRowSelector(1))
-        linkCheck(expectedAddMissingClaimLinkText, selector = Selectors.addMissingClaimLinkSelector, href = JobSeekersAllowanceController.show(taxYear).url)
+        formPostLinkCheck(UserSessionDataController.create(taxYear).url, Selectors.addMissingClaimFormSelector)
         buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
       }
 
@@ -141,7 +142,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1), JobSeekersAllowanceController.show(taxYear).url)
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Text, Selectors.summaryListRowSelector(2), "row-2")
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
-        linkCheck(expectedAddMissingClaimLinkText, selector = Selectors.addMissingClaimLinkSelector, href = JobSeekersAllowanceController.show(taxYear).url)
+        formPostLinkCheck(UserSessionDataController.create(taxYear).url, Selectors.addMissingClaimFormSelector)
         buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
       }
     }
