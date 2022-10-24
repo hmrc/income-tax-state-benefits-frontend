@@ -16,22 +16,20 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.EndDateController
-import forms.DateForm.{day, month, year}
+import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, EndDateController}
+import forms.YesNoForm
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
-import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 
-import java.time.LocalDate
 import java.util.UUID
 
-class EndDateControllerISpec extends IntegrationTest {
+class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int, sessionDataId: UUID): String =
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/end-date"
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/did-claim-end-in-tax-year"
 
   private val sessionDataId = UUID.randomUUID()
 
@@ -47,7 +45,7 @@ class EndDateControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "render the End Date page for end of year" in {
+    "render the Start Date page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(sessionDataId, aStateBenefitsUserData)
@@ -63,7 +61,7 @@ class EndDateControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(sessionDataId, aStateBenefitsUserData)
-        val formData = Map(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+        val formData = Map(YesNoForm.yesNo -> "true")
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
 
@@ -71,19 +69,28 @@ class EndDateControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "persist start date and redirect to next page" in {
-      val modelWithExpectedDate = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYearEOY, 1, 1)))
-
+    "redirect to End Date page when answer is Yes" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(sessionDataId, aStateBenefitsUserData)
-        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedDate)), sessionDataId)
-        val formData = Map(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+        val formData = Map(YesNoForm.yesNo -> "true")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
 
       result.status shouldBe SEE_OTHER
       result.headers("Location").head shouldBe EndDateController.show(taxYearEOY, sessionDataId).url
+    }
+
+    "redirect To Same (for now... it will be updated) page when answer is No" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        val formData = Map(YesNoForm.yesNo -> "false")
+        urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe DidClaimEndInTaxYearController.show(taxYearEOY, sessionDataId).url
     }
   }
 }
