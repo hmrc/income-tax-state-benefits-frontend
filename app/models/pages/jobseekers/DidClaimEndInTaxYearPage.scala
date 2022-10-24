@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package models.pages.jobseekers
 
+import models.StateBenefitsUserData
 import play.api.data.Form
 
-import javax.inject.Singleton
+import java.util.UUID
 
-@Singleton
-class FormsProvider {
+case class DidClaimEndInTaxYearPage(taxYear: Int,
+                                    sessionDataId: UUID,
+                                    form: Form[Boolean])
 
-  def didClaimEndInTaxYearForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm("jobseekers.didClaimEndInTaxYear.error", Seq(taxYear.toString))
+object DidClaimEndInTaxYearPage {
 
+  def apply(taxYear: Int,
+            stateBenefitsUserData: StateBenefitsUserData,
+            form: Form[Boolean]): DidClaimEndInTaxYearPage = {
+    DidClaimEndInTaxYearPage(
+      taxYear = taxYear,
+      stateBenefitsUserData.id.get,
+      form = form)
+  }
 }

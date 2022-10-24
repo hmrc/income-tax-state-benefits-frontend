@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package support.builders.pages.jobseekers
 
-import play.api.data.Form
+import forms.FormsProvider
+import models.pages.jobseekers.DidClaimEndInTaxYearPage
+import support.utils.TaxYearUtils.taxYearEOY
 
-import javax.inject.Singleton
+import java.util.UUID
 
-@Singleton
-class FormsProvider {
+object DidClaimEndInTaxYearPageBuilder {
 
-  def didClaimEndInTaxYearForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm("jobseekers.didClaimEndInTaxYear.error", Seq(taxYear.toString))
-
+  val aDidClaimEndInTaxYearPage: DidClaimEndInTaxYearPage = DidClaimEndInTaxYearPage(
+    taxYear = taxYearEOY,
+    sessionDataId = UUID.randomUUID(),
+    form = new FormsProvider().didClaimEndInTaxYearForm(taxYearEOY)
+  )
 }

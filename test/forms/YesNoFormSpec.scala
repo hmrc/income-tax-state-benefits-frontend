@@ -56,6 +56,14 @@ class YesNoFormSpec extends UnitTest {
         result shouldBe expectedResult
       }
     }
+
+    "return an error with arguments" in {
+      val yesNoForm: Form[Boolean] = YesNoForm.yesNoForm("someError", Seq("someArgument"))
+      val expectedResult = Seq(FormError(yesNo, Seq("someError"), Seq("someArgument")))
+      val result = yesNoForm.bind(Map[String, String](yesNo -> "invalid")).errors
+
+      result shouldBe expectedResult
+    }
   }
 
   ".formatter(...)" should {

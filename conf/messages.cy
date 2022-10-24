@@ -33,11 +33,13 @@ common.help.getHelpWithThisPage = Get help with this page
 common.inProgress = In progress
 common.jobSeekersAllowance = Jobseeker’s Allowance
 common.jobseekersAllowance.caption = Jobseeker’s Allowance for 6 April {0} to 5 April {1}
+common.no = Na
 common.notStarted = Not started
 common.opensInNewTab = (opens in new tab)
 common.return.to.overview = Return to overview
 common.stateBenefits = State benefits
 common.view = View
+common.yes = Iawn
 
 #################       State Benefits Page       ########################################
 stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
@@ -54,6 +56,18 @@ jobseekers.startDatePage.invalid.date.error.agent = Enter the date your client s
 jobseekers.startDatePage.invalid.date.error.individual = Enter the date you started getting Jobseeker’s Allowance
 jobseekers.startDatePage.mustBeSameAsOrBefore.date.error.agent = The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
 jobseekers.startDatePage.mustBeSameAsOrBefore.date.error.individual = The date you started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
+
+#################       Jobseeker’s Allowance - End Date Page       ########################################
+jobseekers.endDatePage.title = When did this claim end?
+jobseekers.endDatePage.invalid.date.error = Enter the date the Jobseeker’s Allowance claim ended
+jobseekers.endDatePage.mustBeEndOfYear.date.error.agent = The date your client’s Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
+jobseekers.endDatePage.mustBeEndOfYear.date.error.individual = The date your Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
+jobseekers.endDatePage.mustBeAfterStartDate.date.error.agent = The date your client’s Jobseeker’s Allowance claim ended must be after {0}
+jobseekers.endDatePage.mustBeAfterStartDate.date.error.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
+
+#################       Jobseeker’s Allowance - Claim End Page        ########################################
+jobseekers.didClaimEndInTaxYear.title = Did this claim end in the tax year ending 5 April {0}?
+jobseekers.didClaimEndInTaxYear.error = Select yes if this claim ended in the tax year ending 5 April {0}
 
 #################       Error messages        ########################################
 
