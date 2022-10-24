@@ -20,20 +20,19 @@ import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.UserBuilder.aUser
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.UserBuilder.aUser
 
 class JobSeekersAllowanceControllerISpec extends IntegrationTest {
 
-  private def url(taxYear: Int): String = {
+  private def url(taxYear: Int): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/claims"
-  }
 
   ".show" should {
     "render the Jobseeker's Allowance page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userDataStub(anIncomeTaxUserData, aUser.nino, taxYear)
+        userPriorDataStub(anIncomeTaxUserData, aUser.nino, taxYear)
         urlGet(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -44,7 +43,7 @@ class JobSeekersAllowanceControllerISpec extends IntegrationTest {
     "render the Jobseeker's Allowance page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userDataStub(anIncomeTaxUserData, aUser.nino, taxYearEOY)
+        userPriorDataStub(anIncomeTaxUserData, aUser.nino, taxYearEOY)
         urlGet(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 

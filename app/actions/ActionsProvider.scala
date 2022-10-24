@@ -17,11 +17,12 @@
 package actions
 
 import config.{AppConfig, ErrorHandler}
-import models.requests.UserPriorDataRequest
+import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 import services.StateBenefitsService
 import utils.InYearUtil
 
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -33,10 +34,20 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
                                 appConfig: AppConfig)
                                (implicit ec: ExecutionContext) {
 
-  def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] = {
+  def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
-  }
+
+  def userSessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+    authAction
+      .andThen(TaxYearAction(taxYear, appConfig, ec))
+      .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
+      .andThen(UserSessionDataRequestRefinerAction(sessionDataId, stateBenefitsService, errorHandler))
+
+  def endOfYear(taxYear: Int): ActionBuilder[AuthorisationRequest, AnyContent] =
+    authAction
+      .andThen(TaxYearAction(taxYear, appConfig, ec))
+      .andThen(EndOfYearFilterAction(taxYear, inYearUtil, appConfig))
 }

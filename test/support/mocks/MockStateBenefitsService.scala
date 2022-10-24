@@ -17,12 +17,13 @@
 package support.mocks
 
 import models.errors.HttpParserError
-import models.{IncomeTaxUserData, User}
-import org.scalamock.handlers.CallHandler3
+import models.{IncomeTaxUserData, StateBenefitsUserData, User}
+import org.scalamock.handlers.{CallHandler2, CallHandler3}
 import org.scalamock.scalatest.MockFactory
 import services.StateBenefitsService
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.Future
 
 trait MockStateBenefitsService extends MockFactory {
@@ -34,6 +35,21 @@ trait MockStateBenefitsService extends MockFactory {
                        result: Either[HttpParserError, IncomeTaxUserData]): CallHandler3[User, Int, HeaderCarrier, Future[Either[HttpParserError, IncomeTaxUserData]]] = {
     (mockStateBenefitsService.getPriorData(_: User, _: Int)(_: HeaderCarrier))
       .expects(user, taxYear, *)
+      .returning(Future.successful(result))
+  }
+
+  def mockGetUserSessionData(user: User,
+                             sessionDataId: UUID,
+                             result: Either[HttpParserError, StateBenefitsUserData]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[HttpParserError, StateBenefitsUserData]]] = {
+    (mockStateBenefitsService.getUserSessionData(_: User, _: UUID)(_: HeaderCarrier))
+      .expects(user, sessionDataId, *)
+      .returning(Future.successful(result))
+  }
+
+  def mockCreateOrUpdate(stateBenefitsUserData: StateBenefitsUserData,
+                         result: Either[HttpParserError, UUID]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, UUID]]] = {
+    (mockStateBenefitsService.createOrUpdate(_: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
 }

@@ -19,7 +19,7 @@ package support.providers
 import models.authorisation.SessionValues
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import support.builders.models.UserBuilder.aUser
+import support.builders.UserBuilder.aUser
 
 trait FakeRequestProvider {
 

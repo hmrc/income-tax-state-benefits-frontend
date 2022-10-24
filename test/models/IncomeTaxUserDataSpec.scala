@@ -17,12 +17,12 @@
 package models
 
 import support.UnitTest
-import support.builders.models.AllStateBenefitsDataBuilder.anAllStateBenefitsData
-import support.builders.models.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
-import support.builders.models.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.StateBenefitBuilder.aStateBenefit
-import support.builders.models.StateBenefitsDataBuilder.aStateBenefitsData
+import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
+import support.builders.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.StateBenefitBuilder.aStateBenefit
+import support.builders.StateBenefitsDataBuilder.aStateBenefitsData
 
 class IncomeTaxUserDataSpec extends UnitTest {
 

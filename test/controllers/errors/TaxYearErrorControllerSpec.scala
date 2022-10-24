@@ -21,7 +21,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentType, status}
 import support.ControllerUnitTest
-import support.builders.models.UserBuilder.aUser
+import support.builders.UserBuilder.aUser
 import support.mocks.{MockActionsProvider, MockAuthorisedAction}
 import views.html.templates.TaxYearErrorTemplate
 

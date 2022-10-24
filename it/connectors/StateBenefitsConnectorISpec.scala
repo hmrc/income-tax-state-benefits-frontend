@@ -22,12 +22,14 @@ import org.scalamock.scalatest.MockFactory
 import play.api.http.Status._
 import play.api.libs.json.Json
 import support.ConnectorIntegrationTest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.UserBuilder.aUser
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
+import support.builders.UserBuilder.aUser
 import support.mocks.MockPagerDutyLoggerService
 import support.providers.TaxYearProvider
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
@@ -40,7 +42,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
 
   private val underTest = new StateBenefitsConnector(httpClient, mockPagerDutyLoggerService, appConfigStub)
 
-  "StateBenefitsConnector" should {
+  ".getIncomeTaxUserData(...)" should {
     "Return a success result" when {
       "BE returns a 404" in {
         stubGetWithHeadersCheck(s"/prior-data/nino/${aUser.nino}/tax-year/$taxYear", NOT_FOUND, responseBody = "{}")
@@ -90,6 +92,78 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
 
         await(underTest.getIncomeTaxUserData(aUser, taxYear)) shouldBe Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("FAILED", "failed")))
       }
+    }
+  }
+
+  ".getUserSessionData(...)" should {
+    val sessionDataId = UUID.randomUUID()
+    "Return a success result" when {
+      "BE returns 200" in {
+        val expectedResponse = Json.toJson(aStateBenefitsUserData).toString()
+
+        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", OK, expectedResponse,
+          "X-Session-ID" -> aUser.sessionId, "mtditid" -> aUser.mtditid)
+
+        await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Right(aStateBenefitsUserData)
+      }
+    }
+
+    "Return an error result" when {
+      "submission returns a 200 but invalid json" in {
+        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", OK,
+          Json.toJson("""{"invalid": true}""").toString())
+        mockPagerDutyLog("GetUserSessionDataResponse")
+
+        await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError))
+      }
+
+      "BE returns a 404" in {
+        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", NOT_FOUND, responseBody = "{}")
+        mockPagerDutyLog("GetUserSessionDataResponse")
+
+        await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Left(ApiError(404, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
+      }
+
+      "submission returns a 500" in {
+        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", INTERNAL_SERVER_ERROR,
+          """{"code": "FAILED", "reason": "failed"}""")
+        mockPagerDutyLog("GetUserSessionDataResponse")
+
+        await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("FAILED", "failed")))
+      }
+
+      "submission returns a 503" in {
+        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", SERVICE_UNAVAILABLE,
+          """{"code": "FAILED", "reason": "failed"}""")
+        mockPagerDutyLog("GetUserSessionDataResponse")
+
+        await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Left(ApiError(SERVICE_UNAVAILABLE, SingleErrorBody("FAILED", "failed")))
+      }
+
+      "submission returns an unexpected result" in {
+        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", REQUEST_URI_TOO_LONG,
+          """{"code": "FAILED", "reason": "failed"}""")
+        mockPagerDutyLog("GetUserSessionDataResponse")
+
+        await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("FAILED", "failed")))
+      }
+    }
+  }
+
+  ".createOrUpdate(...)" should {
+    "Return a success result when BE returns 200" in {
+      val sessionDataId = UUID.randomUUID()
+
+      createUserSessionDataStub("/session-data", OK, responseBody = Json.toJson(sessionDataId).toString())
+
+      await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Right(sessionDataId)
+    }
+
+    "Return a Left/Failure when BE returns code different than 200" in {
+      createUserSessionDataStub("/session-data", NOT_FOUND, responseBody = "{}")
+      mockPagerDutyLog("CreateOrUpdateUserDataResponse")
+
+      await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
     }
   }
 }

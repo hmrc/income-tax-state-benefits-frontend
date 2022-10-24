@@ -18,11 +18,11 @@ package models
 
 import play.api.libs.json.{JsObject, JsValue, Json}
 import support.UnitTest
-import support.builders.models.AllStateBenefitsDataBuilder.anAllStateBenefitsData
-import support.builders.models.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
-import support.builders.models.CustomerAddedStateBenefitsDataBuilder.{aCustomerAddedStateBenefitsData, aCustomerAddedStateBenefitsDataJsValue}
-import support.builders.models.StateBenefitBuilder.aStateBenefit
-import support.builders.models.StateBenefitsDataBuilder.{aStateBenefitsData, aStateBenefitsDataJsValue}
+import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
+import support.builders.CustomerAddedStateBenefitsDataBuilder.{aCustomerAddedStateBenefitsData, aCustomerAddedStateBenefitsDataJsValue}
+import support.builders.StateBenefitBuilder.aStateBenefit
+import support.builders.StateBenefitsDataBuilder.{aStateBenefitsData, aStateBenefitsDataJsValue}
 
 import java.time.{Instant, LocalDate}
 import java.util.UUID

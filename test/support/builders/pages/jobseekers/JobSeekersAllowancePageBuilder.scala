@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package support.builders.models
+package support.builders.pages.jobseekers
 
-import models.IncomeTaxUserData
-import support.builders.models.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import models.pages.jobseekers.JobSeekersAllowancePage
+import support.builders.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
+import support.utils.TaxYearUtils.taxYear
 
-object IncomeTaxUserDataBuilder {
+object JobSeekersAllowancePageBuilder {
 
-  val anIncomeTaxUserData: IncomeTaxUserData =
-    IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))
+  val aJobSeekersAllowancePage: JobSeekersAllowancePage = JobSeekersAllowancePage(
+    taxYear = taxYear,
+    summaryListDataRows = Seq(aBenefitSummaryListRowData)
+  )
 }

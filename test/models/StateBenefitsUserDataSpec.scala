@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package support.builders.models.requests
+package models
 
-import models.requests.UserPriorDataRequest
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.UserBuilder.aUser
+import support.UnitTest
+import support.builders.UserBuilder.aUser
 
-object UserPriorDataRequestBuilder {
+class StateBenefitsUserDataSpec extends UnitTest {
 
-  val aUserPriorDataRequest: UserPriorDataRequest[AnyContentAsEmpty.type] = UserPriorDataRequest(
-    incomeTaxUserData = anIncomeTaxUserData,
-    user = aUser,
-    request = FakeRequest()
-  )
+  ".apply(...)" should {
+    "create correct StateBenefitsUserData instance" in {
+      val anyTaxYear = 2022
+
+      StateBenefitsUserData.apply(anyTaxYear, aUser) shouldBe StateBenefitsUserData(
+        id = None,
+        sessionId = aUser.sessionId,
+        mtdItId = aUser.mtditid,
+        nino = aUser.nino,
+        taxYear = anyTaxYear,
+        isPriorSubmission = false,
+        claim = None
+      )
+    }
+  }
 }

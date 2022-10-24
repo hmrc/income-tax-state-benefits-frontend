@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package support.builders.models
+package models
 
-import models.StateBenefit
-import support.utils.TaxYearUtils.taxYearEOY
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.{Instant, LocalDate}
 import java.util.UUID
 
-object StateBenefitBuilder {
+case class ClaimCYAModel(benefitId: Option[UUID] = None,
+                         startDate: LocalDate,
+                         endDate: Option[LocalDate] = None,
+                         dateIgnored: Option[Instant] = None,
+                         submittedOn: Option[Instant] = None,
+                         amount: Option[BigDecimal] = None,
+                         taxPaid: Option[BigDecimal] = None)
 
-  val aStateBenefit: StateBenefit = StateBenefit(
-    benefitId = UUID.fromString("a1e8057e-fbbc-47a8-a8b4-78d9f015c936"),
-    startDate = LocalDate.parse(s"${taxYearEOY - 1}-04-23"),
-    endDate = Some(LocalDate.parse(s"$taxYearEOY-08-13")),
-    dateIgnored = Some(Instant.parse(s"${taxYearEOY - 1}-07-08T05:23:00Z")),
-    submittedOn = Some(Instant.parse(s"$taxYearEOY-03-13T19:23:00Z")),
-    amount = Some(300.00),
-    taxPaid = Some(400.00)
-  )
+object ClaimCYAModel {
+  implicit val format: OFormat[ClaimCYAModel] = Json.format[ClaimCYAModel]
 }

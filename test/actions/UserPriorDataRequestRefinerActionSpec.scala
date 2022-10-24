@@ -21,8 +21,8 @@ import models.requests.UserPriorDataRequest
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.mvc.Results.InternalServerError
 import support.UnitTest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.requests.AuthorisationRequestBuilder.anAuthorisationRequest
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.requests.AuthorisationRequestBuilder.anAuthorisationRequest
 import support.mocks.{MockErrorHandler, MockStateBenefitsService}
 
 import scala.concurrent.ExecutionContext
@@ -43,7 +43,7 @@ class UserPriorDataRequestRefinerActionSpec extends UnitTest
   }
 
   ".refine" should {
-    "handle InternalServerError when when getting session data result in an error" in {
+    "handle InternalServerError when when getting prior data result in an error" in {
       mockGetPriorData(anAuthorisationRequest.user, anyTaxYear, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 

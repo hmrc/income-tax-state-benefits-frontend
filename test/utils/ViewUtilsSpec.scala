@@ -40,13 +40,13 @@ class ViewUtilsSpec extends UnitTest
     override def asJava: i18n.Messages = throw new NotImplementedError
   }
 
-  "bigDecimalCurrency" should {
+  ".bigDecimalCurrency" should {
     "Place comma in appropriate place when given amount over 999" in {
       ViewUtils.bigDecimalCurrency("45000.10") shouldBe "£45,000.10"
     }
   }
 
-  "translatedDateFormatter" should {
+  ".translatedDateFormatter" should {
     "translate date" in {
       ViewUtils.translatedDateFormatter(LocalDate.parse("2002-01-01"))(messages = messages) shouldBe "1 January 2002"
     }

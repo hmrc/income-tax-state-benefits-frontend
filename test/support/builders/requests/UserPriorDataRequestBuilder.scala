@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package support.builders.models.requests
+package support.builders.requests
 
-import models.requests.AuthorisationRequest
-import play.api.mvc.AnyContentAsEmpty
+import models.requests.UserPriorDataRequest
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import support.builders.models.UserBuilder.aUser
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.UserBuilder.aUser
 
-object AuthorisationRequestBuilder {
+object UserPriorDataRequestBuilder {
 
-  val anAuthorisationRequest: AuthorisationRequest[AnyContentAsEmpty.type] = AuthorisationRequest(
+  val aUserPriorDataRequest: UserPriorDataRequest[AnyContent] = UserPriorDataRequest(
+    incomeTaxUserData = anIncomeTaxUserData,
     user = aUser,
     request = FakeRequest()
   )

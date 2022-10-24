@@ -17,18 +17,18 @@
 package support
 
 import config.AppConfig
-import models.requests.{AuthorisationRequest, UserPriorDataRequest}
+import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContent
 import play.api.test.Injecting
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.UserBuilder.aUser
-import support.builders.models.requests.AuthorisationRequestBuilder.anAuthorisationRequest
+import support.builders.UserBuilder.anAgentUser
+import support.builders.requests.AuthorisationRequestBuilder.anAuthorisationRequest
+import support.builders.requests.UserPriorDataRequestBuilder.aUserPriorDataRequest
+import support.builders.requests.UserSessionDataRequestBuilder.aUserSessionDataRequest
 import support.helpers.{UserScenarios, ViewHelper}
 import support.providers.{FakeRequestProvider, TaxYearProvider}
 import support.stubs.AppConfigStub
-import uk.gov.hmrc.auth.core.AffinityGroup
 
 trait ViewUnitTest extends UnitTest
   with UserScenarios
@@ -44,8 +44,7 @@ trait ViewUnitTest extends UnitTest
   protected lazy val defaultMessages: Messages = messagesApi.preferred(fakeRequest)
   protected lazy val welshMessages: Messages = messagesApi.preferred(Seq(Lang("cy")))
 
-  protected lazy val agentUserRequest: AuthorisationRequest[AnyContent] =
-    anAuthorisationRequest.copy[AnyContent](aUser.copy(arn = Some("arn"), affinityGroup = AffinityGroup.Agent.toString))
+  protected lazy val agentUserRequest: AuthorisationRequest[AnyContent] = anAuthorisationRequest.copy(user = anAgentUser)
 
   protected def getMessages(isWelsh: Boolean): Messages = if (isWelsh) welshMessages else defaultMessages
 
@@ -53,9 +52,8 @@ trait ViewUnitTest extends UnitTest
     if (isAgent) agentUserRequest else anAuthorisationRequest.copy[AnyContent]()
 
   protected def getUserPriorDataRequest(isAgent: Boolean): UserPriorDataRequest[AnyContent] =
-    if (isAgent) {
-      UserPriorDataRequest(anIncomeTaxUserData, agentUserRequest.user, agentUserRequest.request)
-    } else {
-      UserPriorDataRequest(anIncomeTaxUserData, anAuthorisationRequest.user, anAuthorisationRequest.request)
-    }
+    if (isAgent) aUserPriorDataRequest.copy(user = anAgentUser, request = agentUserRequest.request) else aUserPriorDataRequest
+
+  protected def getUserSessionDataRequest(isAgent: Boolean): UserSessionDataRequest[AnyContent] =
+    if (isAgent) aUserSessionDataRequest.copy(user = anAgentUser, request = agentUserRequest.request) else aUserSessionDataRequest
 }

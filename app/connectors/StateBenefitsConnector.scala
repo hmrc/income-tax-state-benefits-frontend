@@ -18,11 +18,12 @@ package connectors
 
 import config.AppConfig
 import connectors.errors.ApiError
-import connectors.responses.GetIncomeTaxUserDataResponse
-import models.{IncomeTaxUserData, User}
+import connectors.responses.{CreateOrUpdateUserDataResponse, GetIncomeTaxUserDataResponse, GetUserSessionDataResponse}
+import models.{IncomeTaxUserData, StateBenefitsUserData, User}
 import services.PagerDutyLoggerService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,9 +41,41 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     }
   }
 
+  def getUserSessionData(user: User, sessionDataId: UUID)
+                        (implicit hc: HeaderCarrier): Future[Either[ApiError, StateBenefitsUserData]] = {
+    val response = getUserSessionData(sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
+
+    response.map { response: GetUserSessionDataResponse =>
+      if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
+      response.result
+    }
+  }
+
+  def createOrUpdate(stateBenefitsUserData: StateBenefitsUserData)
+                    (implicit hc: HeaderCarrier): Future[Either[ApiError, UUID]] = {
+    val response = createOrUpdateData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
+
+    response.map { response: CreateOrUpdateUserDataResponse =>
+      if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
+      response.result
+    }
+  }
+
   private def getIncomeTaxUserData(taxYear: Int, nino: String)
                                   (implicit hc: HeaderCarrier): Future[GetIncomeTaxUserDataResponse] = {
     val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/prior-data/nino/$nino/tax-year/$taxYear"
     httpClient.GET[GetIncomeTaxUserDataResponse](stateBenefitsBEUrl)
+  }
+
+  private def getUserSessionData(sessionDataId: UUID)
+                                (implicit hc: HeaderCarrier): Future[GetUserSessionDataResponse] = {
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/$sessionDataId"
+    httpClient.GET[GetUserSessionDataResponse](stateBenefitsBEUrl)
+  }
+
+  private def createOrUpdateData(stateBenefitsUserData: StateBenefitsUserData)
+                                (implicit hc: HeaderCarrier): Future[CreateOrUpdateUserDataResponse] = {
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data"
+    httpClient.POST[StateBenefitsUserData, CreateOrUpdateUserDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
   }
 }

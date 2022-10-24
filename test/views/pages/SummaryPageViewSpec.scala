@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.models.pages.SummaryPageBuilder.aSummaryPage
+import support.builders.pages.SummaryPageBuilder.aSummaryPage
 import views.html.pages.SummaryPageView
 
 class SummaryPageViewSpec extends ViewUnitTest {

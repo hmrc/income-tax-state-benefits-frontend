@@ -19,7 +19,7 @@ package controllers
 import play.api.http.Status.OK
 import play.api.test.Helpers.{contentType, status}
 import support.ControllerUnitTest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.mocks.MockActionsProvider
 import views.html.pages.SummaryPageView
 

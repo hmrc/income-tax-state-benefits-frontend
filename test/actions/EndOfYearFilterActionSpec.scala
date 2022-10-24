@@ -18,7 +18,7 @@ package actions
 
 import play.api.mvc.Results.Redirect
 import support.UnitTest
-import support.builders.models.requests.AuthorisationRequestBuilder.anAuthorisationRequest
+import support.builders.requests.AuthorisationRequestBuilder.anAuthorisationRequest
 import support.providers.{AppConfigStubProvider, TaxYearProvider}
 import utils.InYearUtil
 

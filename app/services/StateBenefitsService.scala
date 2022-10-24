@@ -23,6 +23,7 @@ import models.errors.HttpParserError
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,6 +35,22 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
     stateBenefitsConnector.getIncomeTaxUserData(user = user, taxYear = taxYear).map {
       case Left(error: ApiError) => Left(HttpParserError(error.status))
       case Right(incomeTaxUserData) => Right(incomeTaxUserData)
+    }
+  }
+
+  def getUserSessionData(user: User, sessionDataId: UUID)
+                        (implicit hc: HeaderCarrier): Future[Either[HttpParserError, StateBenefitsUserData]] = {
+    stateBenefitsConnector.getUserSessionData(user, sessionDataId).map {
+      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Right(stateBenefitsUserData) => Right(stateBenefitsUserData)
+    }
+  }
+
+  def createOrUpdate(stateBenefitsUserData: StateBenefitsUserData)
+                    (implicit hc: HeaderCarrier): Future[Either[HttpParserError, UUID]] = {
+    stateBenefitsConnector.createOrUpdate(stateBenefitsUserData).map {
+      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Right(uuid) => Right(uuid)
     }
   }
 }

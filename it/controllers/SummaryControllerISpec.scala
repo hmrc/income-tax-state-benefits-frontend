@@ -20,8 +20,8 @@ import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
-import support.builders.models.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.builders.models.UserBuilder.aUser
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.UserBuilder.aUser
 
 class SummaryControllerISpec extends IntegrationTest {
 
@@ -43,7 +43,7 @@ class SummaryControllerISpec extends IntegrationTest {
     "render the contractor summary page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userDataStub(anIncomeTaxUserData, aUser.nino, taxYearEOY)
+        userPriorDataStub(anIncomeTaxUserData, aUser.nino, taxYearEOY)
         urlGet(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 

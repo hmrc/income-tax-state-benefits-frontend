@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-package support.builders.models.pages.jobseekers.elements
+package forms
 
-import models.pages.elements.BenefitSummaryListRowData
-import support.utils.TaxYearUtils.taxYearEOY
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
+import scala.util.Try
 
-object BenefitSummaryListRowDataBuilder {
+case class DateFormData(day: String,
+                        month: String,
+                        year: String) {
 
-  val aBenefitSummaryListRowData: BenefitSummaryListRowData = BenefitSummaryListRowData(
-    amount = Some(100.00),
-    startDate = LocalDate.parse(s"$taxYearEOY-01-01"),
-    endDate = LocalDate.parse(s"$taxYearEOY-04-05"),
-    isIgnored = false
+  def toLocalDate: Option[LocalDate] = Try(LocalDate.of(year.toInt, month.toInt, day.toInt)).toOption
+}
+
+object DateFormData {
+  implicit val format: OFormat[DateFormData] = Json.format[DateFormData]
+
+  def apply(localDate: LocalDate): DateFormData = DateFormData(
+    day = localDate.getDayOfMonth.toString,
+    month = localDate.getMonthValue.toString,
+    year = localDate.getYear.toString
   )
 }
+
+
+
+

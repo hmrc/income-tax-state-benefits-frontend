@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package support.builders.models
+package support.builders
 
 import models.CustomerAddedStateBenefitsData
 import play.api.libs.json.{JsValue, Json}
-import support.builders.models.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
+import CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
 
 object CustomerAddedStateBenefitsDataBuilder {
 
