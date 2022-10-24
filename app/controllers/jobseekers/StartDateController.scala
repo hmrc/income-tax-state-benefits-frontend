@@ -48,7 +48,7 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     val newForm = dateForm().bindFromRequest()
-    newForm.copy(errors = DateForm.validateStartDate(newForm.get, taxYear, request.user.isAgent)).fold(
+    newForm.copy(errors = DateForm.validate(newForm.get, taxYear, request.user.isAgent)).fold(
       formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       formData => claimService.updateStartDate(request.stateBenefitsUserData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()

@@ -39,16 +39,4 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
       case Right(uuid) => Right(uuid)
     }
   }
-
-  def updateEndDate(stateBenefitsUserData: StateBenefitsUserData,
-                    endDate: LocalDate)
-                   (implicit hc: HeaderCarrier): Future[Either[Unit, UUID]] = {
-    val updatedClaim = stateBenefitsUserData.claim.map(_.copy(endDate = Some(endDate)))
-    val updatedUserData = stateBenefitsUserData.copy(claim = updatedClaim)
-
-    stateBenefitsService.createOrUpdate(updatedUserData).map {
-      case Left(_) => Left(())
-      case Right(uuid) => Right(uuid)
-    }
-  }
 }

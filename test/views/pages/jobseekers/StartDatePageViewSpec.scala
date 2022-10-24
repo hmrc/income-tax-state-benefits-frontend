@@ -144,7 +144,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
         val form = DateForm.dateForm().bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
-        val newForm = form.copy(errors = DateForm.validateStartDate(form.get, taxYearEOY, userScenario.isAgent))
+        val newForm = form.copy(errors = DateForm.validate(form.get, taxYearEOY, userScenario.isAgent))
         val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = newForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -160,7 +160,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
         val form = DateForm.dateForm().bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYearEOY.toString))
-        val newForm = form.copy(errors = DateForm.validateStartDate(form.get, taxYearEOY, userScenario.isAgent))
+        val newForm = form.copy(errors = DateForm.validate(form.get, taxYearEOY, userScenario.isAgent))
         val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = newForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 

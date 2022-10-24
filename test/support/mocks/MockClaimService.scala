@@ -37,12 +37,4 @@ trait MockClaimService extends MockFactory {
       .expects(stateBenefitsUserData, startDate, *)
       .returning(Future.successful(result))
   }
-
-  def mockUpdateEndDate(stateBenefitsUserData: StateBenefitsUserData,
-                        endDate: LocalDate,
-                        result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, UUID]]] = {
-    (mockClaimService.updateEndDate(_: StateBenefitsUserData, _: LocalDate)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, endDate, *)
-      .returning(Future.successful(result))
-  }
 }

@@ -55,14 +55,6 @@ jobseekers.startDatePage.invalid.date.error.individual = Enter the date you star
 jobseekers.startDatePage.mustBeSameAsOrBefore.date.error.agent = The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
 jobseekers.startDatePage.mustBeSameAsOrBefore.date.error.individual = The date you started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
 
-#################       Jobseeker’s Allowance - End Date Page       ########################################
-jobseekers.endDatePage.title = When did this claim end?
-jobseekers.endDatePage.invalid.date.error = Enter the date the Jobseeker’s Allowance claim ended
-jobseekers.endDatePage.mustBeEndOfYear.date.error.agent = The date your client’s Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
-jobseekers.endDatePage.mustBeEndOfYear.date.error.individual = The date your Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
-jobseekers.endDatePage.mustBeAfterStartDate.date.error.agent = The date your client’s Jobseeker’s Allowance claim ended must be after {0}
-jobseekers.endDatePage.mustBeAfterStartDate.date.error.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
-
 #################       Error messages        ########################################
 
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use

@@ -48,7 +48,7 @@ class StartDatePageSpec extends UnitTest
 
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = dateForm().bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYearEOY.toString))
-      val newFormWithErrors = formWithErrors.copy(errors = DateForm.validateStartDate(formWithErrors.get, taxYearEOY, isAgent = false))
+      val newFormWithErrors = formWithErrors.copy(errors = DateForm.validate(formWithErrors.get, taxYearEOY, isAgent = false))
 
       StartDatePage.apply(taxYear, aStateBenefitsUserData, newFormWithErrors) shouldBe StartDatePage(
         taxYear = taxYear,
