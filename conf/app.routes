@@ -23,6 +23,8 @@ GET         /:taxYear/jobseekers-allowance/claims                               
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/start-date            controllers.jobseekers.StartDateController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/start-date            controllers.jobseekers.StartDateController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
+GET         /:taxYear/jobseekers-allowance/:sessionDataId/end-date              controllers.jobseekers.EndDateController.show(taxYear: Int, sessionDataId: java.util.UUID)
+POST        /:taxYear/jobseekers-allowance/:sessionDataId/end-date              controllers.jobseekers.EndDateController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
 ###########################     UserSessionData Controller Endpoints     ###########################
 POST         /:taxYear/session-data         controllers.session.UserSessionDataController.create(taxYear: Int)
