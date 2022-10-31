@@ -91,7 +91,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 
-      "render page with filled in form using selected 'Yes' value" ignore {
+      "render page with filled in form using selected 'Yes' value" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
@@ -102,7 +102,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = true)
       }
 
-      "render page with empty selection error" ignore {
+      "render page with empty selection error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 

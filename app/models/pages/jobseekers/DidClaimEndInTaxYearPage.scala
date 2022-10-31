@@ -32,7 +32,7 @@ object DidClaimEndInTaxYearPage {
             form: Form[Boolean]): DidClaimEndInTaxYearPage = {
     DidClaimEndInTaxYearPage(
       taxYear = taxYear,
-      stateBenefitsUserData.id.get,
+      stateBenefitsUserData.sessionDataId.get,
       form = form)
   }
 }

@@ -27,6 +27,7 @@ object ClaimCYAModelBuilder {
   val aClaimCYAModel: ClaimCYAModel = ClaimCYAModel(
     benefitId = Some(UUID.fromString("e80d4871-ede8-4b81-93b1-b73ad4fbfd42")),
     startDate = LocalDate.parse(s"${taxYearEOY - 1}-04-23"),
+    endDateQuestion = Some(true),
     endDate = Some(LocalDate.parse(s"$taxYearEOY-08-13")),
     dateIgnored = Some(Instant.parse(s"${taxYearEOY - 1}-07-08T05:23:00Z")),
     submittedOn = Some(Instant.parse(s"$taxYearEOY-03-13T19:23:00Z")),

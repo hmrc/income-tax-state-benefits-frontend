@@ -23,6 +23,7 @@ import java.util.UUID
 
 case class ClaimCYAModel(benefitId: Option[UUID] = None,
                          startDate: LocalDate,
+                         endDateQuestion: Option[Boolean] = None,
                          endDate: Option[LocalDate] = None,
                          dateIgnored: Option[Instant] = None,
                          submittedOn: Option[Instant] = None,

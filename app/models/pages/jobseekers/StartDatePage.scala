@@ -36,7 +36,7 @@ object StartDatePage {
 
     StartDatePage(
       taxYear = taxYear,
-      stateBenefitsUserData.id.get,
+      stateBenefitsUserData.sessionDataId.get,
       form = optStartDate.fold(form)(localDate => if (form.hasErrors) form else form.fill(DateFormData(localDate)))
     )
   }

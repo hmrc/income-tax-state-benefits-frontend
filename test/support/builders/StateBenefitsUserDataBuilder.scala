@@ -26,7 +26,7 @@ import java.util.UUID
 object StateBenefitsUserDataBuilder {
 
   val aStateBenefitsUserData: StateBenefitsUserData = StateBenefitsUserData(
-    id = Some(UUID.fromString("558238ef-d2ff-4839-bd6d-307324d6fe37")),
+    sessionDataId = Some(UUID.fromString("558238ef-d2ff-4839-bd6d-307324d6fe37")),
     sessionId = aUser.sessionId,
     mtdItId = aUser.mtditid,
     nino = aUser.nino,

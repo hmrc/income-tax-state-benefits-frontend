@@ -31,7 +31,7 @@ class StartDatePageSpec extends UnitTest
     "return page with pre-filled form when start date is preset" in {
       StartDatePage.apply(taxYear, aStateBenefitsUserData, pageForm) shouldBe StartDatePage(
         taxYear = taxYear,
-        sessionDataId = aStateBenefitsUserData.id.get,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = pageForm.fill(value = DateFormData(aStateBenefitsUserData.claim.get.startDate)),
       )
     }
@@ -41,7 +41,7 @@ class StartDatePageSpec extends UnitTest
 
       StartDatePage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe StartDatePage(
         taxYear = taxYear,
-        sessionDataId = stateBenefitsUserData.id.get,
+        sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm,
       )
     }
@@ -52,7 +52,7 @@ class StartDatePageSpec extends UnitTest
 
       StartDatePage.apply(taxYear, aStateBenefitsUserData, newFormWithErrors) shouldBe StartDatePage(
         taxYear = taxYear,
-        sessionDataId = aStateBenefitsUserData.id.get,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = newFormWithErrors.fill(value = formWithErrors.get),
       )
     }
