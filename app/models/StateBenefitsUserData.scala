@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.util.UUID
 
-case class StateBenefitsUserData(id: Option[UUID] = None,
+case class StateBenefitsUserData(sessionDataId: Option[UUID] = None,
                                  sessionId: String,
                                  mtdItId: String,
                                  nino: String,
@@ -32,7 +32,7 @@ object StateBenefitsUserData {
   implicit val format: OFormat[StateBenefitsUserData] = Json.format[StateBenefitsUserData]
 
   def apply(taxYear: Int, user: User): StateBenefitsUserData = StateBenefitsUserData(
-    id = None,
+    sessionDataId = None,
     sessionId = user.sessionId,
     mtdItId = user.mtditid,
     nino = user.nino,

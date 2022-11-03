@@ -26,7 +26,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
       val anyTaxYear = 2022
 
       StateBenefitsUserData.apply(anyTaxYear, aUser) shouldBe StateBenefitsUserData(
-        id = None,
+        sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,
         nino = aUser.nino,
