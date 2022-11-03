@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package models.pages.jobseekers
 
+import models.StateBenefitsUserData
 import play.api.data.Form
 
-import javax.inject.Singleton
+import java.util.UUID
 
-@Singleton
-class FormsProvider() {
+case class TaxTakenOffPage(taxYear: Int,
+                      sessionDataId: UUID,
+                      form: Form[Boolean])
 
-  def endDateYesNoForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
-    missingInputError = "jobseekers.didClaimEndInTaxYear.error", Seq(taxYear.toString)
-  )
+object TaxTakenOffPage {
 
-  def jsaAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
-    emptyFieldKey = "jobseekers.amountPage.empty.amount.error"
-  )
-  def taxTakenOffForm(isAgent: Boolean): Form[Boolean] = YesNoForm.yesNoForm(
-    s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}")
-
+  def apply(taxYear: Int,
+            stateBenefitsUserData: StateBenefitsUserData,
+            form: Form[Boolean]): TaxTakenOffPage = {
+    TaxTakenOffPage (
+      taxYear = taxYear,
+      stateBenefitsUserData.id.get,
+      form = form)
+  }
 }

@@ -80,6 +80,14 @@ jobseekers.amountPage.textbox.label = Amount of Jobseeker’s allowance
 jobseekers.amountPage.textbox.hint = For Example, £123.56
 jobseekers.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
 
+#################       Jobseeker’s Allowance - Tax Taken Off Page        ########################################
+jobseekers.taxTakenOff.title.agent = Did your client have any tax taken off their Jobseeker's Allowance between {0} and {1}?
+jobseekers.taxTakenOff.title.individual = Did you have any tax taken off your Jobseeker's Allowance between {0} and {1}?
+jobseekers.taxTakenOff.error.agent = Select yes if your client had any tax taken off their Jobseeker's Allowance between {0} and {1}
+jobseekers.taxTakenOff.error.individual = Select yes if you had any tax taken off your Jobseeker's Allowance between {0} and {1}
+jobseekers.taxTakenOff.hint.agent = This amount will be on the P45 your client got after their claim ended.
+jobseekers.taxTakenOff.hint.individual = This amount will be on the P45 you got after your claim ended.
+
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use
 common.error.self-assessment.paragraph.1.2 = Self Assessment: general enquiries
