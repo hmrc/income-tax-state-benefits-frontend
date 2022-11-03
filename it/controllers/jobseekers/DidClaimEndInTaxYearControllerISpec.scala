@@ -16,12 +16,13 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{AmountController, DidClaimEndInTaxYearController, EndDateController}
+import controllers.jobseekers.routes.{AmountController, EndDateController}
 import forms.YesNoForm
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 
 import java.util.UUID
@@ -70,9 +71,11 @@ class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
     }
 
     "redirect to End Date page when answer is Yes" in {
+      val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(true))
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), sessionDataId)
         val formData = Map(YesNoForm.yesNo -> "true")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
@@ -82,9 +85,11 @@ class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
     }
 
     "redirect To amount page when answer is No" in {
+      val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None)
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), sessionDataId)
         val formData = Map(YesNoForm.yesNo -> "false")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }

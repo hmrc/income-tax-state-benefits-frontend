@@ -64,6 +64,30 @@ class ClaimServiceSpec extends UnitTest
     }
   }
 
+  ".updateEndDateQuestion" should {
+    "update claim with updateEndDateQuestion and endDate set to None when updateEndDateQuestion is false" in {
+      val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate))))
+
+      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None))), Right(sessionDataId))
+
+      await(underTest.updateEndDateQuestion(userData, question = false)) shouldBe Right(sessionDataId)
+    }
+
+    "update claim with updateEndDateQuestion and endDate unchanged when updateEndDateQuestion is true" in {
+      val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate))))
+
+      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(true), endDate = Some(endDate)))), Right(sessionDataId))
+
+      await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(sessionDataId)
+    }
+
+    "return Left when createOrUpdate fails" in {
+      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(true)))), Left(HttpParserError(BAD_REQUEST)))
+
+      await(underTest.updateEndDateQuestion(aStateBenefitsUserData, question = true)) shouldBe Left(())
+    }
+  }
+
   ".updateEndDate" should {
     "update claim with endDate when claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(LocalDate.of(2022, 2, 2)))))

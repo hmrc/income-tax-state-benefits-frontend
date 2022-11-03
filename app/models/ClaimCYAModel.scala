@@ -28,6 +28,7 @@ case class ClaimCYAModel(benefitId: Option[UUID] = None,
                          dateIgnored: Option[Instant] = None,
                          submittedOn: Option[Instant] = None,
                          amount: Option[BigDecimal] = None,
+                         taxPaidQuestion: Option[Boolean] = None,
                          taxPaid: Option[BigDecimal] = None)
 
 object ClaimCYAModel {

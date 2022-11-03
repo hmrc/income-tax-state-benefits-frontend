@@ -32,6 +32,7 @@ object ClaimCYAModelBuilder {
     dateIgnored = Some(Instant.parse(s"${taxYearEOY - 1}-07-08T05:23:00Z")),
     submittedOn = Some(Instant.parse(s"$taxYearEOY-03-13T19:23:00Z")),
     amount = Some(300.00),
+    taxPaidQuestion = Some(true),
     taxPaid = Some(400.00)
   )
 }
