@@ -135,6 +135,20 @@ trait ViewHelper {
     }
   }
 
+  def amountBoxLabelCheck(text: String)(implicit document: Document): Unit = {
+    s"has the text $text in the amount box label" in {
+      val selector = "#main-content > div > div > form > div > label"
+      document.select(selector).text() shouldBe text
+    }
+  }
+
+  def amountBoxHintCheck(text: String)(implicit document: Document): Unit = {
+    s"has the text $text in the amount box hint" in {
+      val selector = "#amount-hint"
+      document.select(selector).text() shouldBe text
+    }
+  }
+
   def linkCheck(text: String, selector: String, href: String, hiddenTextSelector: Option[String] = None,
                 isExactUrlMatch: Boolean = true, additionalTestText: String = "")(implicit document: Document): Unit = {
     s"have a $text link $additionalTestText" which {
@@ -214,6 +228,19 @@ trait ViewHelper {
         val selector = if (id.isDefined) s"#${id.get}-error" else ".govuk-error-message"
         document.select(selector).text() shouldBe s"Error: $text"
       }
+    }
+  }
+
+  def checkMessagesAreUnique(initial: List[(String, String)], keysToExplore: List[(String, String)], result: Set[String]): Set[String] = {
+    keysToExplore match {
+      case Nil => result
+      case head :: tail =>
+        val (currentMessageKey, currentMessage) = (head._1, head._2)
+        val duplicate = initial.collect {
+          case (messageKey, message) if currentMessageKey != messageKey && currentMessage == message => currentMessageKey
+        }.toSet
+
+        checkMessagesAreUnique(initial, tail, duplicate ++ result)
     }
   }
 

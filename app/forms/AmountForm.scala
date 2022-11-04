@@ -17,7 +17,7 @@
 package forms
 
 import forms.validation.mappings.MappingUtil.currency
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 
 object AmountForm {
 

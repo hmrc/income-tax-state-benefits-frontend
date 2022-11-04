@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, EndDateController}
+import controllers.jobseekers.routes.{AmountController, DidClaimEndInTaxYearController, EndDateController}
 import forms.{FormsProvider, YesNoForm}
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, OK}
@@ -70,16 +70,16 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
-      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe
-        Redirect(EndDateController.show(taxYearEOY, sessionDataId))
+
+      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(EndDateController.show(taxYearEOY, sessionDataId))
     }
 
-    "redirect To Same (for now... it will be updated) page when No is submitted" in {
+    "redirect To Amount page when No is submitted" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
-      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe
-        Redirect(DidClaimEndInTaxYearController.show(taxYearEOY, sessionDataId))
+
+      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(AmountController.show(taxYearEOY, sessionDataId))
     }
   }
 }

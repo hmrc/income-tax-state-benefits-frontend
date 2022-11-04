@@ -36,6 +36,7 @@ class ClaimServiceSpec extends UnitTest
 
   private val sessionDataId = UUID.randomUUID()
   private val startDate = LocalDate.now()
+  private val endDate = LocalDate.now()
 
   private val underTest = new ClaimService(mockStateBenefitsService)
 
@@ -60,6 +61,38 @@ class ClaimServiceSpec extends UnitTest
       mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(startDate = startDate))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateStartDate(aStateBenefitsUserData, startDate)) shouldBe Left(())
+    }
+  }
+
+  ".updateEndDate" should {
+    "update claim with endDate when claim exists" in {
+      val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(LocalDate.of(2022, 2, 2)))))
+
+      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate)))), Right(sessionDataId))
+
+      await(underTest.updateEndDate(userData, endDate)) shouldBe Right(sessionDataId)
+    }
+
+    "return Left when createOrUpdate fails" in {
+      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate)))), Left(HttpParserError(BAD_REQUEST)))
+
+      await(underTest.updateEndDate(aStateBenefitsUserData, endDate)) shouldBe Left(())
+    }
+  }
+
+  ".updateAmount" should {
+    "update claim with amount when claim exists" in {
+      val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(100))))
+
+      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(200)))), Right(sessionDataId))
+
+      await(underTest.updateAmount(userData, 200)) shouldBe Right(sessionDataId)
+    }
+
+    "return Left when createOrUpdate fails" in {
+      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
+
+      await(underTest.updateAmount(aStateBenefitsUserData, amount = 100)) shouldBe Left(())
     }
   }
 }

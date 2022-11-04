@@ -18,43 +18,41 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.{AmountController, EndDateController}
-import forms.DateForm
-import forms.DateForm.dateForm
-import models.pages.jobseekers.EndDatePage
+import controllers.jobseekers.routes.AmountController
+import forms.FormsProvider
+import models.pages.jobseekers.AmountPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
-import views.html.pages.jobseekers.EndDatePageView
+import views.html.pages.jobseekers.AmountPageView
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EndDateController @Inject()(actionsProvider: ActionsProvider,
-                                  pageView: EndDatePageView,
-                                  claimService: ClaimService,
-                                  errorHandler: ErrorHandler)
-                                 (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
+class AmountController @Inject()(actionsProvider: ActionsProvider,
+                                 formsProvider: FormsProvider,
+                                 pageView: AmountPageView,
+                                 claimService: ClaimService,
+                                 errorHandler: ErrorHandler)
+                                (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(EndDatePage(taxYear, request.stateBenefitsUserData, dateForm())))
+  def show(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+    Ok(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formsProvider.jsaAmountForm())))
   }
 
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    val newForm = dateForm().bindFromRequest()
-    val sessionData = request.stateBenefitsUserData
-    newForm.copy(errors = DateForm.validateEndDate(newForm.get, taxYear, request.user.isAgent, sessionData.claim.get.startDate)).fold(
-      formWithErrors => Future.successful(BadRequest(pageView(EndDatePage(taxYear, sessionData, formWithErrors)))),
-      formData => claimService.updateEndDate(sessionData, formData.toLocalDate.get).map {
+    formsProvider.jsaAmountForm().bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
+      amount => claimService.updateAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(uuid) => Redirect(AmountController.show(taxYear, uuid))
       }
     )
   }
 }
+

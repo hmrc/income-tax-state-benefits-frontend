@@ -101,7 +101,9 @@ object DateForm extends InputFilters {
       .filter(_.isAfter(LocalDate.of(taxYear - 1, APRIL, SIX - 1)))
       .filter(_.isBefore(LocalDate.of(taxYear, APRIL, SIX)))
       .map(_ => Seq())
-      .getOrElse(Seq(FormError(s"mustBeEndOfYear", s"jobseekers.endDatePage.mustBeEndOfYear.date.error.$isAgentSuffix", Seq((taxYear - 1).toString, taxYear.toString))))
+      .getOrElse(Seq(
+        FormError(s"mustBeEndOfYear", s"jobseekers.endDatePage.mustBeEndOfYear.date.error.$isAgentSuffix", Seq((taxYear - 1).toString, taxYear.toString))
+      ))
   }
 
   def validateEndDateIsAfterStartDate(dateFormData: DateFormData,

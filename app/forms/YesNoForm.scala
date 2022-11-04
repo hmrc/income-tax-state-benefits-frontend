@@ -40,9 +40,6 @@ object YesNoForm {
   }
 
   def yesNoForm(missingInputError: String, errorArgs: Seq[Any] = Seq.empty): Form[Boolean] = Form(
-    single(
-      yesNo -> of(formatter(missingInputError, errorArgs))
-    )
+    single(yesNo -> of(formatter(missingInputError, errorArgs)))
   )
-
 }

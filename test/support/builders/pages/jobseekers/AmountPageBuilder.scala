@@ -17,16 +17,20 @@
 package support.builders.pages.jobseekers
 
 import forms.FormsProvider
-import models.pages.jobseekers.DidClaimEndInTaxYearPage
+import models.pages.jobseekers.AmountPage
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.utils.TaxYearUtils.taxYearEOY
 
+import java.time.LocalDate
 import java.util.UUID
 
-object DidClaimEndInTaxYearPageBuilder {
+object AmountPageBuilder {
 
-  val aDidClaimEndInTaxYearPage: DidClaimEndInTaxYearPage = DidClaimEndInTaxYearPage(
+  val anAmountPage: AmountPage = AmountPage(
+    titleFirstDate = LocalDate.parse(s"$taxYearEOY-04-23"),
+    titleSecondDate = aClaimCYAModel.endDate.get,
     taxYear = taxYearEOY,
     sessionDataId = UUID.randomUUID(),
-    form = new FormsProvider().endDateYesNoForm(taxYearEOY)
+    form = new FormsProvider().jsaAmountForm()
   )
 }

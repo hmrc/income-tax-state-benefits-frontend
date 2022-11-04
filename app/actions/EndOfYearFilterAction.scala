@@ -21,18 +21,18 @@ import models.requests.AuthorisationRequest
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import utils.InYearUtil
+import utils.InYearUtil.inYear
 
 import scala.concurrent.{ExecutionContext, Future}
 
 case class EndOfYearFilterAction(taxYear: Int,
-                                 inYearUtil: InYearUtil,
                                  appConfig: AppConfig)
                                 (implicit ec: ExecutionContext) extends ActionFilter[AuthorisationRequest] {
 
   override protected[actions] def executionContext: ExecutionContext = ec
 
   override protected[actions] def filter[A](request: AuthorisationRequest[A]): Future[Option[Result]] = Future.successful {
-    if (inYearUtil.inYear(taxYear)) {
+    if (inYear(taxYear)) {
       Some(Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
     } else {
       None

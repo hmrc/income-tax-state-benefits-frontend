@@ -45,7 +45,6 @@ class ActionsProviderSpec extends ControllerUnitTest
   private val actionsProvider = new ActionsProvider(
     mockAuthorisedAction,
     mockStateBenefitsService,
-    new InYearUtil(),
     mockErrorHandler,
     appConfig
   )
