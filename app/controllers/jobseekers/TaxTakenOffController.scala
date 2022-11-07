@@ -42,12 +42,12 @@ class TaxTakenOffController @Inject()(actionsProvider: ActionsProvider,
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formsProvider.taxTakenOffForm(request.user.isAgent))))
+    Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formsProvider.taxTakenOffForm(request.user.isAgent, taxYear))))
   }
 
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    formsProvider.taxTakenOffForm(request.user.isAgent).bindFromRequest().fold(
+    formsProvider.taxTakenOffForm(request.user.isAgent, taxYear).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       yesNoAnswer => if (yesNoAnswer) {
         Future(Redirect(TaxTakenOffController.show(taxYear, sessionDataId)))

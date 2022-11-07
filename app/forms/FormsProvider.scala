@@ -37,6 +37,6 @@ class FormsProvider() {
     emptyFieldKey = "jobseekers.amountPage.empty.amount.error"
   )
 
-  def taxTakenOffForm(isAgent: Boolean): Form[Boolean] = YesNoForm.yesNoForm(
-    s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}")
+  def taxTakenOffForm(isAgent: Boolean, taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
+    s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}", Seq((taxYear -1).toString, taxYear.toString))
 }
