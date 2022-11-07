@@ -30,9 +30,12 @@ object DidClaimEndInTaxYearPage {
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
             form: Form[Boolean]): DidClaimEndInTaxYearPage = {
+    val optQuestionValue = stateBenefitsUserData.claim.flatMap(_.endDateQuestion)
+
     DidClaimEndInTaxYearPage(
       taxYear = taxYear,
       stateBenefitsUserData.sessionDataId.get,
-      form = form)
+      form = optQuestionValue.fold(form)(questionValue => if (form.hasErrors) form else form.fill(questionValue))
+    )
   }
 }

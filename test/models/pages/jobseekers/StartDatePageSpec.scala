@@ -32,7 +32,7 @@ class StartDatePageSpec extends UnitTest
       StartDatePage.apply(taxYear, aStateBenefitsUserData, pageForm) shouldBe StartDatePage(
         taxYear = taxYear,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
-        form = pageForm.fill(value = DateFormData(aStateBenefitsUserData.claim.get.startDate)),
+        form = pageForm.fill(value = DateFormData(aStateBenefitsUserData.claim.get.startDate))
       )
     }
 
@@ -42,7 +42,7 @@ class StartDatePageSpec extends UnitTest
       StartDatePage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe StartDatePage(
         taxYear = taxYear,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
-        form = pageForm,
+        form = pageForm
       )
     }
 
@@ -53,7 +53,7 @@ class StartDatePageSpec extends UnitTest
       StartDatePage.apply(taxYear, aStateBenefitsUserData, newFormWithErrors) shouldBe StartDatePage(
         taxYear = taxYear,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
-        form = newFormWithErrors.fill(value = formWithErrors.get),
+        form = newFormWithErrors.fill(value = formWithErrors.get)
       )
     }
   }

@@ -16,22 +16,24 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{AmountController, DidClaimEndInTaxYearController, EndDateController}
+import controllers.jobseekers.routes.{AmountController, EndDateController}
 import forms.{FormsProvider, YesNoForm}
 import org.jsoup.Jsoup
-import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.mvc.Results.Redirect
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
+import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentAsString, contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
-import support.mocks.MockActionsProvider
+import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
 import views.html.pages.jobseekers.DidClaimEndInTaxYearPageView
 
 import java.util.UUID
 
 class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
-  with MockActionsProvider {
+  with MockActionsProvider
+  with MockClaimService
+  with MockErrorHandler {
 
   private val pageView = inject[DidClaimEndInTaxYearPageView]
   private val sessionDataId = UUID.randomUUID()
@@ -39,7 +41,9 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
   private val underTest = new DidClaimEndInTaxYearController(
     actionsProvider = mockActionsProvider,
     formsProvider = new FormsProvider(),
-    pageView = pageView
+    pageView = pageView,
+    claimService = mockClaimService,
+    errorHandler = mockErrorHandler
   )
 
   ".show" should {
@@ -66,8 +70,9 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
       document.select("#error-summary-title").isEmpty shouldBe false
     }
 
-    "redirect End Date page when Yes is submitted" in {
+    "redirect to End Date page when Yes is submitted" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateEndDateQuestion(aStateBenefitsUserData, question = true, Right(sessionDataId))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
 
@@ -76,10 +81,22 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
 
     "redirect To Amount page when No is submitted" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateEndDateQuestion(aStateBenefitsUserData, question = false, Right(sessionDataId))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
 
       await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(AmountController.show(taxYearEOY, sessionDataId))
+    }
+
+    "handle internal server error when updating end date question fails" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateEndDateQuestion(aStateBenefitsUserData, question = true, Left(()))
+      mockInternalServerError(InternalServerError)
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
+      val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
 }
