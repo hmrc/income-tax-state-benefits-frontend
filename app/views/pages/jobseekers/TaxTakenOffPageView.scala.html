@@ -40,7 +40,11 @@
 @(pageModel: TaxTakenOffPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
 
+<<<<<<< HEAD
 @titleText = @{ messages(s"jobseekers.taxTakenOff.title.${if(request.user.isAgent) "agent" else "individual"}", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString) }
+=======
+@titleText = @{messages(s"jobseekers.taxTakenOff.title.${if(request.user.isAgent) "agent" else "individual"}", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString) }
+>>>>>>> 02b6aef (SASS-3678 Create Did you have tax taken off? page - Initial commit)
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
@@ -48,7 +52,11 @@
 
     @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
+<<<<<<< HEAD
     @formWithCsrf(action = TaxTakenOffController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+=======
+@formWithCsrf(action = TaxTakenOffController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+>>>>>>> 02b6aef (SASS-3678 Create Did you have tax taken off? page - Initial commit)
         @inputRadio(
             legendHeading = Some(Html(titleText)),
             legendHidden = true,
