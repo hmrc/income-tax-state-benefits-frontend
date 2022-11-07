@@ -22,28 +22,17 @@ import play.api.data.Form
 import java.util.UUID
 
 case class TaxTakenOffPage(taxYear: Int,
-<<<<<<< HEAD
                            sessionDataId: UUID,
                            form: Form[Boolean])
-=======
-                      sessionDataId: UUID,
-                      form: Form[Boolean])
->>>>>>> 02b6aef (SASS-3678 Create Did you have tax taken off? page - Initial commit)
 
 object TaxTakenOffPage {
 
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
             form: Form[Boolean]): TaxTakenOffPage = {
-<<<<<<< HEAD
     TaxTakenOffPage(
       taxYear = taxYear,
       stateBenefitsUserData.sessionDataId.get,
-=======
-    TaxTakenOffPage (
-      taxYear = taxYear,
-      stateBenefitsUserData.id.get,
->>>>>>> 02b6aef (SASS-3678 Create Did you have tax taken off? page - Initial commit)
       form = form)
   }
 }
