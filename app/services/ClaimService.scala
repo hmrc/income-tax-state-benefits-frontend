@@ -65,4 +65,11 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
       case Right(uuid) => Right(uuid)
     }
   }
+
+  def updateTaxTakenOffQuestion(stateBenefitsUserData: StateBenefitsUserData,
+                        taxTakenOffQuestion: Boolean)
+                  (implicit hc: HeaderCarrier): Future[Either[Unit, UUID]] = {
+    val updatedClaim = stateBenefitsUserData.claim.map(_.copy(taxTakenOffQuestion = Some(taxTakenOffQuestion)))
+    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+  }
 }

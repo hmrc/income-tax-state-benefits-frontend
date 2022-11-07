@@ -16,9 +16,15 @@
 
 package forms
 
+import models.{ClaimCYAModel, StateBenefitsUserData}
 import play.api.data.Form
+import play.api.i18n.Messages
 
+import java.time.LocalDate
 import javax.inject.Singleton
+import utils.InYearUtil.toDateWithinTaxYear
+import utils.ViewUtils.translatedDateFormatter
+
 
 @Singleton
 class FormsProvider() {
@@ -33,10 +39,11 @@ class FormsProvider() {
   def taxTakenOffForm(isAgent: Boolean): Form[Boolean] = YesNoForm.yesNoForm(
     s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}")
 
-  def jsaAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
-    emptyFieldKey = "jobseekers.amountPage.empty.amount.error"
-  )
-
-  def taxTakenOffForm(isAgent: Boolean, taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
-    s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}", Seq((taxYear -1).toString, taxYear.toString))
+  def taxTakenOffForm(isAgent: Boolean, taxYear: Int, stateBenefitsUserData: StateBenefitsUserData)(implicit messages: Messages): Form[Boolean] = {
+    val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
+    val titleFirstDate = translatedDateFormatter(toDateWithinTaxYear(taxYear, claimCYAModel.startDate))
+    val titleSecondDate = translatedDateFormatter(claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")))
+    YesNoForm.yesNoForm(
+      s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}", Seq(titleFirstDate, titleSecondDate))
+  }
 }

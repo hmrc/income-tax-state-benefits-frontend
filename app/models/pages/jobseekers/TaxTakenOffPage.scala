@@ -16,12 +16,16 @@
 
 package models.pages.jobseekers
 
-import models.StateBenefitsUserData
+import models.{ClaimCYAModel, StateBenefitsUserData}
 import play.api.data.Form
+import utils.InYearUtil.toDateWithinTaxYear
 
+import java.time.LocalDate
 import java.util.UUID
 
 case class TaxTakenOffPage(taxYear: Int,
+                           titleFirstDate: LocalDate,
+                           titleSecondDate: LocalDate,
                            sessionDataId: UUID,
                            form: Form[Boolean])
 
@@ -30,8 +34,15 @@ object TaxTakenOffPage {
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
             form: Form[Boolean]): TaxTakenOffPage = {
+
+    val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
+    val titleFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate)
+    val titleSecondDate = claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05"))
+
     TaxTakenOffPage(
       taxYear = taxYear,
+      titleFirstDate = titleFirstDate,
+      titleSecondDate = titleSecondDate,
       stateBenefitsUserData.sessionDataId.get,
       form = form)
   }
