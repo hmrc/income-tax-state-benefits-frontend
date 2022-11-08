@@ -24,6 +24,7 @@ import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
+import support.builders.UserBuilder.aUser
 
 import java.util.UUID
 
@@ -38,7 +39,7 @@ class AmountControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         urlGet(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -49,7 +50,7 @@ class AmountControllerISpec extends IntegrationTest {
     "render the Amount page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         urlGet(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 
@@ -61,7 +62,7 @@ class AmountControllerISpec extends IntegrationTest {
     "redirect to income tax submission overview when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         val formData = Map(s"$amount" -> "100")
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
@@ -75,7 +76,7 @@ class AmountControllerISpec extends IntegrationTest {
 
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithNewAmount)), sessionDataId)
         val formData = Map(s"$amount" -> "100")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)

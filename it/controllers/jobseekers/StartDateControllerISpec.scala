@@ -24,6 +24,7 @@ import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
+import support.builders.UserBuilder.aUser
 
 import java.time.LocalDate
 import java.util.UUID
@@ -39,7 +40,7 @@ class StartDateControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         urlGet(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -50,7 +51,7 @@ class StartDateControllerISpec extends IntegrationTest {
     "render the Start Date page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         urlGet(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 
@@ -62,7 +63,7 @@ class StartDateControllerISpec extends IntegrationTest {
     "redirect to income tax submission overview when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         val formData = Map(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
@@ -76,7 +77,7 @@ class StartDateControllerISpec extends IntegrationTest {
 
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedDate)), sessionDataId)
         val formData = Map(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)

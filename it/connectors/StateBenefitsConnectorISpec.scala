@@ -101,7 +101,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       "BE returns 200" in {
         val expectedResponse = Json.toJson(aStateBenefitsUserData).toString()
 
-        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", OK, expectedResponse,
+        stubGetWithHeadersCheck(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", OK, expectedResponse,
           "X-Session-ID" -> aUser.sessionId, "mtditid" -> aUser.mtditid)
 
         await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Right(aStateBenefitsUserData)
@@ -110,7 +110,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
 
     "Return an error result" when {
       "submission returns a 200 but invalid json" in {
-        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", OK,
+        stubGetWithHeadersCheck(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", OK,
           Json.toJson("""{"invalid": true}""").toString())
         mockPagerDutyLog("GetUserSessionDataResponse")
 
@@ -118,14 +118,14 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       }
 
       "BE returns a 404" in {
-        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", NOT_FOUND, responseBody = "{}")
+        stubGetWithHeadersCheck(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", NOT_FOUND, responseBody = "{}")
         mockPagerDutyLog("GetUserSessionDataResponse")
 
         await(underTest.getUserSessionData(aUser, sessionDataId)) shouldBe Left(ApiError(404, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
       }
 
       "submission returns a 500" in {
-        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", INTERNAL_SERVER_ERROR,
+        stubGetWithHeadersCheck(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", INTERNAL_SERVER_ERROR,
           """{"code": "FAILED", "reason": "failed"}""")
         mockPagerDutyLog("GetUserSessionDataResponse")
 
@@ -133,7 +133,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       }
 
       "submission returns a 503" in {
-        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", SERVICE_UNAVAILABLE,
+        stubGetWithHeadersCheck(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", SERVICE_UNAVAILABLE,
           """{"code": "FAILED", "reason": "failed"}""")
         mockPagerDutyLog("GetUserSessionDataResponse")
 
@@ -141,7 +141,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       }
 
       "submission returns an unexpected result" in {
-        stubGetWithHeadersCheck(s"/session-data/$sessionDataId", REQUEST_URI_TOO_LONG,
+        stubGetWithHeadersCheck(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", REQUEST_URI_TOO_LONG,
           """{"code": "FAILED", "reason": "failed"}""")
         mockPagerDutyLog("GetUserSessionDataResponse")
 
