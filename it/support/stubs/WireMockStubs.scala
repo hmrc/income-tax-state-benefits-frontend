@@ -107,7 +107,7 @@ trait WireMockStubs {
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "NINO",
-        "value" -> "AA123456A"
+        "value" -> aUser.nino
       )
     )
   )
@@ -132,10 +132,11 @@ trait WireMockStubs {
     )
   }
 
-  protected def userSessionDataStub(sessionDataId: UUID,
+  protected def userSessionDataStub(nino: String,
+                                    sessionDataId: UUID,
                                     response: StateBenefitsUserData): StubMapping = {
     stubGetWithHeadersCheck(
-      url = s"/income-tax-state-benefits/session-data/$sessionDataId",
+      url = s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId",
       status = OK,
       responseBody = Json.toJson(response).toString(),
       sessionHeader = "X-Session-ID" -> aUser.sessionId,

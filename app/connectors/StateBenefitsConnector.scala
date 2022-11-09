@@ -43,7 +43,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
 
   def getUserSessionData(user: User, sessionDataId: UUID)
                         (implicit hc: HeaderCarrier): Future[Either[ApiError, StateBenefitsUserData]] = {
-    val response = getUserSessionData(sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
+    val response = getUserSessionData(user.nino, sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
 
     response.map { response: GetUserSessionDataResponse =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
@@ -67,9 +67,9 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     httpClient.GET[GetIncomeTaxUserDataResponse](stateBenefitsBEUrl)
   }
 
-  private def getUserSessionData(sessionDataId: UUID)
+  private def getUserSessionData(nino: String, sessionDataId: UUID)
                                 (implicit hc: HeaderCarrier): Future[GetUserSessionDataResponse] = {
-    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/$sessionDataId"
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/nino/$nino/session/$sessionDataId"
     httpClient.GET[GetUserSessionDataResponse](stateBenefitsBEUrl)
   }
 
