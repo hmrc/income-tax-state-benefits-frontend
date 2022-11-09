@@ -110,6 +110,12 @@ jobseekers.taxTakenOffAmount.title.agent = How much tax was taken off your clien
 jobseekers.taxTakenOffAmount.title.individual = How much tax was taken off your Jobseeker’s Allowance between  {0} and {1}?
 jobseekers.taxTakenOffAmount.textbox.label = Amount of tax taken off
 
+#################       Jobseeker’s Allowance - Remove Claim Page       ########################################
+jobseekers.removePage.title = Are you sure you want to remove this Jobseeker’s Allowance claim?
+jobseekers.removePage.button = Remove claim
+jobseekers.removePage.link = Don’t remove claim
+jobseekers.removePage.link.hidden = Don’t remove this Jobseeker's Allowance Claim
+
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use
 common.error.self-assessment.paragraph.1.2 = Self Assessment: general enquiries
