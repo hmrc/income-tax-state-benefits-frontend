@@ -68,6 +68,7 @@ class AmountPageViewSpec extends ViewUnitTest {
   trait SpecificExpectedResults {
     val expectedHeading: (LocalDate, LocalDate) => String
     val expectedTitle: (LocalDate, LocalDate) => String
+    val expectedErrorTitle: (LocalDate, LocalDate) => String
     val expectedP1Text: String
   }
 
@@ -75,6 +76,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax."
   }
 
@@ -82,6 +84,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax."
   }
 
@@ -89,6 +92,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax."
   }
 
@@ -96,6 +100,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax."
   }
 
@@ -131,7 +136,7 @@ class AmountPageViewSpec extends ViewUnitTest {
         val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
 
         errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText, Selectors.errorHref)
         errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText)

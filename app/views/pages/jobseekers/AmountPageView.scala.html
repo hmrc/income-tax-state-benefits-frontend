@@ -40,7 +40,7 @@
 
 @titleText = @{messages(s"jobseekers.amountPage.title.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}
 
-@layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
+@layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
     @errorSummary(pageModel.form.errors)
 
