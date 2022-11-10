@@ -20,8 +20,11 @@ import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.TaxTakenOffController
 import forms.FormsProvider
+import models.pages.jobseekers.TaxTakenOffPage
+import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.ClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
 import views.html.pages.jobseekers.TaxTakenOffPageView
@@ -29,10 +32,6 @@ import views.html.pages.jobseekers.TaxTakenOffPageView
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import models.pages.jobseekers.TaxTakenOffPage
-import play.api.Logging
-import play.api.mvc.{Action, AnyContent}
-import services.ClaimService
 
 
 class TaxTakenOffController @Inject()(actionsProvider: ActionsProvider,
@@ -44,14 +43,14 @@ class TaxTakenOffController @Inject()(actionsProvider: ActionsProvider,
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formsProvider.taxTakenOffForm(request.user.isAgent, taxYear, request.stateBenefitsUserData))))
+    val pageForm = formsProvider.taxTakenOffForm(request.user.isAgent, taxYear, request.stateBenefitsUserData)
+    Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, pageForm)))
   }
 
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     formsProvider.taxTakenOffForm(request.user.isAgent, taxYear, request.stateBenefitsUserData).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
-
       yesNoValue => claimService.updateTaxTakenOffQuestion(request.stateBenefitsUserData, yesNoValue).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(sessionDataId) => Redirect(TaxTakenOffController.show(taxYear, sessionDataId))

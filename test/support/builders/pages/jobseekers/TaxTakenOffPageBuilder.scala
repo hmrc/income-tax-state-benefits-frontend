@@ -16,30 +16,21 @@
 
 package support.builders.pages.jobseekers
 
-import forms.DateForm.dateForm
-import forms.FormsProvider
-import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
-import models.pages.jobseekers.{DidClaimEndInTaxYearPage, TaxTakenOffPage}
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.i18n.Messages.implicitMessagesProviderToMessages
-import support.utils.TaxYearUtils.taxYearEOY
-import support.utils.TaxYearUtils.taxYear
+import forms.YesNoForm
+import models.pages.jobseekers.TaxTakenOffPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
+import support.utils.TaxYearUtils.taxYearEOY
 
 import java.time.LocalDate
 import java.util.UUID
 
 object TaxTakenOffPageBuilder {
+
   val aTaxTakenOffPage: TaxTakenOffPage = TaxTakenOffPage(
     taxYear = taxYearEOY,
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-04-23"),
     titleSecondDate = aClaimCYAModel.endDate.get,
     sessionDataId = UUID.randomUUID(),
-    // Todo
-    form = new FormsProvider().taxTakenOffForm(isAgent = true, taxYear, aStateBenefitsUserData){
-      ???
-    }
+    form = YesNoForm.yesNoForm("some-error-message-key")
   )
-
 }

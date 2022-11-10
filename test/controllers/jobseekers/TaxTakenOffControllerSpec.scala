@@ -31,7 +31,7 @@ import views.html.pages.jobseekers.TaxTakenOffPageView
 import java.util.UUID
 
 class TaxTakenOffControllerSpec extends ControllerUnitTest
-  with MockActionsProvider with  MockClaimService {
+  with MockActionsProvider with MockClaimService {
 
   private val pageView = inject[TaxTakenOffPageView]
   private val sessionDataId = UUID.randomUUID()

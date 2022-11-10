@@ -34,7 +34,6 @@ object TaxTakenOffPage {
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
             form: Form[Boolean]): TaxTakenOffPage = {
-
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
     val titleFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate)
     val titleSecondDate = claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05"))

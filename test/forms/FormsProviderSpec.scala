@@ -16,12 +16,17 @@
 
 package forms
 
+import org.scalamock.scalatest.MockFactory
 import play.api.data.FormError
+import play.api.i18n.Messages
 import support.UnitTest
 import support.providers.TaxYearProvider
 
 class FormsProviderSpec extends UnitTest
-  with TaxYearProvider {
+  with TaxYearProvider
+  with MockFactory {
+
+  private implicit val messages: Messages = mock[Messages]
 
   private val anyBoolean = true
   private val amount: String = 123.0.toString
