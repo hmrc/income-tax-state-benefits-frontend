@@ -16,12 +16,15 @@
 
 package views.pages.jobseekers
 
+import controllers.jobseekers.routes.TaxTakenOffController
+import forms.{AmountForm, YesNoForm}
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
+import support.builders.pages.jobseekers.AmountPageBuilder.anAmountPage
 import support.builders.pages.jobseekers.TaxTakenOffPageBuilder.aTaxTakenOffPage
 import utils.ViewUtils.translatedDateFormatter
 import views.html.pages.jobseekers.TaxTakenOffPageView
@@ -63,8 +66,8 @@ class TaxTakenOffPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedButtonText: String = "Continue"
-    override val expectedYesText: String = "Yes"
-    override val expectedNoText: String = "No"
+    override val expectedYesText: String = "Iawn"
+    override val expectedNoText: String = "Na"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -127,15 +130,30 @@ class TaxTakenOffPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(aTaxTakenOffPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
-//        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate), userScenario.isWelsh)
-//        captionCheck(expectedCaption(taxYearEOY))
-        // Todo
-        //        h1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate), "userScenario.isWelsh")
-        //        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
-        //        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        //        formPostLinkCheck(DidClaimEndInTaxYearController.submit(taxYearEOY, aTaxTakenOffPage.sessionDataId).url, Selectors.continueButtonFormSelector)
-        //        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
+        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate), userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate))
+        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
+        formPostLinkCheck(TaxTakenOffController.submit(taxYearEOY, aTaxTakenOffPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
+
+      "render page with empty selection error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val pageModel = aTaxTakenOffPage.copy(form = aTaxTakenOffPage.form.bind(Map(YesNoForm.yesNo -> "")))
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate), userScenario.isWelsh)
+        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
+
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedErrorText(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate), Selectors.errorHref)
+        errorAboveElementCheck(userScenario.specificExpectedResults.get.expectedErrorText(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate))
+      }
+
     }
   }
 }

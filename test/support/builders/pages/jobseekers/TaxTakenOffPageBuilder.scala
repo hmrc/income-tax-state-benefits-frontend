@@ -16,9 +16,11 @@
 
 package support.builders.pages.jobseekers
 
-import forms.YesNoForm
+import forms.{FormsProvider, YesNoForm}
 import models.pages.jobseekers.TaxTakenOffPage
+import play.api.i18n.Messages.implicitMessagesProviderToMessages
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
+import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.utils.TaxYearUtils.taxYearEOY
 
 import java.time.LocalDate
@@ -31,6 +33,8 @@ object TaxTakenOffPageBuilder {
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-04-23"),
     titleSecondDate = aClaimCYAModel.endDate.get,
     sessionDataId = UUID.randomUUID(),
-    form = YesNoForm.yesNoForm("some-error-message-key")
+    // TODO
+    //form = YesNoForm.yesNoForm("some-error-message-key")
+    form = new FormsProvider().taxTakenOffForm(true,taxYearEOY, aStateBenefitsUserData )
   )
 }

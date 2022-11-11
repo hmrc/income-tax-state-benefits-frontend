@@ -28,6 +28,8 @@ import javax.inject.Singleton
 @Singleton
 class FormsProvider() {
 
+  implicit val messages: Messages
+
   def endDateYesNoForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
     missingInputError = "jobseekers.didClaimEndInTaxYear.error", Seq(taxYear.toString)
   )
@@ -37,7 +39,7 @@ class FormsProvider() {
   )
 
   def taxTakenOffForm(isAgent: Boolean, taxYear: Int, stateBenefitsUserData: StateBenefitsUserData)
-                     (implicit messages: Messages): Form[Boolean] = {
+                     : Form[Boolean] = {
     val claimCYAModel = stateBenefitsUserData.claim.get
     val titleFirstDate = translatedDateFormatter(toDateWithinTaxYear(taxYear, claimCYAModel.startDate))
     val titleSecondDate = translatedDateFormatter(claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")))
