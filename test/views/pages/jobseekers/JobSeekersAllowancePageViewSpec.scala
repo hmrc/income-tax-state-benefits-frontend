@@ -35,9 +35,9 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
   private val page: JobSeekersAllowancePageView = inject[JobSeekersAllowancePageView]
 
   object Selectors {
-    val summaryListRowSelector: Int => String = (row: Int) => s".govuk-summary-list > div:nth-child($row) > div.govuk-summary-list__row"
-    val summaryListRowViewLinkSelector: Int => String = (row: Int) => s".govuk-summary-list > div:nth-child($row) > div.govuk-summary-list__row > dd > a"
-    val summaryListRowRemovedSelector: Int => String = (row: Int) => s".govuk-summary-list > div:nth-child($row) > div > p"
+    val summaryListRowSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(1)"
+    val summaryListRowViewLinkSelector: Int => String = (row: Int) => s"${summaryListRowSelector(row)} > dd > a"
+    val summaryListRowRemovedSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(2) > p"
     val addMissingClaimButtonSelector = "#add-missing-claim-button-id"
     val addMissingClaimFormSelector = "#main-content > div > div > form"
     val buttonSelector = "#continue-button-id"

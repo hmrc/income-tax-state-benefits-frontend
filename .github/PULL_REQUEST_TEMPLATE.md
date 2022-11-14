@@ -31,9 +31,10 @@ Add a link to the relevant story in Jira
 ### Checklist PR Raiser
 
 ##### Before creating PR
-
 - [ ]  Have you run the tests?
 - [ ]  Have you run the journey tests? (where applicable)
+- [ ]  Have you run the smoke tests? (where applicable)
+- [ ]  Have you run the performance tests? (where applicable)
 - [ ]  Have you addressed warnings where appropriate?
 - [ ]  Have you rebased against the current version of main?
 - [ ]  Have you checked code coverage isn’t lower than previously?
