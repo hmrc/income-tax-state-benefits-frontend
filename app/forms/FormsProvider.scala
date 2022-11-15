@@ -28,6 +28,9 @@ class FormsProvider() {
   )
 
   def jsaAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
-    emptyFieldKey = "jobseekers.amountPage.empty.amount.error"
+    emptyFieldKey = "jobseekers.amountPage.empty.amount.error",
+    exceedsMaxAmountKey = "jobseekers.amountPage.exceedsMax.amount.error",
+    wrongFormatKey = "jobseekers.amountPage.wrongFormat.amount.error",
+    underMinAmountKey = Some("jobseekers.amountPage.lessThanZero.amount.error")
   )
 }
