@@ -65,7 +65,7 @@ class FormsProviderSpec extends UnitTest
       )
     }
 
-    "return form with error when isAgent is true and data is empty" in {
+    "return form with error when data is empty" in {
       underTest.jsaAmountForm().bind(emptyData).errors shouldBe Seq(
         FormError(AmountForm.amount, Seq("jobseekers.amountPage.empty.amount.error"), Seq())
       )

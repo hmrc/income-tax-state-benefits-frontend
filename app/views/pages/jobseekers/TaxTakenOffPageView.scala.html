@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.jobseekers.routes.DidClaimEndInTaxYearController
+@import controllers.jobseekers.routes.TaxTakenOffController
 
-@import models.pages.jobseekers.DidClaimEndInTaxYearPage
+@import models.pages.jobseekers.TaxTakenOffPage
 @import models.requests.UserSessionDataRequest
+
+@import utils.ViewUtils.translatedDateFormatter
 
 @import views.html.templates.Layout
 @import views.html.templates.helpers.Heading
@@ -34,9 +36,9 @@
     button: Button
 )
 
-@(pageModel: DidClaimEndInTaxYearPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
+@(pageModel: TaxTakenOffPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages("jobseekers.didClaimEndInTaxYear.title", pageModel.taxYear.toString)}
+@titleText = @{messages(s"jobseekers.taxTakenOff.title.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
@@ -44,12 +46,13 @@
 
     @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
-    @formWithCsrf(action = DidClaimEndInTaxYearController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCsrf(action = TaxTakenOffController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
         @inputRadio(
             legendHeading = Some(Html(titleText)),
             legendHidden = true,
             form = pageModel.form,
-            inline = true
+            inline = true,
+            hint = Some(Html(messages(s"jobseekers.taxTakenOff.hint.${if(request.user.isAgent) "agent" else "individual"}")))
         )
 
         @button()

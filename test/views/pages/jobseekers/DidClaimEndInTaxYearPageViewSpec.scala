@@ -40,6 +40,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
   trait CommonExpectedResults {
     val expectedHeading: Int => String
     val expectedTitle: Int => String
+    val expectedErrorTitle: Int => String
     val expectedCaption: Int => String
     val expectedYesText: String
     val expectedNoText: String
@@ -50,6 +51,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedHeading: Int => String = (taxYear: Int) => s"Did this claim end in the tax year ending 5 April $taxYear?"
     override val expectedTitle: Int => String = expectedHeading
+    override val expectedErrorTitle: Int => String = (taxYear: Int) => s"Error: ${expectedTitle(taxYear)}"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
@@ -60,6 +62,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedHeading: Int => String = (taxYear: Int) => s"Did this claim end in the tax year ending 5 April $taxYear?"
     override val expectedTitle: Int => String = expectedHeading
+    override val expectedErrorTitle: Int => String = (taxYear: Int) => s"Error: ${expectedTitle(taxYear)}"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
@@ -109,7 +112,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         val pageModel = aDidClaimEndInTaxYearPage.copy(form = aDidClaimEndInTaxYearPage.form.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
+        titleCheck(userScenario.commonExpectedResults.expectedErrorTitle(taxYearEOY), userScenario.isWelsh)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
 

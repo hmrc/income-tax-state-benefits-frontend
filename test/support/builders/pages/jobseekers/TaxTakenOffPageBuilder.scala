@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package support.builders
+package support.builders.pages.jobseekers
 
-import models.StateBenefitsUserData
+import forms.YesNoForm
+import models.pages.jobseekers.TaxTakenOffPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
-import support.builders.UserBuilder.aUser
-import support.utils.TaxYearUtils.{taxYear, taxYearEOY}
+import support.utils.TaxYearUtils.taxYearEOY
 
+import java.time.LocalDate
 import java.util.UUID
 
-object StateBenefitsUserDataBuilder {
+object TaxTakenOffPageBuilder {
 
-  val aStateBenefitsUserData: StateBenefitsUserData = StateBenefitsUserData(
-    sessionDataId = Some(UUID.fromString("558238ef-d2ff-4839-bd6d-307324d6fe37")),
-    sessionId = aUser.sessionId,
-    mtdItId = aUser.mtditid,
-    nino = aUser.nino,
+  val aTaxTakenOffPage: TaxTakenOffPage = TaxTakenOffPage(
     taxYear = taxYearEOY,
-    isPriorSubmission = false,
-    claim = Some(aClaimCYAModel)
+    titleFirstDate = LocalDate.parse(s"$taxYearEOY-01-01"),
+    titleSecondDate = aClaimCYAModel.endDate.get,
+    sessionDataId = UUID.randomUUID(),
+    form = YesNoForm.yesNoForm("some.error.message.key")
   )
 }

@@ -32,6 +32,9 @@ POST        /:taxYear/jobseekers-allowance/:sessionDataId/end-date              
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/amount                        controllers.jobseekers.AmountController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/amount                        controllers.jobseekers.AmountController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
+GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                 controllers.jobseekers.TaxTakenOffController.show(taxYear: Int, sessionDataId: java.util.UUID)
+POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                 controllers.jobseekers.TaxTakenOffController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+
 ###########################     UserSessionData Controller Endpoints     ###########################
 POST         /:taxYear/session-data         controllers.session.UserSessionDataController.create(taxYear: Int)
 
