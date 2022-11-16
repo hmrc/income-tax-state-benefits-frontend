@@ -16,8 +16,13 @@
 
 package forms
 
+import models.ClaimCYAModel
 import play.api.data.Form
+import play.api.i18n.Messages
+import utils.InYearUtil.toDateWithinTaxYear
+import utils.ViewUtils.translatedDateFormatter
 
+import java.time.LocalDate
 import javax.inject.Singleton
 
 @Singleton
@@ -33,4 +38,12 @@ class FormsProvider() {
     wrongFormatKey = "jobseekers.amountPage.wrongFormat.amount.error",
     underMinAmountKey = Some("jobseekers.amountPage.lessThanZero.amount.error")
   )
+
+  def taxTakenOffYesNoForm(isAgent: Boolean, taxYear: Int, claimCYAModel: ClaimCYAModel)
+                          (implicit messages: Messages): Form[Boolean] = {
+    val titleFirstDate = translatedDateFormatter(toDateWithinTaxYear(taxYear, claimCYAModel.startDate))
+    val titleSecondDate = translatedDateFormatter(claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")))
+
+    YesNoForm.yesNoForm(s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}", Seq(titleFirstDate, titleSecondDate))
+  }
 }

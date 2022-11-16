@@ -56,6 +56,13 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
     createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
   }
 
+  def updateTaxPaidQuestion(stateBenefitsUserData: StateBenefitsUserData, question: Boolean)
+                           (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
+    val taxPaid = if (question) stateBenefitsUserData.claim.flatMap(_.taxPaid) else None
+    val updatedClaim = stateBenefitsUserData.claim.map(_.copy(taxPaidQuestion = Some(question), taxPaid = taxPaid))
+    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+  }
+
   private def createOrUpdateClaim(originalUserData: StateBenefitsUserData, withClaim: Option[ClaimCYAModel])
                                  (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
     val updatedUserData = originalUserData.copy(claim = withClaim)

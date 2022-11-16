@@ -18,8 +18,8 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.AmountController
-import forms.{AmountForm, FormsProvider}
+import controllers.jobseekers.routes.TaxTakenOffController
+import forms.FormsProvider
 import models.pages.jobseekers.AmountPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       amount => claimService.updateAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(AmountController.show(taxYear, uuid))
+        case Right(uuid) => Redirect(TaxTakenOffController.show(taxYear, uuid))
       }
     )
   }

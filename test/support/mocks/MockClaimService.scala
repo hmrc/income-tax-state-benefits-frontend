@@ -61,4 +61,12 @@ trait MockClaimService extends MockFactory {
       .expects(stateBenefitsUserData, amount, *)
       .returning(Future.successful(result))
   }
+
+  def mockUpdateTaxPaidQuestion(stateBenefitsUserData: StateBenefitsUserData,
+                                question: Boolean,
+                                result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+    (mockClaimService.updateTaxPaidQuestion(_: StateBenefitsUserData, _: Boolean)(_: HeaderCarrier))
+      .expects(stateBenefitsUserData, question, *)
+      .returning(Future.successful(result))
+  }
 }
