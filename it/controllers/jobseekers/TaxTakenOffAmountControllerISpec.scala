@@ -16,8 +16,8 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{TaxTakenOffAmountController, TaxTakenOffController}
-import forms.YesNoForm
+import controllers.jobseekers.routes.TaxTakenOffAmountController
+import forms.AmountForm.amount
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
@@ -28,10 +28,10 @@ import support.builders.UserBuilder.aUser
 
 import java.util.UUID
 
-class TaxTakenOffControllerISpec extends IntegrationTest {
+class TaxTakenOffAmountControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int, sessionDataId: UUID): String =
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/tax-taken-off"
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/tax-taken-off-amount"
 
   private val sessionDataId = UUID.randomUUID()
 
@@ -47,7 +47,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "render the TaxTakenOff page for end of year" in {
+    "render the TaxTakenOffAmount page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
@@ -63,7 +63,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        val formData = Map(YesNoForm.yesNo -> "true")
+        val formData = Map(s"$amount" -> "100")
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
 
@@ -71,32 +71,19 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "redirect to TaxTakenOffAmount page when answer is Yes" in {
-      val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(true))
+    "persist amount and redirect to next page" in {
+      val modelWithNewAmount = aClaimCYAModel.copy(taxPaid = Some(100))
+
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), sessionDataId)
-        val formData = Map(YesNoForm.yesNo -> "true")
+        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithNewAmount)), sessionDataId)
+        val formData = Map(s"$amount" -> "100")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
 
       result.status shouldBe SEE_OTHER
       result.headers("Location").head shouldBe TaxTakenOffAmountController.show(taxYearEOY, sessionDataId).url
-    }
-
-    "redirect to TaxTakenOff page (FIX ME: until next  page implemented) when answer is No" in {
-      val modelWithExpectedData = aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None)
-      lazy val result: WSResponse = {
-        authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), sessionDataId)
-        val formData = Map(YesNoForm.yesNo -> "false")
-        urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
-      }
-
-      result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe TaxTakenOffController.show(taxYearEOY, sessionDataId).url
     }
   }
 }

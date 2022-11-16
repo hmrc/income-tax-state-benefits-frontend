@@ -16,8 +16,9 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{TaxTakenOffAmountController, TaxTakenOffController}
-import forms.{FormsProvider, YesNoForm}
+import controllers.jobseekers.routes.TaxTakenOffAmountController
+import forms.AmountForm._
+import forms.FormsProvider
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.Results.{InternalServerError, Redirect}
@@ -26,24 +27,24 @@ import sttp.model.Method.POST
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
-import views.html.pages.jobseekers.TaxTakenOffPageView
+import views.html.pages.jobseekers.TaxTakenOffAmountPageView
 
 import java.util.UUID
 
-class TaxTakenOffControllerSpec extends ControllerUnitTest
+class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
   with MockActionsProvider
   with MockClaimService
   with MockErrorHandler {
 
-  private val pageView = inject[TaxTakenOffPageView]
+  private val pageView = inject[TaxTakenOffAmountPageView]
   private val sessionDataId = UUID.randomUUID()
 
-  private val underTest = new TaxTakenOffController(
-    actionsProvider = mockActionsProvider,
-    formsProvider = new FormsProvider(),
-    pageView = pageView,
-    claimService = mockClaimService,
-    errorHandler = mockErrorHandler
+  private val underTest = new TaxTakenOffAmountController(
+    mockActionsProvider,
+    new FormsProvider(),
+    pageView,
+    mockClaimService,
+    mockErrorHandler
   )
 
   ".show" should {
@@ -61,7 +62,7 @@ class TaxTakenOffControllerSpec extends ControllerUnitTest
     "render page with error when validation of form fails" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "")
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
 
       status(result) shouldBe BAD_REQUEST
@@ -70,33 +71,25 @@ class TaxTakenOffControllerSpec extends ControllerUnitTest
       document.select("#error-summary-title").isEmpty shouldBe false
     }
 
-    "redirect to TaxTakenOffAmount page when Yes is submitted" in {
+    "handle internal server error when updating amount fails" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(sessionDataId))
-
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
-
-      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(TaxTakenOffAmountController.show(taxYearEOY, sessionDataId))
-    }
-
-    "redirect To TaxTakenOff page (FIX ME: until next  page implemented) when No is submitted" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = false, Right(sessionDataId))
-
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
-
-      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(TaxTakenOffController.show(taxYearEOY, sessionDataId))
-    }
-
-    "handle internal server error when updating end date question fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Left(()))
+      mockUpdateTaxPaidAmount(aStateBenefitsUserData, amount = 100, Left(()))
       mockInternalServerError(InternalServerError)
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "redirect to next Page on successful amount update" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateTaxPaidAmount(aStateBenefitsUserData, amount = 100, Right(sessionDataId))
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
+
+      await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
+        Redirect(TaxTakenOffAmountController.show(taxYearEOY, sessionDataId))
     }
   }
 }
