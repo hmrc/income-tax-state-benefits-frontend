@@ -18,9 +18,8 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.{AmountController, EndDateController}
-import forms.DateForm
-import forms.DateForm.dateForm
+import controllers.jobseekers.routes.AmountController
+import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.EndDatePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EndDateController @Inject()(actionsProvider: ActionsProvider,
+                                  formsProvider: FormsProvider,
                                   pageView: EndDatePageView,
                                   claimService: ClaimService,
                                   errorHandler: ErrorHandler)
@@ -42,14 +42,17 @@ class EndDateController @Inject()(actionsProvider: ActionsProvider,
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(EndDatePage(taxYear, request.stateBenefitsUserData, dateForm())))
+    Ok(pageView(EndDatePage(
+      taxYear,
+      request.stateBenefitsUserData,
+      formsProvider.endDateForm(taxYear, request.user.isAgent, request.stateBenefitsUserData.claim.get.startDate)
+    )))
   }
 
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    val newForm = dateForm().bindFromRequest()
     val sessionData = request.stateBenefitsUserData
-    newForm.copy(errors = DateForm.validateEndDate(newForm.get, taxYear, request.user.isAgent, sessionData.claim.get.startDate)).fold(
+    formsProvider.endDateForm(taxYear, request.user.isAgent, sessionData.claim.get.startDate).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(EndDatePage(taxYear, sessionData, formWithErrors)))),
       formData => claimService.updateEndDate(sessionData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()

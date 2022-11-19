@@ -17,7 +17,8 @@
 package controllers.jobseekers
 
 import controllers.jobseekers.routes.{AmountController, EndDateController}
-import forms.{FormsProvider, YesNoForm}
+import forms.YesNoForm
+import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.Results.{InternalServerError, Redirect}

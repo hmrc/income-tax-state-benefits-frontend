@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package support.builders.pages.jobseekers
+package support.providers
 
-import forms.DateForm
-import models.pages.jobseekers.EndDatePage
-import support.utils.TaxYearUtils.taxYearEOY
+import play.api.i18n.{DefaultMessagesApi, Messages, MessagesApi}
 
-import java.util.UUID
+trait MessagesProvider extends FakeRequestProvider {
 
-object EndDatePageBuilder {
+  protected lazy val messagesApi: MessagesApi = new DefaultMessagesApi()
 
-  val anEndDatePage: EndDatePage = EndDatePage(
-    taxYear = taxYearEOY,
-    sessionDataId = UUID.randomUUID(),
-    form = DateForm.dateForm(
-      emptyDayKey = "emptyDay.key",
-      emptyMonthKey = "emptyMonth.key",
-      emptyYearKey = "emptyYear.key",
-      invalidDateKey = "invalidDate.key"
-    )
-  )
+  implicit protected lazy val messages: Messages = messagesApi.preferred(fakeRequest)
 }

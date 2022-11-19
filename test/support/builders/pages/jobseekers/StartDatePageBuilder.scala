@@ -16,7 +16,7 @@
 
 package support.builders.pages.jobseekers
 
-import forms.DateForm.dateForm
+import forms.DateForm
 import models.pages.jobseekers.StartDatePage
 import support.utils.TaxYearUtils.taxYearEOY
 
@@ -27,6 +27,11 @@ object StartDatePageBuilder {
   val aStartDatePage: StartDatePage = StartDatePage(
     taxYear = taxYearEOY,
     sessionDataId = UUID.randomUUID(),
-    form = dateForm()
+    form = DateForm.dateForm(
+      emptyDayKey = "emptyDay.key",
+      emptyMonthKey = "emptyMonth.key",
+      emptyYearKey = "emptyYear.key",
+      invalidDateKey = "invalidDate.key"
+    )
   )
 }

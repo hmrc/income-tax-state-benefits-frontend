@@ -17,6 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.jobseekers.routes.EndDateController
+import forms.jobseekers.FormsProvider
 import forms.{DateForm, DateFormData}
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -24,6 +25,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.jobseekers.EndDatePageBuilder.anEndDatePage
 import utils.ViewUtils.translatedDateFormatter
 import views.html.pages.jobseekers.EndDatePageView
@@ -31,6 +33,8 @@ import views.html.pages.jobseekers.EndDatePageView
 import java.time.LocalDate
 
 class EndDatePageViewSpec extends ViewUnitTest {
+
+  private val formsProvider = new FormsProvider()
 
   private val underTest = inject[EndDatePageView]
 
@@ -40,9 +44,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val inputMonthField: String = s"#${DateForm.month}"
     val inputYearField: String = s"#${DateForm.year}"
     val buttonSelector: String = "#continue"
-    val invalidDateErrorHref: String = "#invalidDate"
-    val mustBeSameAsOrBeforeErrorHref: String = "#mustBeEndOfYear"
-    val mustBeAfterStartDateErrorHref: String = "#mustBeAfterStartDate"
+    val dateFormLevelErrorHref: String = "#value-for-day"
   }
 
   trait SpecificExpectedResults {
@@ -65,7 +67,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance claim ended"
+    override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
   }
 
@@ -74,7 +76,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance claim ended"
+    override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
   }
 
@@ -141,7 +143,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = DateForm.dateForm().fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
+        val form = formsProvider.endDateForm(taxYear, userScenario.isAgent, aClaimCYAModel.startDate).fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -154,13 +156,12 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = DateForm.dateForm().bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
-        val newForm = form.copy(errors = DateForm.validateEndDate(form.get, taxYearEOY, userScenario.isAgent, LocalDate.of(taxYearEOY, 1, 1)))
-        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = newForm)
+        val form = formsProvider.endDateForm(taxYear, userScenario.isAgent, aClaimCYAModel.startDate).bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedInvalidDateErrorText, Selectors.invalidDateErrorHref)
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedInvalidDateErrorText, Selectors.dateFormLevelErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "dd")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "mm")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "yyyy")
@@ -170,36 +171,29 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = DateForm.dateForm().bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYearEOY.toString))
-        val newForm = form.copy(errors = DateForm.validateEndDate(form.get, taxYearEOY, userScenario.isAgent, LocalDate.of(taxYearEOY, 1, 1)))
-        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = newForm)
+        val form = formsProvider.endDateForm(taxYear, userScenario.isAgent, aClaimCYAModel.startDate).bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYearEOY), Selectors.mustBeSameAsOrBeforeErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYear), Selectors.dateFormLevelErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "6")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "4")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYear.toString)
       }
 
       "render page with mustBeAfterStartDate error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val startDate = LocalDate.of(taxYearEOY, 1, 2)
-        val endDate = LocalDate.of(taxYearEOY, 1, 1)
+        val startDate = LocalDate.of(taxYearEOY, 1, 1)
 
-        val form = DateForm.dateForm().bind(Map(
-          DateForm.day -> endDate.getDayOfMonth.toString,
-          DateForm.month -> endDate.getMonthValue.toString,
-          DateForm.year -> endDate.getYear.toString
-        ))
-        val newForm = form.copy(errors = DateForm.validateEndDate(form.get, taxYearEOY, userScenario.isAgent, startDate))
-        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = newForm)
+        val form = formsProvider.endDateForm(taxYearEOY, userScenario.isAgent, startDate).bind(Map(DateForm.day -> "1", DateForm.month -> "1", DateForm.year -> taxYearEOY.toString))
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeAfterStartDateErrorText(startDate), Selectors.mustBeAfterStartDateErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeAfterStartDateErrorText(startDate), Selectors.dateFormLevelErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "1")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)

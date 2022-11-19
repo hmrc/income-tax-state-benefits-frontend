@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package support.builders.pages.jobseekers
+package support.builders.forms
 
-import forms.DateForm
-import models.pages.jobseekers.EndDatePage
+import forms.DateFormData
 import support.utils.TaxYearUtils.taxYearEOY
 
-import java.util.UUID
+object DateFormDataBuilder {
 
-object EndDatePageBuilder {
-
-  val anEndDatePage: EndDatePage = EndDatePage(
-    taxYear = taxYearEOY,
-    sessionDataId = UUID.randomUUID(),
-    form = DateForm.dateForm(
-      emptyDayKey = "emptyDay.key",
-      emptyMonthKey = "emptyMonth.key",
-      emptyYearKey = "emptyYear.key",
-      invalidDateKey = "invalidDate.key"
-    )
+  val aDateFormData: DateFormData = DateFormData(
+    day = "1",
+    month = "1",
+    year = taxYearEOY.toString
   )
 }

@@ -19,7 +19,7 @@ package controllers.jobseekers
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.TaxTakenOffController
-import forms.FormsProvider
+import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.AmountPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

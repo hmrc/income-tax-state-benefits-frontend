@@ -17,6 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.jobseekers.routes.StartDateController
+import forms.jobseekers.FormsProvider
 import forms.{DateForm, DateFormData}
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -31,6 +32,8 @@ import java.time.LocalDate
 
 class StartDatePageViewSpec extends ViewUnitTest {
 
+  private val formsProvider = new FormsProvider()
+
   private val underTest: StartDatePageView = inject[StartDatePageView]
 
   object Selectors {
@@ -39,8 +42,8 @@ class StartDatePageViewSpec extends ViewUnitTest {
     val inputMonthField: String = s"#${DateForm.month}"
     val inputYearField: String = s"#${DateForm.year}"
     val buttonSelector: String = "#continue"
-    val invalidDateErrorHref: String = "#invalidDate"
-    val mustBeSameAsOrBeforeErrorHref: String = "#mustBeSameAsOrBefore"
+    val invalidDateErrorHref: String = "#value-for-day"
+    val mustBeSameAsOrBeforeErrorHref: String = "#value-for-day"
   }
 
   trait SpecificExpectedResults {
@@ -71,7 +74,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedHeading: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedInvalidDateErrorText: String = "Enter the date you started getting Jobseeker’s Allowance"
+    override val expectedInvalidDateErrorText: String = "The date you started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date you started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
   }
 
@@ -79,7 +82,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedHeading: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedInvalidDateErrorText: String = "Enter the date you started getting Jobseeker’s Allowance"
+    override val expectedInvalidDateErrorText: String = "The date you started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date you started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
   }
 
@@ -87,7 +90,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedHeading: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedInvalidDateErrorText: String = "Enter the date your client started getting Jobseeker’s Allowance"
+    override val expectedInvalidDateErrorText: String = "The date your client started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
   }
 
@@ -95,7 +98,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedHeading: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedInvalidDateErrorText: String = "Enter the date your client started getting Jobseeker’s Allowance"
+    override val expectedInvalidDateErrorText: String = "The date your client started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
   }
 
@@ -130,7 +133,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = DateForm.dateForm().fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
+        val form = formsProvider.startDateForm(taxYear, userScenario.isAgent).fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
         val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -143,9 +146,8 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = DateForm.dateForm().bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
-        val newForm = form.copy(errors = DateForm.validateStartDate(form.get, taxYearEOY, userScenario.isAgent))
-        val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = newForm)
+        val form = formsProvider.startDateForm(taxYear, userScenario.isAgent).bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
+        val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle, userScenario.isWelsh)
@@ -159,16 +161,15 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = DateForm.dateForm().bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYearEOY.toString))
-        val newForm = form.copy(errors = DateForm.validateStartDate(form.get, taxYearEOY, userScenario.isAgent))
-        val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = newForm)
+        val form = formsProvider.startDateForm(taxYear, userScenario.isAgent).bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
+        val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYearEOY), Selectors.mustBeSameAsOrBeforeErrorHref)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYear), Selectors.mustBeSameAsOrBeforeErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "6")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "4")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYear.toString)
       }
     }
   }
