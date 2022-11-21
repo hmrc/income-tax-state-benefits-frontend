@@ -46,4 +46,9 @@ class FormsProvider() {
 
     YesNoForm.yesNoForm(s"jobseekers.taxTakenOff.error.${if (isAgent) "agent" else "individual"}", Seq(titleFirstDate, titleSecondDate))
   }
+
+  def taxPaidAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
+    // TODO: This is wrong and will be implemented in another story. Test should be added when properly implemented
+    emptyFieldKey = "empty error"
+  )
 }

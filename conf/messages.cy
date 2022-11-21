@@ -22,12 +22,15 @@ common.december = Rhagfyr
 common.taxMonth = 5 {0} {1}
 
 common.addedByHmrc = Added by HMRC
+common.amountWillBeOnTheP45.agent = This amount will be on the P45 your client got after their claim ended.
+common.amountWillBeOnTheP45.individual = This amount will be on the P45 you got after your claim ended.
 common.back = Back
 common.change = Change
 common.completed = Completed
 common.continue = Continue
 common.dateRange = {0} to {1}
 common.error.errorKey = Error:
+common.forExampleAmount = For Example, £123.56
 common.help.getHelpWithThisPage = Get help with this page
 common.inProgress = In progress
 common.jobSeekersAllowance = Jobseeker’s Allowance
@@ -77,7 +80,6 @@ jobseekers.amountPage.title.individual = How much Jobseeker’s Allowance did yo
 jobseekers.amountPage.p1.agent = This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax.
 jobseekers.amountPage.p1.individual = This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax.
 jobseekers.amountPage.textbox.label = Amount of Jobseeker’s allowance
-jobseekers.amountPage.textbox.hint = For Example, £123.56
 jobseekers.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
 jobseekers.amountPage.wrongFormat.amount.error = The amount of Jobseeker’s Allowance must be a number
 jobseekers.amountPage.lessThanZero.amount.error = The amount of Jobseeker’s Allowance must be more than £0
@@ -86,10 +88,13 @@ jobseekers.amountPage.exceedsMax.amount.error = The amount of Jobseeker’s Allo
 #################       Jobseeker’s Allowance - Tax Taken Off Page        ########################################
 jobseekers.taxTakenOff.title.agent = Did your client have any tax taken off their Jobseeker’s Allowance between {0} and {1}?
 jobseekers.taxTakenOff.title.individual = Did you have any tax taken off your Jobseeker’s Allowance between {0} and {1}?
-jobseekers.taxTakenOff.hint.agent = This amount will be on the P45 your client got after their claim ended.
-jobseekers.taxTakenOff.hint.individual = This amount will be on the P45 you got after your claim ended.
 jobseekers.taxTakenOff.error.agent = Select yes if your client had any tax taken off their Jobseeker’s Allowance between {0} and {1}
 jobseekers.taxTakenOff.error.individual = Select yes if you had any tax taken off your Jobseeker’s Allowance between {0} and {1}
+
+#################       Jobseeker’s Allowance - Tax Taken Off Amount Page        ########################################
+jobseekers.taxTakenOffAmount.title.agent = How much tax was taken off your client’s Jobseeker’s Allowance between {0} and {1}?
+jobseekers.taxTakenOffAmount.title.individual = How much tax was taken off your Jobseeker’s Allowance between  {0} and {1}?
+jobseekers.taxTakenOffAmount.textbox.label = Amount of tax taken off
 
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use

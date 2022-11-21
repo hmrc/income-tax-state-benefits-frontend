@@ -143,4 +143,20 @@ class ClaimServiceSpec extends UnitTest
       await(underTest.updateEndDateQuestion(aStateBenefitsUserData, question = true)) shouldBe Left(())
     }
   }
+
+  ".updateTaxPaidAmount" should {
+    "update claim with amount when claim exists" in {
+      val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
+
+      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(200)))), Right(sessionDataId))
+
+      await(underTest.updateTaxPaidAmount(userData, 200)) shouldBe Right(sessionDataId)
+    }
+
+    "return Left when createOrUpdate fails" in {
+      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
+
+      await(underTest.updateTaxPaidAmount(aStateBenefitsUserData, amount = 100)) shouldBe Left(())
+    }
+  }
 }

@@ -63,6 +63,13 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
     createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
   }
 
+  def updateTaxPaidAmount(stateBenefitsUserData: StateBenefitsUserData,
+                          amount: BigDecimal)
+                         (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
+    val updatedClaim = stateBenefitsUserData.claim.map(_.copy(taxPaid = Some(amount)))
+    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+  }
+
   private def createOrUpdateClaim(originalUserData: StateBenefitsUserData, withClaim: Option[ClaimCYAModel])
                                  (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
     val updatedUserData = originalUserData.copy(claim = withClaim)
