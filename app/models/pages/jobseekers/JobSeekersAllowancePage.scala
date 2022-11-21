@@ -30,6 +30,9 @@ object JobSeekersAllowancePage {
     val customerData = incomeTaxUserData.customerJobSeekersAllowances
       .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
 
-    JobSeekersAllowancePage(taxYear, hmrcData ++ customerData)
+    val benefitSummaryListRowData = (hmrcData ++ customerData)
+      .sortWith((it1, it2) => it1.startDate.isBefore(it2.startDate))
+
+    JobSeekersAllowancePage(taxYear, benefitSummaryListRowData)
   }
 }
