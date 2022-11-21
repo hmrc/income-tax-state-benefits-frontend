@@ -16,7 +16,8 @@
 
 package models.pages.jobseekers
 
-import forms.{AmountForm, FormsProvider}
+import forms.AmountForm
+import forms.jobseekers.FormsProvider
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData

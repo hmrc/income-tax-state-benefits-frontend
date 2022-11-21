@@ -17,7 +17,8 @@
 package views.pages.jobseekers
 
 import controllers.jobseekers.routes.TaxTakenOffController
-import forms.{FormsProvider, YesNoForm}
+import forms.YesNoForm
+import forms.jobseekers.FormsProvider
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

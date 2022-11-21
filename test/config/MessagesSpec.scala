@@ -21,11 +21,29 @@ import support.ViewUnitTest
 
 class MessagesSpec extends ViewUnitTest {
 
-  private val exclusionKeys: Set[String] = Set("global.error.fallbackClientError4xx.heading", "global.error.fallbackClientError4xx.message",
-    "internal-server-error-template.heading", "back.text", "global.error.pageNotFound404.message", "internal-server-error-template.paragraph.1",
-    "radios.yesnoitems.no", "phase.banner.before", "betaBar.banner.message.3", "radios.yesnoitems.yes", "global.error.badRequest400.message",
-    "phase.banner.after", "betaBar.banner.message.2", "common.yes", "common.back", "phase.banner.link", "betaBar.banner.message.1", "common.no",
-    "global.error.fallbackClientError4xx.title", "language.day.plural", "language.day.singular")
+  private val exclusionKeys: Set[String] = Set(
+    "global.error.fallbackClientError4xx.heading",
+    "global.error.fallbackClientError4xx.message",
+    "internal-server-error-template.heading",
+    "back.text",
+    "global.error.pageNotFound404.message",
+    "internal-server-error-template.paragraph.1",
+    "radios.yesnoitems.no",
+    "phase.banner.before",
+    "betaBar.banner.message.3",
+    "radios.yesnoitems.yes",
+    "global.error.badRequest400.message",
+    "phase.banner.after",
+    "betaBar.banner.message.2",
+    "common.yes",
+    "common.back",
+    "phase.banner.link",
+    "betaBar.banner.message.1",
+    "common.no",
+    "global.error.fallbackClientError4xx.title",
+    "language.day.plural",
+    "language.day.singular"
+  )
 
   private lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages
 

@@ -19,8 +19,7 @@ package controllers.jobseekers
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.DidClaimEndInTaxYearController
-import forms.DateForm
-import forms.DateForm.dateForm
+import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.StartDatePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +33,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class StartDateController @Inject()(actionsProvider: ActionsProvider,
+                                    formsProvider: FormsProvider,
                                     pageView: StartDatePageView,
                                     claimService: ClaimService,
                                     errorHandler: ErrorHandler)
@@ -42,13 +42,12 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, dateForm())))
+    Ok(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, request.user.isAgent))))
   }
 
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    val newForm = dateForm().bindFromRequest()
-    newForm.copy(errors = DateForm.validateStartDate(newForm.get, taxYear, request.user.isAgent)).fold(
+    formsProvider.startDateForm(taxYear, request.user.isAgent).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       formData => claimService.updateStartDate(request.stateBenefitsUserData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()

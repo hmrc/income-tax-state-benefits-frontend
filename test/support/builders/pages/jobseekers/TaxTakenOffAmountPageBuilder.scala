@@ -16,7 +16,7 @@
 
 package support.builders.pages.jobseekers
 
-import forms.FormsProvider
+import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.TaxTakenOffAmountPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.utils.TaxYearUtils.taxYearEOY

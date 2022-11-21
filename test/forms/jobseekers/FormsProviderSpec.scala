@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.jobseekers
 
+import forms.{AmountForm, YesNoForm}
 import play.api.data.FormError
 import support.UnitTest
 import support.providers.TaxYearProvider

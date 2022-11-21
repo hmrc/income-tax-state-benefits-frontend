@@ -16,8 +16,9 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{AmountController, EndDateController}
-import forms.DateForm._
+import controllers.jobseekers.routes.AmountController
+import forms.DateForm.{day, formValuesPrefix, month, year}
+import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.Results.{InternalServerError, Redirect}
@@ -41,6 +42,7 @@ class EndDateControllerSpec extends ControllerUnitTest
 
   private val underTest = new EndDateController(
     mockActionsProvider,
+    new FormsProvider(),
     pageView,
     mockClaimService,
     mockErrorHandler
