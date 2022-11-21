@@ -18,23 +18,41 @@ package models.pages.jobseekers
 
 import models.pages.elements.BenefitSummaryListRowData
 import support.UnitTest
+import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
+import support.builders.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.StateBenefitBuilder.aStateBenefit
+import support.builders.StateBenefitsDataBuilder.aStateBenefitsData
 import support.providers.TaxYearProvider
+
+import java.time.LocalDate
 
 class JobSeekersAllowancePageSpec extends UnitTest
   with TaxYearProvider {
 
   ".apply" should {
     "create correct JobSeekersAllowancePage object" in {
-      val hmrcData = anIncomeTaxUserData.hmrcJobSeekersAllowances
-        .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
+      val now = LocalDate.now()
+      val stateBenefit_1 = aStateBenefit.copy(startDate = now.minusDays(0))
+      val stateBenefit_2 = aStateBenefit.copy(startDate = now.minusDays(2))
+      val stateBenefit_3 = aCustomerAddedStateBenefit.copy(startDate = now.minusDays(1))
+      val stateBenefit_4 = aCustomerAddedStateBenefit.copy(startDate = now.minusDays(3))
 
-      val customerData = anIncomeTaxUserData.customerJobSeekersAllowances
-        .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
+      val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_1, stateBenefit_2)))
+      val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_3, stateBenefit_4)))
+      val incomeTaxUserData = anIncomeTaxUserData.copy(Some(anAllStateBenefitsData.copy(stateBenefitsData, Some(customerAddedStateBenefitsData))))
 
-      JobSeekersAllowancePage.apply(taxYear = taxYear, incomeTaxUserData = anIncomeTaxUserData) shouldBe JobSeekersAllowancePage(
+      val summaryListDataRows = Seq(
+        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_4),
+        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_2),
+        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_3),
+        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_1),
+      )
+
+      JobSeekersAllowancePage.apply(taxYear = taxYear, incomeTaxUserData = incomeTaxUserData) shouldBe JobSeekersAllowancePage(
         taxYear = taxYear,
-        summaryListDataRows = hmrcData ++ customerData
+        summaryListDataRows = summaryListDataRows
       )
     }
   }
