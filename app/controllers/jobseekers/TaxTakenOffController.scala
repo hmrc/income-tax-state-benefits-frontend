@@ -18,7 +18,7 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.{TaxTakenOffAmountController, TaxTakenOffController}
+import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffAmountController}
 import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.TaxTakenOffPage
 import play.api.i18n.I18nSupport
@@ -58,6 +58,6 @@ class TaxTakenOffController @Inject()(actionsProvider: ActionsProvider,
   }
 
   private def getRedirectCall(taxYear: Int, sessionDataId: UUID, yesNoValue: Boolean): Call = {
-    if (yesNoValue) TaxTakenOffAmountController.show(taxYear, sessionDataId) else TaxTakenOffController.show(taxYear, sessionDataId)
+    if (yesNoValue) TaxTakenOffAmountController.show(taxYear, sessionDataId) else ReviewClaimController.show(taxYear, sessionDataId)
   }
 }

@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{TaxTakenOffAmountController, TaxTakenOffController}
+import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffAmountController}
 import forms.YesNoForm
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -85,7 +85,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe TaxTakenOffAmountController.show(taxYearEOY, sessionDataId).url
     }
 
-    "redirect to TaxTakenOff page (FIX ME: until next  page implemented) when answer is No" in {
+    "redirect to ReviewJobSeekersAllowanceClaim page when answer is No" in {
       val modelWithExpectedData = aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None)
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
@@ -96,7 +96,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe TaxTakenOffController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
     }
   }
 }
