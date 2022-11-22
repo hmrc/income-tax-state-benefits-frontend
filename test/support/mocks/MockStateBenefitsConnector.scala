@@ -52,4 +52,12 @@ trait MockStateBenefitsConnector extends MockFactory {
       .expects(stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
+
+  def mockRemoveClaim(user: User,
+                      sessionDataId: UUID,
+                      result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
+    (mockStateBenefitsConnector.removeClaim(_: User, _: UUID)(_: HeaderCarrier))
+      .expects(user, sessionDataId, *)
+      .returning(Future.successful(result))
+  }
 }

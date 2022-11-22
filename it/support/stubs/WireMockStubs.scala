@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.authorisation.Enrolment.Agent
 import models.{IncomeTaxUserData, StateBenefitsUserData}
-import play.api.http.Status.{OK, UNAUTHORIZED}
+import play.api.http.Status.{NO_CONTENT, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsObject, Json}
 import support.builders.UserBuilder.aUser
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
@@ -160,6 +160,27 @@ trait WireMockStubs {
                                           mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
                                          ): StubMapping = {
     stubFor(post(urlMatching(url))
+      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
+      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
+      .willReturn(aResponse().withStatus(status).withBody(responseBody))
+    )
+  }
+
+  protected def removeClaimStub(nino: String,
+                                sessionDataId: UUID): StubMapping = {
+    stubFor(delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId"))
+      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
+      .withHeader("mtditid", equalTo(aUser.mtditid))
+      .willReturn(aResponse().withStatus(NO_CONTENT)))
+  }
+
+  protected def removeClaimStub(url: String,
+                                status: Int,
+                                responseBody: String,
+                                sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
+                                mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
+                               ): StubMapping = {
+    stubFor(delete(urlMatching(url))
       .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
       .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
       .willReturn(aResponse().withStatus(status).withBody(responseBody))

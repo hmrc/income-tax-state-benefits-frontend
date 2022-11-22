@@ -46,7 +46,7 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "redirect to StartDateController when when stateBenefitsService.createOrUpdate(...) returns value" in {
+    "redirect to StartDateController when stateBenefitsService.createOrUpdate(...) returns value" in {
       val sessionDataId = UUID.randomUUID()
 
       mockEndOfYear(taxYearEOY)

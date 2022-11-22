@@ -16,7 +16,8 @@
 
 package services
 
-import models.{ClaimCYAModel, StateBenefitsUserData}
+import models.errors.HttpParserError
+import models.{ClaimCYAModel, StateBenefitsUserData, User}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
@@ -61,6 +62,14 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
     val taxPaid = if (question) stateBenefitsUserData.claim.flatMap(_.taxPaid) else None
     val updatedClaim = stateBenefitsUserData.claim.map(_.copy(taxPaidQuestion = Some(question), taxPaid = taxPaid))
     createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+  }
+
+  def removeClaim(user: User, sessionDataId: UUID)
+                 (implicit headerCarrier: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
+    stateBenefitsService.removeClaim(user, sessionDataId).map {
+      case Left(apiError) => Left(apiError)
+      case Right(_) => Right(())
+    }
   }
 
   def updateTaxPaidAmount(stateBenefitsUserData: StateBenefitsUserData,
