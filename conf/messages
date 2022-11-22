@@ -39,6 +39,7 @@ common.no = No
 common.notStarted = Not started
 common.opensInNewTab = (opens in new tab)
 common.return.to.overview = Return to overview
+common.saveAndContinue = Save and continue
 common.stateBenefits = State benefits
 common.view = View
 common.yes = Yes
@@ -109,6 +110,24 @@ jobseekers.taxTakenOff.error.individual = Select yes if you had any tax taken of
 jobseekers.taxTakenOffAmount.title.agent = How much tax was taken off your client’s Jobseeker’s Allowance between {0} and {1}?
 jobseekers.taxTakenOffAmount.title.individual = How much tax was taken off your Jobseeker’s Allowance between  {0} and {1}?
 jobseekers.taxTakenOffAmount.textbox.label = Amount of tax taken off
+
+#################       Jobseeker’s Allowance - Review claim page       ########################################
+jobseekers.reviewClaimPage.title = Review Jobseeker’s allowance claim
+jobseekers.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
+jobseekers.reviewClaimPage.startDate.hiddenText.agent = Change the date your client started getting Jobseeker’s Allowance
+jobseekers.reviewClaimPage.startDate.hiddenText.individual = Change the date you started getting Jobseeker’s Allowance
+jobseekers.reviewClaimPage.endDateQuestion.hiddenText.agent = Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}
+jobseekers.reviewClaimPage.endDateQuestion.hiddenText.individual = Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}
+jobseekers.reviewClaimPage.endDate.hiddenText.agent = Change the date your client’s Jobseeker’s Allowance claim ended
+jobseekers.reviewClaimPage.endDate.hiddenText.individual = Change the date your Jobseeker’s Allowance claim ended
+jobseekers.reviewClaimPage.amount.hiddenText.agent = Change the amount of Jobseeker’s Allowance your client got
+jobseekers.reviewClaimPage.amount.hiddenText.individual = Change the amount of Jobseeker’s Allowance you got
+jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.agent = Change whether your client had any tax taken off your Jobseeker’s Allowance claim
+jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.individual = Change whether you had any tax taken off your Jobseeker’s Allowance claim
+jobseekers.reviewClaimPage.taxPaid.hiddenText.agent = Change the amount of tax taken off your client’s Jobseeker’s Allowance claim
+jobseekers.reviewClaimPage.taxPaid.hiddenText.individual = Change the amount of tax taken off your Jobseeker’s Allowance claim
+jobseekers.reviewClaimPage.removeClaim = Remove claim
+jobseekers.reviewClaimPage.removeClaim.hiddenText = Remove this Jobseeker’s allowance claim
 
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use

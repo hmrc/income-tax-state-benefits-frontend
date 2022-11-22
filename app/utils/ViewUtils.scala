@@ -17,6 +17,9 @@
 package utils
 
 import play.api.i18n.Messages
+import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import java.time.LocalDate
 import scala.util.Try
@@ -33,4 +36,29 @@ object ViewUtils {
     val translatedMonth = messages("common." + date.getMonth.toString.toLowerCase)
     date.getDayOfMonth + " " + translatedMonth + " " + date.getYear
   }
+
+  def summaryListRow(key: HtmlContent,
+                     value: HtmlContent,
+                     keyClasses: String = "govuk-!-width-one-third",
+                     valueClasses: String = "govuk-!-width-one-third",
+                     actionClasses: String = "govuk-!-width-one-third",
+                     actions: Seq[(Call, String, Option[String])]): SummaryListRow = {
+    SummaryListRow(
+      key = Key(content = key, classes = keyClasses),
+      value = Value(content = value, classes = valueClasses),
+      actions = Some(Actions(
+        items = actions.map { case (call, linkText, visuallyHiddenText) => ActionItem(
+          href = call.url,
+          content = ariaHiddenChangeLink(linkText),
+          visuallyHiddenText = visuallyHiddenText)
+        },
+        classes = actionClasses
+      ))
+    )
+  }
+
+  def ariaHiddenChangeLink(linkText: String): HtmlContent = {
+    HtmlContent(s"""<span aria-hidden="true">$linkText</span>""")
+  }
+
 }

@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.TaxTakenOffAmountController
+import controllers.jobseekers.routes.ReviewClaimController
 import forms.AmountForm._
 import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
@@ -89,7 +89,7 @@ class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
 
       await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(TaxTakenOffAmountController.show(taxYearEOY, sessionDataId))
+        Redirect(ReviewClaimController.show(taxYearEOY, sessionDataId))
     }
   }
 }

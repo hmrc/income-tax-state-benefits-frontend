@@ -18,7 +18,7 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.TaxTakenOffAmountController
+import controllers.jobseekers.routes.ReviewClaimController
 import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.TaxTakenOffAmountPage
 import play.api.i18n.I18nSupport
@@ -50,7 +50,7 @@ class TaxTakenOffAmountController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffAmountPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       amount => claimService.updateTaxPaidAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(TaxTakenOffAmountController.show(taxYear, uuid))
+        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, uuid))
       }
     )
   }

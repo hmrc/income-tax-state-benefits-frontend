@@ -1,0 +1,122 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.jobseekers.routes._
+@import models.pages.jobseekers.ReviewClaimPage
+@import models.requests.UserSessionDataRequest
+
+@import views.html.templates.Layout
+@import views.html.templates.helpers.Button
+@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Link
+@import utils.ViewUtils.bigDecimalCurrency
+@import utils.ViewUtils.summaryListRow
+@import utils.ViewUtils.translatedDateFormatter
+
+
+@this(
+    layout: Layout,
+    heading: Heading,
+    formWithCSRF: FormWithCSRF,
+    link: Link,
+    govukSummaryList: GovukSummaryList,
+    govukInsetText: GovukInsetText,
+    button: Button
+)
+
+@(pageModel: ReviewClaimPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
+
+@appendUserTypeSuffix(key: String) = @{s"$key.${if(request.user.isAgent) "agent" else "individual"}"}
+
+@layout(
+    pageTitle = messages("jobseekers.reviewClaimPage.title"),
+    taxYear = Some(pageModel.taxYear),
+    isAgent = request.user.isAgent
+) {
+    @heading(
+        messages("jobseekers.reviewClaimPage.title"),
+        Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+    )
+
+    @if(!pageModel.isCustomerAdded){<p class="govuk-body">@messages("jobseekers.reviewClaimPage.p1")</p>}
+
+    @{
+        def toSummaryListRow(
+            message: String,
+            value: String,
+            optRoute: Option[Call],
+            hiddenMessage: String
+        ): SummaryListRow = summaryListRow(
+            HtmlContent(message),
+            HtmlContent(value),
+            keyClasses = "govuk-!-width-two-thirds",
+            valueClasses = if (pageModel.isInYear) "govuk-!-width-one-third right-align" else "govuk-!-width-one-third",
+            actions = optRoute.map(route => Seq((route, messages("common.change"), Some(hiddenMessage)))).getOrElse(Seq())
+        )
+
+        def mapToYesNo(value: Boolean) = if(value) messages("common.yes") else messages("common.no")
+
+        govukSummaryList(
+            SummaryList(
+                Seq(
+                    Some({
+                        val optRoute = if (pageModel.isInYear) None else Some(StartDateController.show(pageModel.taxYear, pageModel.sessionDataId))
+                        toSummaryListRow(messages(appendUserTypeSuffix("jobseekers.startDatePage.title")), translatedDateFormatter(pageModel.itemsFirstDate), optRoute, messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.startDate.hiddenText")))
+                    }),
+                    pageModel.endDateQuestion.map( question => {
+                        val optRoute = if (pageModel.isInYear) None else Some(DidClaimEndInTaxYearController.show(pageModel.taxYear, pageModel.sessionDataId))
+                        toSummaryListRow(messages("jobseekers.didClaimEndInTaxYear.title", pageModel.taxYear.toString), mapToYesNo(question), optRoute, messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
+                    }),
+                    pageModel.endDate.map( date => {
+                        val optRoute = if (pageModel.isInYear) None else Some(EndDateController.show(pageModel.taxYear, pageModel.sessionDataId))
+                        toSummaryListRow(messages("jobseekers.endDatePage.title"), translatedDateFormatter(pageModel.itemsSecondDate), optRoute, messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.endDate.hiddenText")))
+                    }),
+                    pageModel.amount.map( amount => {
+                        val optRoute = if (pageModel.isInYear) None else Some(AmountController.show(pageModel.taxYear, pageModel.sessionDataId))
+                        toSummaryListRow(messages(appendUserTypeSuffix("jobseekers.amountPage.title"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+                                         bigDecimalCurrency(amount.toString),
+                                         optRoute,
+                                         messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.amount.hiddenText")))
+                    }),
+                    pageModel.taxPaidQuestion.map( question => {
+                        val optRoute = if (pageModel.isInYear) None else Some(TaxTakenOffController.show(pageModel.taxYear, pageModel.sessionDataId))
+                        toSummaryListRow(messages(appendUserTypeSuffix("jobseekers.taxTakenOff.title"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+                                         mapToYesNo(question),
+                                         optRoute,
+                                         messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText")))
+                    }),
+                    pageModel.taxPaid.map( amount => {
+                        val optRoute = if (pageModel.isInYear) None else Some(TaxTakenOffAmountController.show(pageModel.taxYear, pageModel.sessionDataId))
+                        toSummaryListRow(messages(appendUserTypeSuffix("jobseekers.taxTakenOffAmount.title"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+                                         bigDecimalCurrency(amount.toString),
+                                         optRoute,
+                                         messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.taxPaid.hiddenText")))
+                    })
+                ).flatten))
+
+    }
+
+    @formWithCSRF(action = ReviewClaimController.show(pageModel.taxYear, pageModel.sessionDataId)) {
+        <div class="govuk-button-group">
+            @button("common.saveAndContinue", classes = Some("govuk-!-margin-top-6"), attributes = Map("id" -> "save-and-continue-button"))
+            @link(ReviewClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, "jobseekers.reviewClaimPage.removeClaim", id = Some("remove-link"), hiddenText = Some("jobseekers.reviewClaimPage.removeClaim.hiddenText"))
+        </div>
+    }
+}
+
+@{
+// $COVERAGE-OFF$
+}

@@ -149,15 +149,17 @@ trait ViewHelper {
     }
   }
 
-  def linkCheck(text: String, selector: String, href: String, hiddenTextSelector: Option[String] = None,
+  def linkCheck(text: String, selector: String, href: String, hiddenText: Option[String] = None, hiddenTextSelector: Option[String] = None,
                 isExactUrlMatch: Boolean = true, additionalTestText: String = "")(implicit document: Document): Unit = {
     s"have a $text link $additionalTestText" which {
       s"has the text '$text' and a href to '$href'" in {
-        if (hiddenTextSelector.isDefined) {
-          document.select(hiddenTextSelector.get).text() shouldBe text.split(" ").drop(1).mkString(" ")
+        if (hiddenTextSelector.isDefined && hiddenText.isDefined) {
+          document.select(hiddenTextSelector.get).text() shouldBe hiddenText.get
+          document.select(selector).text() shouldBe text + hiddenText.get
+        } else {
+          document.select(selector).text() shouldBe text
         }
 
-        document.select(selector).text() shouldBe text
         if (isExactUrlMatch) {
           document.select(selector).attr("href") shouldBe href
         } else {

@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{TaxTakenOffAmountController, TaxTakenOffController}
+import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffAmountController}
 import forms.YesNoForm
 import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
@@ -80,13 +80,13 @@ class TaxTakenOffControllerSpec extends ControllerUnitTest
       await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(TaxTakenOffAmountController.show(taxYearEOY, sessionDataId))
     }
 
-    "redirect To TaxTakenOff page (FIX ME: until next  page implemented) when No is submitted" in {
+    "redirect to ReviewJobSeekersAllowanceClaim page when No is submitted" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = false, Right(sessionDataId))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
 
-      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(TaxTakenOffController.show(taxYearEOY, sessionDataId))
+      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(ReviewClaimController.show(taxYearEOY, sessionDataId))
     }
 
     "handle internal server error when updating end date question fails" in {
