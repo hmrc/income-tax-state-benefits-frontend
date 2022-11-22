@@ -1,0 +1,106 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.pages.jobseekers.RemoveClaimPage
+@import controllers.jobseekers.routes.RemoveClaimController
+@import controllers.jobseekers.routes.ReviewClaimController
+@import models.requests.UserSessionDataRequest
+@import utils.ViewUtils.translatedDateFormatter
+@import utils.ViewUtils.toSummaryListRow
+@import utils.ViewUtils.bigDecimalCurrency
+
+@import views.html.templates.Layout
+@import views.html.templates.helpers.Button
+@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Link
+
+@this(
+    layout: Layout,
+    heading: Heading,
+    govukSummaryList: GovukSummaryList,
+    link: Link,
+    button : Button,
+    formWithCSRF: FormWithCSRF
+)
+
+@(pageModel: RemoveClaimPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
+
+@titleText = @{ messages(s"jobseekers.removePage.title") }
+
+@startDateRow = @{
+    toSummaryListRow(
+        key = HtmlContent({messages(s"jobseekers.startDatePage.title.${if(request.user.isAgent) "agent" else "individual"}")}),
+        value = HtmlContent({translatedDateFormatter(pageModel.titleFirstDate)}),
+        keyClasses = "govuk-!-width-two-thirds"
+)}
+
+@didEndDateRow = @{
+    toSummaryListRow(
+        key = HtmlContent({messages("jobseekers.didClaimEndInTaxYear.title", pageModel.taxYear.toString)}),
+        value = HtmlContent({if (pageModel.endDate) messages("common.yes") else messages("common.no")}),
+        keyClasses = "govuk-!-width-two-thirds"
+)}
+
+@endDateRow = @{
+    toSummaryListRow(
+        key = HtmlContent({messages(s"jobseekers.endDatePage.title")}),
+        value = HtmlContent({translatedDateFormatter(pageModel.titleSecondDate)}),
+        keyClasses = "govuk-!-width-two-thirds"
+)}
+
+@amountRow = @{
+    toSummaryListRow(
+        key = HtmlContent({messages(s"jobseekers.amountPage.title.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}),
+        value = HtmlContent({bigDecimalCurrency(pageModel.amount.toString)}),
+        keyClasses = "govuk-!-width-two-thirds"
+)}
+
+@taxTakenOffQuestionRow = @{
+    toSummaryListRow(
+        key = HtmlContent({messages(s"jobseekers.taxTakenOff.title.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}),
+        value = HtmlContent({if(pageModel.taxPaidQuestion) messages("common.yes") else messages("common.no")}),
+        keyClasses = "govuk-!-width-two-thirds"
+)}
+
+@taxTakenOffAmountRow = @{
+    toSummaryListRow(
+        key = HtmlContent({messages(s"jobseekers.taxTakenOffAmount.title.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}),
+        value = HtmlContent({bigDecimalCurrency(pageModel.taxPaid.get.toString)}),
+        keyClasses = "govuk-!-width-two-thirds"
+)}
+
+@rows = @{(pageModel.taxPaidQuestion, pageModel.endDate) match {
+            case(true, true)   => Seq(startDateRow, didEndDateRow, endDateRow, amountRow, taxTakenOffQuestionRow, taxTakenOffAmountRow)
+            case(true, false)  => Seq(startDateRow, endDateRow, amountRow, taxTakenOffQuestionRow, taxTakenOffAmountRow)
+            case(false, true)  => Seq(startDateRow, didEndDateRow, endDateRow, amountRow, taxTakenOffQuestionRow)
+            case(false, false) => Seq(startDateRow, didEndDateRow, amountRow, taxTakenOffQuestionRow)
+    }
+}
+
+@layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
+
+    @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+
+    @{govukSummaryList(SummaryList(rows))}
+
+    @formWithCSRF(action = RemoveClaimController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    <div class="govuk-button-group">
+        @button(alternativeText = "common.removeClaim", classes = Some("govuk-!-margin-top-6 govuk-button--warning"))
+        @link(link = ReviewClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, messageKeyOrValue = "jobseekers.removePage.link", hiddenText = Some("jobseekers.removePage.link.hidden"))
+    </div>
+    }
+
+}

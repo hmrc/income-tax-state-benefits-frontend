@@ -37,28 +37,29 @@ object ViewUtils {
     date.getDayOfMonth + " " + translatedMonth + " " + date.getYear
   }
 
-  def summaryListRow(key: HtmlContent,
-                     value: HtmlContent,
-                     keyClasses: String = "govuk-!-width-one-third",
-                     valueClasses: String = "govuk-!-width-one-third",
-                     actionClasses: String = "govuk-!-width-one-third",
-                     actions: Seq[(Call, String, Option[String])]): SummaryListRow = {
+  def toSummaryListRow(key: HtmlContent,
+                       value: HtmlContent,
+                       keyClasses: String = "govuk-!-width-one-third",
+                       valueClasses: String = "govuk-!-width-one-third",
+                       actionClasses: String = "govuk-!-width-one-third",
+                       actions: Option[Seq[(Call, String, Option[String])]] = None): SummaryListRow = {
     SummaryListRow(
-      key = Key(content = key, classes = keyClasses),
+      key = Key(content = key, keyClasses),
       value = Value(content = value, classes = valueClasses),
-      actions = Some(Actions(
-        items = actions.map { case (call, linkText, visuallyHiddenText) => ActionItem(
-          href = call.url,
-          content = ariaHiddenChangeLink(linkText),
-          visuallyHiddenText = visuallyHiddenText)
-        },
-        classes = actionClasses
-      ))
-    )
+      actions = actions.map { action =>
+        Actions(
+          items = action.map { case (call, linkText, visuallyHiddenText) => ActionItem(
+            href = call.url,
+            content = ariaHiddenChangeLink(linkText),
+            visuallyHiddenText = visuallyHiddenText
+          )
+          },
+          classes = if (actions.isEmpty) "" else actionClasses
+        )
+      })
   }
 
   def ariaHiddenChangeLink(linkText: String): HtmlContent = {
     HtmlContent(s"""<span aria-hidden="true">$linkText</span>""")
   }
-
 }

@@ -221,7 +221,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(5), "for the tax paid question")
           buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveButtonSelector)
-          linkCheck(expectedRemoveLinkText, removeLinkSelector, ReviewClaimController.show(taxYearEOY, pageModel.sessionDataId).url,
+          linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, pageModel.sessionDataId).url,
             Some(expectedRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
         }
 

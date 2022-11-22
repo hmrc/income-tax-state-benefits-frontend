@@ -43,6 +43,7 @@ common.saveAndContinue = Cadw ac yn eich blaen
 common.stateBenefits = State benefits
 common.view = View
 common.yes = Iawn
+common.removeClaim = Remove claim
 
 common.error.amountMaxLimit = Enter an amount less than £100,000,000,000
 common.error.invalid_currency_format = Enter the amount in the correct format
@@ -126,8 +127,12 @@ jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.agent = Change whether you
 jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.individual = Change whether you had any tax taken off your Jobseeker’s Allowance claim
 jobseekers.reviewClaimPage.taxPaid.hiddenText.agent = Change the amount of tax taken off your client’s Jobseeker’s Allowance claim
 jobseekers.reviewClaimPage.taxPaid.hiddenText.individual = Change the amount of tax taken off your Jobseeker’s Allowance claim
-jobseekers.reviewClaimPage.removeClaim = Remove claim
 jobseekers.reviewClaimPage.removeClaim.hiddenText = Remove this Jobseeker’s allowance claim
+
+#################       Jobseeker’s Allowance - Remove Claim Page       ########################################
+jobseekers.removePage.title = Are you sure you want to remove this Jobseeker’s Allowance claim?
+jobseekers.removePage.link = Don’t remove claim
+jobseekers.removePage.link.hidden = Don’t remove this Jobseeker's Allowance Claim
 
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use

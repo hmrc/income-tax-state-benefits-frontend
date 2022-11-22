@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import connectors.errors.ApiError
-import connectors.responses.{CreateOrUpdateUserDataResponse, GetIncomeTaxUserDataResponse, GetUserSessionDataResponse}
+import connectors.responses.{CreateOrUpdateUserDataResponse, GetIncomeTaxUserDataResponse, GetUserSessionDataResponse, RemoveClaimResponse}
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
 import services.PagerDutyLoggerService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -61,6 +61,15 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     }
   }
 
+  def removeClaim(user: User, sessionDataId: UUID)(implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
+    val response = removeClaimData(user.nino, sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
+
+    response.map { response: RemoveClaimResponse =>
+      if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
+      response.result
+    }
+  }
+
   private def getIncomeTaxUserData(taxYear: Int, nino: String)
                                   (implicit hc: HeaderCarrier): Future[GetIncomeTaxUserDataResponse] = {
     val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/prior-data/nino/$nino/tax-year/$taxYear"
@@ -77,5 +86,11 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
                                 (implicit hc: HeaderCarrier): Future[CreateOrUpdateUserDataResponse] = {
     val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data"
     httpClient.POST[StateBenefitsUserData, CreateOrUpdateUserDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
+  }
+
+  private def removeClaimData(nino: String, sessionDataId: UUID)
+                             (implicit hc: HeaderCarrier): Future[RemoveClaimResponse] = {
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/nino/$nino/session/$sessionDataId"
+    httpClient.DELETE[RemoveClaimResponse](stateBenefitsBEUrl)
   }
 }
