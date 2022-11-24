@@ -26,6 +26,10 @@ import scala.util.Try
 
 object ViewUtils {
 
+  def toYesOrNo(value: Boolean)(implicit messages: Messages): String = {
+    if (value) messages("common.yes") else messages("common.no")
+  }
+
   def bigDecimalCurrency(value: String, currencySymbol: String = "£"): String =
     Try(BigDecimal(value))
       .map(amount => currencySymbol + f"$amount%1.2f".replace(".00", ""))
@@ -37,28 +41,31 @@ object ViewUtils {
     date.getDayOfMonth + " " + translatedMonth + " " + date.getYear
   }
 
-  def summaryListRow(key: HtmlContent,
-                     value: HtmlContent,
-                     keyClasses: String = "govuk-!-width-one-third",
-                     valueClasses: String = "govuk-!-width-one-third",
-                     actionClasses: String = "govuk-!-width-one-third",
-                     actions: Seq[(Call, String, Option[String])]): SummaryListRow = {
+  // TODO: Needs testing
+  def toSummaryListRow(key: HtmlContent,
+                       value: HtmlContent,
+                       keyClasses: String = "govuk-!-width-one-third",
+                       valueClasses: String = "govuk-!-width-one-third",
+                       actionClasses: String = "govuk-!-width-one-third",
+                       actions: Option[Seq[(Call, String, Option[String])]] = None): SummaryListRow = {
     SummaryListRow(
-      key = Key(content = key, classes = keyClasses),
+      key = Key(content = key, keyClasses),
       value = Value(content = value, classes = valueClasses),
-      actions = Some(Actions(
-        items = actions.map { case (call, linkText, visuallyHiddenText) => ActionItem(
-          href = call.url,
-          content = ariaHiddenChangeLink(linkText),
-          visuallyHiddenText = visuallyHiddenText)
-        },
-        classes = actionClasses
-      ))
-    )
+      actions = actions.map { action =>
+        Actions(
+          items = action.map {
+            case (call, linkText, visuallyHiddenText) => ActionItem(
+              href = call.url,
+              content = ariaHiddenChangeLink(linkText),
+              visuallyHiddenText = visuallyHiddenText)
+          },
+          classes = if (actions.isEmpty) "" else actionClasses
+        )
+      })
   }
 
+  // TODO: Needs testing
   def ariaHiddenChangeLink(linkText: String): HtmlContent = {
     HtmlContent(s"""<span aria-hidden="true">$linkText</span>""")
   }
-
 }

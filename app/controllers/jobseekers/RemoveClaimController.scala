@@ -17,28 +17,36 @@
 package controllers.jobseekers
 
 import actions.ActionsProvider
-import config.AppConfig
-import models.pages.jobseekers.ReviewClaimPage
+import config.{AppConfig, ErrorHandler}
+import controllers.jobseekers.routes.JobSeekersAllowanceController
+import models.pages.jobseekers.RemoveClaimPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.ClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
-import views.html.pages.jobseekers.ReviewClaimPageView
+import views.html.pages.jobseekers.RemoveClaimView
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
-                                      pageView: ReviewClaimPageView)
+class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
+                                      pageView: RemoveClaimView,
+                                      claimService: ClaimService,
+                                      errorHandler: ErrorHandler)
                                      (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData)))
+    Ok(pageView(RemoveClaimPage(taxYear, request.stateBenefitsUserData)))
+  }
+
+  def submit(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+    claimService.removeClaim(request.user, sessionDataId).map {
+      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+      case Left(_) => errorHandler.internalServerError()
+    }
   }
 }
-
-
-

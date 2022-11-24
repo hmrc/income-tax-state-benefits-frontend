@@ -37,6 +37,8 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   with TaxYearProvider
   with MockFactory {
 
+  private val sessionDataId = UUID.randomUUID()
+
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
     .withExtraHeaders("mtditid" -> aUser.mtditid, "X-Session-ID" -> aUser.sessionId)
 
@@ -96,7 +98,6 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   }
 
   ".getUserSessionData(...)" should {
-    val sessionDataId = UUID.randomUUID()
     "Return a success result" when {
       "BE returns 200" in {
         val expectedResponse = Json.toJson(aStateBenefitsUserData).toString()
@@ -152,8 +153,6 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
 
   ".createOrUpdate(...)" should {
     "Return a success result when BE returns 200" in {
-      val sessionDataId = UUID.randomUUID()
-
       createUserSessionDataStub("/session-data", OK, responseBody = Json.toJson(sessionDataId).toString())
 
       await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Right(sessionDataId)
@@ -164,6 +163,21 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       mockPagerDutyLog("CreateOrUpdateUserDataResponse")
 
       await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
+    }
+  }
+
+  "removeClaim(...)" should {
+    "Return an empty response in the success case when BE returns 204" in {
+      removeClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", status = NO_CONTENT, responseBody = "")
+
+      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Right(())
+    }
+
+    "Return a Left/Failure when BE returns code different than 200" in {
+      removeClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", status = NOT_FOUND, responseBody = "")
+      mockPagerDutyLog("RemoveClaimResponse")
+
+      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
     }
   }
 }

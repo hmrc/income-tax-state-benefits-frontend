@@ -35,6 +35,7 @@ class StateBenefitsServiceSpec extends UnitTest
   with TaxYearProvider {
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
+  private val sessionDataId = UUID.randomUUID()
 
   private val underTest = new StateBenefitsService(mockStateBenefitsConnector)
 
@@ -53,7 +54,6 @@ class StateBenefitsServiceSpec extends UnitTest
   }
 
   ".getUserSessionData(...)" should {
-    val sessionDataId = UUID.randomUUID()
     "return error when fails to create data" in {
       mockGetUserSessionData(aUser, sessionDataId, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
@@ -75,11 +75,23 @@ class StateBenefitsServiceSpec extends UnitTest
     }
 
     "return correct result" in {
-      val sessionDataId = UUID.randomUUID()
-
       mockCreateOrUpdate(aStateBenefitsUserData, Right(sessionDataId))
 
       await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Right(sessionDataId)
+    }
+  }
+
+  ".remove(...)" should {
+    "return error when fails to remove data" in {
+      mockRemoveClaim(aUser, sessionDataId, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
+
+      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+    }
+
+    "return correct result when remove successful" in {
+      mockRemoveClaim(aUser, sessionDataId, Right(()))
+
+      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Right(())
     }
   }
 }

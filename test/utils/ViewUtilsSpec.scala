@@ -16,28 +16,22 @@
 
 package utils
 
-import org.scalamock.scalatest.MockFactory
-import play.api.i18n.{Lang, Messages}
-import play.i18n
 import support.UnitTest
+import support.providers.MessagesProvider
 
 import java.time.LocalDate
 
 class ViewUtilsSpec extends UnitTest
-  with MockFactory {
+  with MessagesProvider {
 
-  private val messages = new Messages {
-    override def lang: Lang = throw new NotImplementedError
+  ".toYesOrNo" should {
+    "return translation of common.yes when given value is true" in {
+      ViewUtils.toYesOrNo(value = true) shouldBe messages("common.yes")
+    }
 
-    override def apply(key: String, args: Any*): String = key.replace("common.", "").capitalize
-
-    override def apply(keys: Seq[String], args: Any*): String = throw new NotImplementedError
-
-    override def translate(key: String, args: Seq[Any]): Option[String] = throw new NotImplementedError
-
-    override def isDefinedAt(key: String): Boolean = throw new NotImplementedError
-
-    override def asJava: i18n.Messages = throw new NotImplementedError
+    "return translation of common.no when given value is false" in {
+      ViewUtils.toYesOrNo(value = false) shouldBe messages("common.no")
+    }
   }
 
   ".bigDecimalCurrency" should {
@@ -48,7 +42,8 @@ class ViewUtilsSpec extends UnitTest
 
   ".translatedDateFormatter" should {
     "translate date" in {
-      ViewUtils.translatedDateFormatter(LocalDate.parse("2002-01-01"))(messages = messages) shouldBe "1 January 2002"
+      val date = LocalDate.parse("2002-01-01")
+      ViewUtils.translatedDateFormatter(date) shouldBe date.getDayOfMonth + " " + messages("common." + date.getMonth.toString.toLowerCase) + " " + date.getYear
     }
   }
 }
