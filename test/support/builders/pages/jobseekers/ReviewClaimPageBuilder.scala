@@ -28,6 +28,7 @@ object ReviewClaimPageBuilder {
     sessionDataId = aStateBenefitsUserData.sessionDataId.get,
     isInYear = false,
     isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,
+    isIgnored = false,
     itemsFirstDate = aClaimCYAModel.startDate,
     itemsSecondDate = aClaimCYAModel.endDate.get,
     startDate = aClaimCYAModel.startDate,

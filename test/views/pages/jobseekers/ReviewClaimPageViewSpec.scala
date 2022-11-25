@@ -35,10 +35,12 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val bannerParagraphSelector: String = ".govuk-notification-banner__heading"
     val bannerLinkSelector: String = ".govuk-notification-banner__link"
     val p1 = "#main-content > div > div > p.govuk-body"
-    val saveButtonSelector = "#save-and-continue-button"
-    val removeLinkSelector = "#remove-link"
-    val removeLinkHiddenSelector = "#remove-link > span.govuk-visually-hidden"
+    val saveButtonSelector = "#save-and-continue-button-id"
+    val removeLinkSelector = "#remove-link-id"
+    val removeLinkHiddenSelector = "#remove-link-id > span.govuk-visually-hidden"
     val rowsSelector = "#main-content > div > div > dl > div"
+    val backLinkSelector = "#back-link-id"
+    val restoreClaimButtonSelector = "#restore-claim-button-id"
 
     def summaryListRowFieldNameSelector(i: Int): String = s"#main-content > div > div > dl > div:nth-child($i) > dt"
 
@@ -76,6 +78,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val expectedSaveButtonText: String
     val expectedRemoveLinkText: String
     val expectedRemoveLinkHiddenText: String
+    val expectedRestoreClaimButtonText: String
+    val expectedBackText: String
     val expectedYesText: String
     val expectedNoText: String
   }
@@ -91,6 +95,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedSaveButtonText: String = "Save and continue"
     override val expectedRemoveLinkText: String = "Remove claim"
     override val expectedRemoveLinkHiddenText: String = "Remove this Jobseeker’s allowance claim"
+    override val expectedRestoreClaimButtonText: String = "Restore claim"
+    override val expectedBackText: String = "Back"
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
   }
@@ -106,6 +112,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedSaveButtonText: String = "Cadw ac yn eich blaen"
     override val expectedRemoveLinkText: String = "Remove claim"
     override val expectedRemoveLinkHiddenText: String = "Remove this Jobseeker’s allowance claim"
+    override val expectedRestoreClaimButtonText: String = "Restore claim"
+    override val expectedBackText: String = "Back"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
   }
@@ -225,6 +233,9 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveButtonSelector)
           linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, pageModel.sessionDataId).url,
             Some(expectedRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
+
+          elementNotOnPageCheck(restoreClaimButtonSelector)
+          elementNotOnPageCheck(backLinkSelector)
         }
 
         "there is external data provided" which {
@@ -235,6 +246,22 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
           implicit val document: Document = Jsoup.parse(page(pageModel).body)
           textOnPageCheck(userScenario.commonExpectedResults.expectedExternalDataText, Selectors.p1)
+        }
+
+        "the claim is ignored" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val pageModel = aReviewClaimPage.copy(isIgnored = true)
+
+          implicit val document: Document = Jsoup.parse(page(pageModel).body)
+          buttonCheck(userScenario.commonExpectedResults.expectedRestoreClaimButtonText, restoreClaimButtonSelector)
+          linkCheck(expectedBackText, backLinkSelector, JobSeekersAllowanceController.show(taxYearEOY).url)
+          elementNotOnPageCheck(changeLink(1))
+          elementNotOnPageCheck(changeLink(2))
+          elementNotOnPageCheck(changeLink(3))
+          elementNotOnPageCheck(changeLink(4))
+          elementNotOnPageCheck(changeLink(5))
         }
       }
     }
