@@ -22,10 +22,8 @@ import utils.InYearUtil.toDateWithinTaxYear
 import java.time.LocalDate
 import java.util.UUID
 
-case class ReviewClaimPage(taxYear: Int,
+case class RemoveClaimPage(taxYear: Int,
                            sessionDataId: UUID,
-                           isInYear: Boolean,
-                           isCustomerAdded: Boolean,
                            itemsFirstDate: LocalDate,
                            itemsSecondDate: LocalDate,
                            startDate: LocalDate,
@@ -35,18 +33,14 @@ case class ReviewClaimPage(taxYear: Int,
                            taxPaidQuestion: Option[Boolean],
                            taxPaid: Option[BigDecimal])
 
-object ReviewClaimPage {
+object RemoveClaimPage {
 
-  def apply(taxYear: Int,
-            isInYear: Boolean,
-            stateBenefitsUserData: StateBenefitsUserData): ReviewClaimPage = {
+  def apply(taxYear: Int, stateBenefitsUserData: StateBenefitsUserData): RemoveClaimPage = {
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
 
-    ReviewClaimPage(
+    RemoveClaimPage(
       taxYear = taxYear,
       sessionDataId = stateBenefitsUserData.sessionDataId.get,
-      isInYear = isInYear,
-      isCustomerAdded = !stateBenefitsUserData.isPriorSubmission,
       itemsFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate),
       itemsSecondDate = claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")),
       startDate = claimCYAModel.startDate,

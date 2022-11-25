@@ -16,7 +16,8 @@
 
 package support.mocks
 
-import models.StateBenefitsUserData
+import models.errors.HttpParserError
+import models.{StateBenefitsUserData, User}
 import org.scalamock.handlers.CallHandler3
 import org.scalamock.scalatest.MockFactory
 import services.ClaimService
@@ -75,6 +76,14 @@ trait MockClaimService extends MockFactory {
                               result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, UUID]]] = {
     (mockClaimService.updateTaxPaidAmount(_: StateBenefitsUserData, _: BigDecimal)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, amount, *)
+      .returning(Future.successful(result))
+  }
+
+  def mockRemoveClaim(user: User,
+                      sessionDataId: UUID,
+                      result: Either[HttpParserError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
+    (mockClaimService.removeClaim(_: User, _: UUID)(_: HeaderCarrier))
+      .expects(user, sessionDataId, *)
       .returning(Future.successful(result))
   }
 }

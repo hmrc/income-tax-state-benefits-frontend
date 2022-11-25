@@ -38,7 +38,7 @@
 
 @(pageModel: AmountPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages(s"jobseekers.amountPage.title.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}
+@titleText = @{messages(s"common.jobSeekersAllowanceAmount.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 

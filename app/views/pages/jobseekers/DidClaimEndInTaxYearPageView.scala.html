@@ -36,7 +36,7 @@
 
 @(pageModel: DidClaimEndInTaxYearPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages("jobseekers.didClaimEndInTaxYear.title", pageModel.taxYear.toString)}
+@titleText = @{messages("common.jobSeekersAllowanceEndDateQuestion", pageModel.taxYear.toString)}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
