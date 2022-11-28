@@ -16,7 +16,6 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
 import controllers.session.routes.UserSessionDataController
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
@@ -139,7 +138,8 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         captionCheck(expectedCaption(taxYear))
         h1Check(expectedHeading)
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1Text, Selectors.summaryListRowSelector(1), "row-1")
-        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1), JobSeekersAllowanceController.show(taxYear).url)
+        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1),
+          UserSessionDataController.loadToSession(taxYear, aBenefitSummaryListRowData.benefitId).url)
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Text, Selectors.summaryListRowSelector(2), "row-2")
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
         formPostLinkCheck(UserSessionDataController.create(taxYear).url, Selectors.addMissingClaimFormSelector)

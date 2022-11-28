@@ -40,4 +40,28 @@ object StateBenefitsUserData {
     isPriorSubmission = false,
     claim = None
   )
+
+  def apply(taxYear: Int,
+            user: User,
+            benefitId: UUID,
+            incomeTaxUserData: IncomeTaxUserData): Option[StateBenefitsUserData] = {
+    val optionalHmrcStateBenefit = incomeTaxUserData.hmrcJobSeekersAllowances.find(item => item.benefitId == benefitId)
+    val optionalCustomerStateBenefit = incomeTaxUserData.customerJobSeekersAllowances.find(item => item.benefitId == benefitId)
+
+    lazy val stateBenefitsUserData = StateBenefitsUserData(
+      sessionDataId = None,
+      sessionId = user.sessionId,
+      mtdItId = user.mtditid,
+      nino = user.nino,
+      taxYear = taxYear,
+      isPriorSubmission = true,
+      claim = None
+    )
+
+    (optionalHmrcStateBenefit, optionalCustomerStateBenefit) match {
+      case (Some(benefit), _) => Some(stateBenefitsUserData.copy(claim = Some(ClaimCYAModel.mapFrom(benefit))))
+      case (_, Some(benefit)) => Some(stateBenefitsUserData.copy(claim = Some(ClaimCYAModel.mapFrom(benefit))))
+      case (None, None) => None
+    }
+  }
 }

@@ -16,19 +16,28 @@
 
 package controllers.session
 
-import controllers.jobseekers.routes.StartDateController
+import controllers.jobseekers.routes.{ReviewClaimController, StartDateController}
+import models.StateBenefitsUserData
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
+import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.StateBenefitBuilder.aStateBenefit
+import support.builders.UserBuilder.aUser
 
 import java.util.UUID
 
 class UserSessionDataControllerISpec extends IntegrationTest {
 
-  private def url(taxYear: Int): String =
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/session-data"
+  private def url(taxYear: Int, benefitId: Option[UUID] = None): String = {
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/session-data${benefitId.fold("")(id => s"?benefitId=$id")}"
+  }
+
+  private val benefitId = UUID.randomUUID()
+  private val sessionDataId = UUID.randomUUID()
 
   ".create" should {
     "redirect to income tax submission overview when in year" in {
@@ -51,6 +60,30 @@ class UserSessionDataControllerISpec extends IntegrationTest {
 
       result.status shouldBe SEE_OTHER
       result.headers("Location").head shouldBe StartDateController.show(taxYearEOY, sessionDataId).url
+    }
+  }
+
+  ".loadToSession" should {
+    "redirect to income tax submission overview when in year" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        urlGet(url(taxYear, Some(benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+    }
+
+    "redirect to ReviewClaim when benefitId found" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userPriorDataStub(aUser.nino, taxYearEOY, anAllStateBenefitsData)
+        createOrUpdateUserDataStub(StateBenefitsUserData(taxYearEOY, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
+        urlGet(url(taxYearEOY, Some(aStateBenefit.benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
     }
   }
 }

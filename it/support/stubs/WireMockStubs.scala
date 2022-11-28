@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.authorisation.Enrolment.Agent
-import models.{IncomeTaxUserData, StateBenefitsUserData}
+import models.{AllStateBenefitsData, IncomeTaxUserData, StateBenefitsUserData}
 import play.api.http.Status.{NO_CONTENT, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsObject, Json}
 import support.builders.UserBuilder.aUser
@@ -122,11 +122,13 @@ trait WireMockStubs {
     )
   )
 
-  protected def userPriorDataStub(incomeTaxUserData: IncomeTaxUserData, nino: String, taxYear: Int): StubMapping = {
+  protected def userPriorDataStub(nino: String,
+                                  taxYear: Int,
+                                  response: AllStateBenefitsData): StubMapping = {
     stubGetWithHeadersCheck(
       url = s"/income-tax-state-benefits/prior-data/nino/$nino/tax-year/$taxYear",
       status = OK,
-      responseBody = Json.toJson(incomeTaxUserData).toString(),
+      responseBody = Json.toJson(response).toString(),
       sessionHeader = "X-Session-ID" -> aUser.sessionId,
       mtditidHeader = "mtditid" -> aUser.mtditid
     )
@@ -145,12 +147,12 @@ trait WireMockStubs {
   }
 
   protected def createOrUpdateUserDataStub(stateBenefitsUserData: StateBenefitsUserData,
-                                           result: UUID): StubMapping = {
+                                           response: UUID): StubMapping = {
     stubFor(post(urlMatching(s"/income-tax-state-benefits/session-data"))
       .withHeader("X-Session-ID", equalTo(aUser.sessionId))
       .withHeader("mtditid", equalTo(aUser.mtditid))
       .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
-      .willReturn(aResponse().withStatus(OK).withBody(Json.toJson(result).toString())))
+      .willReturn(aResponse().withStatus(OK).withBody(Json.toJson(response).toString())))
   }
 
   protected def createUserSessionDataStub(url: String,
