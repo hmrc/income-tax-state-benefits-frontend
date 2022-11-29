@@ -32,7 +32,7 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
   def updateStartDate(stateBenefitsUserData: StateBenefitsUserData,
                       startDate: LocalDate)
                      (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
-    val updatedClaim = stateBenefitsUserData.claim.fold(ClaimCYAModel(startDate = startDate))(_.copy(startDate = startDate))
+    val updatedClaim = stateBenefitsUserData.claim.fold(ClaimCYAModel(startDate = startDate, isHmrcData = false))(_.copy(startDate = startDate))
     createOrUpdateClaim(stateBenefitsUserData, Some(updatedClaim))
   }
 

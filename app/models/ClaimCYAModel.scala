@@ -29,7 +29,8 @@ case class ClaimCYAModel(benefitId: Option[UUID] = None,
                          submittedOn: Option[Instant] = None,
                          amount: Option[BigDecimal] = None,
                          taxPaidQuestion: Option[Boolean] = None,
-                         taxPaid: Option[BigDecimal] = None)
+                         taxPaid: Option[BigDecimal] = None,
+                         isHmrcData: Boolean)
 
 object ClaimCYAModel {
   implicit val format: OFormat[ClaimCYAModel] = Json.format[ClaimCYAModel]
@@ -43,7 +44,8 @@ object ClaimCYAModel {
     submittedOn = stateBenefit.submittedOn,
     amount = stateBenefit.amount,
     taxPaidQuestion = Some(stateBenefit.taxPaid.isDefined),
-    taxPaid = stateBenefit.taxPaid
+    taxPaid = stateBenefit.taxPaid,
+    isHmrcData = true
   )
 
   def mapFrom(customerAddedStateBenefit: CustomerAddedStateBenefit): ClaimCYAModel = ClaimCYAModel(
@@ -55,6 +57,7 @@ object ClaimCYAModel {
     submittedOn = customerAddedStateBenefit.submittedOn,
     amount = customerAddedStateBenefit.amount,
     taxPaidQuestion = Some(customerAddedStateBenefit.taxPaid.isDefined),
-    taxPaid = customerAddedStateBenefit.taxPaid
+    taxPaid = customerAddedStateBenefit.taxPaid,
+    isHmrcData = false
   )
 }

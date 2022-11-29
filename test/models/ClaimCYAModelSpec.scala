@@ -35,7 +35,8 @@ class ClaimCYAModelSpec extends UnitTest {
         submittedOn = stateBenefit.submittedOn,
         amount = stateBenefit.amount,
         taxPaidQuestion = Some(false),
-        taxPaid = stateBenefit.taxPaid
+        taxPaid = stateBenefit.taxPaid,
+        isHmrcData = true
       )
     }
 
@@ -49,7 +50,8 @@ class ClaimCYAModelSpec extends UnitTest {
         submittedOn = aStateBenefit.submittedOn,
         amount = aStateBenefit.amount,
         taxPaidQuestion = Some(true),
-        taxPaid = aStateBenefit.taxPaid
+        taxPaid = aStateBenefit.taxPaid,
+        isHmrcData = true
       )
     }
   }
@@ -67,7 +69,8 @@ class ClaimCYAModelSpec extends UnitTest {
         submittedOn = stateBenefit.submittedOn,
         amount = stateBenefit.amount,
         taxPaidQuestion = Some(false),
-        taxPaid = stateBenefit.taxPaid
+        taxPaid = stateBenefit.taxPaid,
+        isHmrcData = false
       )
     }
 
@@ -81,7 +84,8 @@ class ClaimCYAModelSpec extends UnitTest {
         submittedOn = aCustomerAddedStateBenefit.submittedOn,
         amount = aCustomerAddedStateBenefit.amount,
         taxPaidQuestion = Some(true),
-        taxPaid = aCustomerAddedStateBenefit.taxPaid
+        taxPaid = aCustomerAddedStateBenefit.taxPaid,
+        isHmrcData = false
       )
     }
   }
