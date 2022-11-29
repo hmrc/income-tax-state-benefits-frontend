@@ -20,7 +20,7 @@ import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
-import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.UserBuilder.aUser
 
 class JobSeekersAllowanceControllerISpec extends IntegrationTest {
@@ -32,7 +32,7 @@ class JobSeekersAllowanceControllerISpec extends IntegrationTest {
     "render the Jobseeker's Allowance page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userPriorDataStub(anIncomeTaxUserData, aUser.nino, taxYear)
+        userPriorDataStub(aUser.nino, taxYear, anAllStateBenefitsData)
         urlGet(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -43,7 +43,7 @@ class JobSeekersAllowanceControllerISpec extends IntegrationTest {
     "render the Jobseeker's Allowance page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userPriorDataStub(anIncomeTaxUserData, aUser.nino, taxYearEOY)
+        userPriorDataStub(aUser.nino, taxYearEOY, anAllStateBenefitsData)
         urlGet(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 

@@ -20,10 +20,12 @@ import models.pages.elements.BenefitSummaryListRowData
 import support.utils.TaxYearUtils.taxYearEOY
 
 import java.time.LocalDate
+import java.util.UUID
 
 object BenefitSummaryListRowDataBuilder {
 
   val aBenefitSummaryListRowData: BenefitSummaryListRowData = BenefitSummaryListRowData(
+    benefitId = UUID.randomUUID(),
     amount = Some(100.00),
     startDate = LocalDate.parse(s"$taxYearEOY-01-01"),
     endDate = LocalDate.parse(s"$taxYearEOY-04-05"),

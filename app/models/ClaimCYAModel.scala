@@ -33,4 +33,28 @@ case class ClaimCYAModel(benefitId: Option[UUID] = None,
 
 object ClaimCYAModel {
   implicit val format: OFormat[ClaimCYAModel] = Json.format[ClaimCYAModel]
+
+  def mapFrom(stateBenefit: StateBenefit): ClaimCYAModel = ClaimCYAModel(
+    benefitId = Some(stateBenefit.benefitId),
+    startDate = stateBenefit.startDate,
+    endDateQuestion = Some(stateBenefit.endDate.isDefined),
+    endDate = stateBenefit.endDate,
+    dateIgnored = stateBenefit.dateIgnored,
+    submittedOn = stateBenefit.submittedOn,
+    amount = stateBenefit.amount,
+    taxPaidQuestion = Some(stateBenefit.taxPaid.isDefined),
+    taxPaid = stateBenefit.taxPaid
+  )
+
+  def mapFrom(customerAddedStateBenefit: CustomerAddedStateBenefit): ClaimCYAModel = ClaimCYAModel(
+    benefitId = Some(customerAddedStateBenefit.benefitId),
+    startDate = customerAddedStateBenefit.startDate,
+    endDateQuestion = Some(customerAddedStateBenefit.endDate.isDefined),
+    endDate = customerAddedStateBenefit.endDate,
+    dateIgnored = None,
+    submittedOn = customerAddedStateBenefit.submittedOn,
+    amount = customerAddedStateBenefit.amount,
+    taxPaidQuestion = Some(customerAddedStateBenefit.taxPaid.isDefined),
+    taxPaid = customerAddedStateBenefit.taxPaid
+  )
 }

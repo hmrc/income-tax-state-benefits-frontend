@@ -18,7 +18,7 @@ package controllers.session
 
 import actions.ActionsProvider
 import config.ErrorHandler
-import controllers.jobseekers.routes.StartDateController
+import controllers.jobseekers.routes.{JobSeekersAllowanceController, ReviewClaimController, StartDateController}
 import models.StateBenefitsUserData
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -26,8 +26,9 @@ import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
 
+import java.util.UUID
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
                                           stateBenefitsService: StateBenefitsService,
@@ -39,6 +40,16 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
     stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, request.user)).map {
       case Left(_) => errorHandler.internalServerError()
       case Right(uuid) => Redirect(StartDateController.show(taxYear, uuid))
+    }
+  }
+
+  def loadToSession(taxYear: Int, benefitId: UUID): Action[AnyContent] = actionsProvider.userPriorDataFor(taxYear).async { implicit request =>
+    StateBenefitsUserData(taxYear, request.user, benefitId, request.incomeTaxUserData) match {
+      case None => Future.successful(Redirect(JobSeekersAllowanceController.show(taxYear)))
+      case Some(stateBenefitsUserData) => stateBenefitsService.createOrUpdate(stateBenefitsUserData).map {
+        case Left(_) => errorHandler.internalServerError()
+        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, uuid))
+      }
     }
   }
 }

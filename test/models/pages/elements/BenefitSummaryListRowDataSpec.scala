@@ -29,6 +29,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
   "mapFrom stateBenefit" should {
     "return correct BenefitSummaryListRowData" in {
       BenefitSummaryListRowData.mapFrom(taxYear, aStateBenefit) shouldBe BenefitSummaryListRowData(
+        benefitId = aStateBenefit.benefitId,
         amount = aStateBenefit.amount,
         startDate = aStateBenefit.startDate,
         endDate = aStateBenefit.endDate.get,
@@ -38,6 +39,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
 
     "return correct BenefitSummaryListRowData when state benefit has not endDate" in {
       BenefitSummaryListRowData.mapFrom(taxYear, aStateBenefit.copy(endDate = None)) shouldBe BenefitSummaryListRowData(
+        benefitId = aStateBenefit.benefitId,
         amount = aStateBenefit.amount,
         startDate = aStateBenefit.startDate,
         endDate = LocalDate.parse(s"$taxYear-04-05"),
@@ -49,6 +51,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
   "mapFrom customerAddedStateBenefit" should {
     "return correct BenefitSummaryListRowData" in {
       BenefitSummaryListRowData.mapFrom(taxYear, aCustomerAddedStateBenefit) shouldBe BenefitSummaryListRowData(
+        benefitId = aCustomerAddedStateBenefit.benefitId,
         amount = aCustomerAddedStateBenefit.amount,
         startDate = aCustomerAddedStateBenefit.startDate,
         endDate = aCustomerAddedStateBenefit.endDate.get,
@@ -58,6 +61,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
 
     "return correct BenefitSummaryListRowData when customer added state benefit has not endDate" in {
       BenefitSummaryListRowData.mapFrom(taxYear, aCustomerAddedStateBenefit.copy(endDate = None)) shouldBe BenefitSummaryListRowData(
+        benefitId = aCustomerAddedStateBenefit.benefitId,
         amount = aCustomerAddedStateBenefit.amount,
         startDate = aCustomerAddedStateBenefit.startDate,
         endDate = LocalDate.parse(s"$taxYear-04-05"),

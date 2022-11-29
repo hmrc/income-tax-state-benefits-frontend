@@ -45,7 +45,7 @@ POST        /:taxYear/jobseekers-allowance/:sessionDataId/remove                
 
 ###########################     UserSessionData Controller Endpoints     ###########################
 POST         /:taxYear/session-data         controllers.session.UserSessionDataController.create(taxYear: Int)
-
+GET          /:taxYear/session-data         controllers.session.UserSessionDataController.loadToSession(taxYear: Int, benefitId: java.util.UUID)
 
 ###########################     Error pages     ####################################
 GET        /error/you-need-to-sign-up                       controllers.errors.IndividualAuthErrorController.show

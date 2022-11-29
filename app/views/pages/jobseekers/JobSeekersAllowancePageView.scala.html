@@ -59,7 +59,7 @@
                     @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
                 </dt>
                 <dd class="govuk-summary-list__actions">
-                    @link(JobSeekersAllowanceController.show(pageModel.taxYear).url, "common.view")
+                    @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view")
                 </dd>
             </div>
             @if(rowData.isIgnored){

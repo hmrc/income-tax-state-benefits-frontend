@@ -19,8 +19,10 @@ package models.pages.elements
 import models.{CustomerAddedStateBenefit, StateBenefit}
 
 import java.time.LocalDate
+import java.util.UUID
 
-case class BenefitSummaryListRowData(amount: Option[BigDecimal],
+case class BenefitSummaryListRowData(benefitId: UUID,
+                                     amount: Option[BigDecimal],
                                      startDate: LocalDate,
                                      endDate: LocalDate,
                                      isIgnored: Boolean)
@@ -28,6 +30,7 @@ case class BenefitSummaryListRowData(amount: Option[BigDecimal],
 object BenefitSummaryListRowData {
 
   def mapFrom(taxYear: Int, stateBenefit: StateBenefit): BenefitSummaryListRowData = BenefitSummaryListRowData(
+    benefitId = stateBenefit.benefitId,
     amount = stateBenefit.amount,
     startDate = stateBenefit.startDate,
     endDate = stateBenefit.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")),
@@ -35,6 +38,7 @@ object BenefitSummaryListRowData {
   )
 
   def mapFrom(taxYear: Int, customerAddedStateBenefit: CustomerAddedStateBenefit): BenefitSummaryListRowData = BenefitSummaryListRowData(
+    benefitId = customerAddedStateBenefit.benefitId,
     amount = customerAddedStateBenefit.amount,
     startDate = customerAddedStateBenefit.startDate,
     endDate = customerAddedStateBenefit.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")),

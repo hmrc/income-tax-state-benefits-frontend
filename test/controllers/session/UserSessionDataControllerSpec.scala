@@ -16,13 +16,15 @@
 
 package controllers.session
 
-import controllers.jobseekers.routes.StartDateController
+import controllers.jobseekers.routes.{JobSeekersAllowanceController, ReviewClaimController, StartDateController}
 import models.StateBenefitsUserData
 import models.errors.HttpParserError
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.status
 import support.ControllerUnitTest
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.StateBenefitBuilder.aStateBenefit
 import support.builders.UserBuilder.aUser
 import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
 
@@ -32,6 +34,9 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
   with MockActionsProvider
   with MockStateBenefitsService
   with MockErrorHandler {
+
+  private val benefitId = UUID.randomUUID()
+  private val sessionDataId = UUID.randomUUID()
 
   private val underTest = new UserSessionDataController(mockActionsProvider, mockStateBenefitsService, mockErrorHandler)
 
@@ -55,6 +60,35 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
       val result = await(underTest.create(taxYearEOY).apply(fakeIndividualRequest))
 
       result shouldBe Redirect(StartDateController.show(taxYearEOY, sessionDataId))
+    }
+  }
+
+  ".loadToSession" should {
+    "redirect to JobSeekersAllowance page when benefitId not found" in {
+      mockUserPriorDataFor(taxYearEOY, anIncomeTaxUserData)
+
+      val result = await(underTest.loadToSession(taxYearEOY, benefitId).apply(fakeIndividualRequest))
+
+      result shouldBe Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+    }
+
+    "return error when stateBenefitsService.createOrUpdate(...) returns Left" in {
+      mockUserPriorDataFor(taxYearEOY, anIncomeTaxUserData)
+      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockInternalServerError(InternalServerError)
+
+      val result = underTest.loadToSession(taxYearEOY, aStateBenefit.benefitId).apply(fakeIndividualRequest)
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "redirect to ReviewClaimController when stateBenefitsService.createOrUpdate(...) returns Right" in {
+      mockUserPriorDataFor(taxYearEOY, anIncomeTaxUserData)
+      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, Right(sessionDataId))
+
+      val result = await(underTest.loadToSession(taxYearEOY, aStateBenefit.benefitId).apply(fakeIndividualRequest))
+
+      result shouldBe Redirect(ReviewClaimController.show(taxYearEOY, sessionDataId))
     }
   }
 }
