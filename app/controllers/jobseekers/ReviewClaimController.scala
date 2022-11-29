@@ -27,11 +27,10 @@ import views.html.pages.jobseekers.ReviewClaimPageView
 
 import java.util.UUID
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
                                       pageView: ReviewClaimPageView)
-                                     (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
+                                     (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
@@ -39,6 +38,3 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
     Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData)))
   }
 }
-
-
-

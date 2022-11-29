@@ -38,6 +38,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
   object Selectors {
     val formSelector: String = "#main-content > div > div > form"
+    val hintSelector: String = "#value-for-hint"
     val inputDayField: String = s"#${DateForm.day}"
     val inputMonthField: String = s"#${DateForm.month}"
     val inputYearField: String = s"#${DateForm.year}"
@@ -57,16 +58,19 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
   trait CommonExpectedResults {
     val expectedCaption: Int => String
+    val expectedHintText: String
     val expectedButtonText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
+    override val expectedHintText: String = "For example, 23 3 2007"
     override val expectedButtonText: String = "Continue"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
+    override val expectedHintText: String = "For example, 23 3 2007"
     override val expectedButtonText: String = "Continue"
   }
 
@@ -122,6 +126,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         titleCheck(userScenario.specificExpectedResults.get.expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
         h1Check(userScenario.specificExpectedResults.get.expectedHeading)
+        textOnPageCheck(userScenario.commonExpectedResults.expectedHintText, Selectors.hintSelector)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")

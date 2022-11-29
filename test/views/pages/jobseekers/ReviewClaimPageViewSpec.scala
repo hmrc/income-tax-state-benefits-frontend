@@ -38,6 +38,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val saveButtonSelector = "#save-and-continue-button"
     val removeLinkSelector = "#remove-link"
     val removeLinkHiddenSelector = "#remove-link > span.govuk-visually-hidden"
+    val rowsSelector = "#main-content > div > div > dl > div"
 
     def summaryListRowFieldNameSelector(i: Int): String = s"#main-content > div > div > dl > div:nth-child($i) > dt"
 
@@ -220,6 +221,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(4), AmountController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(5), "for the tax paid question")
+          checkElementsCount(6, rowsSelector)
           buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveButtonSelector)
           linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, pageModel.sessionDataId).url,
             Some(expectedRemoveLinkHiddenText), Some(removeLinkHiddenSelector))

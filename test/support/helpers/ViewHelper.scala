@@ -246,6 +246,12 @@ trait ViewHelper {
     }
   }
 
+  def checkElementsCount(count: Int, selector: String)(implicit document: Document): Unit = {
+    s"have the correct number of elements of $count'" in {
+      document.select(selector).size() shouldBe count
+    }
+  }
+
   def welshToggleCheck(isWelsh: Boolean)(implicit document: Document): Unit = {
     welshToggleCheck(if (isWelsh) WELSH else ENGLISH)
   }

@@ -51,7 +51,7 @@ class TaxTakenOffAmountPageViewSpec extends ViewUnitTest {
 
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedHintText: String = "For Example, £123.56"
+    override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
     override val expectedErrorText: String = "empty error"
@@ -59,7 +59,7 @@ class TaxTakenOffAmountPageViewSpec extends ViewUnitTest {
 
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedHintText: String = "For Example, £123.56"
+    override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
     override val expectedErrorText: String = "empty error"
