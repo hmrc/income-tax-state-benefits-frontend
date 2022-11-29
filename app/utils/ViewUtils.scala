@@ -41,7 +41,6 @@ object ViewUtils {
     date.getDayOfMonth + " " + translatedMonth + " " + date.getYear
   }
 
-  // TODO: Needs testing
   def toSummaryListRow(key: HtmlContent,
                        value: HtmlContent,
                        keyClasses: String = "govuk-!-width-one-third",
@@ -64,7 +63,6 @@ object ViewUtils {
       })
   }
 
-  // TODO: Needs testing
   def ariaHiddenChangeLink(linkText: String): HtmlContent = {
     HtmlContent(s"""<span aria-hidden="true">$linkText</span>""")
   }

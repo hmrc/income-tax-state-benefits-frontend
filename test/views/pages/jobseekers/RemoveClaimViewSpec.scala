@@ -45,7 +45,7 @@ class RemoveClaimViewSpec extends ViewUnitTest {
     val taxPaidQuestionRowValueSelector = "#main-content > div > div > dl > div:nth-child(5) > dd"
     val taxPaidRowKeySelector = "#main-content > div > div > dl > div:nth-child(6) > dt"
     val taxPaidRowValueSelector = "#main-content > div > div > dl > div:nth-child(6) > dd"
-
+    val rowsSelector = "#main-content > div > div > dl > div"
     val buttonSelector = "#remove-claim-button-id"
     val linkSelector = "#do-not-remove-claim-link-id"
     val removeLinkHiddenSelector = "#do-not-remove-claim-link-id > span.govuk-visually-hidden"
@@ -185,10 +185,13 @@ class RemoveClaimViewSpec extends ViewUnitTest {
         textOnPageCheck(userScenario.commonExpectedResults.expectedEndDateRowValue, Selectors.endDateRowValueSelector)
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedAmountRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.amountRowKeySelector)
         textOnPageCheck(userScenario.commonExpectedResults.expectedAmountRowValue, Selectors.amountRowValueSelector)
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedTaxPaidQuestionRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.taxPaidQuestionRowKeySelector)
+        textOnPageCheck(userScenario.specificExpectedResults.get.expectedTaxPaidQuestionRowKey(
+          aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.taxPaidQuestionRowKeySelector
+        )
         textOnPageCheck(userScenario.commonExpectedResults.expectedTaxPaidQuestionRowValue, Selectors.taxPaidQuestionRowValueSelector)
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedTaxPaidRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.taxPaidRowKeySelector)
         textOnPageCheck(userScenario.commonExpectedResults.expectedTaxPaidRowValue, Selectors.taxPaidRowValueSelector)
+        checkElementsCount(6, Selectors.rowsSelector)
         buttonCheck(userScenario.commonExpectedResults.removeButton, Selectors.buttonSelector)
         linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector, href = ReviewClaimController.show(taxYearEOY, aRemoveClaimPage.sessionDataId).url,
           Some(doNotRemoveLinkHiddenText), Some(Selectors.removeLinkHiddenSelector))
@@ -206,6 +209,7 @@ class RemoveClaimViewSpec extends ViewUnitTest {
 
         textOnPageCheck(userScenario.commonExpectedResults.no, Selectors.endDateQuestionRowValueSelector)
         textOnPageCheck(userScenario.commonExpectedResults.no, Selectors.amountRowValueSelector, "duplicate")
+        checkElementsCount(4, Selectors.rowsSelector)
         buttonCheck(userScenario.commonExpectedResults.removeButton, Selectors.buttonSelector)
         linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector,
           href = ReviewClaimController.show(taxYearEOY, aRemoveClaimPage.sessionDataId).url,
