@@ -22,7 +22,7 @@ import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.pages.jobseekers.RemoveClaimPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.ClaimService
+import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
 import views.html.pages.jobseekers.RemoveClaimView
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext
 
 class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
                                       pageView: RemoveClaimView,
-                                      claimService: ClaimService,
+                                      stateBenefitsService: StateBenefitsService,
                                       errorHandler: ErrorHandler)
                                      (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
@@ -44,7 +44,13 @@ class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
   }
 
   def submit(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    claimService.removeClaim(request.user, sessionDataId).map {
+    val eventualResult = if (request.stateBenefitsUserData.isHmrcData) {
+      stateBenefitsService.ignoreClaim(request.user, sessionDataId)
+    } else {
+      stateBenefitsService.removeClaim(request.user, sessionDataId)
+    }
+
+    eventualResult.map {
       case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
       case Left(_) => errorHandler.internalServerError()
     }

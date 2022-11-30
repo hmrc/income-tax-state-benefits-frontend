@@ -166,7 +166,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
     }
   }
 
-  "removeClaim(...)" should {
+  ".removeClaim(...)" should {
     "Return an empty response in the success case when BE returns 204" in {
       removeClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", status = NO_CONTENT, responseBody = "")
 
@@ -178,6 +178,21 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       mockPagerDutyLog("RemoveClaimResponse")
 
       await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
+    }
+  }
+
+  ".ignoreClaim(...)" should {
+    "Return an empty response in the success case when BE returns 204" in {
+      ignoreClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId/ignore", status = NO_CONTENT, responseBody = "")
+
+      await(underTest.ignoreClaim(aUser, sessionDataId)) shouldBe Right(())
+    }
+
+    "Return a Left/Failure when BE returns code different than 200" in {
+      ignoreClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId/ignore", status = NOT_FOUND, responseBody = "")
+      mockPagerDutyLog("IgnoreClaimResponse")
+
+      await(underTest.ignoreClaim(aUser, sessionDataId)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
     }
   }
 }

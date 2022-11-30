@@ -17,32 +17,28 @@
 package connectors.responses
 
 import connectors.errors.{ApiError, SingleErrorBody}
-import connectors.responses.RemoveClaimResponse.removeClaimResponseReads
-import play.api.http.Status.{BAD_REQUEST, FAILED_DEPENDENCY, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, OK, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
+import connectors.responses.IgnoreClaimResponse.ignoreClaimResponseReads
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import uk.gov.hmrc.http.HttpResponse
 
-class RemoveClaimResponseSpec extends UnitTest {
+class IgnoreClaimResponseSpec extends UnitTest {
 
   private val anyHeaders: Map[String, Seq[String]] = Map.empty
   private val anyMethod: String = "DELETE"
   private val anyUrl = "/any-url"
 
-  private val underTest = removeClaimResponseReads
+  private val underTest = ignoreClaimResponseReads
 
-  "removeClaimResponseReads" should {
-    "convert JsValue to RemoveUserDataResponse" when {
+  "ignoreClaimResponseReads" should {
+    "convert JsValue to IgnoreClaimResponse" when {
       "status is NO_CONTENT and return unit" in {
         val jsValue: JsValue = Json.toJson(aStateBenefitsUserData)
-
         val httpResponse: HttpResponse = HttpResponse.apply(NO_CONTENT, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
-          httpResponse,
-          Right(Unit)
-        )
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(httpResponse, Right(Unit))
       }
 
       "status is NOT_FOUND and any jsValue" in {
@@ -50,21 +46,17 @@ class RemoveClaimResponseSpec extends UnitTest {
           """
             |{}
             |""".stripMargin)
-
         val httpResponse: HttpResponse = HttpResponse.apply(NOT_FOUND, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
-          httpResponse,
-          Left(ApiError(NOT_FOUND, SingleErrorBody.parsingError))
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(httpResponse, Left(ApiError(NOT_FOUND, SingleErrorBody.parsingError))
         )
       }
 
       "status is INTERNAL_SERVER_ERROR and jsValue for error" in {
         val jsValue: JsValue = Json.toJson(SingleErrorBody("some-code", "some-reason"))
-
         val httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(
           httpResponse,
           Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("some-code", "some-reason")))
         )
@@ -72,10 +64,9 @@ class RemoveClaimResponseSpec extends UnitTest {
 
       "status is SERVICE_UNAVAILABLE and jsValue for error" in {
         val jsValue: JsValue = Json.toJson(SingleErrorBody("some-code", "some-reason"))
-
         val httpResponse: HttpResponse = HttpResponse.apply(SERVICE_UNAVAILABLE, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(
           httpResponse,
           Left(ApiError(SERVICE_UNAVAILABLE, SingleErrorBody("some-code", "some-reason")))
         )
@@ -83,10 +74,9 @@ class RemoveClaimResponseSpec extends UnitTest {
 
       "status is BAD_REQUEST and jsValue for error" in {
         val jsValue: JsValue = Json.toJson(SingleErrorBody("some-code", "some-reason"))
-
         val httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(
           httpResponse,
           Left(ApiError(BAD_REQUEST, SingleErrorBody("some-code", "some-reason")))
         )
@@ -94,10 +84,9 @@ class RemoveClaimResponseSpec extends UnitTest {
 
       "status is UNPROCESSABLE_ENTITY and jsValue for error" in {
         val jsValue: JsValue = Json.toJson(SingleErrorBody("some-code", "some-reason"))
-
         val httpResponse: HttpResponse = HttpResponse.apply(UNPROCESSABLE_ENTITY, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(
           httpResponse,
           Left(ApiError(UNPROCESSABLE_ENTITY, SingleErrorBody("some-code", "some-reason")))
         )
@@ -105,10 +94,9 @@ class RemoveClaimResponseSpec extends UnitTest {
 
       "status is OTHER and jsValue for error" in {
         val jsValue: JsValue = Json.toJson(SingleErrorBody("some-code", "some-reason"))
-
         val httpResponse: HttpResponse = HttpResponse.apply(FAILED_DEPENDENCY, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe IgnoreClaimResponse(
           httpResponse,
           Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("some-code", "some-reason")))
         )
