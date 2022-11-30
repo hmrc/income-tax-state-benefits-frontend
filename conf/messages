@@ -131,6 +131,7 @@ jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.individual = Change whethe
 jobseekers.reviewClaimPage.taxPaid.hiddenText.agent = Change the amount of tax taken off your client’s Jobseeker’s Allowance claim
 jobseekers.reviewClaimPage.taxPaid.hiddenText.individual = Change the amount of tax taken off your Jobseeker’s Allowance claim
 jobseekers.reviewClaimPage.removeClaim.hiddenText = Remove this Jobseeker’s allowance claim
+jobseekers.reviewClaimPage.restoreClaim = Restore claim
 
 #################       Jobseeker’s Allowance - Remove Claim Page       ########################################
 jobseekers.removePage.title = Are you sure you want to remove this Jobseeker’s Allowance claim?
