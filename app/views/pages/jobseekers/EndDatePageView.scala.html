@@ -22,14 +22,14 @@
 @import models.requests.UserSessionDataRequest
 
 @import views.html.templates.Layout
-@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Caption
 @import views.html.templates.helpers.ErrorSummary
 @import views.html.templates.helpers.DateInput
 @import views.html.templates.helpers.Button
 
 @this(
     layout: Layout,
-    heading: Heading,
+    caption: Caption,
     errorSummary: ErrorSummary,
     formWithCsrf: FormWithCSRF,
     dateInput: DateInput,
@@ -49,15 +49,17 @@
         }
     })
 
-    @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
     @formWithCsrf(action = EndDateController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
         @dateInput(
             form = pageModel.form,
             id = DateForm.formValuesPrefix,
             name = DateForm.formValuesPrefix,
-            legendHidden = true,
-            hint = Some(messages("common.forExampleDate"))
+            hint = Some(messages("common.forExampleDate")),
+            legendAsHeading = true,
+            legendHeading = Some(Html(titleText)),
+            isPageHeading = true
         )
 
         @button()

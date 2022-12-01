@@ -22,14 +22,14 @@
 @import utils.ViewUtils.translatedDateFormatter
 
 @import views.html.templates.Layout
-@import views.html.templates.helpers.Heading
+@import views.html.templates.helpers.Caption
 @import views.html.templates.helpers.ErrorSummary
 @import views.html.templates.helpers.Button
 @import views.html.templates.helpers.InputRadio
 
 @this(
     layout: Layout,
-    heading: Heading,
+    caption: Caption,
     errorSummary: ErrorSummary,
     formWithCsrf: FormWithCSRF,
     inputRadio: InputRadio,
@@ -44,12 +44,13 @@
 
     @errorSummary(pageModel.form.errors)
 
-    @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
     @formWithCsrf(action = TaxTakenOffController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
         @inputRadio(
             legendHeading = Some(Html(titleText)),
-            legendHidden = true,
+            legendHidden = false,
+            legendAsHeading = true,
             form = pageModel.form,
             inline = true,
             hint = Some(Html(messages(s"common.amountWillBeOnTheP45.${if(request.user.isAgent) "agent" else "individual"}")))

@@ -61,6 +61,13 @@ trait ViewHelper {
     }
   }
 
+  def fieldSetH1Check(heading: String)(implicit document: Document): Unit = {
+    s"have a page heading of '$heading'" in {
+      val documentHeading = document.select("h1.govuk-fieldset__heading").text()
+      documentHeading shouldBe heading
+    }
+  }
+
   def captionCheck(caption: String, selector: String = ".govuk-caption-l")(implicit document: Document): Unit = {
     s"have the caption of '$caption'" in {
       document.select(selector).text() shouldBe caption

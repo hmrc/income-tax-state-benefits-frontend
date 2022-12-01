@@ -137,7 +137,7 @@ class TaxTakenOffPageViewSpec extends ViewUnitTest {
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate))
+        fieldSetH1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate))
         hintTextCheck(userScenario.specificExpectedResults.get.expectedHintText)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
