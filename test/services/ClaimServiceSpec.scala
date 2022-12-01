@@ -43,18 +43,20 @@ class ClaimServiceSpec extends UnitTest
   ".updateStartDate" should {
     "create a new claim and update startDate when no claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = None)
+      val expectedClaim = ClaimCYAModel(startDate = startDate, isHmrcData = false)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(ClaimCYAModel(startDate = startDate, isHmrcData = false))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateStartDate(userData, startDate)) shouldBe Right(sessionDataId)
+      await(underTest.updateStartDate(userData, startDate)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "update claim with startDate when claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(startDate = LocalDate.of(2022, 2, 2))))
+      val expectedClaim = aClaimCYAModel.copy(startDate = startDate)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(startDate = startDate))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateStartDate(userData, startDate)) shouldBe Right(sessionDataId)
+      await(underTest.updateStartDate(userData, startDate)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "return Left when createOrUpdate fails" in {
@@ -67,18 +69,20 @@ class ClaimServiceSpec extends UnitTest
   ".updateEndDateQuestion" should {
     "update claim with updateEndDateQuestion and endDate set to None when updateEndDateQuestion is false" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate))))
+      val expectedClaim = aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateEndDateQuestion(userData, question = false)) shouldBe Right(sessionDataId)
+      await(underTest.updateEndDateQuestion(userData, question = false)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "update claim with updateEndDateQuestion and endDate unchanged when updateEndDateQuestion is true" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate))))
+      val expectedClaim = aClaimCYAModel.copy(endDateQuestion = Some(true), endDate = Some(endDate))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(true), endDate = Some(endDate)))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(sessionDataId)
+      await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "return Left when createOrUpdate fails" in {
@@ -91,10 +95,11 @@ class ClaimServiceSpec extends UnitTest
   ".updateEndDate" should {
     "update claim with endDate when claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(LocalDate.of(2022, 2, 2)))))
+      val expectedClaim = aClaimCYAModel.copy(endDate = Some(endDate))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate)))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateEndDate(userData, endDate)) shouldBe Right(sessionDataId)
+      await(underTest.updateEndDate(userData, endDate)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "return Left when createOrUpdate fails" in {
@@ -107,10 +112,11 @@ class ClaimServiceSpec extends UnitTest
   ".updateAmount" should {
     "update claim with amount when claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(100))))
+      val expectedClaim = aClaimCYAModel.copy(amount = Some(200))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(200)))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateAmount(userData, 200)) shouldBe Right(sessionDataId)
+      await(underTest.updateAmount(userData, 200)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "return Left when createOrUpdate fails" in {
@@ -123,18 +129,20 @@ class ClaimServiceSpec extends UnitTest
   ".updateTaxPaidQuestion" should {
     "update claim with updateTaxPaidQuestion and taxPaid set to None when updateTaxPaidQuestion is false" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
+      val expectedClaim = aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateTaxPaidQuestion(userData, question = false)) shouldBe Right(sessionDataId)
+      await(underTest.updateTaxPaidQuestion(userData, question = false)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "update claim with updateTaxPaidQuestion and taxPaid unchanged when updateTaxPaidQuestion is true" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
+      val expectedClaim = aClaimCYAModel.copy(taxPaidQuestion = Some(true), taxPaid = Some(100))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(taxPaidQuestion = Some(true), taxPaid = Some(100)))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(sessionDataId)
+      await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "return Left when createOrUpdate fails" in {
@@ -147,10 +155,11 @@ class ClaimServiceSpec extends UnitTest
   ".updateTaxPaidAmount" should {
     "update claim with amount when claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
+      val expectedClaim = aClaimCYAModel.copy(taxPaid = Some(200))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(200)))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
 
-      await(underTest.updateTaxPaidAmount(userData, 200)) shouldBe Right(sessionDataId)
+      await(underTest.updateTaxPaidAmount(userData, 200)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
     "return Left when createOrUpdate fails" in {

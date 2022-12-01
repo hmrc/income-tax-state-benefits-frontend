@@ -30,7 +30,25 @@ case class ClaimCYAModel(benefitId: Option[UUID] = None,
                          amount: Option[BigDecimal] = None,
                          taxPaidQuestion: Option[Boolean] = None,
                          taxPaid: Option[BigDecimal] = None,
-                         isHmrcData: Boolean)
+                         isHmrcData: Boolean) {
+
+  lazy val isFinished: Boolean = {
+    val endDateIsFinished: Boolean = endDateQuestion match {
+      case None => false
+      case Some(false) => true
+      case Some(true) => endDate.isDefined
+    }
+    val taxPaidIsFinished: Boolean = taxPaidQuestion match {
+      case None => false
+      case Some(false) => true
+      case Some(true) => taxPaid.isDefined
+    }
+
+    endDateIsFinished &&
+      amount.isDefined &&
+      taxPaidIsFinished
+  }
+}
 
 object ClaimCYAModel {
   implicit val format: OFormat[ClaimCYAModel] = Json.format[ClaimCYAModel]

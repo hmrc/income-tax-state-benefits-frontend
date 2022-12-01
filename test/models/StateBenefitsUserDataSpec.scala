@@ -55,6 +55,20 @@ class StateBenefitsUserDataSpec extends UnitTest {
     }
   }
 
+  ".isFinished" should {
+    "return false when claim is None" in {
+      aStateBenefitsUserData.copy(claim = None).isFinished shouldBe false
+    }
+
+    "return false when claim is not finished" in {
+      aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = None))).isFinished shouldBe false
+    }
+
+    "return true when claim is finished" in {
+      aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)).isFinished shouldBe true
+    }
+  }
+
   ".apply(taxYear: Int, user: User)" should {
     "create correct StateBenefitsUserData instance" in {
       StateBenefitsUserData.apply(anyTaxYear, aUser) shouldBe StateBenefitsUserData(

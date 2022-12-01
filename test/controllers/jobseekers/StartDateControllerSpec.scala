@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.DidClaimEndInTaxYearController
+import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, ReviewClaimController}
 import forms.DateForm.{day, formValuesPrefix, month, year}
 import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
@@ -25,12 +25,12 @@ import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentAsString, contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
 import views.html.pages.jobseekers.StartDatePageView
 
 import java.time.LocalDate
-import java.util.UUID
 
 class StartDateControllerSpec extends ControllerUnitTest
   with MockActionsProvider
@@ -38,7 +38,7 @@ class StartDateControllerSpec extends ControllerUnitTest
   with MockErrorHandler {
 
   private val pageView = inject[StartDatePageView]
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   private val underTest = new StartDateController(
     mockActionsProvider,
@@ -83,14 +83,24 @@ class StartDateControllerSpec extends ControllerUnitTest
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "redirect to Yes No Page on successful start date update" in {
+    "redirect to next Page on successful start date update and journey not completed" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateStartDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Right(sessionDataId))
+      mockUpdateStartDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
 
       await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
         Redirect(DidClaimEndInTaxYearController.show(taxYearEOY, sessionDataId))
+    }
+
+    "redirect to ReviewClaim Page on successful start date update and journey not completed" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateStartDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Right(aStateBenefitsUserData))
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+
+      await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
+        Redirect(ReviewClaimController.show(taxYearEOY, sessionDataId))
     }
   }
 }

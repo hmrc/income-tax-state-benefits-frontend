@@ -50,7 +50,7 @@ class TaxTakenOffAmountController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffAmountPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       amount => claimService.updateTaxPaidAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, uuid))
+        case Right(userData) => Redirect(ReviewClaimController.show(taxYear, userData.sessionDataId.get))
       }
     )
   }

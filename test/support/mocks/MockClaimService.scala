@@ -32,7 +32,7 @@ trait MockClaimService extends MockFactory {
 
   def mockUpdateStartDate(stateBenefitsUserData: StateBenefitsUserData,
                           startDate: LocalDate,
-                          result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+                          result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
     (mockClaimService.updateStartDate(_: StateBenefitsUserData, _: LocalDate)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, startDate, *)
       .returning(Future.successful(result))
@@ -40,7 +40,7 @@ trait MockClaimService extends MockFactory {
 
   def mockUpdateEndDateQuestion(stateBenefitsUserData: StateBenefitsUserData,
                                 question: Boolean,
-                                result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+                                result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
     (mockClaimService.updateEndDateQuestion(_: StateBenefitsUserData, _: Boolean)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, question, *)
       .returning(Future.successful(result))
@@ -48,7 +48,7 @@ trait MockClaimService extends MockFactory {
 
   def mockUpdateEndDate(stateBenefitsUserData: StateBenefitsUserData,
                         endDate: LocalDate,
-                        result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+                        result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
     (mockClaimService.updateEndDate(_: StateBenefitsUserData, _: LocalDate)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, endDate, *)
       .returning(Future.successful(result))
@@ -56,7 +56,7 @@ trait MockClaimService extends MockFactory {
 
   def mockUpdateAmount(stateBenefitsUserData: StateBenefitsUserData,
                        amount: BigDecimal,
-                       result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+                       result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
     (mockClaimService.updateAmount(_: StateBenefitsUserData, _: BigDecimal)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, amount, *)
       .returning(Future.successful(result))
@@ -64,7 +64,7 @@ trait MockClaimService extends MockFactory {
 
   def mockUpdateTaxPaidQuestion(stateBenefitsUserData: StateBenefitsUserData,
                                 question: Boolean,
-                                result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+                                result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
     (mockClaimService.updateTaxPaidQuestion(_: StateBenefitsUserData, _: Boolean)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, question, *)
       .returning(Future.successful(result))
@@ -72,7 +72,7 @@ trait MockClaimService extends MockFactory {
 
   def mockUpdateTaxPaidAmount(stateBenefitsUserData: StateBenefitsUserData,
                               amount: BigDecimal,
-                              result: Either[Unit, UUID]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, UUID]]] = {
+                              result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
     (mockClaimService.updateTaxPaidAmount(_: StateBenefitsUserData, _: BigDecimal)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, amount, *)
       .returning(Future.successful(result))

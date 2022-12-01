@@ -17,10 +17,51 @@
 package models
 
 import support.UnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
 import support.builders.StateBenefitBuilder.aStateBenefit
 
 class ClaimCYAModelSpec extends UnitTest {
+
+  ".isFinished" should {
+    "return true when model has all the data" in {
+      aClaimCYAModel.isFinished shouldBe true
+    }
+
+    "return true when endDateQuestion is false and rest of the data is completed" in {
+      aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None).isFinished shouldBe true
+    }
+
+    "return true when taxPaidQuestion is false and rest of the dats is completed" in {
+      aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None).isFinished shouldBe true
+    }
+
+    "return false" when {
+      "endDateQuestion is Yes and endDate is empty" in {
+        aClaimCYAModel.copy(endDateQuestion = Some(true), endDate = None).isFinished shouldBe false
+      }
+
+      "endDateQuestion is empty" in {
+        aClaimCYAModel.copy(endDateQuestion = None).isFinished shouldBe false
+      }
+
+      "amount is empty" in {
+        aClaimCYAModel.copy(amount = None).isFinished shouldBe false
+      }
+
+      "taxPaidQuestion is Yes and taxPaid is empty" in {
+        aClaimCYAModel.copy(taxPaidQuestion = Some(true), taxPaid = None).isFinished shouldBe false
+      }
+
+      "taxPaidQuestion is empty" in {
+        aClaimCYAModel.copy(taxPaidQuestion = None).isFinished shouldBe false
+      }
+
+      "taxPaid is empty" in {
+        aClaimCYAModel.copy(taxPaid = None).isFinished shouldBe false
+      }
+    }
+  }
 
   ".mapFrom(stateBenefit: StateBenefit)" should {
     "return ClaimCYAModel from given StateBenefit when endDate and taxPaid are not defined" in {

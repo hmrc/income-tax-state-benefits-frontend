@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.AmountController
+import controllers.jobseekers.routes.{AmountController, ReviewClaimController}
 import forms.DateForm.{day, month, year}
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -34,7 +34,7 @@ class EndDateControllerISpec extends IntegrationTest {
   private def url(taxYear: Int, sessionDataId: UUID): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/end-date"
 
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   ".show" should {
     "redirect to Overview Page when in year" in {
@@ -72,7 +72,7 @@ class EndDateControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "persist start date and redirect to next page" in {
+    "persist start date and redirect to ReviewClaim page" in {
       val modelWithExpectedDate = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYearEOY, 1, 1)))
 
       lazy val result: WSResponse = {
@@ -84,7 +84,7 @@ class EndDateControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe AmountController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
     }
   }
 }

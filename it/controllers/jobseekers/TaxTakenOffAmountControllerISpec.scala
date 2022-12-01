@@ -33,7 +33,7 @@ class TaxTakenOffAmountControllerISpec extends IntegrationTest {
   private def url(taxYear: Int, sessionDataId: UUID): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/tax-taken-off-amount"
 
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   ".show" should {
     "redirect to Overview Page when in year" in {
@@ -71,7 +71,7 @@ class TaxTakenOffAmountControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "persist amount and redirect to next page" in {
+    "persist amount and redirect to ReviewClaim" in {
       val modelWithNewAmount = aClaimCYAModel.copy(taxPaid = Some(100))
 
       lazy val result: WSResponse = {

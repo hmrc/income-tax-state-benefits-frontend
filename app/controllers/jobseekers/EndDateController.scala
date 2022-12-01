@@ -18,8 +18,9 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.AmountController
+import controllers.jobseekers.routes.{AmountController, ReviewClaimController}
 import forms.jobseekers.FormsProvider
+import models.StateBenefitsUserData
 import models.pages.jobseekers.EndDatePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,8 +57,13 @@ class EndDateController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(EndDatePage(taxYear, sessionData, formWithErrors)))),
       formData => claimService.updateEndDate(sessionData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(AmountController.show(taxYear, uuid))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, userData))
       }
     )
+  }
+
+  private def getRedirectCall(taxYear: Int, userData: StateBenefitsUserData) = {
+    val sessionDataId = userData.sessionDataId.get
+    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else AmountController.show(taxYear, sessionDataId)
   }
 }

@@ -29,15 +29,13 @@ import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
 import views.html.pages.jobseekers.TaxTakenOffAmountPageView
 
-import java.util.UUID
-
 class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
   with MockActionsProvider
   with MockClaimService
   with MockErrorHandler {
 
   private val pageView = inject[TaxTakenOffAmountPageView]
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   private val underTest = new TaxTakenOffAmountController(
     mockActionsProvider,
@@ -84,7 +82,7 @@ class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
 
     "redirect to next Page on successful amount update" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidAmount(aStateBenefitsUserData, amount = 100, Right(sessionDataId))
+      mockUpdateTaxPaidAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
 
