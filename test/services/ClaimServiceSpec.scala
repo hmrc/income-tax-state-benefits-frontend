@@ -18,11 +18,10 @@ package services
 
 import models.ClaimCYAModel
 import models.errors.HttpParserError
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
+import play.api.http.Status.BAD_REQUEST
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
-import support.builders.UserBuilder.aUser
 import support.mocks.MockStateBenefitsService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -45,7 +44,7 @@ class ClaimServiceSpec extends UnitTest
     "create a new claim and update startDate when no claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = None)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(ClaimCYAModel(startDate = startDate))), Right(sessionDataId))
+      mockCreateOrUpdate(userData.copy(claim = Some(ClaimCYAModel(startDate = startDate, isHmrcData = false))), Right(sessionDataId))
 
       await(underTest.updateStartDate(userData, startDate)) shouldBe Right(sessionDataId)
     }
@@ -158,20 +157,6 @@ class ClaimServiceSpec extends UnitTest
       mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateTaxPaidAmount(aStateBenefitsUserData, amount = 100)) shouldBe Left(())
-    }
-  }
-
-  ".removeClaim" should {
-    "remove claim with when claim exists" in {
-      mockRemoveClaim(aUser, sessionDataId, Right(()))
-
-      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Right(())
-    }
-
-    "return Left when removeClaim fails" in {
-      mockRemoveClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
-
-      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
     }
   }
 }

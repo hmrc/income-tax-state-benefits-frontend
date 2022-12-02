@@ -18,11 +18,13 @@ package models
 
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
 import support.builders.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.StateBenefitBuilder.aStateBenefit
 import support.builders.StateBenefitsDataBuilder.aStateBenefitsData
+import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
 
 import java.util.UUID
@@ -30,6 +32,28 @@ import java.util.UUID
 class StateBenefitsUserDataSpec extends UnitTest {
 
   private val anyTaxYear = 2022
+
+  ".isHmrcData" should {
+    "return false" when {
+      "claim is None" in {
+        val underTest = aStateBenefitsUserData.copy(claim = None)
+
+        underTest.isHmrcData shouldBe false
+      }
+
+      "claim.isHmrcData is false" in {
+        val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = false)))
+
+        underTest.isHmrcData shouldBe false
+      }
+    }
+
+    "return true when claim.isHmrcData is true" in {
+      val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = true)))
+
+      underTest.isHmrcData shouldBe true
+    }
+  }
 
   ".apply(taxYear: Int, user: User)" should {
     "create correct StateBenefitsUserData instance" in {

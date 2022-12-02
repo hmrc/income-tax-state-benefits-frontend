@@ -26,7 +26,10 @@ case class StateBenefitsUserData(sessionDataId: Option[UUID] = None,
                                  nino: String,
                                  taxYear: Int,
                                  isPriorSubmission: Boolean,
-                                 claim: Option[ClaimCYAModel])
+                                 claim: Option[ClaimCYAModel]) {
+
+  lazy val isHmrcData: Boolean = claim.exists(_.isHmrcData)
+}
 
 object StateBenefitsUserData {
   implicit val format: OFormat[StateBenefitsUserData] = Json.format[StateBenefitsUserData]

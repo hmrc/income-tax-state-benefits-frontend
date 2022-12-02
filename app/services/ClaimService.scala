@@ -16,8 +16,7 @@
 
 package services
 
-import models.errors.HttpParserError
-import models.{ClaimCYAModel, StateBenefitsUserData, User}
+import models.{ClaimCYAModel, StateBenefitsUserData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
@@ -32,7 +31,7 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
   def updateStartDate(stateBenefitsUserData: StateBenefitsUserData,
                       startDate: LocalDate)
                      (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
-    val updatedClaim = stateBenefitsUserData.claim.fold(ClaimCYAModel(startDate = startDate))(_.copy(startDate = startDate))
+    val updatedClaim = stateBenefitsUserData.claim.fold(ClaimCYAModel(startDate = startDate, isHmrcData = false))(_.copy(startDate = startDate))
     createOrUpdateClaim(stateBenefitsUserData, Some(updatedClaim))
   }
 
@@ -64,14 +63,6 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
     createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
   }
 
-  def removeClaim(user: User, sessionDataId: UUID)
-                 (implicit headerCarrier: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
-    stateBenefitsService.removeClaim(user, sessionDataId).map {
-      case Left(apiError) => Left(apiError)
-      case Right(_) => Right(())
-    }
-  }
-
   def updateTaxPaidAmount(stateBenefitsUserData: StateBenefitsUserData,
                           amount: BigDecimal)
                          (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
@@ -82,7 +73,6 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
   private def createOrUpdateClaim(originalUserData: StateBenefitsUserData, withClaim: Option[ClaimCYAModel])
                                  (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, UUID]] = {
     val updatedUserData = originalUserData.copy(claim = withClaim)
-
     stateBenefitsService.createOrUpdate(updatedUserData).map {
       case Left(_) => Left(())
       case Right(uuid) => Right(uuid)

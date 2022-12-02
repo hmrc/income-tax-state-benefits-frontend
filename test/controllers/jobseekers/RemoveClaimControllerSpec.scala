@@ -24,16 +24,17 @@ import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
-import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
+import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
 import views.html.pages.jobseekers.RemoveClaimView
 
 import java.util.UUID
 
 class RemoveClaimControllerSpec extends ControllerUnitTest
   with MockActionsProvider
-  with MockClaimService
+  with MockStateBenefitsService
   with MockErrorHandler {
 
   private val pageView = inject[RemoveClaimView]
@@ -42,7 +43,7 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
   private val underTest = new RemoveClaimController(
     mockActionsProvider,
     pageView,
-    mockClaimService,
+    mockStateBenefitsService,
     mockErrorHandler
   )
 
@@ -57,26 +58,53 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
     }
   }
 
-  ".submit" should {
-    "return error when claimService returns error" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockRemoveClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
-      mockInternalServerError(InternalServerError)
+  ".submit" when {
+    "given HMRC claim data" should {
+      "return error when stateBenefitsService.ignoreClaim(...) returns error" in {
+        mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+        mockIgnoreClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+        mockInternalServerError(InternalServerError)
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
-      val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
+        val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
+        val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+
+      "redirect to JobSeekersAllowanceController when stateBenefitsService.ignoreClaim(...) succeeds" in {
+        mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+        mockIgnoreClaim(aUser, sessionDataId, Right(Unit))
+
+        val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
+
+        await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
+          Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+      }
     }
 
-    "redirect to JobSeekersAllowanceController when stateBenefitsService.remove(...) succeeds" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockRemoveClaim(aUser, sessionDataId, Right(Unit))
+    "given customer claim data" should {
+      val customerAddedData = aClaimCYAModel.copy(isHmrcData = false)
 
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
+      "return error when stateBenefitsService.removeClaim(...) returns error" in {
+        mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(customerAddedData)))
+        mockRemoveClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+        mockInternalServerError(InternalServerError)
 
-      await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+        val request = fakeIndividualRequest.withMethod(POST.method)
+        val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
+
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+
+      "redirect to JobSeekersAllowanceController when stateBenefitsService.removeClaim(...) succeeds" in {
+        mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(customerAddedData)))
+        mockRemoveClaim(aUser, sessionDataId, Right(Unit))
+
+        val request = fakeIndividualRequest.withMethod(POST.method)
+
+        await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
+          Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+      }
     }
   }
 }
