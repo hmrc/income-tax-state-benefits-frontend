@@ -87,7 +87,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY))
+        fieldSetH1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY))
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
         formPostLinkCheck(DidClaimEndInTaxYearController.submit(taxYearEOY, aDidClaimEndInTaxYearPage.sessionDataId).url, Selectors.continueButtonFormSelector)
