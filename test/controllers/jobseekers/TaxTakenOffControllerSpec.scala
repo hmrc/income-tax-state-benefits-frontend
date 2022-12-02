@@ -25,11 +25,10 @@ import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentAsString, contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
 import views.html.pages.jobseekers.TaxTakenOffPageView
-
-import java.util.UUID
 
 class TaxTakenOffControllerSpec extends ControllerUnitTest
   with MockActionsProvider
@@ -37,7 +36,7 @@ class TaxTakenOffControllerSpec extends ControllerUnitTest
   with MockErrorHandler {
 
   private val pageView = inject[TaxTakenOffPageView]
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   private val underTest = new TaxTakenOffController(
     actionsProvider = mockActionsProvider,
@@ -71,18 +70,27 @@ class TaxTakenOffControllerSpec extends ControllerUnitTest
       document.select("#error-summary-title").isEmpty shouldBe false
     }
 
-    "redirect to TaxTakenOffAmount page when Yes is submitted" in {
+    "redirect to ReviewClaim page when Yes is submitted and isFinished" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(sessionDataId))
+      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData))
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
+
+      await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(ReviewClaimController.show(taxYearEOY, sessionDataId))
+    }
+
+    "redirect to TaxTakenOffAmount page when Yes is submitted and not finished" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
 
       await(underTest.submit(taxYearEOY, sessionDataId)(request)) shouldBe Redirect(TaxTakenOffAmountController.show(taxYearEOY, sessionDataId))
     }
 
-    "redirect to ReviewJobSeekersAllowanceClaim page when No is submitted" in {
+    "redirect to ReviewClaim page when No is submitted" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = false, Right(sessionDataId))
+      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = false, Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
 

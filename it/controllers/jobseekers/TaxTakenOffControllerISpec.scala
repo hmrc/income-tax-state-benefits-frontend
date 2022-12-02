@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffAmountController}
+import controllers.jobseekers.routes.ReviewClaimController
 import forms.YesNoForm
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -33,7 +33,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
   private def url(taxYear: Int, sessionDataId: UUID): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/tax-taken-off"
 
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   ".show" should {
     "redirect to Overview Page when in year" in {
@@ -71,7 +71,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "redirect to TaxTakenOffAmount page when answer is Yes" in {
+    "redirect to ReviewClaim page when answer is Yes" in {
       val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(true))
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
@@ -82,7 +82,7 @@ class TaxTakenOffControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe TaxTakenOffAmountController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
     }
 
     "redirect to ReviewJobSeekersAllowanceClaim page when answer is No" in {

@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.TaxTakenOffController
+import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffController}
 import forms.AmountForm._
 import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
@@ -25,11 +25,10 @@ import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentAsString, contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
 import views.html.pages.jobseekers.AmountPageView
-
-import java.util.UUID
 
 class AmountControllerSpec extends ControllerUnitTest
   with MockActionsProvider
@@ -37,7 +36,7 @@ class AmountControllerSpec extends ControllerUnitTest
   with MockErrorHandler {
 
   private val pageView = inject[AmountPageView]
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   private val underTest = new AmountController(
     mockActionsProvider,
@@ -82,14 +81,24 @@ class AmountControllerSpec extends ControllerUnitTest
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "redirect to next Page on successful amount update" in {
+    "redirect to next Page on successful amount update and journey not completed" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
-      mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(sessionDataId))
+      mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
 
       await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
         Redirect(TaxTakenOffController.show(taxYearEOY, sessionDataId))
+    }
+
+    "redirect to ReviewClaim Page on successful amount update and when journey is completed" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData))
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
+
+      await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
+        Redirect(ReviewClaimController.show(taxYearEOY, sessionDataId))
     }
   }
 }

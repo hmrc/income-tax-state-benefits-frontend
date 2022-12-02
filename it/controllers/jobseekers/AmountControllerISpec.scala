@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.TaxTakenOffController
+import controllers.jobseekers.routes.ReviewClaimController
 import forms.AmountForm.amount
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -33,7 +33,7 @@ class AmountControllerISpec extends IntegrationTest {
   private def url(taxYear: Int, sessionDataId: UUID): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/amount"
 
-  private val sessionDataId = UUID.randomUUID()
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   ".show" should {
     "redirect to Overview Page when in year" in {
@@ -71,7 +71,7 @@ class AmountControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "persist amount and redirect to next page" in {
+    "persist amount and redirect to ReviewClaim" in {
       val modelWithNewAmount = aClaimCYAModel.copy(amount = Some(100))
 
       lazy val result: WSResponse = {
@@ -83,7 +83,7 @@ class AmountControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe TaxTakenOffController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
     }
   }
 }

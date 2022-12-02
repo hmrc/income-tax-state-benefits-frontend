@@ -29,6 +29,8 @@ case class StateBenefitsUserData(sessionDataId: Option[UUID] = None,
                                  claim: Option[ClaimCYAModel]) {
 
   lazy val isHmrcData: Boolean = claim.exists(_.isHmrcData)
+
+  lazy val isFinished: Boolean = claim.exists(_.isFinished)
 }
 
 object StateBenefitsUserData {

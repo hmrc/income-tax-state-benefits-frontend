@@ -18,11 +18,12 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.DidClaimEndInTaxYearController
+import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, ReviewClaimController}
 import forms.jobseekers.FormsProvider
+import models.StateBenefitsUserData
 import models.pages.jobseekers.StartDatePage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.ClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
@@ -51,8 +52,14 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       formData => claimService.updateStartDate(request.stateBenefitsUserData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(DidClaimEndInTaxYearController.show(taxYear, uuid))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, userData))
       }
     )
+  }
+
+  private def getRedirectCall(taxYear: Int,
+                              userData: StateBenefitsUserData): Call = {
+    val sessionDataId = userData.sessionDataId.get
+    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else DidClaimEndInTaxYearController.show(taxYear, sessionDataId)
   }
 }

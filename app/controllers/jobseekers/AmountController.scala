@@ -18,8 +18,9 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.TaxTakenOffController
+import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffController}
 import forms.jobseekers.FormsProvider
+import models.StateBenefitsUserData
 import models.pages.jobseekers.AmountPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,9 +51,14 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       amount => claimService.updateAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(TaxTakenOffController.show(taxYear, uuid))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, userData))
       }
     )
+  }
+
+  private def getRedirectCall(taxYear: Int, userData: StateBenefitsUserData) = {
+    val sessionDataId = userData.sessionDataId.get
+    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else TaxTakenOffController.show(taxYear, sessionDataId)
   }
 }
 

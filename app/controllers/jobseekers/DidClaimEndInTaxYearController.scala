@@ -18,8 +18,9 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.{AmountController, EndDateController}
+import controllers.jobseekers.routes.{AmountController, EndDateController, ReviewClaimController}
 import forms.jobseekers.FormsProvider
+import models.StateBenefitsUserData
 import models.pages.jobseekers.DidClaimEndInTaxYearPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -51,12 +52,19 @@ class DidClaimEndInTaxYearController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       yesNoValue => claimService.updateEndDateQuestion(request.stateBenefitsUserData, yesNoValue).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(sessionDataId) => Redirect(getRedirectCall(taxYear, sessionDataId, yesNoValue))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, yesNoValue, userData))
       }
     )
   }
 
-  private def getRedirectCall(taxYear: Int, sessionDataId: UUID, yesNoValue: Boolean): Call = {
-    if (yesNoValue) EndDateController.show(taxYear, sessionDataId) else AmountController.show(taxYear, sessionDataId)
+  private def getRedirectCall(taxYear: Int,
+                              yesNoValue: Boolean,
+                              userData: StateBenefitsUserData): Call = {
+    val sessionDataId = userData.sessionDataId.get
+    if (userData.isFinished) {
+      ReviewClaimController.show(taxYear, sessionDataId)
+    } else {
+      if (yesNoValue) EndDateController.show(taxYear, sessionDataId) else AmountController.show(taxYear, sessionDataId)
+    }
   }
 }
