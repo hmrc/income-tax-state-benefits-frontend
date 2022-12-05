@@ -72,7 +72,7 @@ class RemoveClaimControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        ignoreClaimStub(aUser.nino, sessionDataId)
+        removeClaimStub(aUser.nino, sessionDataId)
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 
