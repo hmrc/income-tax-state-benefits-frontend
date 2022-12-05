@@ -94,18 +94,4 @@ class StateBenefitsServiceSpec extends UnitTest
       await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Right(())
     }
   }
-
-  ".ignoreClaim(...)" should {
-    "return error when fails to remove data" in {
-      mockIgnoreClaim(aUser, sessionDataId, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
-
-      await(underTest.ignoreClaim(aUser, sessionDataId)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
-    }
-
-    "return correct result when remove successful" in {
-      mockIgnoreClaim(aUser, sessionDataId, Right(()))
-
-      await(underTest.ignoreClaim(aUser, sessionDataId)) shouldBe Right(())
-    }
-  }
 }

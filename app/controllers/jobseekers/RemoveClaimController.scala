@@ -44,13 +44,7 @@ class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
   }
 
   def submit(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    val eventualResult = if (request.stateBenefitsUserData.isHmrcData) {
-      stateBenefitsService.ignoreClaim(request.user, sessionDataId)
-    } else {
-      stateBenefitsService.removeClaim(request.user, sessionDataId)
-    }
-
-    eventualResult.map {
+    stateBenefitsService.removeClaim(request.user, sessionDataId).map {
       case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
       case Left(_) => errorHandler.internalServerError()
     }

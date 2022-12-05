@@ -61,12 +61,4 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
       case Right(_) => Right(())
     }
   }
-
-  def ignoreClaim(user: User, sessionDataId: UUID)
-                 (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
-    stateBenefitsConnector.ignoreClaim(user, sessionDataId).map {
-      case Left(error: ApiError) => Left(HttpParserError(error.status))
-      case Right(_) => Right(())
-    }
-  }
 }

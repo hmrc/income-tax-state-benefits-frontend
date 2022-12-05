@@ -60,12 +60,4 @@ trait MockStateBenefitsService extends MockFactory {
       .expects(user, sessionDataId, *)
       .returning(Future.successful(result))
   }
-
-  def mockIgnoreClaim(user: User,
-                      sessionDataId: UUID,
-                      result: Either[HttpParserError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
-    (mockStateBenefitsService.ignoreClaim(_: User, _: UUID)(_: HeaderCarrier))
-      .expects(user, sessionDataId, *)
-      .returning(Future.successful(result))
-  }
 }
