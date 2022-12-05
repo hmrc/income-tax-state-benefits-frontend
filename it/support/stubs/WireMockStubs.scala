@@ -168,6 +168,27 @@ trait WireMockStubs {
     )
   }
 
+  protected def saveStateBenefitStub(stateBenefitsUserData: StateBenefitsUserData): StubMapping = {
+    stubFor(put(urlMatching(s"/income-tax-state-benefits/income-tax"))
+      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
+      .withHeader("mtditid", equalTo(aUser.mtditid))
+      .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
+      .willReturn(aResponse().withStatus(NO_CONTENT)))
+  }
+
+  protected def saveStateBenefitStub(url: String,
+                                     status: Int,
+                                     responseBody: String,
+                                     sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
+                                     mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
+                                    ): StubMapping = {
+    stubFor(put(urlMatching(url))
+      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
+      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
+      .willReturn(aResponse().withStatus(status).withBody(responseBody))
+    )
+  }
+
   protected def removeClaimStub(nino: String,
                                 sessionDataId: UUID): StubMapping = {
     stubFor(delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId"))

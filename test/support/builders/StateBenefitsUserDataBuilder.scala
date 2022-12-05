@@ -16,16 +16,17 @@
 
 package support.builders
 
-import models.StateBenefitsUserData
+import models.{BenefitType, StateBenefitsUserData}
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.UserBuilder.aUser
-import support.utils.TaxYearUtils.{taxYear, taxYearEOY}
+import support.utils.TaxYearUtils.taxYearEOY
 
 import java.util.UUID
 
 object StateBenefitsUserDataBuilder {
 
   val aStateBenefitsUserData: StateBenefitsUserData = StateBenefitsUserData(
+    benefitType = BenefitType.JobSeekersAllowance.typeName,
     sessionDataId = Some(UUID.fromString("558238ef-d2ff-4839-bd6d-307324d6fe37")),
     sessionId = aUser.sessionId,
     mtdItId = aUser.mtditid,

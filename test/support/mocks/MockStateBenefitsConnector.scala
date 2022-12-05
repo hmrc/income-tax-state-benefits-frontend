@@ -53,6 +53,13 @@ trait MockStateBenefitsConnector extends MockFactory {
       .returning(Future.successful(result))
   }
 
+  def mockSaveStateBenefit(stateBenefitsUserData: StateBenefitsUserData,
+                           result: Either[ApiError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
+    (mockStateBenefitsConnector.saveStateBenefit(_: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(stateBenefitsUserData, *)
+      .returning(Future.successful(result))
+  }
+
   def mockRemoveClaim(user: User,
                       sessionDataId: UUID,
                       result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {

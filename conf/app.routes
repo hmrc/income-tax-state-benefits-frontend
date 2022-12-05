@@ -38,7 +38,8 @@ POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off         
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxTakenOffAmountController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxTakenOffAmountController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/review-jobseekers-allowance-claim     controllers.jobseekers.ReviewClaimController.show(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/jobseekers-allowance/:sessionDataId/review-jobseekers-allowance-claim             controllers.jobseekers.ReviewClaimController.show(taxYear: Int, sessionDataId: java.util.UUID)
+POST        /:taxYear/jobseekers-allowance/:sessionDataId/review-jobseekers-allowance-claim/save        controllers.jobseekers.ReviewClaimController.saveAndContinue(taxYear: Int, sessionDataId: java.util.UUID)
 
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/remove                                controllers.jobseekers.RemoveClaimController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/remove                                controllers.jobseekers.RemoveClaimController.submit(taxYear: Int, sessionDataId: java.util.UUID)

@@ -17,24 +17,37 @@
 package controllers.jobseekers
 
 import actions.ActionsProvider
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.pages.jobseekers.ReviewClaimPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
 import views.html.pages.jobseekers.ReviewClaimPageView
 
 import java.util.UUID
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
-                                      pageView: ReviewClaimPageView)
-                                     (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
+                                      pageView: ReviewClaimPageView,
+                                      stateBenefitsService: StateBenefitsService,
+                                      errorHandler: ErrorHandler)
+                                     (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
     Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData)))
   }
+
+  def saveAndContinue(taxYear: Int, sessionDataId: UUID): Action[AnyContent] =
+    actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+      stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
+        case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+        case Left(_) => errorHandler.internalServerError()
+      }
+    }
 }

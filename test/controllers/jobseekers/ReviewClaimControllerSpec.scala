@@ -16,24 +16,32 @@
 
 package controllers.jobseekers
 
-import play.api.http.Status.OK
+import controllers.jobseekers.routes.JobSeekersAllowanceController
+import models.errors.HttpParserError
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentType, status}
+import sttp.model.Method.POST
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
-import support.mocks.MockActionsProvider
+import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
 import views.html.pages.jobseekers.ReviewClaimPageView
 
 import java.util.UUID
 
 class ReviewClaimControllerSpec extends ControllerUnitTest
-  with MockActionsProvider {
+  with MockActionsProvider
+  with MockStateBenefitsService
+  with MockErrorHandler {
 
   private val pageView = inject[ReviewClaimPageView]
   private val sessionDataId = UUID.randomUUID()
 
   private val underTest = new ReviewClaimController(
     mockActionsProvider,
-    pageView
+    pageView,
+    mockStateBenefitsService,
+    mockErrorHandler
   )
 
   "show" should {
@@ -44,6 +52,28 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
       status(result) shouldBe OK
       contentType(result) shouldBe Some("text/html")
+    }
+  }
+
+  ".saveAndContinue" should {
+    "handle internal server error when updating saveStateBenefit fails" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockSaveStateBenefit(aStateBenefitsUserData, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockInternalServerError(InternalServerError)
+
+      val result = underTest.saveAndContinue(taxYearEOY, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "redirect to JobSeekersAllowance Page on successful save of StateBenefit" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockSaveStateBenefit(aStateBenefitsUserData, Right(()))
+
+      val request = fakeIndividualRequest.withMethod(POST.method)
+
+      await(underTest.saveAndContinue(taxYearEOY, sessionDataId).apply(request)) shouldBe
+        Redirect(JobSeekersAllowanceController.show(taxYearEOY))
     }
   }
 }

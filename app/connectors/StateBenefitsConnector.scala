@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import connectors.errors.ApiError
-import connectors.responses.{CreateOrUpdateUserDataResponse, GetIncomeTaxUserDataResponse, GetUserSessionDataResponse, RemoveClaimResponse}
+import connectors.responses._
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
 import services.PagerDutyLoggerService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -61,6 +61,16 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     }
   }
 
+  def saveStateBenefit(stateBenefitsUserData: StateBenefitsUserData)
+                      (implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
+    val response = saveUserData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
+
+    response.map { response: SaveUserDataResponse =>
+      if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
+      response.result
+    }
+  }
+
   def removeClaim(user: User, sessionDataId: UUID)(implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
     val response = removeClaimData(user.nino, sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
 
@@ -74,6 +84,12 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
                                   (implicit hc: HeaderCarrier): Future[GetIncomeTaxUserDataResponse] = {
     val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/prior-data/nino/$nino/tax-year/$taxYear"
     httpClient.GET[GetIncomeTaxUserDataResponse](stateBenefitsBEUrl)
+  }
+
+  private def saveUserData(stateBenefitsUserData: StateBenefitsUserData)
+                          (implicit hc: HeaderCarrier): Future[SaveUserDataResponse] = {
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + "/income-tax"
+    httpClient.PUT[StateBenefitsUserData, SaveUserDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
   }
 
   private def getUserSessionData(nino: String, sessionDataId: UUID)
