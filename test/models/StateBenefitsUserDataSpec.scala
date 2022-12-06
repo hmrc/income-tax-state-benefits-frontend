@@ -72,6 +72,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
   ".apply(taxYear: Int, user: User)" should {
     "create correct StateBenefitsUserData instance" in {
       StateBenefitsUserData.apply(anyTaxYear, aUser) shouldBe StateBenefitsUserData(
+        benefitType = BenefitType.JobSeekersAllowance.typeName,
         sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,
@@ -95,6 +96,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = stateBenefitsData)))
 
       StateBenefitsUserData.apply(anyTaxYear, aUser, aStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
+        benefitType = BenefitType.JobSeekersAllowance.typeName,
         sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,
@@ -110,6 +112,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData))))
 
       StateBenefitsUserData.apply(anyTaxYear, aUser, aCustomerAddedStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
+        benefitType = BenefitType.JobSeekersAllowance.typeName,
         sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,

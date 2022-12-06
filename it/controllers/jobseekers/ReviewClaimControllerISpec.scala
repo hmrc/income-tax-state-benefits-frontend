@@ -16,6 +16,7 @@
 
 package controllers.jobseekers
 
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
@@ -29,6 +30,8 @@ class ReviewClaimControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int, sessionDataId: UUID): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/review-jobseekers-allowance-claim"
+
+  private def saveAndContinueUrl(taxYear: Int, sessionDataId: UUID): String = s"${url(taxYear, sessionDataId)}/save"
 
   private val sessionDataId = UUID.randomUUID()
 
@@ -52,6 +55,31 @@ class ReviewClaimControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe OK
+    }
+  }
+
+  ".saveAndContinue" should {
+    "redirect to Overview Page when in year" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        urlPost(saveAndContinueUrl(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+    }
+
+    "persist amount and redirect to ReviewClaim" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        saveStateBenefitStub(aStateBenefitsUserData)
+        urlPost(saveAndContinueUrl(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe JobSeekersAllowanceController.show(taxYearEOY).url
     }
   }
 }

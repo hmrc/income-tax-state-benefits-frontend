@@ -166,6 +166,21 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
     }
   }
 
+  ".saveStateBenefit(...)" should {
+    "Return a success result when BE returns 204" in {
+      saveStateBenefitStub("/income-tax", NO_CONTENT, responseBody = "{}")
+
+      await(underTest.saveStateBenefit(aStateBenefitsUserData)) shouldBe Right(())
+    }
+
+    "Return a Left/Failure when BE returns code different than NO_CONTENT" in {
+      saveStateBenefitStub("/income-tax", NOT_FOUND, responseBody = "{}")
+      mockPagerDutyLog("SaveUserDataResponse")
+
+      await(underTest.saveStateBenefit(aStateBenefitsUserData)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
+    }
+  }
+
   ".removeClaim(...)" should {
     "Return an empty response in the success case when BE returns 204" in {
       removeClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId", status = NO_CONTENT, responseBody = "")

@@ -54,6 +54,14 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
     }
   }
 
+  def saveStateBenefit(stateBenefitsUserData: StateBenefitsUserData)
+                      (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
+    stateBenefitsConnector.saveStateBenefit(stateBenefitsUserData).map {
+      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Right(_) => Right(())
+    }
+  }
+
   def removeClaim(user: User, sessionDataId: UUID)
                  (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
     stateBenefitsConnector.removeClaim(user, sessionDataId).map {
