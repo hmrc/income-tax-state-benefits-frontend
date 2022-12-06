@@ -18,7 +18,7 @@ package connectors.responses
 
 import connectors.errors.{ApiError, SingleErrorBody}
 import connectors.responses.GetIncomeTaxUserDataResponse.getIncomeTaxUserDataResponseReads
-import models.{AllStateBenefitsData, IncomeTaxUserData, StateBenefitsData}
+import models.{AllStateBenefitsData, IncomeTaxUserData}
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitTest
@@ -38,7 +38,6 @@ class GetIncomeTaxUserDataResponseSpec extends UnitTest {
         val jsValue: JsValue = Json.parse(
           """
             |{
-            |   "stateBenefits": {}
             |}
             |""".stripMargin)
 
@@ -46,14 +45,16 @@ class GetIncomeTaxUserDataResponseSpec extends UnitTest {
 
         underTest.read(anyMethod, anyUrl, httpResponse) shouldBe GetIncomeTaxUserDataResponse(
           httpResponse,
-          Right(IncomeTaxUserData(Some(AllStateBenefitsData(StateBenefitsData(), None))))
+          Right(IncomeTaxUserData(Some(AllStateBenefitsData(None, None))))
         )
       }
 
       "status is OK and invalid jsValue" in {
         val jsValue: JsValue = Json.parse(
           """
-            |{}
+            |{
+            |   "stateBenefits": { "statePension": [] }
+            |}
             |""".stripMargin)
 
         val httpResponse: HttpResponse = HttpResponse.apply(OK, jsValue, anyHeaders)

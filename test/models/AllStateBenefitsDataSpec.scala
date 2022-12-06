@@ -59,7 +59,7 @@ class AllStateBenefitsDataSpec extends UnitTest {
     .copy(otherStateBenefits = Some(Set(customerAddedStateBenefit.copy(benefitId = UUID.fromString("a1e8057e-fbbc-47a8-a8b4-78d9f015c957")))))
 
   private val allStateBenefitsData = anAllStateBenefitsData.copy(
-    stateBenefitsData = stateBenefitsData,
+    stateBenefitsData = Some(stateBenefitsData),
     customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData)
   )
 
@@ -81,7 +81,7 @@ class AllStateBenefitsDataSpec extends UnitTest {
           |""".stripMargin)
 
       val allStateBenefitsData = AllStateBenefitsData(
-        stateBenefitsData = StateBenefitsData(),
+        stateBenefitsData = None,
         customerAddedStateBenefitsData = None
       )
 
@@ -98,12 +98,11 @@ class AllStateBenefitsDataSpec extends UnitTest {
       val jsValue: JsValue = Json.parse(
         """
           |{
-          |   "stateBenefits": {}
           |}
           |""".stripMargin)
 
       Json.fromJson[AllStateBenefitsData](jsValue).get shouldBe AllStateBenefitsData(
-        stateBenefitsData = StateBenefitsData(),
+        stateBenefitsData = None,
         customerAddedStateBenefitsData = None
       )
     }
