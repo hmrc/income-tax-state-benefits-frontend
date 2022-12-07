@@ -63,14 +63,6 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
     }
 
     "Return an error result" when {
-      "submission returns a 200 but invalid json" in {
-        stubGetWithHeadersCheck(s"/prior-data/nino/${aUser.nino}/tax-year/$taxYear", OK,
-          Json.toJson("""{"invalid": true}""").toString())
-        mockPagerDutyLog("GetIncomeTaxUserDataResponse")
-
-        await(underTest.getIncomeTaxUserData(aUser, taxYear)) shouldBe Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError))
-      }
-
       "submission returns a 500" in {
         stubGetWithHeadersCheck(s"/prior-data/nino/${aUser.nino}/tax-year/$taxYear", INTERNAL_SERVER_ERROR,
           """{"code": "FAILED", "reason": "failed"}""")

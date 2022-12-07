@@ -36,14 +36,14 @@ class IncomeTaxUserDataSpec extends UnitTest {
 
       "when HMRC jobSeekersAllowances is None" in {
         val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = None)
-        val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = stateBenefitsData)))
+        val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
         underTest.hmrcJobSeekersAllowances shouldBe Set.empty
       }
 
       "when HMRC jobSeekersAllowances is empty Set" in {
         val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set.empty))
-        val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = stateBenefitsData)))
+        val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
         underTest.hmrcJobSeekersAllowances shouldBe Set.empty
       }
@@ -51,7 +51,7 @@ class IncomeTaxUserDataSpec extends UnitTest {
 
     "return HMRC jobSeekersAllowances when exist" in {
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit)))
-      val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = stateBenefitsData)))
+      val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
       underTest.hmrcJobSeekersAllowances shouldBe Set(aStateBenefit)
     }

@@ -21,7 +21,8 @@ import play.api.libs.json.{Json, OFormat}
 case class IncomeTaxUserData(stateBenefits: Option[AllStateBenefitsData] = None) {
 
   lazy val hmrcJobSeekersAllowances: Set[StateBenefit] = stateBenefits
-    .flatMap(_.stateBenefitsData.jobSeekersAllowances)
+    .flatMap(_.stateBenefitsData)
+    .flatMap(_.jobSeekersAllowances)
     .getOrElse(Set.empty)
 
   lazy val customerJobSeekersAllowances: Set[CustomerAddedStateBenefit] = stateBenefits

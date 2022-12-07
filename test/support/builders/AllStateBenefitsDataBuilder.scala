@@ -17,13 +17,13 @@
 package support.builders
 
 import models.AllStateBenefitsData
-import CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
-import StateBenefitsDataBuilder.aStateBenefitsData
+import support.builders.CustomerAddedStateBenefitsDataBuilder.aCustomerAddedStateBenefitsData
+import support.builders.StateBenefitsDataBuilder.aStateBenefitsData
 
 object AllStateBenefitsDataBuilder {
 
   val anAllStateBenefitsData: AllStateBenefitsData = AllStateBenefitsData(
-    stateBenefitsData = aStateBenefitsData,
+    stateBenefitsData = Some(aStateBenefitsData),
     customerAddedStateBenefitsData = Some(aCustomerAddedStateBenefitsData)
   )
 }

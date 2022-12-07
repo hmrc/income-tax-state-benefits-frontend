@@ -93,7 +93,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
 
     "create correct StateBenefitsUserData instance when benefitId found in HMRC added data" in {
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit)))
-      val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = stateBenefitsData)))
+      val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
       StateBenefitsUserData.apply(anyTaxYear, aUser, aStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
         benefitType = BenefitType.JobSeekersAllowance.typeName,

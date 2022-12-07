@@ -41,7 +41,7 @@ class JobSeekersAllowancePageSpec extends UnitTest
 
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_1, stateBenefit_2)))
       val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_3, stateBenefit_4)))
-      val incomeTaxUserData = anIncomeTaxUserData.copy(Some(anAllStateBenefitsData.copy(stateBenefitsData, Some(customerAddedStateBenefitsData))))
+      val incomeTaxUserData = anIncomeTaxUserData.copy(Some(anAllStateBenefitsData.copy(Some(stateBenefitsData), Some(customerAddedStateBenefitsData))))
 
       val summaryListDataRows = Seq(
         BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_4),
