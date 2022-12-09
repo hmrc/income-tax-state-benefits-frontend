@@ -29,7 +29,6 @@ import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
 import support.mocks.{MockAuthorisedAction, MockErrorHandler, MockStateBenefitsService}
-import utils.InYearUtil
 
 import java.util.UUID
 

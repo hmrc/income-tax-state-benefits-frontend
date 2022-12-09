@@ -71,7 +71,7 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
 
     "redirect to JobSeekersAllowanceController when stateBenefitsService.removeClaim(...) succeeds" in {
       mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
-      mockRemoveClaim(aUser, sessionDataId, Right(Unit))
+      mockRemoveClaim(aUser, sessionDataId, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
 

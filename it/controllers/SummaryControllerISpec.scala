@@ -21,7 +21,6 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
-import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.UserBuilder.aUser
 
 class SummaryControllerISpec extends IntegrationTest {

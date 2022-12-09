@@ -1,7 +1,7 @@
 
 # income-tax-state-benefits-frontend
 
-This is a placeholder README.md for a new repository
+This is where users can review and make changes to the State Benefits section of their income tax return.
 
 ### License
 

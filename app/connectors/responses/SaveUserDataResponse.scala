@@ -21,8 +21,6 @@ import connectors.errors.ApiError
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-import java.util.UUID
-
 case class SaveUserDataResponse(httpResponse: HttpResponse, result: Either[ApiError, Unit])
 
 object SaveUserDataResponse {

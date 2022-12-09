@@ -17,7 +17,6 @@
 package models.pages.jobseekers
 
 import support.UnitTest
-import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.providers.TaxYearProvider
 

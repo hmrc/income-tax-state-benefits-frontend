@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{AmountController, ReviewClaimController}
+import controllers.jobseekers.routes.ReviewClaimController
 import forms.YesNoForm
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}

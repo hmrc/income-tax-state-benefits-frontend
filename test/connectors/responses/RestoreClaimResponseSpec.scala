@@ -36,7 +36,7 @@ class RestoreClaimResponseSpec extends UnitTest {
       "status is NO_CONTENT and return unit" in {
         val httpResponse: HttpResponse = HttpResponse.apply(NO_CONTENT, Json.toJson("{}"), anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RestoreClaimResponse(httpResponse, Right(Unit))
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RestoreClaimResponse(httpResponse, Right(()))
       }
 
       "status is INTERNAL_SERVER_ERROR and jsValue for error" in {
