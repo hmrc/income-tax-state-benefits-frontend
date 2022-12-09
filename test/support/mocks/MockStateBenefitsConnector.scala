@@ -19,7 +19,7 @@ package support.mocks
 import connectors.StateBenefitsConnector
 import connectors.errors.ApiError
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
-import org.scalamock.handlers.{CallHandler2, CallHandler3}
+import org.scalamock.handlers.{CallHandler2, CallHandler3, CallHandler4}
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -65,6 +65,14 @@ trait MockStateBenefitsConnector extends MockFactory {
                       result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
     (mockStateBenefitsConnector.removeClaim(_: User, _: UUID)(_: HeaderCarrier))
       .expects(user, sessionDataId, *)
+      .returning(Future.successful(result))
+  }
+
+  def mockRestoreClaim(user: User,
+                       sessionDataId: UUID,
+                       result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
+    (mockStateBenefitsConnector.restoreClaim( _: User, _: UUID)(_: HeaderCarrier))
+      .expects( user, sessionDataId, *)
       .returning(Future.successful(result))
   }
 }

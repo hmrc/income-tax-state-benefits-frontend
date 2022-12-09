@@ -35,7 +35,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val bannerParagraphSelector: String = ".govuk-notification-banner__heading"
     val bannerLinkSelector: String = ".govuk-notification-banner__link"
     val p1 = "#main-content > div > div > p.govuk-body"
-    val saveButtonSelector = "#save-and-continue-button-id"
+    val saveAndContinueButtonSelector = "#save-and-continue-button-id"
+    val pageFormSelector = "#main-content > div > div > form"
     val removeLinkSelector = "#remove-link-id"
     val removeLinkHiddenSelector = "#remove-link-id > span.govuk-visually-hidden"
     val rowsSelector = "#main-content > div > div > dl > div"
@@ -199,7 +200,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
       import userScenario.specificExpectedResults._
 
       "render end of year version of ReviewJobSeekersAllowanceClaim page" when {
-        "there is user provided data" which {
+        "customer added data" which {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
@@ -230,15 +231,15 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(5), "for the tax paid question")
           checkElementsCount(6, rowsSelector)
-          buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveButtonSelector)
+          buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveAndContinueButtonSelector)
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
           linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, pageModel.sessionDataId).url,
             Some(expectedRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
-
           elementNotOnPageCheck(restoreClaimButtonSelector)
           elementNotOnPageCheck(backLinkSelector)
         }
 
-        "there is external data provided" which {
+        "HMRC added data" which {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
@@ -246,6 +247,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
           implicit val document: Document = Jsoup.parse(page(pageModel).body)
           textOnPageCheck(userScenario.commonExpectedResults.expectedExternalDataText, Selectors.p1)
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
         }
 
         "the claim is ignored" which {
@@ -262,6 +264,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           elementNotOnPageCheck(changeLink(3))
           elementNotOnPageCheck(changeLink(4))
           elementNotOnPageCheck(changeLink(5))
+          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
         }
       }
     }

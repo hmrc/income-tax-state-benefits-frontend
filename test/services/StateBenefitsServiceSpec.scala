@@ -108,4 +108,18 @@ class StateBenefitsServiceSpec extends UnitTest
       await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Right(())
     }
   }
+
+  ".restoreClaim(...)" should {
+    "return error when fails to restore claim" in {
+      mockRestoreClaim(aUser, sessionDataId, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
+
+      await(underTest.restoreClaim(aUser, sessionDataId)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+    }
+
+    "return correct result when restore claim is successful" in {
+      mockRestoreClaim(aUser, sessionDataId, Right(()))
+
+      await(underTest.restoreClaim(aUser, sessionDataId)) shouldBe Right(())
+    }
+  }
 }
