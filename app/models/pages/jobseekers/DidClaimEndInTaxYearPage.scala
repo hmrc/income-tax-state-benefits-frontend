@@ -16,26 +16,29 @@
 
 package models.pages.jobseekers
 
-import models.StateBenefitsUserData
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.data.Form
 
 import java.util.UUID
 
 case class DidClaimEndInTaxYearPage(taxYear: Int,
                                     sessionDataId: UUID,
-                                    form: Form[Boolean])
+                                    form: Form[Boolean],
+                                    benefitType: BenefitType)
 
 object DidClaimEndInTaxYearPage {
 
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
-            form: Form[Boolean]): DidClaimEndInTaxYearPage = {
+            form: Form[Boolean],
+            benefitType: BenefitType): DidClaimEndInTaxYearPage = {
     val optQuestionValue = stateBenefitsUserData.claim.flatMap(_.endDateQuestion)
 
     DidClaimEndInTaxYearPage(
       taxYear = taxYear,
       stateBenefitsUserData.sessionDataId.get,
-      form = optQuestionValue.fold(form)(questionValue => if (form.hasErrors) form else form.fill(questionValue))
+      form = optQuestionValue.fold(form)(questionValue => if (form.hasErrors) form else form.fill(questionValue)),
+      benefitType = benefitType
     )
   }
 }

@@ -16,7 +16,7 @@
 
 package models.pages.jobseekers
 
-import models.{ClaimCYAModel, StateBenefitsUserData}
+import models.{BenefitType, ClaimCYAModel, StateBenefitsUserData}
 import utils.InYearUtil.toDateWithinTaxYear
 
 import java.time.LocalDate
@@ -31,11 +31,14 @@ case class RemoveClaimPage(taxYear: Int,
                            endDate: Option[LocalDate],
                            amount: Option[BigDecimal],
                            taxPaidQuestion: Option[Boolean],
-                           taxPaid: Option[BigDecimal])
+                           taxPaid: Option[BigDecimal],
+                           benefitType: BenefitType)
 
 object RemoveClaimPage {
 
-  def apply(taxYear: Int, stateBenefitsUserData: StateBenefitsUserData): RemoveClaimPage = {
+  def apply(taxYear: Int,
+            stateBenefitsUserData: StateBenefitsUserData,
+            benefitType: BenefitType): RemoveClaimPage = {
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
 
     RemoveClaimPage(
@@ -48,7 +51,8 @@ object RemoveClaimPage {
       endDate = claimCYAModel.endDate,
       amount = claimCYAModel.amount,
       taxPaidQuestion = claimCYAModel.taxPaidQuestion,
-      taxPaid = claimCYAModel.taxPaid
+      taxPaid = claimCYAModel.taxPaid,
+      benefitType = benefitType
     )
   }
 }

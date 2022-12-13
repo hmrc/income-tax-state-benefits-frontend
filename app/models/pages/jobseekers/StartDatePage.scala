@@ -17,7 +17,7 @@
 package models.pages.jobseekers
 
 import forms.DateFormData
-import models.StateBenefitsUserData
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.data.Form
 
 import java.time.LocalDate
@@ -25,19 +25,22 @@ import java.util.UUID
 
 case class StartDatePage(taxYear: Int,
                          sessionDataId: UUID,
-                         form: Form[DateFormData])
+                         form: Form[DateFormData],
+                         benefitType: BenefitType)
 
 object StartDatePage {
 
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
-            form: Form[DateFormData]): StartDatePage = {
+            form: Form[DateFormData],
+            benefitType: BenefitType): StartDatePage = {
     val optStartDate: Option[LocalDate] = stateBenefitsUserData.claim.map(_.startDate)
 
     StartDatePage(
       taxYear = taxYear,
       stateBenefitsUserData.sessionDataId.get,
-      form = optStartDate.fold(form)(localDate => if (form.hasErrors) form else form.fill(DateFormData(localDate)))
+      form = optStartDate.fold(form)(localDate => if (form.hasErrors) form else form.fill(DateFormData(localDate))),
+      benefitType = benefitType
     )
   }
 }

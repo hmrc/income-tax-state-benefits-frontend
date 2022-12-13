@@ -38,7 +38,14 @@
 
 @(pageModel: StartDatePage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{ messages(s"common.jobSeekersAllowanceStartDate.${if(request.user.isAgent) "agent" else "individual"}") }
+@pageKeysPrefix = @{ s"${pageModel.benefitType.typeName}.startDatePage" }
+@benefitTypeKey = @{ pageModel.benefitType.typeName }
+@benefitTypeUrl = @{ pageModel.benefitType.typeName match {
+    case "employmentSupportAllowance" => "employment-support-allowance"
+    case "jobSeekersAllowance" => "jobseekers-allowance"
+}}
+
+@titleText = @{ messages(s"common.$benefitTypeKey.startDate.${if(request.user.isAgent) "agent" else "individual"}") }
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
@@ -49,9 +56,9 @@
         }
     })
 
-    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+    @caption(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
-    @formWithCsrf(action = StartDateController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCsrf(action = StartDateController.submit(pageModel.taxYear, pageModel.sessionDataId, benefitTypeUrl)) {
         @dateInput(
             form = pageModel.form,
             id = DateForm.formValuesPrefix,

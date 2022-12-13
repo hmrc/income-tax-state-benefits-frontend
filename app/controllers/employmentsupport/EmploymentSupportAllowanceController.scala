@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.jobseekers
+package controllers.employmentsupport
 
 import actions.ActionsProvider
 import config.AppConfig
-import models.BenefitType
+import models.pages.employmentsupport.EmploymentSupportAllowancePage
 import models.pages.jobseekers.JobSeekersAllowancePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
+import views.html.pages.employmentsupport.EmploymentSupportAllowancePageView
 import views.html.pages.jobseekers.JobSeekersAllowancePageView
 
 import javax.inject.Inject
 
-class JobSeekersAllowanceController @Inject()(actionsProvider: ActionsProvider,
-                                              pageView: JobSeekersAllowancePageView)
-                                             (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
+class EmploymentSupportAllowanceController @Inject()(actionsProvider: ActionsProvider,
+                                                     pageView: EmploymentSupportAllowancePageView)
+                                                    (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int): Action[AnyContent] = actionsProvider.userPriorDataFor(taxYear) { implicit userPriorDataRequest =>
-    Ok(pageView(JobSeekersAllowancePage(taxYear, userPriorDataRequest.incomeTaxUserData)))
+    Ok(pageView(EmploymentSupportAllowancePage(taxYear, userPriorDataRequest.incomeTaxUserData)))
   }
 }

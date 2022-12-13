@@ -37,8 +37,10 @@ case class StateBenefitsUserData(benefitType: String,
 object StateBenefitsUserData {
   implicit val format: OFormat[StateBenefitsUserData] = Json.format[StateBenefitsUserData]
 
-  def apply(taxYear: Int, user: User): StateBenefitsUserData = StateBenefitsUserData(
-    benefitType = BenefitType.JobSeekersAllowance.typeName,
+  def apply(taxYear: Int,
+            user: User,
+            benefitType: String): StateBenefitsUserData = StateBenefitsUserData(
+    benefitType = benefitType,
     sessionDataId = None,
     sessionId = user.sessionId,
     mtdItId = user.mtditid,
@@ -51,12 +53,13 @@ object StateBenefitsUserData {
   def apply(taxYear: Int,
             user: User,
             benefitId: UUID,
-            incomeTaxUserData: IncomeTaxUserData): Option[StateBenefitsUserData] = {
-    val optionalHmrcStateBenefit = incomeTaxUserData.hmrcJobSeekersAllowances.find(item => item.benefitId == benefitId)
-    val optionalCustomerStateBenefit = incomeTaxUserData.customerJobSeekersAllowances.find(item => item.benefitId == benefitId)
+            incomeTaxUserData: IncomeTaxUserData,
+            benefitType: String): Option[StateBenefitsUserData] = {
+    val optionalHmrcStateBenefit = incomeTaxUserData.hmrcAllowancesFor(BenefitType(benefitType)).find(item => item.benefitId == benefitId)
+    val optionalCustomerStateBenefit = incomeTaxUserData.customerAllowancesFor(BenefitType(benefitType)).find(item => item.benefitId == benefitId)
 
     lazy val stateBenefitsUserData = StateBenefitsUserData(
-      benefitType = BenefitType.JobSeekersAllowance.typeName,
+      benefitType = benefitType,
       sessionDataId = None,
       sessionId = user.sessionId,
       mtdItId = user.mtditid,

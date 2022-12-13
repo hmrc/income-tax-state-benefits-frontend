@@ -16,8 +16,8 @@
 
 @import controllers.session.routes.UserSessionDataController
 
-@import models.BenefitType.JobSeekersAllowance
-@import models.pages.jobseekers.JobSeekersAllowancePage
+@import models.BenefitType.EmploymentSupportAllowance
+@import models.pages.employmentsupport.EmploymentSupportAllowancePage
 @import models.requests.UserPriorDataRequest
 
 @import utils.ViewUtils.bigDecimalCurrency
@@ -39,13 +39,13 @@
     button: Button
 )
 
-@(pageModel: JobSeekersAllowancePage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
+@(pageModel: EmploymentSupportAllowancePage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{ messages(s"common.employmentSupportAllowance") }
+@titleText = @{ messages("common.employmentSupportAllowance") }
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
-    @heading(titleText, Some(messages(s"common.employmentSupportAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText, Some(messages("common.employmentSupportAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
     @if(pageModel.summaryListDataRows.nonEmpty){
     <dl class="govuk-summary-list govuk-!-margin-bottom-3 ">
@@ -59,12 +59,12 @@
                     @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
                 </dt>
                 <dd class="govuk-summary-list__actions">
-                    @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId, JobSeekersAllowance.typeName, "jobseekers-allowance").url, "common.view")
+                    @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId, EmploymentSupportAllowance.typeName, "employment-support-allowance").url, "common.view")
                 </dd>
             </div>
             @if(rowData.isIgnored){
             <div>
-                <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"jobSeekersAllowance.p1.removed.claim.text.${if(request.user.isAgent) "agent" else "individual"}")</p>
+                <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"employmentSupportAllowance.p1.removed.claim.text.${if(request.user.isAgent) "agent" else "individual"}")</p>
             </div>
             }
         </div>
@@ -72,10 +72,10 @@
     </dl>
     }
 
-    @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, "jobSeekersAllowance")) {
+    @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, "employmentSupportAllowance")) {
         @govukButton(Button(
             classes = "govuk-button--secondary",
-            content = Text(messages("jobSeekersAllowance.addMissingClaim.button.text")),
+            content = Text(messages("employmentSupportAllowance.addMissingClaim.button.text")),
             attributes = Map("id" -> "add-missing-claim-button-id")
         ))
     }
