@@ -34,7 +34,7 @@ class EmploymentSupportAllowanceController @Inject()(actionsProvider: ActionsPro
                                                     (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int): Action[AnyContent] = actionsProvider.userPriorDataFor(taxYear) { implicit userPriorDataRequest =>
+  def show(taxYear: Int): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit userPriorDataRequest =>
     Ok(pageView(EmploymentSupportAllowancePage(taxYear, userPriorDataRequest.incomeTaxUserData)))
   }
 }

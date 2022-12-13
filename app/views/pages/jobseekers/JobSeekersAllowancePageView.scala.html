@@ -69,7 +69,7 @@
             @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
         </dt>
         <dd class="govuk-summary-list__actions ">
-            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
+            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId, JobSeekersAllowance.typeName, "jobseekers-allowance").url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
         </dd>
     </div>
     @if(rowData.isIgnored){
@@ -84,7 +84,7 @@
         @translatedDateFormatter(rowData.startDate)
     </dt>
     <dd class="govuk-summary-list__actions ">
-        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
+        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId, JobSeekersAllowance.typeName, "jobseekers-allowance").url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
     </dd>
 }
 
@@ -97,7 +97,7 @@
     }
 
     @if(!pageModel.isInYear) {
-        @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear)) {
+        @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, "jobSeekersAllowance")) {
             @govukButton(Button(
                 classes = "govuk-button--secondary",
                 content = Text(messages("common.addMissingClaim")),

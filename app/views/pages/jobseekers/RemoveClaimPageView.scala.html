@@ -39,7 +39,7 @@
 
 @(pageModel: RemoveClaimPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@pageKeysPrefix = @{ s"${pageModel.benefitType.typeName}.removePage" }
+@pageKeysPrefix = @{ s"${pageModel.benefitType.typeName}.removeClaimPage" }
 @benefitTypeKey = @{ pageModel.benefitType.typeName }
 @benefitTypeUrl = @{ pageModel.benefitType.typeName match {
     case "employmentSupportAllowance" => "employment-support-allowance"
