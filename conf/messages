@@ -227,9 +227,9 @@ employmentSupportAllowance.reviewClaimPage.removeClaim.hiddenText = Remove this 
 employmentSupportAllowance.reviewClaimPage.restoreClaim = Restore claim
 
 #################       Employment and Support Allowance - Remove Claim Page       ########################################
-employmentSupportAllowance.removePage.title = Are you sure you want to remove this Employment and Support Allowance claim?
-employmentSupportAllowance.removePage.link = Don’t remove claim
-employmentSupportAllowance.removePage.link.hidden = Don’t remove this Employment and Support Allowance Claim
+employmentSupportAllowance.removeClaimPage.title = Are you sure you want to remove this Employment and Support Allowance claim?
+employmentSupportAllowance.removeClaimPage.link = Don’t remove claim
+employmentSupportAllowance.removeClaimPage.link.hidden = Don’t remove this Employment and Support Allowance Claim
 
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use
