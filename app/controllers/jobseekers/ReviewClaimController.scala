@@ -18,6 +18,7 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
+import controllers.employmentsupport.routes.EmploymentSupportAllowanceController
 import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.BenefitType
 import models.pages.jobseekers.ReviewClaimPage
@@ -56,9 +57,11 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
   }
 
   def restoreClaim(taxYear: Int,
-                   sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+                   sessionDataId: UUID,
+                   benefitTypeUrl: String): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     stateBenefitsService.restoreClaim(request.user, sessionDataId).map {
-      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+      case Right(_) if benefitTypeUrl == "jobseekers-allowance" => Redirect(JobSeekersAllowanceController.show(taxYear))
+      case Right(_) if benefitTypeUrl == "employment-support-allowance" => Redirect(EmploymentSupportAllowanceController.show(taxYear))
       case Left(_) => errorHandler.internalServerError()
     }
   }
