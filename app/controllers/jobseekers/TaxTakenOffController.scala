@@ -20,6 +20,7 @@ import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffAmountController}
 import forms.jobseekers.FormsProvider
+import models.BenefitType.mapFrom
 import models.StateBenefitsUserData
 import models.pages.jobseekers.TaxTakenOffPage
 import play.api.i18n.I18nSupport
@@ -42,24 +43,31 @@ class TaxTakenOffController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    val pageForm = formsProvider.taxTakenOffYesNoForm(request.user.isAgent, taxYear, request.stateBenefitsUserData.claim.get)
-    Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, pageForm)))
+           sessionDataId: UUID,
+           benefitTypeUrl: String): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+    val benefitType = mapFrom(benefitTypeUrl)
+    val pageForm = formsProvider.taxTakenOffYesNoForm(request.user.isAgent, taxYear, request.stateBenefitsUserData.claim.get, benefitType)
+    Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, pageForm, mapFrom(benefitTypeUrl))))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    formsProvider.taxTakenOffYesNoForm(request.user.isAgent, taxYear, request.stateBenefitsUserData.claim.get).bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
+             sessionDataId: UUID,
+             benefitTypeUrl: String): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+    val benefitType = mapFrom(benefitTypeUrl)
+    formsProvider.taxTakenOffYesNoForm(request.user.isAgent, taxYear, request.stateBenefitsUserData.claim.get, benefitType).bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formWithErrors, benefitType)))),
       yesNoValue => claimService.updateTaxPaidQuestion(request.stateBenefitsUserData, yesNoValue).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(userData) => Redirect(getRedirectCall(taxYear, yesNoValue, userData))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, yesNoValue, userData, benefitTypeUrl))
       }
     )
   }
 
-  private def getRedirectCall(taxYear: Int, yesNoValue: Boolean, userData: StateBenefitsUserData): Call = {
+  private def getRedirectCall(taxYear: Int,
+                              yesNoValue: Boolean,
+                              userData: StateBenefitsUserData,
+                              benefitTypeUrl: String): Call = {
     val sessionDataId = userData.sessionDataId.get
-    if (yesNoValue && !userData.isFinished) TaxTakenOffAmountController.show(taxYear, sessionDataId) else ReviewClaimController.show(taxYear, sessionDataId)
+    if (yesNoValue && !userData.isFinished) TaxTakenOffAmountController.show(taxYear, sessionDataId, benefitTypeUrl) else ReviewClaimController.show(taxYear, sessionDataId, benefitTypeUrl)
   }
 }

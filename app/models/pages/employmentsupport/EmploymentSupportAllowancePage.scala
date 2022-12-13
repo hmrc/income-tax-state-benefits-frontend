@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package models.pages.jobseekers
+package models.pages.employmentsupport
 
-import models.IncomeTaxUserData
 import models.pages.elements.BenefitSummaryListRowData
+import models.{BenefitType, IncomeTaxUserData}
 
-case class JobSeekersAllowancePage(taxYear: Int,
-                                   summaryListDataRows: Seq[BenefitSummaryListRowData])
+case class EmploymentSupportAllowancePage(taxYear: Int,
+                                          summaryListDataRows: Seq[BenefitSummaryListRowData])
 
-object JobSeekersAllowancePage {
+object EmploymentSupportAllowancePage {
 
-  def apply(taxYear: Int,
-            incomeTaxUserData: IncomeTaxUserData): JobSeekersAllowancePage = {
-    val hmrcData = incomeTaxUserData.hmrcJobSeekersAllowances
+  def apply(taxYear: Int, incomeTaxUserData: IncomeTaxUserData): EmploymentSupportAllowancePage = {
+    val hmrcData = incomeTaxUserData.hmrcEmploymentSupportAllowances
       .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
 
-    val customerData = incomeTaxUserData.customerJobSeekersAllowances
+    val customerData = incomeTaxUserData.customerEmploymentSupportAllowances
       .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
 
     val benefitSummaryListRowData = (hmrcData ++ customerData)
       .sortWith((it1, it2) => it1.startDate.isBefore(it2.startDate))
 
-    JobSeekersAllowancePage(taxYear, benefitSummaryListRowData)
+    EmploymentSupportAllowancePage(taxYear, benefitSummaryListRowData)
   }
 }

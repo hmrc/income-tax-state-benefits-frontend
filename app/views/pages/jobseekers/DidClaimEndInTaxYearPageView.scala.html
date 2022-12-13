@@ -36,15 +36,21 @@
 
 @(pageModel: DidClaimEndInTaxYearPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages("common.jobSeekersAllowanceEndDateQuestion", pageModel.taxYear.toString)}
+@benefitTypeKey = @{ pageModel.benefitType.typeName }
+@benefitTypeUrl = @{ pageModel.benefitType.typeName match {
+    case "employmentSupportAllowance" => "employment-support-allowance"
+    case "jobSeekersAllowance" => "jobseekers-allowance"
+}}
+
+@titleText = @{messages(s"common.$benefitTypeKey.endDateQuestion", pageModel.taxYear.toString)}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
     @errorSummary(pageModel.form.errors)
 
-    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+    @caption(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
-    @formWithCsrf(action = DidClaimEndInTaxYearController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCsrf(action = DidClaimEndInTaxYearController.submit(pageModel.taxYear, pageModel.sessionDataId, benefitTypeUrl)) {
         @inputRadio(
             legendHeading = Some(Html(titleText)),
             legendHidden = false,

@@ -18,7 +18,9 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
+import controllers.employmentsupport.routes.EmploymentSupportAllowanceController
 import controllers.jobseekers.routes.JobSeekersAllowanceController
+import models.BenefitType
 import models.pages.jobseekers.ReviewClaimPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,14 +41,18 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData)))
+           sessionDataId: UUID,
+           benefitTypeUrl: String): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+    Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData, BenefitType.mapFrom(benefitTypeUrl))))
   }
 
-  def saveAndContinue(taxYear: Int, sessionDataId: UUID): Action[AnyContent] =
+  def saveAndContinue(taxYear: Int,
+                      sessionDataId: UUID,
+                      benefitTypeUrl: String): Action[AnyContent] =
     actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
       stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
-        case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+        case Right(_) if benefitTypeUrl == "jobseekers-allowance" => Redirect(JobSeekersAllowanceController.show(taxYear))
+        case Right(_) if benefitTypeUrl == "employment-support-allowance" => Redirect(EmploymentSupportAllowanceController.show(taxYear))
         case Left(_) => errorHandler.internalServerError()
       }
     }
