@@ -16,7 +16,7 @@
 
 package models.pages.jobseekers
 
-import models.{ClaimCYAModel, StateBenefitsUserData}
+import models.{BenefitType, ClaimCYAModel, StateBenefitsUserData}
 import play.api.data.Form
 import utils.InYearUtil.toDateWithinTaxYear
 
@@ -27,13 +27,15 @@ case class AmountPage(taxYear: Int,
                       titleFirstDate: LocalDate,
                       titleSecondDate: LocalDate,
                       sessionDataId: UUID,
-                      form: Form[BigDecimal])
+                      form: Form[BigDecimal],
+                      benefitType: BenefitType)
 
 object AmountPage {
 
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
-            form: Form[BigDecimal]): AmountPage = {
+            form: Form[BigDecimal],
+            benefitType: BenefitType): AmountPage = {
     val optAmount: Option[BigDecimal] = stateBenefitsUserData.claim.flatMap(_.amount)
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
     val titleFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate)
@@ -44,7 +46,8 @@ object AmountPage {
       titleFirstDate = titleFirstDate,
       titleSecondDate = titleSecondDate,
       sessionDataId = stateBenefitsUserData.sessionDataId.get,
-      form = optAmount.fold(form)(amount => if (form.hasErrors) form else form.fill(amount))
+      form = optAmount.fold(form)(amount => if (form.hasErrors) form else form.fill(amount)),
+      benefitType = benefitType
     )
   }
 }

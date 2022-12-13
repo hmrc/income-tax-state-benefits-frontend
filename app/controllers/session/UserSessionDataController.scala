@@ -18,8 +18,10 @@ package controllers.session
 
 import actions.ActionsProvider
 import config.ErrorHandler
+import controllers.employmentsupport.routes.EmploymentSupportAllowanceController
 import controllers.jobseekers.routes.{JobSeekersAllowanceController, ReviewClaimController, StartDateController}
-import models.StateBenefitsUserData
+import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
@@ -36,19 +38,28 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
                                          (implicit ec: ExecutionContext, mcc: MessagesControllerComponents)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def create(taxYear: Int): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>
-    stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, request.user)).map {
+  def create(taxYear: Int,
+             benefitType: String): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>
+    val benefitTypeUrl = benefitType match {
+      case "employmentSupportAllowance" => "employment-support-allowance"
+      case "jobSeekersAllowance" => "jobseekers-allowance"
+    }
+    stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, request.user, benefitType)).map {
       case Left(_) => errorHandler.internalServerError()
-      case Right(uuid) => Redirect(StartDateController.show(taxYear, uuid))
+      case Right(uuid) => Redirect(StartDateController.show(taxYear, uuid, benefitTypeUrl))
     }
   }
 
-  def loadToSession(taxYear: Int, benefitId: UUID): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
-    StateBenefitsUserData(taxYear, request.user, benefitId, request.incomeTaxUserData) match {
-      case None => Future.successful(Redirect(JobSeekersAllowanceController.show(taxYear)))
+  def loadToSession(taxYear: Int,
+                    benefitId: UUID,
+                    benefitType: String,
+                    benefitTypeUrl: String): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
+    StateBenefitsUserData(taxYear, request.user, benefitId, request.incomeTaxUserData, benefitType) match {
+      case None if BenefitType(benefitType) == JobSeekersAllowance => Future.successful(Redirect(JobSeekersAllowanceController.show(taxYear)))
+      case None if BenefitType(benefitType) == EmploymentSupportAllowance => Future.successful(Redirect(EmploymentSupportAllowanceController.show(taxYear)))
       case Some(stateBenefitsUserData) => stateBenefitsService.createOrUpdate(stateBenefitsUserData).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, uuid))
+        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, uuid, benefitTypeUrl))
       }
     }
   }

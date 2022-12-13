@@ -38,22 +38,31 @@
 
 @(pageModel: AmountPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
+@pageKeysPrefix = @{ s"${pageModel.benefitType.typeName}.amountPage" }
+@benefitTypeKey = @{ pageModel.benefitType.typeName }
+@benefitTypeUrl = @{ pageModel.benefitType.typeName match {
+    case "employmentSupportAllowance" => "employment-support-allowance"
+    case "jobSeekersAllowance" => "jobseekers-allowance"
+}}
+
 @titleText = @{messages(s"common.jobSeekersAllowance.amount.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}
+
+@titleText = @{messages(s"common.$benefitTypeKey.amount.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.titleFirstDate), translatedDateFormatter(pageModel.titleSecondDate))}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
     @errorSummary(pageModel.form.errors)
 
-    @heading(titleText, Some(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText, Some(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
-    <p class="govuk-body">@messages(s"jobSeekersAllowance.amountPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
+    <p class="govuk-body">@messages(s"$pageKeysPrefix.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
 
-    @formWithCsrf(action = AmountController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCsrf(action = AmountController.submit(pageModel.taxYear, pageModel.sessionDataId, benefitTypeUrl)) {
         @inputText(
             form = pageModel.form,
             id = "amount",
             name = "amount",
-            label = messages("jobSeekersAllowance.amountPage.textBox.label"),
+            label = messages(s"$pageKeysPrefix.textBox.label"),
             hint = Some(messages("common.forExampleAmount")),
             currency = true
         )

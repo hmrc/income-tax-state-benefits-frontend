@@ -39,7 +39,14 @@
 
 @(pageModel: RemoveClaimPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{ messages(s"jobSeekersAllowance.removeClaimPage.title") }
+@pageKeysPrefix = @{ s"${pageModel.benefitType.typeName}.removePage" }
+@benefitTypeKey = @{ pageModel.benefitType.typeName }
+@benefitTypeUrl = @{ pageModel.benefitType.typeName match {
+    case "employmentSupportAllowance" => "employment-support-allowance"
+    case "jobSeekersAllowance" => "jobseekers-allowance"
+}}
+
+@titleText = @{ messages(s"$pageKeysPrefix.title") }
 
 @summaryListOptionalRows = @{
     def summaryListRow(message: String, value: String): SummaryListRow = toSummaryListRow(
@@ -48,23 +55,23 @@
         keyClasses = "govuk-!-width-two-thirds"
     )
 
-    Some(summaryListRow(messages(s"common.jobSeekersAllowance.startDate.${if(request.user.isAgent) "agent" else "individual"}"), translatedDateFormatter(pageModel.startDate))) ::
-    Some(summaryListRow(messages("common.jobSeekersAllowance.endDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)))) ::
+    Some(summaryListRow(messages(s"common.$benefitTypeKey.startDate.${if(request.user.isAgent) "agent" else "individual"}"), translatedDateFormatter(pageModel.startDate))) ::
+    Some(summaryListRow(messages(s"common.$benefitTypeKey.endDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)))) ::
     (pageModel.endDateQuestion match {
-        case Some(true) => Some(summaryListRow(messages(s"common.jobSeekersAllowance.endDate"), pageModel.endDate.fold("")(translatedDateFormatter(_))))
+        case Some(true) => Some(summaryListRow(messages(s"common.$benefitTypeKey.endDate"), pageModel.endDate.fold("")(translatedDateFormatter(_))))
         case _ => None
     }) ::
     Some(summaryListRow(
-        messages(s"common.jobSeekersAllowance.amount.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+        messages(s"common.$benefitTypeKey.amount.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
         pageModel.amount.fold("")(amount => bigDecimalCurrency(amount.toString))
     )) ::
     Some(summaryListRow(
-        messages(s"common.jobSeekersAllowance.taxTakenOffQuestion.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+        messages(s"common.$benefitTypeKey.taxTakenOffQuestion.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
         pageModel.taxPaidQuestion.fold("")(toYesOrNo(_))
     )) ::
     (pageModel.taxPaidQuestion match {
         case Some(true) => Some(summaryListRow(
-            messages(s"common.jobSeekersAllowance.taxTakenOff.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+            messages(s"common.$benefitTypeKey.taxTakenOff.${if(request.user.isAgent) "agent" else "individual"}", translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
             pageModel.taxPaid.fold("")(amount => bigDecimalCurrency(amount.toString))
         ))
         case _ => None
@@ -74,14 +81,14 @@
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
-    @heading(titleText, Some(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText, Some(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
     @govukSummaryList(SummaryList(summaryListOptionalRows.flatten))
 
-    @formWithCSRF(action = RemoveClaimController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCSRF(action = RemoveClaimController.submit(pageModel.taxYear, pageModel.sessionDataId, benefitTypeUrl)) {
         <div class="govuk-button-group">
             @button(alternativeText = "common.removeClaim", classes = Some("govuk-!-margin-top-6 govuk-button--warning"), attributes = Map("id" -> "remove-claim-button-id"))
-            @link(link = ReviewClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, messageKeyOrValue = "jobSeekersAllowance.removeClaimPage.link", hiddenText = Some("jobSeekersAllowance.removeClaimPage.link.hidden"), id = Some("do-not-remove-claim-link-id"))
+            @link(link = ReviewClaimController.show(pageModel.taxYear, pageModel.sessionDataId, benefitTypeUrl).url, messageKeyOrValue = s"$pageKeysPrefix.link", hiddenText = Some(s"$pageKeysPrefix.link.hidden"), id = Some("do-not-remove-claim-link-id"))
         </div>
     }
 }

@@ -21,6 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.ReviewClaimController
 import forms.jobseekers.FormsProvider
 import models.pages.jobseekers.TaxPaidPage
+import models.BenefitType.mapFrom
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ClaimService
@@ -40,17 +41,22 @@ class TaxPaidController @Inject()(actionsProvider: ActionsProvider,
                                  (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(TaxPaidPage(taxYear, request.stateBenefitsUserData, formsProvider.taxPaidAmountForm())))
+  def show(taxYear: Int,
+           sessionDataId: UUID,
+           benefitTypeUrl: String): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
+    val benefitType = mapFrom(benefitTypeUrl)
+    Ok(pageView(TaxPaidPage(taxYear, request.stateBenefitsUserData, formsProvider.taxPaidAmountForm(benefitType), benefitType)))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    formsProvider.taxPaidAmountForm().bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(TaxPaidPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
+             sessionDataId: UUID,
+             benefitTypeUrl: String): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+    val benefitType = mapFrom(benefitTypeUrl)
+    formsProvider.taxPaidAmountForm(benefitType).bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(pageView(TaxPaidPage(taxYear, request.stateBenefitsUserData, formWithErrors, benefitType)))),
       amount => claimService.updateTaxPaidAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(userData) => Redirect(ReviewClaimController.show(taxYear, userData.sessionDataId.get))
+        case Right(userData) => Redirect(ReviewClaimController.show(taxYear, userData.sessionDataId.get, benefitTypeUrl))
       }
     )
   }

@@ -20,6 +20,7 @@ import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.{ReviewClaimController, TaxPaidQuestionController}
 import forms.jobseekers.FormsProvider
+import models.BenefitType.mapFrom
 import models.StateBenefitsUserData
 import models.pages.jobseekers.AmountPage
 import play.api.i18n.I18nSupport
@@ -41,24 +42,29 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
                                 (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formsProvider.jsaAmountForm())))
+  def show(taxYear: Int, sessionDataId: UUID, benefitTypeUrl: String): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
+    val benefitType = mapFrom(benefitTypeUrl)
+    Ok(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formsProvider.jsaAmountForm(benefitType), benefitType)))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    formsProvider.jsaAmountForm().bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
+             sessionDataId: UUID,
+             benefitTypeUrl: String): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+    val benefitType = mapFrom(benefitTypeUrl)
+    formsProvider.jsaAmountForm(benefitType).bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(pageView(AmountPage(taxYear, request.stateBenefitsUserData, formWithErrors, benefitType)))),
       amount => claimService.updateAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(userData) => Redirect(getRedirectCall(taxYear, userData))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, userData, benefitTypeUrl))
       }
     )
   }
 
-  private def getRedirectCall(taxYear: Int, userData: StateBenefitsUserData) = {
+  private def getRedirectCall(taxYear: Int,
+                              userData: StateBenefitsUserData,
+                              benefitTypeUrl: String) = {
     val sessionDataId = userData.sessionDataId.get
-    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else TaxPaidQuestionController.show(taxYear, sessionDataId)
+    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId, benefitTypeUrl) else TaxPaidQuestionController.show(taxYear, sessionDataId, benefitTypeUrl)
   }
 }
 

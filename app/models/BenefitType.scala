@@ -24,4 +24,17 @@ object BenefitType {
   case object EmploymentSupportAllowance extends BenefitType(typeName = "employmentSupportAllowance")
   case object JobSeekersAllowance extends BenefitType(typeName = "jobSeekersAllowance")
   case object OtherStateBenefits extends BenefitType(typeName = "otherStateBenefits")
+
+  def apply(benefitType: String): BenefitType = benefitType match {
+    case "statePension" => StatePension
+    case "statePensionLumpSum" => StatePensionLumpSum
+    case "employmentSupportAllowance" => EmploymentSupportAllowance
+    case "jobSeekersAllowance" => JobSeekersAllowance
+    case "otherStateBenefits" => OtherStateBenefits
+  }
+
+  def mapFrom(benefitTypeUrl: String): BenefitType = benefitTypeUrl match {
+    case "employment-support-allowance" => EmploymentSupportAllowance
+    case "jobseekers-allowance" => JobSeekersAllowance
+  }
 }

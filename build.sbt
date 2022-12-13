@@ -46,8 +46,8 @@ lazy val coverageSettings: Seq[Setting[_]] = {
 
   Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 95,
-    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageMinimumStmtTotal := 0,
+    ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true
   )
 }
