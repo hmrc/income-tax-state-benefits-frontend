@@ -24,7 +24,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.SessionHelper
+import utils.{InYearUtil, SessionHelper}
 import views.html.pages.jobseekers.ReviewClaimPageView
 
 import java.util.UUID
@@ -39,12 +39,12 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData)))
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.sessionDataFor(taxYear, sessionDataId) { implicit request =>
+    Ok(pageView(ReviewClaimPage(taxYear, isInYear = InYearUtil.inYear(taxYear), request.stateBenefitsUserData)))
   }
 
   def saveAndContinue(taxYear: Int,
-                      sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+                      sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
       case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
       case Left(_) => errorHandler.internalServerError()
@@ -52,7 +52,7 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
   }
 
   def restoreClaim(taxYear: Int,
-                   sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+                   sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     stateBenefitsService.restoreClaim(request.user, sessionDataId).map {
       case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
       case Left(_) => errorHandler.internalServerError()

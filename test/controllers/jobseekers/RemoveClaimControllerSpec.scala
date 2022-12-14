@@ -48,7 +48,7 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
 
   ".show" should {
     "return a successful response" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
 
@@ -59,7 +59,7 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "return error when stateBenefitsService.removeClaim(...) returns error" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
       mockRemoveClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
@@ -70,7 +70,7 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
     }
 
     "redirect to JobSeekersAllowanceController when stateBenefitsService.removeClaim(...) succeeds" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
       mockRemoveClaim(aUser, sessionDataId, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)

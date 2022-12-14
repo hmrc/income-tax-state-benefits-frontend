@@ -35,7 +35,7 @@ class JobSeekersAllowanceControllerSpec extends ControllerUnitTest
 
   "show" should {
     "return a successful response" in {
-      mockUserPriorDataFor(taxYear, anIncomeTaxUserData)
+      mockPriorDataFor(taxYear, anIncomeTaxUserData)
 
       val result = underTest.show(taxYear).apply(fakeIndividualRequest)
 

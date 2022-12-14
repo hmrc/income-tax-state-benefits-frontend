@@ -48,7 +48,7 @@ class AmountControllerSpec extends ControllerUnitTest
 
   ".show" should {
     "return a successful response" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
 
@@ -59,7 +59,7 @@ class AmountControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "render page with error when validation of form fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
@@ -71,7 +71,7 @@ class AmountControllerSpec extends ControllerUnitTest
     }
 
     "handle internal server error when updating amount fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateAmount(aStateBenefitsUserData, amount = 100, Left(()))
       mockInternalServerError(InternalServerError)
 
@@ -82,7 +82,7 @@ class AmountControllerSpec extends ControllerUnitTest
     }
 
     "redirect to next Page on successful amount update and journey not completed" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
@@ -92,7 +92,7 @@ class AmountControllerSpec extends ControllerUnitTest
     }
 
     "redirect to ReviewClaim Page on successful amount update and when journey is completed" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")

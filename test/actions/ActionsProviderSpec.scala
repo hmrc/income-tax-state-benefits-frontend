@@ -48,11 +48,11 @@ class ActionsProviderSpec extends ControllerUnitTest
     appConfig
   )
 
-  ".userPriorDataFor(taxYear)" should {
+  ".priorDataFor(taxYear)" should {
     "redirect to UnauthorisedUserErrorController when authentication fails" in {
       mockFailToAuthenticate()
 
-      val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
+      val underTest = actionsProvider.priorDataFor(taxYearEOY)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
@@ -62,7 +62,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetPriorData(aUser, taxYearEOY, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
-      val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
+      val underTest = actionsProvider.priorDataFor(taxYearEOY)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
     }
@@ -71,7 +71,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetPriorData(aUser, taxYearEOY, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
 
-      val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
+      val underTest = actionsProvider.priorDataFor(taxYearEOY)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }
@@ -80,17 +80,17 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetPriorData(aUser, taxYear, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
 
-      val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
+      val underTest = actionsProvider.priorDataFor(taxYear)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }
   }
 
-  ".userSessionDataFor(taxYear)" should {
+  ".endOfYearSessionDataFor(taxYear)" should {
     "redirect to UnauthorisedUserErrorController when authentication fails" in {
       mockFailToAuthenticate()
 
-      val underTest = actionsProvider.userSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
@@ -98,7 +98,7 @@ class ActionsProviderSpec extends ControllerUnitTest
     "redirect to Income Tax Submission Overview when in year" in {
       mockAuthAsIndividual(Some(aUser.nino))
 
-      val underTest = actionsProvider.userSessionDataFor(taxYear, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
         Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
@@ -109,7 +109,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
-      val underTest = actionsProvider.userSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
     }
@@ -118,13 +118,42 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
 
-      val underTest = actionsProvider.userSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }
   }
 
-  ".createUserSessionDataFor(taxYear)" should {
+  ".sessionDataFor(taxYear)" should {
+    "redirect to UnauthorisedUserErrorController when authentication fails" in {
+      mockFailToAuthenticate()
+
+      val underTest = actionsProvider.sessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+    }
+
+    "handle internal server error when getUserSessionData result in error" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
+
+      val underTest = actionsProvider.sessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+    }
+
+    "return successful UserSessionDataRequest when user session data exists" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
+
+      val underTest = actionsProvider.sessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+  }
+
+  ".endOfYear(taxYear)" should {
     "redirect to UnauthorisedUserErrorController when authentication fails" in {
       mockFailToAuthenticate()
 

@@ -47,7 +47,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   "show" should {
     "return a successful response" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
 
@@ -58,7 +58,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   ".saveAndContinue" should {
     "handle internal server error when updating saveStateBenefit fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockSaveStateBenefit(aStateBenefitsUserData, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
@@ -68,7 +68,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
     }
 
     "redirect to JobSeekersAllowance Page on successful save of StateBenefit" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockSaveStateBenefit(aStateBenefitsUserData, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
@@ -80,7 +80,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   ".restoreClaim" should {
     "handle internal server error when restoreClaim fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockRestoreClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
@@ -90,7 +90,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
     }
 
     "redirect to JobSeekersAllowance Page on successful claim restore" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockRestoreClaim(aUser, sessionDataId, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)

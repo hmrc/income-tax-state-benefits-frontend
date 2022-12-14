@@ -36,6 +36,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val bannerLinkSelector: String = ".govuk-notification-banner__link"
     val p1 = "#main-content > div > div > p.govuk-body"
     val saveAndContinueButtonSelector = "#save-and-continue-button-id"
+    val continueButtonSelector = "#continue"
     val pageFormSelector = "#main-content > div > div > form"
     val removeLinkSelector = "#remove-link-id"
     val removeLinkHiddenSelector = "#remove-link-id > span.govuk-visually-hidden"
@@ -77,6 +78,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val expectedEndDateText: String
     val expectedChangeLinkText: String
     val expectedSaveButtonText: String
+    val expectedContinueButtonText: String
     val expectedRemoveLinkText: String
     val expectedRemoveLinkHiddenText: String
     val expectedRestoreClaimButtonText: String
@@ -94,6 +96,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedEndDateText = "When did this claim end?"
     override val expectedChangeLinkText: String = "Change"
     override val expectedSaveButtonText: String = "Save and continue"
+    override val expectedContinueButtonText: String = "Continue"
     override val expectedRemoveLinkText: String = "Remove claim"
     override val expectedRemoveLinkHiddenText: String = "Remove this Jobseeker’s allowance claim"
     override val expectedRestoreClaimButtonText: String = "Restore claim"
@@ -111,6 +114,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedEndDateText = "When did this claim end?"
     override val expectedChangeLinkText: String = "Change"
     override val expectedSaveButtonText: String = "Cadw ac yn eich blaen"
+    override val expectedContinueButtonText: String = "Continue"
     override val expectedRemoveLinkText: String = "Remove claim"
     override val expectedRemoveLinkHiddenText: String = "Remove this Jobseeker’s allowance claim"
     override val expectedRestoreClaimButtonText: String = "Restore claim"
@@ -198,7 +202,6 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
       import Selectors._
       import userScenario.commonExpectedResults._
       import userScenario.specificExpectedResults._
-
       "render end of year version of ReviewJobSeekersAllowanceClaim page" when {
         "customer added data" which {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
@@ -265,6 +268,31 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           elementNotOnPageCheck(changeLink(4))
           elementNotOnPageCheck(changeLink(5))
           formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
+        }
+      }
+
+      "render in year version of ReviewJobSeekersAllowanceClaim page" when {
+        "HMRC added data" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val pageModel = aReviewClaimPage.copy(taxYear = taxYear, isInYear = true)
+          val translatedStartDate = translatedDateFormatter(pageModel.startDate)
+
+          implicit val document: Document = Jsoup.parse(page(pageModel).body)
+
+          welshToggleCheck(userScenario.isWelsh)
+          titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
+          captionCheck(userScenario.commonExpectedResults.expectedCaption(taxYear))
+          elementNotOnPageCheck(p1)
+
+          textOnPageCheck(get.expectedStartDateText, summaryListRowFieldNameSelector(1))
+          textOnPageCheck(translatedStartDate, summaryListRowFieldValueSelector(1))
+          elementNotOnPageCheck(changeLink(1))
+          checkElementsCount(count = 1, rowsSelector)
+          linkCheck(expectedContinueButtonText, continueButtonSelector, JobSeekersAllowanceController.show(taxYear).url)
+          elementNotOnPageCheck(restoreClaimButtonSelector)
+          elementNotOnPageCheck(backLinkSelector)
         }
       }
     }

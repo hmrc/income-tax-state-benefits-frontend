@@ -39,11 +39,12 @@ class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
     Ok(pageView(RemoveClaimPage(taxYear, request.stateBenefitsUserData)))
   }
 
-  def submit(taxYear: Int, sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+  def submit(taxYear: Int,
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     stateBenefitsService.removeClaim(request.user, sessionDataId).map {
       case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
       case Left(_) => errorHandler.internalServerError()
