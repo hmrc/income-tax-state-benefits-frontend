@@ -21,19 +21,18 @@ import connectors.errors.ApiError
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-case class SaveUserDataResponse(httpResponse: HttpResponse, result: Either[ApiError, Unit])
+case class RestoreClaimResponse(httpResponse: HttpResponse, result: Either[ApiError, Unit])
 
-object SaveUserDataResponse {
+object RestoreClaimResponse {
 
-  implicit val saveUserDataResponseReads: HttpReads[SaveUserDataResponse] = new HttpReads[SaveUserDataResponse] with Parser {
+  implicit val restoreClaimResponseReads: HttpReads[RestoreClaimResponse] = new HttpReads[RestoreClaimResponse] with Parser {
 
     override protected[connectors] val parserName: String = this.getClass.getSimpleName
 
-    override def read(method: String, url: String, response: HttpResponse): SaveUserDataResponse = response.status match {
-      case NO_CONTENT => SaveUserDataResponse(response, Right(()))
-      case NOT_FOUND | INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE | BAD_REQUEST | UNPROCESSABLE_ENTITY =>
-        SaveUserDataResponse(response, handleError(response, response.status))
-      case _ => SaveUserDataResponse(response, handleError(response, INTERNAL_SERVER_ERROR))
+    override def read(method: String, url: String, response: HttpResponse): RestoreClaimResponse = response.status match {
+      case NO_CONTENT => RestoreClaimResponse(response, Right(()))
+      case INTERNAL_SERVER_ERROR => RestoreClaimResponse(response, handleError(response, response.status))
+      case _ => RestoreClaimResponse(response, handleError(response, INTERNAL_SERVER_ERROR))
     }
   }
 }

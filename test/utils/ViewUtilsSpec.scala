@@ -46,7 +46,8 @@ class ViewUtilsSpec extends UnitTest
   ".translatedDateFormatter" should {
     "translate date" in {
       val date = LocalDate.parse("2002-01-01")
-      ViewUtils.translatedDateFormatter(date) shouldBe date.getDayOfMonth + " " + messages("common." + date.getMonth.toString.toLowerCase) + " " + date.getYear
+      ViewUtils.translatedDateFormatter(date) shouldBe
+        date.getDayOfMonth.toString + " " + messages("common." + date.getMonth.toString.toLowerCase) + " " + date.getYear.toString
     }
   }
 

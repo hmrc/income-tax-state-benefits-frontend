@@ -31,7 +31,6 @@ import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
 import views.html.pages.jobseekers.EndDatePageView
 
 import java.time.LocalDate
-import java.util.UUID
 
 class EndDateControllerSpec extends ControllerUnitTest
   with MockActionsProvider

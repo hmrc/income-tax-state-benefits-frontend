@@ -38,7 +38,7 @@ object ViewUtils {
 
   def translatedDateFormatter(date: LocalDate)(implicit messages: Messages): String = {
     val translatedMonth = messages("common." + date.getMonth.toString.toLowerCase)
-    date.getDayOfMonth + " " + translatedMonth + " " + date.getYear
+    date.getDayOfMonth.toString + " " + translatedMonth + " " + date.getYear.toString
   }
 
   def toSummaryListRow(key: HtmlContent,

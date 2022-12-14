@@ -42,6 +42,11 @@
 
 @appendUserTypeSuffix(key: String) = @{s"$key.${if(request.user.isAgent) "agent" else "individual"}"}
 
+@formAction = @{
+    if(!pageModel.isIgnored) ReviewClaimController.saveAndContinue(pageModel.taxYear, pageModel.sessionDataId)
+    else ReviewClaimController.restoreClaim(pageModel.taxYear, pageModel.sessionDataId)
+}
+
 @layout(
     pageTitle = messages("jobseekers.reviewClaimPage.title"),
     taxYear = Some(pageModel.taxYear),
@@ -109,23 +114,18 @@
                 case _ => None
             }
         ).flatten))
-
     }
 
-    @if(!pageModel.isIgnored) {
-        @formWithCSRF(action = ReviewClaimController.saveAndContinue(pageModel.taxYear, pageModel.sessionDataId)) {
-            <div class="govuk-button-group">
-                @button("common.saveAndContinue", classes = Some("govuk-!-margin-top-6"), attributes = Map("id" -> "save-and-continue-button-id"))
-                @link(RemoveClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, "common.removeClaim", id = Some("remove-link-id"), hiddenText = Some("jobseekers.reviewClaimPage.removeClaim.hiddenText"))
-            </div>
+    @formWithCSRF(action = formAction) {
+    <div class="govuk-button-group">
+        @if(!pageModel.isIgnored) {
+            @button("common.saveAndContinue", classes = Some("govuk-!-margin-top-6"), attributes = Map("id" -> "save-and-continue-button-id"))
+            @link(RemoveClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, "common.removeClaim", id = Some("remove-link-id"), hiddenText = Some("jobseekers.reviewClaimPage.removeClaim.hiddenText"))
+        } else {
+            @link(JobSeekersAllowanceController.show(pageModel.taxYear).url, "common.back", id = Some("back-link-id"))
+            @button("jobseekers.reviewClaimPage.restoreClaim", classes = Some("govuk-button--secondary"), attributes = Map("id" -> "restore-claim-button-id"))
         }
-    } else {
-        @formWithCSRF(action = ReviewClaimController.saveAndContinue(pageModel.taxYear, pageModel.sessionDataId)) {
-            <div class="govuk-button-group">
-                @link(JobSeekersAllowanceController.show(pageModel.taxYear).url, "common.back", id = Some("back-link-id"))
-                @button("jobseekers.reviewClaimPage.restoreClaim", classes = Some("govuk-button--secondary"), attributes = Map("id" -> "restore-claim-button-id"))
-            </div>
-        }
+    </div>
     }
 }
 

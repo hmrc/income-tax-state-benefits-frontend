@@ -24,6 +24,7 @@ import play.api.test.Helpers.{contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
+import support.builders.UserBuilder.aUser
 import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
 import views.html.pages.jobseekers.ReviewClaimPageView
 
@@ -73,6 +74,28 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
       val request = fakeIndividualRequest.withMethod(POST.method)
 
       await(underTest.saveAndContinue(taxYearEOY, sessionDataId).apply(request)) shouldBe
+        Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+    }
+  }
+
+  ".restoreClaim" should {
+    "handle internal server error when restoreClaim fails" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockRestoreClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockInternalServerError(InternalServerError)
+
+      val result = underTest.restoreClaim(taxYearEOY, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "redirect to JobSeekersAllowance Page on successful claim restore" in {
+      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockRestoreClaim(aUser, sessionDataId, Right(()))
+
+      val request = fakeIndividualRequest.withMethod(POST.method)
+
+      await(underTest.restoreClaim(taxYearEOY, sessionDataId).apply(request)) shouldBe
         Redirect(JobSeekersAllowanceController.show(taxYearEOY))
     }
   }

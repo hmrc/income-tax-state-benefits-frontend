@@ -43,11 +43,19 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
     Ok(pageView(ReviewClaimPage(taxYear, isInYear = false, request.stateBenefitsUserData)))
   }
 
-  def saveAndContinue(taxYear: Int, sessionDataId: UUID): Action[AnyContent] =
-    actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-      stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
-        case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
-        case Left(_) => errorHandler.internalServerError()
-      }
+  def saveAndContinue(taxYear: Int,
+                      sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+    stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
+      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+      case Left(_) => errorHandler.internalServerError()
     }
+  }
+
+  def restoreClaim(taxYear: Int,
+                   sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+    stateBenefitsService.restoreClaim(request.user, sessionDataId).map {
+      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+      case Left(_) => errorHandler.internalServerError()
+    }
+  }
 }

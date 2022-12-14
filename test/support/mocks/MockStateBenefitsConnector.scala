@@ -67,4 +67,12 @@ trait MockStateBenefitsConnector extends MockFactory {
       .expects(user, sessionDataId, *)
       .returning(Future.successful(result))
   }
+
+  def mockRestoreClaim(user: User,
+                       sessionDataId: UUID,
+                       result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
+    (mockStateBenefitsConnector.restoreClaim(_: User, _: UUID)(_: HeaderCarrier))
+      .expects(user, sessionDataId, *)
+      .returning(Future.successful(result))
+  }
 }

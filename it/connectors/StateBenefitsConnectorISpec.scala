@@ -187,4 +187,20 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
       await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
     }
   }
+
+  ".restoreClaim(...)" should {
+    "Return an empty response in the success case when BE returns 204" in {
+      restoreClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId/ignore", status = NO_CONTENT, responseBody = "")
+
+      await(underTest.restoreClaim(aUser, sessionDataId)) shouldBe Right(())
+    }
+
+    "Return a Left/Failure when BE returns code different than 204" in {
+      restoreClaimStub(s"/session-data/nino/${aUser.nino}/session/$sessionDataId/ignore", status = NOT_FOUND, responseBody = "")
+      mockPagerDutyLog("RestoreClaimResponse")
+
+      await(underTest.restoreClaim(aUser, sessionDataId)) shouldBe
+        Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
+    }
+  }
 }

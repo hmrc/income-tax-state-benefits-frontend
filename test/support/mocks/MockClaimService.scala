@@ -23,7 +23,6 @@ import services.ClaimService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import java.util.UUID
 import scala.concurrent.Future
 
 trait MockClaimService extends MockFactory {

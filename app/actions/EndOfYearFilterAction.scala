@@ -20,7 +20,6 @@ import config.AppConfig
 import models.requests.AuthorisationRequest
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
-import utils.InYearUtil
 import utils.InYearUtil.inYear
 
 import scala.concurrent.{ExecutionContext, Future}

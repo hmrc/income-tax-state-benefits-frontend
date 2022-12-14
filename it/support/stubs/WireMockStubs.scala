@@ -209,4 +209,25 @@ trait WireMockStubs {
       .willReturn(aResponse().withStatus(status).withBody(responseBody))
     )
   }
+
+  protected def restoreClaimStub(nino: String,
+                                 sessionDataId: UUID): StubMapping = {
+    stubFor(delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId/ignore"))
+      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
+      .withHeader("mtditid", equalTo(aUser.mtditid))
+      .willReturn(aResponse().withStatus(NO_CONTENT)))
+  }
+
+  protected def restoreClaimStub(url: String,
+                                 status: Int,
+                                 responseBody: String,
+                                 sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
+                                 mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
+                                ): StubMapping = {
+    stubFor(delete(urlMatching(url))
+      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
+      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
+      .willReturn(aResponse().withStatus(status).withBody(responseBody))
+    )
+  }
 }

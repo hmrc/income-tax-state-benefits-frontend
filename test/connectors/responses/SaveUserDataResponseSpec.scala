@@ -40,7 +40,7 @@ class SaveUserDataResponseSpec extends UnitTest {
 
         underTest.read(anyMethod, anyUrl, httpResponse) shouldBe SaveUserDataResponse(
           httpResponse,
-          Right(Unit)
+          Right(())
         )
       }
 

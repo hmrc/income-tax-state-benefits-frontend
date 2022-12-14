@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import support.ViewUnitTest
-import views.html.templates.helpers.{Caption, Heading}
+import views.html.templates.helpers.Caption
 
 class CaptionSpec extends ViewUnitTest {
 

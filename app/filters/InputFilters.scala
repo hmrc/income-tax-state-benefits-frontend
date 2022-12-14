@@ -35,10 +35,9 @@ trait InputFilters {
     compile("onload(.*?)=", CASE_INSENSITIVE | MULTILINE | DOTALL)
   )
 
-  // scalastyle:off
   def filter(input: String): String = {
     @tailrec
-    def applyFilters(filters: Seq[Pattern], sanitizedOutput: String): String = filters match {
+    def applyFilters(filters: Seq[Pattern], sanitizedOutput: String): String = (filters: @unchecked) match {
       case Nil => sanitizedOutput.filterNot(_ == '|')
       case filter :: tail => applyFilters(tail, filter.matcher(sanitizedOutput).replaceAll(""))
     }

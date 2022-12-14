@@ -16,21 +16,21 @@
 
 package forms.validation.utils
 
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, ValidationResult}
 
 
 object ConstraintUtil {
 
   def constraint[A](f: A => ValidationResult): Constraint[A] = Constraint[A](name = "")(f)
 
-//  implicit class ConstraintUtil[A](cons: Constraint[A]) {
-//
-//    def andThen(newCons: Constraint[A]): Constraint[A] =
-//      constraint((data: A) =>
-//        cons.apply(data) match {
-//          case Valid => newCons.apply(data)
-//          case r => r
-//        }
-//      )
-//  }
+  //  implicit class ConstraintUtil[A](cons: Constraint[A]) {
+  //
+  //    def andThen(newCons: Constraint[A]): Constraint[A] =
+  //      constraint((data: A) =>
+  //        cons.apply(data) match {
+  //          case Valid => newCons.apply(data)
+  //          case r => r
+  //        }
+  //      )
+  //  }
 }

@@ -33,6 +33,8 @@ class ReviewClaimControllerISpec extends IntegrationTest {
 
   private def saveAndContinueUrl(taxYear: Int, sessionDataId: UUID): String = s"${url(taxYear, sessionDataId)}/save"
 
+  private def restoreClaim(taxYear: Int, sessionDataId: UUID): String = s"${url(taxYear, sessionDataId)}/restore"
+
   private val sessionDataId = UUID.randomUUID()
 
   ".show" should {
@@ -76,6 +78,31 @@ class ReviewClaimControllerISpec extends IntegrationTest {
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         saveStateBenefitStub(aStateBenefitsUserData)
         urlPost(saveAndContinueUrl(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe JobSeekersAllowanceController.show(taxYearEOY).url
+    }
+  }
+
+  ".restoreClaim" should {
+    "redirect to Overview Page when in year" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        urlPost(restoreClaim(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+    }
+
+    "restore the given claim" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        restoreClaimStub(aUser.nino, sessionDataId)
+        urlPost(restoreClaim(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 
       result.status shouldBe SEE_OTHER

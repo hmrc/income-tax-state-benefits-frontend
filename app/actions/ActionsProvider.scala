@@ -20,7 +20,6 @@ import config.{AppConfig, ErrorHandler}
 import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 import services.StateBenefitsService
-import utils.InYearUtil
 
 import java.util.UUID
 import javax.inject.{Inject, Singleton}

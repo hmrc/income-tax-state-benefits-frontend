@@ -18,7 +18,7 @@ package connectors.responses
 
 import connectors.errors.{ApiError, SingleErrorBody}
 import connectors.responses.RemoveClaimResponse.removeClaimResponseReads
-import play.api.http.Status.{BAD_REQUEST, FAILED_DEPENDENCY, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, OK, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -41,7 +41,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
           httpResponse,
-          Right(Unit)
+          Right(())
         )
       }
 

@@ -41,7 +41,7 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
   def getUserSessionData(user: User, sessionDataId: UUID)
                         (implicit hc: HeaderCarrier): Future[Either[HttpParserError, StateBenefitsUserData]] = {
     stateBenefitsConnector.getUserSessionData(user, sessionDataId).map {
-      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Left(error) => Left(HttpParserError(error.status))
       case Right(stateBenefitsUserData) => Right(stateBenefitsUserData)
     }
   }
@@ -49,7 +49,7 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
   def createOrUpdate(stateBenefitsUserData: StateBenefitsUserData)
                     (implicit hc: HeaderCarrier): Future[Either[HttpParserError, UUID]] = {
     stateBenefitsConnector.createOrUpdate(stateBenefitsUserData).map {
-      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Left(error) => Left(HttpParserError(error.status))
       case Right(uuid) => Right(uuid)
     }
   }
@@ -57,7 +57,7 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
   def saveStateBenefit(stateBenefitsUserData: StateBenefitsUserData)
                       (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
     stateBenefitsConnector.saveStateBenefit(stateBenefitsUserData).map {
-      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Left(error) => Left(HttpParserError(error.status))
       case Right(_) => Right(())
     }
   }
@@ -65,7 +65,15 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
   def removeClaim(user: User, sessionDataId: UUID)
                  (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
     stateBenefitsConnector.removeClaim(user, sessionDataId).map {
-      case Left(error: ApiError) => Left(HttpParserError(error.status))
+      case Left(error) => Left(HttpParserError(error.status))
+      case Right(_) => Right(())
+    }
+  }
+
+  def restoreClaim(user: User, sessionDataId: UUID)
+                  (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
+    stateBenefitsConnector.restoreClaim(user, sessionDataId).map {
+      case Left(error) => Left(HttpParserError(error.status))
       case Right(_) => Right(())
     }
   }
