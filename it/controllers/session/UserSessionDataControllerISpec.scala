@@ -36,7 +36,6 @@ class UserSessionDataControllerISpec extends IntegrationTest {
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/session-data${benefitId.fold("")(id => s"?benefitId=$id")}"
   }
 
-  private val benefitId = UUID.randomUUID()
   private val sessionDataId = UUID.randomUUID()
 
   ".create" should {
@@ -64,15 +63,6 @@ class UserSessionDataControllerISpec extends IntegrationTest {
   }
 
   ".loadToSession" should {
-    "redirect to income tax submission overview when in year" in {
-      lazy val result: WSResponse = {
-        authoriseAgentOrIndividual(isAgent = false)
-        urlGet(url(taxYear, Some(benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
-      }
-
-      result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
-    }
 
     "redirect to ReviewClaim when benefitId found" in {
       lazy val result: WSResponse = {

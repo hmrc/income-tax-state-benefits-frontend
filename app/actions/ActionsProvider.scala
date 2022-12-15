@@ -35,7 +35,6 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
   def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
-      .andThen(EndOfYearFilterAction(taxYear, appConfig))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
 
   def userSessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =

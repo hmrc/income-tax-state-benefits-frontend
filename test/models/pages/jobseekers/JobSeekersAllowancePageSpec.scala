@@ -50,8 +50,9 @@ class JobSeekersAllowancePageSpec extends UnitTest
         BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_1),
       )
 
-      JobSeekersAllowancePage.apply(taxYear = taxYear, incomeTaxUserData = incomeTaxUserData) shouldBe JobSeekersAllowancePage(
+      JobSeekersAllowancePage.apply(taxYear = taxYear, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe JobSeekersAllowancePage(
         taxYear = taxYear,
+        isInYear = false,
         summaryListDataRows = summaryListDataRows
       )
     }
