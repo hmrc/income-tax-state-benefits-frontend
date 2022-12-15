@@ -57,15 +57,6 @@ class ActionsProviderSpec extends ControllerUnitTest
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
 
-    "redirect to Income Tax Submission Overview when in year" in {
-      mockAuthAsIndividual(Some(aUser.nino))
-
-      val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
-
-      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
-        Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
-    }
-
     "handle internal server error when getPriorData result in error" in {
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetPriorData(aUser, taxYearEOY, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
@@ -83,6 +74,15 @@ class ActionsProviderSpec extends ControllerUnitTest
       val underTest = actionsProvider.userPriorDataFor(taxYearEOY)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+
+    "return successful response when in year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYear, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
+
+      val underTest = actionsProvider.userPriorDataFor(taxYear)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }
   }
 

@@ -22,6 +22,7 @@ import models.pages.jobseekers.JobSeekersAllowancePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.InYearUtil.inYear
 import utils.SessionHelper
 import views.html.pages.jobseekers.JobSeekersAllowancePageView
 
@@ -33,6 +34,6 @@ class JobSeekersAllowanceController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int): Action[AnyContent] = actionsProvider.userPriorDataFor(taxYear) { implicit userPriorDataRequest =>
-    Ok(pageView(JobSeekersAllowancePage(taxYear, userPriorDataRequest.incomeTaxUserData)))
+    Ok(pageView(JobSeekersAllowancePage(taxYear, inYear(taxYear), userPriorDataRequest.incomeTaxUserData)))
   }
 }

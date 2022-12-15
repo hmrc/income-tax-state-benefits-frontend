@@ -18,12 +18,13 @@ package support.builders.pages.jobseekers
 
 import models.pages.jobseekers.JobSeekersAllowancePage
 import support.builders.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
-import support.utils.TaxYearUtils.taxYear
+import support.utils.TaxYearUtils.taxYearEOY
 
 object JobSeekersAllowancePageBuilder {
 
   val aJobSeekersAllowancePage: JobSeekersAllowancePage = JobSeekersAllowancePage(
-    taxYear = taxYear,
+    taxYear = taxYearEOY,
+    isInYear = false,
     summaryListDataRows = Seq(aBenefitSummaryListRowData)
   )
 }

@@ -68,6 +68,7 @@ stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
 jobseekersAllowance.p1.removed.claim.text.individual = You have removed this claim and it will not be included in your return.
 jobseekersAllowance.p1.removed.claim.text.agent = You have removed this claim and it will not be included in your client’s return.
 jobseekersAllowance.addMissingClaim.button.text = Add missing claim
+jobseekersAllowance.view.link.hiddenText = View Jobseeker’s Allowance claim details
 
 #################       Jobseeker’s Allowance - Start Date Page       ########################################
 jobseekers.startDatePage.error.empty.day.agent = The date your client started getting Jobseeker’s Allowance must include a day

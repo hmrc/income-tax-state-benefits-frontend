@@ -17,7 +17,7 @@
 package controllers
 
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.OK
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
@@ -36,8 +36,7 @@ class SummaryControllerISpec extends IntegrationTest {
         urlGet(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
-      result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+      result.status shouldBe OK
     }
 
     "render the contractor summary page for end of year" in {

@@ -34,12 +34,18 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
   private val page: JobSeekersAllowancePageView = inject[JobSeekersAllowancePageView]
 
   object Selectors {
-    val summaryListRowSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(1)"
-    val summaryListRowViewLinkSelector: Int => String = (row: Int) => s"${summaryListRowSelector(row)} > dd > a"
     val summaryListRowRemovedSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(2) > p"
     val addMissingClaimButtonSelector = "#add-missing-claim-button-id"
     val addMissingClaimFormSelector = "#main-content > div > div > form"
     val buttonSelector = "#continue-button-id"
+
+    def summaryListRowSelector(row: Int, isInYear: Boolean = false): String = s"div.govuk-summary-list__row:nth-child($row) ${if (!isInYear) "> div:nth-child(1)" else ""}"
+
+    def summaryListRowValueSelector(row: Int, column: Int, isInYear: Boolean = false): String = s"${summaryListRowSelector(row, isInYear)} > dt:nth-child($column)"
+
+    def summaryListRowViewLinkSelector(row: Int, isInYear: Boolean = false): String = s"${summaryListRowSelector(row, isInYear)} > dd > a"
+
+    def summaryListRowViewLinkHiddenTextSelector(row: Int, isInYear: Boolean = false): String = s"${summaryListRowViewLinkSelector(row, isInYear)} > span.govuk-visually-hidden"
   }
 
   trait SpecificExpectedResults {
@@ -51,8 +57,12 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     val expectedHeading: String
     val expectedCaption: Int => String
     val expectedViewLinkText: String
-    val expectedSummaryListRow1Text: String
-    val expectedSummaryListRow2Text: String
+    val expectedViewLinkHiddenText: String
+    val expectedSummaryListRow1Value1Text: String
+    val expectedSummaryListRow1Value2Text: Int => String
+    val expectedSummaryListRow2Value1Text: String
+    val expectedSummaryListRow2Value2Text: Int => String
+    val expectedSummaryListRow1TextInYear: String
     val expectedAddMissingClaimButtonText: String
     val expectedButtonText: String
   }
@@ -62,10 +72,14 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = "Jobseeker’s Allowance"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedViewLinkText: String = "View"
-    override val expectedSummaryListRow1Text = "£100 1 January 2022 to 31 January 2022 View"
-    override val expectedSummaryListRow2Text = "£200.20 1 February 2022 to 5 April 2022 View"
+    override val expectedViewLinkHiddenText: String = "View Jobseeker’s Allowance claim details"
+    override val expectedSummaryListRow1Value1Text: String = "£100"
+    override val expectedSummaryListRow1Value2Text: Int => String = (taxYear: Int) => s"1 January $taxYear to 31 January $taxYear"
+    override val expectedSummaryListRow2Value1Text: String = "£200.20"
+    override val expectedSummaryListRow2Value2Text: Int => String = (taxYear: Int) => s"1 February $taxYear to 5 April $taxYear"
     override val expectedAddMissingClaimButtonText: String = "Add missing claim"
     override val expectedButtonText: String = "Continue"
+    override val expectedSummaryListRow1TextInYear: String = "1 January 2022"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -73,10 +87,14 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = "Jobseeker’s Allowance"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedViewLinkText: String = "View"
-    override val expectedSummaryListRow1Text = "£100 1 Ionawr 2022 to 31 Ionawr 2022 View"
-    override val expectedSummaryListRow2Text = "£200.20 1 Chwefror 2022 to 5 Ebrill 2022 View"
+    override val expectedViewLinkHiddenText: String = "View Jobseeker’s Allowance claim details"
+    override val expectedSummaryListRow1Value1Text: String = "£100"
+    override val expectedSummaryListRow1Value2Text: Int => String = (taxYear: Int) => s"1 Ionawr $taxYear to 31 Ionawr $taxYear"
+    override val expectedSummaryListRow2Value1Text: String = "£200.20"
+    override val expectedSummaryListRow2Value2Text: Int => String = (taxYear: Int) => s"1 Chwefror $taxYear to 5 Ebrill $taxYear"
     override val expectedAddMissingClaimButtonText: String = "Add missing claim"
     override val expectedButtonText: String = "Continue"
+    override val expectedSummaryListRow1TextInYear: String = "1 Ionawr 2022"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -115,10 +133,10 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYear))
+        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         elementNotOnPageCheck(Selectors.summaryListRowSelector(1))
-        formPostLinkCheck(UserSessionDataController.create(taxYear).url, Selectors.addMissingClaimFormSelector)
+        formPostLinkCheck(UserSessionDataController.create(taxYearEOY).url, Selectors.addMissingClaimFormSelector)
         buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
       }
 
@@ -135,14 +153,35 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(expectedHeading)
+        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1Value1Text, Selectors.summaryListRowValueSelector(1, 1), "row-1-1")
+        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1Value2Text(taxYearEOY), Selectors.summaryListRowValueSelector(1, 2), "row-1-2")
+        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1),
+          UserSessionDataController.loadToSession(taxYearEOY, aBenefitSummaryListRowData.benefitId).url, Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1)))
+        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Value1Text, Selectors.summaryListRowValueSelector(2, 1), "row-2-1")
+        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Value2Text(taxYearEOY), Selectors.summaryListRowValueSelector(2, 2), "row-2-2")
+        textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
+        formPostLinkCheck(UserSessionDataController.create(taxYearEOY).url, Selectors.addMissingClaimFormSelector)
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
+      }
+
+      "render the page for an inYear tax claim" which {
+        implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = aJobSeekersAllowancePage.copy(taxYear = taxYear, isInYear = true)
+
+        implicit val document: Document = Jsoup.parse(page(pageModel).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYear))
         h1Check(expectedHeading)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1Text, Selectors.summaryListRowSelector(1), "row-1")
-        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1),
-          UserSessionDataController.loadToSession(taxYear, aBenefitSummaryListRowData.benefitId).url)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Text, Selectors.summaryListRowSelector(2), "row-2")
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
-        formPostLinkCheck(UserSessionDataController.create(taxYear).url, Selectors.addMissingClaimFormSelector)
+        textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1TextInYear, Selectors.summaryListRowValueSelector(1, 1, isInYear = true), "row-1")
+        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText,
+          Selectors.summaryListRowViewLinkSelector(1, isInYear = true), UserSessionDataController.loadToSession(taxYear, aBenefitSummaryListRowData.benefitId).url,
+          Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1, isInYear = true)))
+        elementNotOnPageCheck(Selectors.addMissingClaimFormSelector)
         buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
       }
     }
