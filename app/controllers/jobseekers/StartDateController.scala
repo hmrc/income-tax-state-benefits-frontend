@@ -18,7 +18,7 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, ReviewClaimController}
+import controllers.jobseekers.routes.{EndDateQuestionController, ReviewClaimController}
 import forms.jobseekers.FormsProvider
 import models.StateBenefitsUserData
 import models.pages.jobseekers.StartDatePage
@@ -60,6 +60,6 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
   private def getRedirectCall(taxYear: Int,
                               userData: StateBenefitsUserData): Call = {
     val sessionDataId = userData.sessionDataId.get
-    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else DidClaimEndInTaxYearController.show(taxYear, sessionDataId)
+    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else EndDateQuestionController.show(taxYear, sessionDataId)
   }
 }

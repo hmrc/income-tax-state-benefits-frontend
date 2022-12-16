@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.DidClaimEndInTaxYearController
+import controllers.jobseekers.routes.EndDateQuestionController
 import forms.YesNoForm
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -24,12 +24,12 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.DidClaimEndInTaxYearPageBuilder.aDidClaimEndInTaxYearPage
-import views.html.pages.jobseekers.DidClaimEndInTaxYearPageView
+import support.builders.pages.jobseekers.EndDateQuestionPageBuilder.aEndDateQuestionPage
+import views.html.pages.jobseekers.EndDateQuestionPageView
 
-class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
+class EndDateQuestionPageViewSpec extends ViewUnitTest {
 
-  private val underTest: DidClaimEndInTaxYearPageView = inject[DidClaimEndInTaxYearPageView]
+  private val underTest: EndDateQuestionPageView = inject[EndDateQuestionPageView]
 
   object Selectors {
     val continueButtonFormSelector = "#main-content > div > div > form"
@@ -82,7 +82,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        implicit val document: Document = Jsoup.parse(underTest(aDidClaimEndInTaxYearPage).body)
+        implicit val document: Document = Jsoup.parse(underTest(aEndDateQuestionPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
@@ -90,7 +90,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         fieldSetH1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY))
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(DidClaimEndInTaxYearController.submit(taxYearEOY, aDidClaimEndInTaxYearPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, aEndDateQuestionPage.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 
@@ -98,7 +98,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aDidClaimEndInTaxYearPage.copy(form = aDidClaimEndInTaxYearPage.form.fill(value = true))
+        val pageModel = aEndDateQuestionPage.copy(form = aEndDateQuestionPage.form.fill(value = true))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
@@ -109,7 +109,7 @@ class DidClaimEndInTaxYearPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aDidClaimEndInTaxYearPage.copy(form = aDidClaimEndInTaxYearPage.form.bind(Map(YesNoForm.yesNo -> "")))
+        val pageModel = aEndDateQuestionPage.copy(form = aEndDateQuestionPage.form.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle(taxYearEOY), userScenario.isWelsh)

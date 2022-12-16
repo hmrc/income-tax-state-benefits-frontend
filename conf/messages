@@ -22,6 +22,7 @@ common.december = December
 common.taxMonth = 5 {0} {1}
 
 common.addedByHmrc = Added by HMRC
+common.addMissingClaim = Add missing claim
 common.amountWillBeOnTheP45.agent = This amount will be on the P45 your client got after their claim ended.
 common.amountWillBeOnTheP45.individual = This amount will be on the P45 you got after your claim ended.
 common.back = Back
@@ -35,18 +36,20 @@ common.forExampleDate = For example, 23 3 2007
 common.help.getHelpWithThisPage = Get help with this page
 common.inProgress = In progress
 
+common.stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
+
 common.jobSeekersAllowance = Jobseeker’s Allowance
-common.jobseekersAllowance.caption = Jobseeker’s Allowance for 6 April {0} to 5 April {1}
-common.jobSeekersAllowanceStartDate.agent = When did your client start getting Jobseeker’s Allowance?
-common.jobSeekersAllowanceStartDate.individual = When did you start getting Jobseeker’s Allowance?
-common.jobSeekersAllowanceEndDateQuestion = Did this claim end in the tax year ending 5 April {0}?
-common.jobSeekersAllowanceEndDate = When did this claim end?
-common.jobSeekersAllowanceAmount.agent = How much Jobseeker’s Allowance did your client get between {0} and {1}?
-common.jobSeekersAllowanceAmount.individual = How much Jobseeker’s Allowance did you get between {0} and {1}?
-common.jobSeekersAllowanceTaxTakenOffQuestion.agent = Did your client have any tax taken off their Jobseeker’s Allowance between {0} and {1}?
-common.jobSeekersAllowanceTaxTakenOffQuestion.individual = Did you have any tax taken off your Jobseeker’s Allowance between {0} and {1}?
-common.jobSeekersAllowanceTaxTakenOff.agent = How much tax was taken off your client’s Jobseeker’s Allowance between {0} and {1}?
-common.jobSeekersAllowanceTaxTakenOff.individual = How much tax was taken off your Jobseeker’s Allowance between  {0} and {1}?
+common.jobSeekersAllowance.caption = Jobseeker’s Allowance for 6 April {0} to 5 April {1}
+common.jobSeekersAllowance.startDate.agent = When did your client start getting Jobseeker’s Allowance?
+common.jobSeekersAllowance.startDate.individual = When did you start getting Jobseeker’s Allowance?
+common.jobSeekersAllowance.endDateQuestion = Did this claim end in the tax year ending 5 April {0}?
+common.jobSeekersAllowance.endDate = When did this claim end?
+common.jobSeekersAllowance.amount.agent = How much Jobseeker’s Allowance did your client get between {0} and {1}?
+common.jobSeekersAllowance.amount.individual = How much Jobseeker’s Allowance did you get between {0} and {1}?
+common.jobSeekersAllowance.taxTakenOffQuestion.agent = Did your client have any tax taken off their Jobseeker’s Allowance between {0} and {1}?
+common.jobSeekersAllowance.taxTakenOffQuestion.individual = Did you have any tax taken off your Jobseeker’s Allowance between {0} and {1}?
+common.jobSeekersAllowance.taxTakenOff.agent = How much tax was taken off your client’s Jobseeker’s Allowance between {0} and {1}?
+common.jobSeekersAllowance.taxTakenOff.individual = How much tax was taken off your Jobseeker’s Allowance between  {0} and {1}?
 
 common.no = No
 common.notStarted = Not started
@@ -61,83 +64,79 @@ common.removeClaim = Remove claim
 common.error.amountMaxLimit = Enter an amount less than £100,000,000,000
 common.error.invalid_currency_format = Enter the amount in the correct format
 
-#################       State Benefits Page       ########################################
-stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
-
 #################       Jobseeker’s Allowance Page       ########################################
-jobseekersAllowance.p1.removed.claim.text.individual = You have removed this claim and it will not be included in your return.
-jobseekersAllowance.p1.removed.claim.text.agent = You have removed this claim and it will not be included in your client’s return.
-jobseekersAllowance.addMissingClaim.button.text = Add missing claim
-jobseekersAllowance.view.link.hiddenText = View Jobseeker’s Allowance claim details
+jobSeekersAllowance.benefitTypeClaimsPage.p1.individual = You have removed this claim and it will not be included in your return.
+jobSeekersAllowance.benefitTypeClaimsPage.p1.agent = You have removed this claim and it will not be included in your client’s return.
+jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText = View Jobseeker’s Allowance claim details
 
 #################       Jobseeker’s Allowance - Start Date Page       ########################################
-jobseekers.startDatePage.error.empty.day.agent = The date your client started getting Jobseeker’s Allowance must include a day
-jobseekers.startDatePage.error.empty.day.individual = The date you started getting Jobseeker’s Allowance must include a day
-jobseekers.startDatePage.error.empty.month.agent = The date your client started getting Jobseeker’s Allowance must include a month
-jobseekers.startDatePage.error.empty.month.individual = The date you started getting Jobseeker’s Allowance must include a month
-jobseekers.startDatePage.error.empty.year.agent = The date your client started getting Jobseeker’s Allowance must include a year
-jobseekers.startDatePage.error.empty.year.individual = The date you started getting Jobseeker’s Allowance must include a year
-jobseekers.startDatePage.error.invalid.date.agent = The date your client started getting Jobseeker’s Allowance must be a real date
-jobseekers.startDatePage.error.invalid.date.individual = The date you started getting Jobseeker’s Allowance must be a real date
-jobseekers.startDatePage.error.tooLongAgo.agent = The date your client started getting Jobseeker’s Allowance must be after 1 January 1900
-jobseekers.startDatePage.error.tooLongAgo.individual = The date you started getting Jobseeker’s Allowance must be after 1 January 1900
-jobseekers.startDatePage.error.mustBeSameAsOrBefore.date.agent = The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
-jobseekers.startDatePage.error.mustBeSameAsOrBefore.date.individual = The date you started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
+jobSeekersAllowance.startDatePage.error.empty.day.agent = The date your client started getting Jobseeker’s Allowance must include a day
+jobSeekersAllowance.startDatePage.error.empty.day.individual = The date you started getting Jobseeker’s Allowance must include a day
+jobSeekersAllowance.startDatePage.error.empty.month.agent = The date your client started getting Jobseeker’s Allowance must include a month
+jobSeekersAllowance.startDatePage.error.empty.month.individual = The date you started getting Jobseeker’s Allowance must include a month
+jobSeekersAllowance.startDatePage.error.empty.year.agent = The date your client started getting Jobseeker’s Allowance must include a year
+jobSeekersAllowance.startDatePage.error.empty.year.individual = The date you started getting Jobseeker’s Allowance must include a year
+jobSeekersAllowance.startDatePage.error.invalid.date.agent = The date your client started getting Jobseeker’s Allowance must be a real date
+jobSeekersAllowance.startDatePage.error.invalid.date.individual = The date you started getting Jobseeker’s Allowance must be a real date
+jobSeekersAllowance.startDatePage.error.tooLongAgo.agent = The date your client started getting Jobseeker’s Allowance must be after 1 January 1900
+jobSeekersAllowance.startDatePage.error.tooLongAgo.individual = The date you started getting Jobseeker’s Allowance must be after 1 January 1900
+jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent = The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
+jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = The date you started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
+
+#################       Jobseeker’s Allowance - End Date Question Page        ########################################
+jobSeekersAllowance.endDateQuestionPage.error = Select yes if this claim ended in the tax year ending 5 April {0}
 
 #################       Jobseeker’s Allowance - End Date Page       ########################################
-jobseekers.endDatePage.error.empty.day.agent = The date your client’s Jobseeker’s Allowance ended must include a day
-jobseekers.endDatePage.error.empty.day.individual = The date your Jobseeker’s Allowance ended must include a day
-jobseekers.endDatePage.error.empty.month.agent = The date your client’s Jobseeker’s Allowance ended must include a month
-jobseekers.endDatePage.error.empty.month.individual = The date your Jobseeker’s Allowance ended must include a month
-jobseekers.endDatePage.error.empty.year.agent = The date your client’s Jobseeker’s Allowance ended must include a year
-jobseekers.endDatePage.error.empty.year.individual = The date your Jobseeker’s Allowance ended must include a year
-jobseekers.endDatePage.error.invalid.date = Enter the date the Jobseeker’s Allowance ended must be a real date
-jobseekers.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
-jobseekers.endDatePage.error.mustBeEndOfYear.individual = The date your Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
-jobseekers.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Jobseeker’s Allowance claim ended must be after {0}
-jobseekers.endDatePage.error.mustBeAfterStartDate.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
-
-#################       Jobseeker’s Allowance - Claim End Page        ########################################
-jobseekers.didClaimEndInTaxYear.error = Select yes if this claim ended in the tax year ending 5 April {0}
+jobSeekersAllowance.endDatePage.error.empty.day.agent = The date your client’s Jobseeker’s Allowance ended must include a day
+jobSeekersAllowance.endDatePage.error.empty.day.individual = The date your Jobseeker’s Allowance ended must include a day
+jobSeekersAllowance.endDatePage.error.empty.month.agent = The date your client’s Jobseeker’s Allowance ended must include a month
+jobSeekersAllowance.endDatePage.error.empty.month.individual = The date your Jobseeker’s Allowance ended must include a month
+jobSeekersAllowance.endDatePage.error.empty.year.agent = The date your client’s Jobseeker’s Allowance ended must include a year
+jobSeekersAllowance.endDatePage.error.empty.year.individual = The date your Jobseeker’s Allowance ended must include a year
+jobSeekersAllowance.endDatePage.error.invalid.date = Enter the date the Jobseeker’s Allowance ended must be a real date
+jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
+jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
+jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Jobseeker’s Allowance claim ended must be after {0}
+jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
 
 #################       Jobseeker’s Allowance - Amount Page       ########################################
-jobseekers.amountPage.p1.agent = This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax.
-jobseekers.amountPage.p1.individual = This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax.
-jobseekers.amountPage.textbox.label = Amount of Jobseeker’s allowance
-jobseekers.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
-jobseekers.amountPage.wrongFormat.amount.error = The amount of Jobseeker’s Allowance must be a number
-jobseekers.amountPage.lessThanZero.amount.error = The amount of Jobseeker’s Allowance must be more than £0
-jobseekers.amountPage.exceedsMax.amount.error = The amount of Jobseeker’s Allowance must be less than £100,000,000,000
+jobSeekersAllowance.amountPage.p1.agent = This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax.
+jobSeekersAllowance.amountPage.p1.individual = This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax.
+jobSeekersAllowance.amountPage.textBox.label = Amount of Jobseeker’s allowance
+jobSeekersAllowance.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
+jobSeekersAllowance.amountPage.wrongFormat.amount.error = The amount of Jobseeker’s Allowance must be a number
+jobSeekersAllowance.amountPage.lessThanZero.amount.error = The amount of Jobseeker’s Allowance must be more than £0
+jobSeekersAllowance.amountPage.exceedsMax.amount.error = The amount of Jobseeker’s Allowance must be less than £100,000,000,000
 
-#################       Jobseeker’s Allowance - Tax Taken Off Page        ########################################
-jobseekers.taxTakenOff.error.agent = Select yes if your client had any tax taken off their Jobseeker’s Allowance between {0} and {1}
-jobseekers.taxTakenOff.error.individual = Select yes if you had any tax taken off your Jobseeker’s Allowance between {0} and {1}
+#################       Jobseeker’s Allowance - Tax Paid Question Page        ########################################
+jobSeekersAllowance.taxPaidQuestionPage.error.agent = Select yes if your client had any tax taken off their Jobseeker’s Allowance between {0} and {1}
+jobSeekersAllowance.taxPaidQuestionPage.error.individual = Select yes if you had any tax taken off your Jobseeker’s Allowance between {0} and {1}
 
-#################       Jobseeker’s Allowance - Tax Taken Off Amount Page        ########################################
-jobseekers.taxTakenOffAmount.textbox.label = Amount of tax taken off
+#################       Jobseeker’s Allowance - Tax Paid Page        ########################################
+jobSeekersAllowance.taxPaidPage.textBox.label = Amount of tax taken off
 
 #################       Jobseeker’s Allowance - Review claim page       ########################################
-jobseekers.reviewClaimPage.title = Review Jobseeker’s allowance claim
-jobseekers.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
-jobseekers.reviewClaimPage.startDate.hiddenText.agent = Change the date your client started getting Jobseeker’s Allowance
-jobseekers.reviewClaimPage.startDate.hiddenText.individual = Change the date you started getting Jobseeker’s Allowance
-jobseekers.reviewClaimPage.endDateQuestion.hiddenText.agent = Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}
-jobseekers.reviewClaimPage.endDateQuestion.hiddenText.individual = Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}
-jobseekers.reviewClaimPage.endDate.hiddenText.agent = Change the date your client’s Jobseeker’s Allowance claim ended
-jobseekers.reviewClaimPage.endDate.hiddenText.individual = Change the date your Jobseeker’s Allowance claim ended
-jobseekers.reviewClaimPage.amount.hiddenText.agent = Change the amount of Jobseeker’s Allowance your client got
-jobseekers.reviewClaimPage.amount.hiddenText.individual = Change the amount of Jobseeker’s Allowance you got
-jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.agent = Change whether your client had any tax taken off your Jobseeker’s Allowance claim
-jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText.individual = Change whether you had any tax taken off your Jobseeker’s Allowance claim
-jobseekers.reviewClaimPage.taxPaid.hiddenText.agent = Change the amount of tax taken off your client’s Jobseeker’s Allowance claim
-jobseekers.reviewClaimPage.taxPaid.hiddenText.individual = Change the amount of tax taken off your Jobseeker’s Allowance claim
-jobseekers.reviewClaimPage.removeClaim.hiddenText = Remove this Jobseeker’s allowance claim
-jobseekers.reviewClaimPage.restoreClaim = Restore claim
+jobSeekersAllowance.reviewClaimPage.title = Review Jobseeker’s allowance claim
+jobSeekersAllowance.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
+jobSeekersAllowance.reviewClaimPage.startDate.hiddenText.agent = Change the date your client started getting Jobseeker’s Allowance
+jobSeekersAllowance.reviewClaimPage.startDate.hiddenText.individual = Change the date you started getting Jobseeker’s Allowance
+jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText.agent = Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}
+jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText.individual = Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}
+jobSeekersAllowance.reviewClaimPage.endDate.hiddenText.agent = Change the date your client’s Jobseeker’s Allowance claim ended
+jobSeekersAllowance.reviewClaimPage.endDate.hiddenText.individual = Change the date your Jobseeker’s Allowance claim ended
+jobSeekersAllowance.reviewClaimPage.amount.hiddenText.agent = Change the amount of Jobseeker’s Allowance your client got
+jobSeekersAllowance.reviewClaimPage.amount.hiddenText.individual = Change the amount of Jobseeker’s Allowance you got
+jobSeekersAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.agent = Change whether your client had any tax taken off your Jobseeker’s Allowance claim
+jobSeekersAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.individual = Change whether you had any tax taken off your Jobseeker’s Allowance claim
+jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText.agent = Change the amount of tax taken off your client’s Jobseeker’s Allowance claim
+jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText.individual = Change the amount of tax taken off your Jobseeker’s Allowance claim
+jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText = Remove this Jobseeker’s allowance claim
+jobSeekersAllowance.reviewClaimPage.restoreClaim = Restore claim
 
 #################       Jobseeker’s Allowance - Remove Claim Page       ########################################
-jobseekers.removePage.title = Are you sure you want to remove this Jobseeker’s Allowance claim?
-jobseekers.removePage.link = Don’t remove claim
-jobseekers.removePage.link.hidden = Don’t remove this Jobseeker’s Allowance Claim
+jobSeekersAllowance.removeClaimPage.title = Are you sure you want to remove this Jobseeker’s Allowance claim?
+jobSeekersAllowance.removeClaimPage.link = Don’t remove claim
+jobSeekersAllowance.removeClaimPage.link.hidden = Don’t remove this Jobseeker’s Allowance Claim
 
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use

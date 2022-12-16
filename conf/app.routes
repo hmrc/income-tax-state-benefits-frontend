@@ -23,8 +23,8 @@ GET         /:taxYear/jobseekers-allowance/claims                               
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/start-date                            controllers.jobseekers.StartDateController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/start-date                            controllers.jobseekers.StartDateController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.DidClaimEndInTaxYearController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.DidClaimEndInTaxYearController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/jobseekers-allowance/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.EndDateQuestionController.show(taxYear: Int, sessionDataId: java.util.UUID)
+POST        /:taxYear/jobseekers-allowance/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.EndDateQuestionController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/end-date                              controllers.jobseekers.EndDateController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/end-date                              controllers.jobseekers.EndDateController.submit(taxYear: Int, sessionDataId: java.util.UUID)
@@ -32,11 +32,11 @@ POST        /:taxYear/jobseekers-allowance/:sessionDataId/end-date              
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/amount                                controllers.jobseekers.AmountController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/amount                                controllers.jobseekers.AmountController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxTakenOffController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxTakenOffController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxPaidQuestionController.show(taxYear: Int, sessionDataId: java.util.UUID)
+POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxPaidQuestionController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxTakenOffAmountController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxTakenOffAmountController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxPaidController.show(taxYear: Int, sessionDataId: java.util.UUID)
+POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxPaidController.submit(taxYear: Int, sessionDataId: java.util.UUID)
 
 GET         /:taxYear/jobseekers-allowance/:sessionDataId/review-claim                          controllers.jobseekers.ReviewClaimController.show(taxYear: Int, sessionDataId: java.util.UUID)
 POST        /:taxYear/jobseekers-allowance/:sessionDataId/review-claim/save                     controllers.jobseekers.ReviewClaimController.saveAndContinue(taxYear: Int, sessionDataId: java.util.UUID)

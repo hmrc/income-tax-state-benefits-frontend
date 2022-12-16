@@ -21,35 +21,35 @@ import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.{AmountController, EndDateController, ReviewClaimController}
 import forms.jobseekers.FormsProvider
 import models.StateBenefitsUserData
-import models.pages.jobseekers.DidClaimEndInTaxYearPage
+import models.pages.jobseekers.EndDateQuestionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.ClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
-import views.html.pages.jobseekers.DidClaimEndInTaxYearPageView
+import views.html.pages.jobseekers.EndDateQuestionPageView
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DidClaimEndInTaxYearController @Inject()(actionsProvider: ActionsProvider,
-                                               formsProvider: FormsProvider,
-                                               pageView: DidClaimEndInTaxYearPageView,
-                                               claimService: ClaimService,
-                                               errorHandler: ErrorHandler)
-                                              (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
+class EndDateQuestionController @Inject()(actionsProvider: ActionsProvider,
+                                          formsProvider: FormsProvider,
+                                          pageView: EndDateQuestionPageView,
+                                          claimService: ClaimService,
+                                          errorHandler: ErrorHandler)
+                                         (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formsProvider.endDateYesNoForm(taxYear))))
+    Ok(pageView(EndDateQuestionPage(taxYear, request.stateBenefitsUserData, formsProvider.endDateYesNoForm(taxYear))))
   }
 
   def submit(taxYear: Int,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     formsProvider.endDateYesNoForm(taxYear).bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
+      formWithErrors => Future.successful(BadRequest(pageView(EndDateQuestionPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       yesNoValue => claimService.updateEndDateQuestion(request.stateBenefitsUserData, yesNoValue).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(userData) => Redirect(getRedirectCall(taxYear, yesNoValue, userData))

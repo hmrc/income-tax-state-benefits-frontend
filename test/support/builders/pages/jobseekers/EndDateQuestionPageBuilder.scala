@@ -16,21 +16,17 @@
 
 package support.builders.pages.jobseekers
 
-import forms.YesNoForm
-import models.pages.jobseekers.TaxTakenOffPage
-import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
+import forms.jobseekers.FormsProvider
+import models.pages.jobseekers.EndDateQuestionPage
 import support.utils.TaxYearUtils.taxYearEOY
 
-import java.time.LocalDate
 import java.util.UUID
 
-object TaxTakenOffPageBuilder {
+object EndDateQuestionPageBuilder {
 
-  val aTaxTakenOffPage: TaxTakenOffPage = TaxTakenOffPage(
+  val aEndDateQuestionPage: EndDateQuestionPage = EndDateQuestionPage(
     taxYear = taxYearEOY,
-    titleFirstDate = LocalDate.parse(s"$taxYearEOY-01-01"),
-    titleSecondDate = aClaimCYAModel.endDate.get,
     sessionDataId = UUID.randomUUID(),
-    form = YesNoForm.yesNoForm("some.error.message.key")
+    form = new FormsProvider().endDateYesNoForm(taxYearEOY)
   )
 }

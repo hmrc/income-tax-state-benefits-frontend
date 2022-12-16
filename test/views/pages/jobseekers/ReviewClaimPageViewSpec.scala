@@ -224,7 +224,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           textOnPageCheck(expectedEndDateQuestionText(taxYearEOY), summaryListRowFieldNameSelector(2))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
           linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
-            DidClaimEndInTaxYearController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
+            EndDateQuestionController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
           textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
           textOnPageCheck(translatedEndDate, summaryListRowFieldValueSelector(3))
           linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3), EndDateController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))

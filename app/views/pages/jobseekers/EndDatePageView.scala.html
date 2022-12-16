@@ -38,7 +38,7 @@
 
 @(pageModel: EndDatePage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{ messages(s"common.jobSeekersAllowanceEndDate") }
+@titleText = @{ messages(s"common.jobSeekersAllowance.endDate") }
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
@@ -49,7 +49,7 @@
         }
     })
 
-    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+    @caption(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
     @formWithCsrf(action = EndDateController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
         @dateInput(

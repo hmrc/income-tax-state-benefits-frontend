@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.TaxTakenOffAmountController
+import controllers.jobseekers.routes.TaxPaidController
 import forms.AmountForm
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -24,15 +24,15 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.TaxTakenOffAmountPageBuilder.aTaxTakenOffAmountPage
+import support.builders.pages.jobseekers.TaxPaidPageBuilder.aTaxPaidPage
 import utils.ViewUtils.translatedDateFormatter
-import views.html.pages.jobseekers.TaxTakenOffAmountPageView
+import views.html.pages.jobseekers.TaxPaidPageView
 
 import java.time.LocalDate
 
-class TaxTakenOffAmountPageViewSpec extends ViewUnitTest {
+class TaxPaidPageViewSpec extends ViewUnitTest {
 
-  private val underTest: TaxTakenOffAmountPageView = inject[TaxTakenOffAmountPageView]
+  private val underTest: TaxPaidPageView = inject[TaxPaidPageView]
 
   object Selectors {
     val paragraphTextSelector = "#main-content > div > div > p"
@@ -117,26 +117,26 @@ class TaxTakenOffAmountPageViewSpec extends ViewUnitTest {
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        implicit val document: Document = Jsoup.parse(underTest(aTaxTakenOffAmountPage).body)
+        implicit val document: Document = Jsoup.parse(underTest(aTaxPaidPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(aTaxTakenOffAmountPage.titleFirstDate, aTaxTakenOffAmountPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(aTaxPaidPage.titleFirstDate, aTaxPaidPage.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.specificExpectedResults.get.expectedTitle(aTaxTakenOffAmountPage.titleFirstDate, aTaxTakenOffAmountPage.titleSecondDate))
+        h1Check(userScenario.specificExpectedResults.get.expectedTitle(aTaxPaidPage.titleFirstDate, aTaxPaidPage.titleSecondDate))
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedP1Text, Selectors.paragraphTextSelector)
         amountBoxLabelCheck(userScenario.commonExpectedResults.expectedLabelText)
         amountBoxHintCheck(userScenario.commonExpectedResults.expectedHintText)
-        formPostLinkCheck(TaxTakenOffAmountController.submit(taxYearEOY, aTaxTakenOffAmountPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, aTaxPaidPage.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 
       "render page with empty selection error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = aTaxTakenOffAmountPage.copy(form = aTaxTakenOffAmountPage.form.bind(Map(AmountForm.amount -> "")))
+        val pageModel = aTaxPaidPage.copy(form = aTaxPaidPage.form.bind(Map(AmountForm.amount -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(aTaxTakenOffAmountPage.titleFirstDate, aTaxTakenOffAmountPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(aTaxPaidPage.titleFirstDate, aTaxPaidPage.titleSecondDate), userScenario.isWelsh)
 
         errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText, Selectors.errorHref)
         errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText)

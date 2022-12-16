@@ -28,10 +28,10 @@ import support.builders.UserBuilder.aUser
 
 import java.util.UUID
 
-class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
+class TaxPaidQuestionControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int, sessionDataId: UUID): String =
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/did-claim-end-in-tax-year"
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/tax-taken-off"
 
   private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
@@ -47,7 +47,7 @@ class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "render the Start Date page for end of year" in {
+    "render the TaxTakenOff page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
@@ -85,8 +85,8 @@ class DidClaimEndInTaxYearControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
     }
 
-    "redirect To amount page when answer is No" in {
-      val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None)
+    "redirect to ReviewJobSeekersAllowanceClaim page when answer is No" in {
+      val modelWithExpectedData = aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None)
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)

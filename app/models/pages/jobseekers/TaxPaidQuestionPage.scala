@@ -16,24 +16,33 @@
 
 package models.pages.jobseekers
 
-import models.StateBenefitsUserData
+import models.{ClaimCYAModel, StateBenefitsUserData}
 import play.api.data.Form
+import utils.InYearUtil.toDateWithinTaxYear
 
+import java.time.LocalDate
 import java.util.UUID
 
-case class DidClaimEndInTaxYearPage(taxYear: Int,
-                                    sessionDataId: UUID,
-                                    form: Form[Boolean])
+case class TaxPaidQuestionPage(taxYear: Int,
+                               titleFirstDate: LocalDate,
+                               titleSecondDate: LocalDate,
+                               sessionDataId: UUID,
+                               form: Form[Boolean])
 
-object DidClaimEndInTaxYearPage {
+object TaxPaidQuestionPage {
 
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
-            form: Form[Boolean]): DidClaimEndInTaxYearPage = {
-    val optQuestionValue = stateBenefitsUserData.claim.flatMap(_.endDateQuestion)
+            form: Form[Boolean]): TaxPaidQuestionPage = {
+    val optQuestionValue = stateBenefitsUserData.claim.flatMap(_.taxPaidQuestion)
+    val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
+    val titleFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate)
+    val titleSecondDate = claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05"))
 
-    DidClaimEndInTaxYearPage(
+    TaxPaidQuestionPage(
       taxYear = taxYear,
+      titleFirstDate = titleFirstDate,
+      titleSecondDate = titleSecondDate,
       stateBenefitsUserData.sessionDataId.get,
       form = optQuestionValue.fold(form)(questionValue => if (form.hasErrors) form else form.fill(questionValue))
     )

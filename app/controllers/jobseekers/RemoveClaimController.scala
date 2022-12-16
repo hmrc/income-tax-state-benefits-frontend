@@ -25,14 +25,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.SessionHelper
-import views.html.pages.jobseekers.RemoveClaimView
+import views.html.pages.jobseekers.RemoveClaimPageView
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
-                                      pageView: RemoveClaimView,
+                                      pageView: RemoveClaimPageView,
                                       stateBenefitsService: StateBenefitsService,
                                       errorHandler: ErrorHandler)
                                      (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)

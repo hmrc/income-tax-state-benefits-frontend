@@ -22,18 +22,18 @@ import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.providers.TaxYearProvider
 
-class DidClaimEndInTaxYearPageSpec extends UnitTest
+class EndDateQuestionPageSpec extends UnitTest
   with TaxYearProvider {
 
   private val anyQuestionValue = true
 
   private val pageForm = new FormsProvider().endDateYesNoForm(taxYear)
 
-  "DidClaimEndInTaxYearPage.apply" should {
+  "EndDateQuestionPage.apply" should {
     "return page with pre-filled form when endDateQuestion has value" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(anyQuestionValue))))
 
-      DidClaimEndInTaxYearPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe DidClaimEndInTaxYearPage(
+      EndDateQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
         taxYear = taxYear,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm.fill(value = anyQuestionValue)
@@ -43,7 +43,7 @@ class DidClaimEndInTaxYearPageSpec extends UnitTest
     "return page without pre-filled form when endDateQuestion is None" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = None)))
 
-      DidClaimEndInTaxYearPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe DidClaimEndInTaxYearPage(
+      EndDateQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
         taxYear = taxYear,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm,
@@ -53,7 +53,7 @@ class DidClaimEndInTaxYearPageSpec extends UnitTest
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = pageForm.bind(Map("wrong-key" -> "wrong-value"))
 
-      DidClaimEndInTaxYearPage.apply(taxYear, aStateBenefitsUserData, formWithErrors) shouldBe DidClaimEndInTaxYearPage(
+      EndDateQuestionPage.apply(taxYear, aStateBenefitsUserData, formWithErrors) shouldBe EndDateQuestionPage(
         taxYear = taxYear,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = formWithErrors

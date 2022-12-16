@@ -23,23 +23,23 @@ import utils.InYearUtil.toDateWithinTaxYear
 import java.time.LocalDate
 import java.util.UUID
 
-case class TaxTakenOffAmountPage(taxYear: Int,
-                                 titleFirstDate: LocalDate,
-                                 titleSecondDate: LocalDate,
-                                 sessionDataId: UUID,
-                                 form: Form[BigDecimal])
+case class TaxPaidPage(taxYear: Int,
+                       titleFirstDate: LocalDate,
+                       titleSecondDate: LocalDate,
+                       sessionDataId: UUID,
+                       form: Form[BigDecimal])
 
-object TaxTakenOffAmountPage {
+object TaxPaidPage {
 
   def apply(taxYear: Int,
             stateBenefitsUserData: StateBenefitsUserData,
-            form: Form[BigDecimal]): TaxTakenOffAmountPage = {
+            form: Form[BigDecimal]): TaxPaidPage = {
     val optAmount: Option[BigDecimal] = stateBenefitsUserData.claim.flatMap(_.taxPaid)
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
     val titleFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate)
     val titleSecondDate = claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05"))
 
-    TaxTakenOffAmountPage(
+    TaxPaidPage(
       taxYear = taxYear,
       titleFirstDate = titleFirstDate,
       titleSecondDate = titleSecondDate,
