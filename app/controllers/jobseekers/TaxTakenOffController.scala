@@ -42,13 +42,13 @@ class TaxTakenOffController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
     val pageForm = formsProvider.taxTakenOffYesNoForm(request.user.isAgent, taxYear, request.stateBenefitsUserData.claim.get)
     Ok(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, pageForm)))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     formsProvider.taxTakenOffYesNoForm(request.user.isAgent, taxYear, request.stateBenefitsUserData.claim.get).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(TaxTakenOffPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       yesNoValue => claimService.updateTaxPaidQuestion(request.stateBenefitsUserData, yesNoValue).map {

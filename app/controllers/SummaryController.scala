@@ -32,7 +32,7 @@ class SummaryController @Inject()(actionsProvider: ActionsProvider,
                                  (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int): Action[AnyContent] = actionsProvider.userPriorDataFor(taxYear) { implicit userPriorDataRequest =>
+  def show(taxYear: Int): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
     Ok(pageView(SummaryPage(taxYear)))
   }
 }

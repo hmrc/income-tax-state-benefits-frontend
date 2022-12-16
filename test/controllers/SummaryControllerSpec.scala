@@ -35,7 +35,7 @@ class SummaryControllerSpec extends ControllerUnitTest
 
   "show" should {
     "return a successful response" in {
-      mockUserPriorDataFor(taxYear, anIncomeTaxUserData)
+      mockPriorDataFor(taxYear, anIncomeTaxUserData)
 
       val result = controller.show(taxYear).apply(fakeIndividualRequest)
 

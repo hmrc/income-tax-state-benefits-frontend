@@ -42,7 +42,7 @@ class EndDateController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
     Ok(pageView(EndDatePage(
       taxYear,
       request.stateBenefitsUserData,
@@ -51,7 +51,7 @@ class EndDateController @Inject()(actionsProvider: ActionsProvider,
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     val sessionData = request.stateBenefitsUserData
     formsProvider.endDateForm(taxYear, request.user.isAgent, sessionData.claim.get.startDate).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(EndDatePage(taxYear, sessionData, formWithErrors)))),

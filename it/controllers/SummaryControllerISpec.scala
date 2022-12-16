@@ -33,6 +33,7 @@ class SummaryControllerISpec extends IntegrationTest {
     "render the contractor summary page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
+        userPriorDataStub(aUser.nino, taxYear, anAllStateBenefitsData)
         urlGet(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 

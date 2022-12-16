@@ -50,7 +50,7 @@ class EndDateControllerSpec extends ControllerUnitTest
 
   ".show" should {
     "return a successful response" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
 
@@ -61,7 +61,7 @@ class EndDateControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "render page with error when validation of form fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$formValuesPrefix-$day" -> "")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
@@ -73,7 +73,7 @@ class EndDateControllerSpec extends ControllerUnitTest
     }
 
     "handle internal server error when updating end date fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Left(()))
       mockInternalServerError(InternalServerError)
 
@@ -84,7 +84,7 @@ class EndDateControllerSpec extends ControllerUnitTest
     }
 
     "redirect to ReviewClaim page on successful end date update when isFinished" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
@@ -94,7 +94,7 @@ class EndDateControllerSpec extends ControllerUnitTest
     }
 
     "redirect to Next Page on successful end date update when not finished" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDate(aStateBenefitsUserData, LocalDate.of(taxYearEOY, 1, 1), Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)

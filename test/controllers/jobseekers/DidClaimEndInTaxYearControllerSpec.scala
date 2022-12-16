@@ -48,7 +48,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
 
   ".show" should {
     "return a successful response" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
 
@@ -59,7 +59,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "render page with error when validation of form fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
@@ -71,7 +71,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
     }
 
     "redirect to ReviewClaim page when Yes is submitted and isFinished" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDateQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
@@ -80,7 +80,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
     }
 
     "redirect to ReviewClaim page when No is submitted and isFinished" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDateQuestion(aStateBenefitsUserData, question = false, Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
@@ -89,7 +89,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
     }
 
     "redirect to End Date page when Yes is submitted and not finished" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDateQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
@@ -98,7 +98,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
     }
 
     "redirect To Amount page when No is submitted and not finished" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDateQuestion(aStateBenefitsUserData, question = false, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
@@ -107,7 +107,7 @@ class DidClaimEndInTaxYearControllerSpec extends ControllerUnitTest
     }
 
     "handle internal server error when updating end date question fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDateQuestion(aStateBenefitsUserData, question = true, Left(()))
       mockInternalServerError(InternalServerError)
 

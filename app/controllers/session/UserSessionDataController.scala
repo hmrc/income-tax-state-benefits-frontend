@@ -43,7 +43,7 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
     }
   }
 
-  def loadToSession(taxYear: Int, benefitId: UUID): Action[AnyContent] = actionsProvider.userPriorDataFor(taxYear).async { implicit request =>
+  def loadToSession(taxYear: Int, benefitId: UUID): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
     StateBenefitsUserData(taxYear, request.user, benefitId, request.incomeTaxUserData) match {
       case None => Future.successful(Redirect(JobSeekersAllowanceController.show(taxYear)))
       case Some(stateBenefitsUserData) => stateBenefitsService.createOrUpdate(stateBenefitsUserData).map {

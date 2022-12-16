@@ -63,6 +63,17 @@ class UserSessionDataControllerISpec extends IntegrationTest {
   }
 
   ".loadToSession" should {
+    "redirect to ReviewClaim when benefitId found and in year" in {
+      lazy val result: WSResponse = {
+        authoriseAgentOrIndividual(isAgent = false)
+        userPriorDataStub(aUser.nino, taxYear, anAllStateBenefitsData)
+        createOrUpdateUserDataStub(StateBenefitsUserData(taxYear, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
+        urlGet(url(taxYear, Some(aStateBenefit.benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
+      }
+
+      result.status shouldBe SEE_OTHER
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYear, sessionDataId).url
+    }
 
     "redirect to ReviewClaim when benefitId found" in {
       lazy val result: WSResponse = {

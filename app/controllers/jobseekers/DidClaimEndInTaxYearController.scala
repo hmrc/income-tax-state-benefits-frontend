@@ -42,12 +42,12 @@ class DidClaimEndInTaxYearController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId) { implicit request =>
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
     Ok(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formsProvider.endDateYesNoForm(taxYear))))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.userSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
     formsProvider.endDateYesNoForm(taxYear).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(DidClaimEndInTaxYearPage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
       yesNoValue => claimService.updateEndDateQuestion(request.stateBenefitsUserData, yesNoValue).map {

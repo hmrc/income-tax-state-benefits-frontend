@@ -47,7 +47,7 @@ class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
 
   ".show" should {
     "return a successful response" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
 
@@ -58,7 +58,7 @@ class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "render page with error when validation of form fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "")
       val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
@@ -70,7 +70,7 @@ class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
     }
 
     "handle internal server error when updating amount fails" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateTaxPaidAmount(aStateBenefitsUserData, amount = 100, Left(()))
       mockInternalServerError(InternalServerError)
 
@@ -81,7 +81,7 @@ class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
     }
 
     "redirect to next Page on successful amount update" in {
-      mockUserSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
       mockUpdateTaxPaidAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")

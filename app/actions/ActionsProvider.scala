@@ -32,15 +32,20 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
                                 appConfig: AppConfig)
                                (implicit ec: ExecutionContext) {
 
-  def userPriorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] =
+  def priorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
 
-  def userSessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+  def endOfYearSessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(EndOfYearFilterAction(taxYear, appConfig))
+      .andThen(UserSessionDataRequestRefinerAction(sessionDataId, stateBenefitsService, errorHandler))
+
+  def sessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+    authAction
+      .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(UserSessionDataRequestRefinerAction(sessionDataId, stateBenefitsService, errorHandler))
 
   def endOfYear(taxYear: Int): ActionBuilder[AuthorisationRequest, AnyContent] =

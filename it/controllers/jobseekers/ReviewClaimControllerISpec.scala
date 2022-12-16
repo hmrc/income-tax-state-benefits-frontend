@@ -29,7 +29,7 @@ import java.util.UUID
 class ReviewClaimControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int, sessionDataId: UUID): String =
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/review-jobseekers-allowance-claim"
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/review-claim"
 
   private def saveAndContinueUrl(taxYear: Int, sessionDataId: UUID): String = s"${url(taxYear, sessionDataId)}/save"
 
@@ -38,15 +38,14 @@ class ReviewClaimControllerISpec extends IntegrationTest {
   private val sessionDataId = UUID.randomUUID()
 
   ".show" should {
-    "redirect to Overview Page when in year" in {
+    "render the ReviewJobSeekersAllowanceClaim page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
         urlGet(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
-      result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+      result.status shouldBe OK
     }
 
     "render the ReviewJobSeekersAllowanceClaim page for end of year" in {
