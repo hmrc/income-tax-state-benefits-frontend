@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.jobseekers.routes.DidClaimEndInTaxYearController
+@import controllers.jobseekers.routes.EndDateQuestionController
 
-@import models.pages.jobseekers.DidClaimEndInTaxYearPage
+@import models.pages.jobseekers.EndDateQuestionPage
 @import models.requests.UserSessionDataRequest
 
 @import views.html.templates.Layout
@@ -34,17 +34,17 @@
     button: Button
 )
 
-@(pageModel: DidClaimEndInTaxYearPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
+@(pageModel: EndDateQuestionPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages("common.jobSeekersAllowanceEndDateQuestion", pageModel.taxYear.toString)}
+@titleText = @{messages("common.jobSeekersAllowance.endDateQuestion", pageModel.taxYear.toString)}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
     @errorSummary(pageModel.form.errors)
 
-    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+    @caption(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
-    @formWithCsrf(action = DidClaimEndInTaxYearController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCsrf(action = EndDateQuestionController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
         @inputRadio(
             legendHeading = Some(Html(titleText)),
             legendHidden = false,

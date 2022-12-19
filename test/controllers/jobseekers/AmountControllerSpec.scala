@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffController}
+import controllers.jobseekers.routes.{ReviewClaimController, TaxPaidQuestionController}
 import forms.AmountForm._
 import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
@@ -88,7 +88,7 @@ class AmountControllerSpec extends ControllerUnitTest
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
 
       await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(TaxTakenOffController.show(taxYearEOY, sessionDataId))
+        Redirect(TaxPaidQuestionController.show(taxYearEOY, sessionDataId))
     }
 
     "redirect to ReviewClaim Page on successful amount update and when journey is completed" in {

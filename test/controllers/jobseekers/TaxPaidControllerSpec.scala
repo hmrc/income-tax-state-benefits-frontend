@@ -27,17 +27,17 @@ import sttp.model.Method.POST
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.mocks.{MockActionsProvider, MockClaimService, MockErrorHandler}
-import views.html.pages.jobseekers.TaxTakenOffAmountPageView
+import views.html.pages.jobseekers.TaxPaidPageView
 
-class TaxTakenOffAmountControllerSpec extends ControllerUnitTest
+class TaxPaidControllerSpec extends ControllerUnitTest
   with MockActionsProvider
   with MockClaimService
   with MockErrorHandler {
 
-  private val pageView = inject[TaxTakenOffAmountPageView]
+  private val pageView = inject[TaxPaidPageView]
   private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
-  private val underTest = new TaxTakenOffAmountController(
+  private val underTest = new TaxPaidController(
     mockActionsProvider,
     new FormsProvider(),
     pageView,

@@ -17,16 +17,16 @@
 package support.builders.pages.jobseekers
 
 import forms.jobseekers.FormsProvider
-import models.pages.jobseekers.TaxTakenOffAmountPage
+import models.pages.jobseekers.TaxPaidPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.utils.TaxYearUtils.taxYearEOY
 
 import java.time.LocalDate
 import java.util.UUID
 
-object TaxTakenOffAmountPageBuilder {
+object TaxPaidPageBuilder {
 
-  val aTaxTakenOffAmountPage: TaxTakenOffAmountPage = TaxTakenOffAmountPage(
+  val aTaxPaidPage: TaxPaidPage = TaxPaidPage(
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-04-23"),
     titleSecondDate = aClaimCYAModel.endDate.get,
     taxYear = taxYearEOY,

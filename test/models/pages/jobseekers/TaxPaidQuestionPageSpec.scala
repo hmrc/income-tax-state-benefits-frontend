@@ -16,8 +16,7 @@
 
 package models.pages.jobseekers
 
-import forms.AmountForm
-import forms.jobseekers.FormsProvider
+import forms.YesNoForm
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -25,30 +24,30 @@ import support.providers.TaxYearProvider
 
 import java.time.LocalDate
 
-class TaxTakenOffAmountPageSpec extends UnitTest
+class TaxPaidQuestionPageSpec extends UnitTest
   with TaxYearProvider {
 
-  private val pageForm = new FormsProvider().taxPaidAmountForm()
+  private val pageForm = YesNoForm.yesNoForm("some.error.message.key")
 
-  "TaxTakenOffAmountPage.apply(...)" should {
-    "return page with pre-filled form when taxPaid is preset" in {
-      val claimCYAModel = aClaimCYAModel.copy(taxPaid = Some(123.45))
+  "TaxPaidQuestionPage.apply(...)" should {
+    "return page with pre-filled form when value is preset" in {
+      val claimCYAModel = aClaimCYAModel.copy(taxPaidQuestion = Some(true))
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxTakenOffAmountPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
-        form = pageForm.fill(value = 123.45)
+        form = pageForm.fill(value = true)
       )
     }
 
-    "return page without pre-filled form when taxPaid is not preset" in {
-      val claimCYAModel = aClaimCYAModel.copy(taxPaid = None)
+    "return page without pre-filled form when value is not preset" in {
+      val claimCYAModel = aClaimCYAModel.copy(taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxTakenOffAmountPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
@@ -58,22 +57,22 @@ class TaxTakenOffAmountPageSpec extends UnitTest
     }
 
     "return page with pre-filled form with errors when form has errors" in {
-      val formWithErrors = pageForm.bind(Map(AmountForm.amount -> "wrong-amount"))
+      val formWithErrors = pageForm.bind(Map(YesNoForm.yesNo -> "wrong-value"))
 
-      TaxTakenOffAmountPage.apply(taxYearEOY, aStateBenefitsUserData, formWithErrors) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, aStateBenefitsUserData, formWithErrors) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
         titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         titleSecondDate = aStateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
-        form = pageForm.bind(Map(AmountForm.amount -> "wrong-amount"))
+        form = pageForm.bind(Map(YesNoForm.yesNo -> "wrong-value"))
       )
     }
 
     "return page with titleFirstDate equal to startDate when after start of financial year" in {
-      val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 6), taxPaid = None)
+      val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 6), taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxTakenOffAmountPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYear,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
@@ -83,10 +82,10 @@ class TaxTakenOffAmountPageSpec extends UnitTest
     }
 
     "return page with titleFirstDate equal to start of financial year when startDate is before that" in {
-      val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 5), taxPaid = None)
+      val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 5), taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxTakenOffAmountPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYear,
         titleFirstDate = LocalDate.of(taxYear - 1, 4, 6),
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
@@ -96,10 +95,10 @@ class TaxTakenOffAmountPageSpec extends UnitTest
     }
 
     "return page with titleSecondDate equal to endDate when exists" in {
-      val claimCYAModel = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYear, 1, 1)), taxPaid = None)
+      val claimCYAModel = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYear, 1, 1)), taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxTakenOffAmountPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
@@ -109,10 +108,10 @@ class TaxTakenOffAmountPageSpec extends UnitTest
     }
 
     "return page with titleSecondDate equal to end of financial year when endDate is missing" in {
-      val claimCYAModel = aClaimCYAModel.copy(endDate = None, taxPaid = None)
+      val claimCYAModel = aClaimCYAModel.copy(endDate = None, taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxTakenOffAmountPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxTakenOffAmountPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = LocalDate.of(taxYearEOY, 4, 5),

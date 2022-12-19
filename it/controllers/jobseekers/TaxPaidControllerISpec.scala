@@ -28,7 +28,7 @@ import support.builders.UserBuilder.aUser
 
 import java.util.UUID
 
-class TaxTakenOffAmountControllerISpec extends IntegrationTest {
+class TaxPaidControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int, sessionDataId: UUID): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/$sessionDataId/tax-taken-off-amount"

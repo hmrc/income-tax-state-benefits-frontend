@@ -46,7 +46,7 @@ class FormsProviderSpec extends UnitTest
 
     "return a form that contains error when data is incorrect" in {
       underTest.endDateYesNoForm(taxYear = taxYear).bind(wrongKeyData).errors shouldBe Seq(
-        FormError("value", Seq("jobseekers.didClaimEndInTaxYear.error"), Seq(taxYear.toString))
+        FormError("value", Seq("jobSeekersAllowance.endDateQuestionPage.error"), Seq(taxYear.toString))
       )
     }
   }
@@ -62,43 +62,43 @@ class FormsProviderSpec extends UnitTest
 
     "return a form that contains error when wrong key" in {
       underTest.jsaAmountForm().bind(wrongKeyData).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.empty.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.empty.amount.error"), Seq())
       )
     }
 
     "return form with error when data is empty" in {
       underTest.jsaAmountForm().bind(emptyData).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.empty.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.empty.amount.error"), Seq())
       )
     }
 
     "return form with error when data is wrongFormat" in {
       underTest.jsaAmountForm().bind(wrongAmountFormat).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.wrongFormat.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.wrongFormat.amount.error"), Seq())
       )
     }
 
     "return form with error when data has invalid characters" in {
       underTest.jsaAmountForm().bind(incorrectCharacters).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.wrongFormat.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.wrongFormat.amount.error"), Seq())
       )
     }
 
     "return form with error when data is overMaximum" in {
       underTest.jsaAmountForm().bind(overMaximumAmount).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.exceedsMax.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.exceedsMax.amount.error"), Seq())
       )
     }
 
     "return form with error when data is under zero" in {
       underTest.jsaAmountForm().bind(underZeroAmount).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.lessThanZero.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.lessThanZero.amount.error"), Seq())
       )
     }
 
     "return form with error when data is equal to zero" in {
       underTest.jsaAmountForm().bind(zeroAmount).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("jobseekers.amountPage.lessThanZero.amount.error"), Seq())
+        FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.lessThanZero.amount.error"), Seq())
       )
     }
   }

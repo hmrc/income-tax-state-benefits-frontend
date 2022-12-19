@@ -16,7 +16,7 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.{DidClaimEndInTaxYearController, ReviewClaimController}
+import controllers.jobseekers.routes.{EndDateQuestionController, ReviewClaimController}
 import forms.DateForm.{day, formValuesPrefix, month, year}
 import forms.jobseekers.FormsProvider
 import org.jsoup.Jsoup
@@ -90,7 +90,7 @@ class StartDateControllerSpec extends ControllerUnitTest
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
 
       await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(DidClaimEndInTaxYearController.show(taxYearEOY, sessionDataId))
+        Redirect(EndDateQuestionController.show(taxYearEOY, sessionDataId))
     }
 
     "redirect to ReviewClaim Page on successful start date update and journey not completed" in {

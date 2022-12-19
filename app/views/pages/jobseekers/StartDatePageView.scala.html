@@ -38,7 +38,7 @@
 
 @(pageModel: StartDatePage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{ messages(s"common.jobSeekersAllowanceStartDate.${if(request.user.isAgent) "agent" else "individual"}") }
+@titleText = @{ messages(s"common.jobSeekersAllowance.startDate.${if(request.user.isAgent) "agent" else "individual"}") }
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
@@ -49,7 +49,7 @@
         }
     })
 
-    @caption(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+    @caption(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
     @formWithCsrf(action = StartDateController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
         @dateInput(

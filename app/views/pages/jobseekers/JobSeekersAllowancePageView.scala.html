@@ -67,12 +67,12 @@
             @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
         </dt>
         <dd class="govuk-summary-list__actions ">
-            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobseekersAllowance.view.link.hiddenText"))
+            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
         </dd>
     </div>
     @if(rowData.isIgnored){
     <div>
-        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"jobseekersAllowance.p1.removed.claim.text.${if(request.user.isAgent) "agent" else "individual"}")</p>
+        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"jobSeekersAllowance.benefitTypeClaimsPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
     </div>
     }
 }
@@ -82,13 +82,13 @@
         @translatedDateFormatter(rowData.startDate)
     </dt>
     <dd class="govuk-summary-list__actions ">
-        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobseekersAllowance.view.link.hiddenText"))
+        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
     </dd>
 }
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
-    @heading(titleText, Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText, Some(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
     @if(pageModel.summaryListDataRows.nonEmpty){
         @summaryList
@@ -98,7 +98,7 @@
         @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear)) {
             @govukButton(Button(
                 classes = "govuk-button--secondary",
-                content = Text(messages("jobseekersAllowance.addMissingClaim.button.text")),
+                content = Text(messages("common.addMissingClaim")),
                 attributes = Map("id" -> "add-missing-claim-button-id")
             ))
         }

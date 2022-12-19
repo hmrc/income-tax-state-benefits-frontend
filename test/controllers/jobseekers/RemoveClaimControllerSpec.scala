@@ -27,7 +27,7 @@ import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
 import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
-import views.html.pages.jobseekers.RemoveClaimView
+import views.html.pages.jobseekers.RemoveClaimPageView
 
 import java.util.UUID
 
@@ -36,7 +36,7 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
   with MockStateBenefitsService
   with MockErrorHandler {
 
-  private val pageView = inject[RemoveClaimView]
+  private val pageView = inject[RemoveClaimPageView]
   private val sessionDataId = UUID.randomUUID()
 
   private val underTest = new RemoveClaimController(

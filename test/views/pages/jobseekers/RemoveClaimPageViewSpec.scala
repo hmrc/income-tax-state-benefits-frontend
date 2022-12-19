@@ -26,11 +26,11 @@ import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.jobseekers.RemoveClaimPageBuilder.aRemoveClaimPage
 import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter}
-import views.html.pages.jobseekers.RemoveClaimView
+import views.html.pages.jobseekers.RemoveClaimPageView
 
 import java.time.LocalDate
 
-class RemoveClaimViewSpec extends ViewUnitTest {
+class RemoveClaimPageViewSpec extends ViewUnitTest {
 
   private object Selectors {
     val startDateRowKeySelector = "#main-content > div > div > dl > div:nth-child(1) > dt"
@@ -51,7 +51,7 @@ class RemoveClaimViewSpec extends ViewUnitTest {
     val removeLinkHiddenSelector = "#do-not-remove-claim-link-id > span.govuk-visually-hidden"
   }
 
-  private val underTest: RemoveClaimView = inject[RemoveClaimView]
+  private val underTest: RemoveClaimPageView = inject[RemoveClaimPageView]
 
   trait CommonExpectedResults {
     val expectedCaption: Int => String

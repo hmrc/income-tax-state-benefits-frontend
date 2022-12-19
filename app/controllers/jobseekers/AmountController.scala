@@ -18,7 +18,7 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.{ReviewClaimController, TaxTakenOffController}
+import controllers.jobseekers.routes.{ReviewClaimController, TaxPaidQuestionController}
 import forms.jobseekers.FormsProvider
 import models.StateBenefitsUserData
 import models.pages.jobseekers.AmountPage
@@ -58,7 +58,7 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
 
   private def getRedirectCall(taxYear: Int, userData: StateBenefitsUserData) = {
     val sessionDataId = userData.sessionDataId.get
-    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else TaxTakenOffController.show(taxYear, sessionDataId)
+    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else TaxPaidQuestionController.show(taxYear, sessionDataId)
   }
 }
 

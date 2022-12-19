@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.TaxTakenOffController
+import controllers.jobseekers.routes.TaxPaidQuestionController
 import forms.YesNoForm
 import forms.jobseekers.FormsProvider
 import models.requests.UserSessionDataRequest
@@ -26,15 +26,15 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
-import support.builders.pages.jobseekers.TaxTakenOffPageBuilder.aTaxTakenOffPage
+import support.builders.pages.jobseekers.TaxPaidQuestionPageBuilder.aTaxPaidQuestionPage
 import utils.ViewUtils.translatedDateFormatter
-import views.html.pages.jobseekers.TaxTakenOffPageView
+import views.html.pages.jobseekers.TaxPaidQuestionPageView
 
 import java.time.LocalDate
 
-class TaxTakenOffPageViewSpec extends ViewUnitTest {
+class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
-  private val underTest: TaxTakenOffPageView = inject[TaxTakenOffPageView]
+  private val underTest: TaxPaidQuestionPageView = inject[TaxPaidQuestionPageView]
 
   object Selectors {
     val continueButtonFormSelector = "#main-content > div > div > form"
@@ -131,17 +131,17 @@ class TaxTakenOffPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aTaxTakenOffPage
+        val pageModel = aTaxPaidQuestionPage
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        fieldSetH1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxTakenOffPage.titleFirstDate, aTaxTakenOffPage.titleSecondDate))
+        fieldSetH1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxPaidQuestionPage.titleFirstDate, aTaxPaidQuestionPage.titleSecondDate))
         hintTextCheck(userScenario.specificExpectedResults.get.expectedHintText)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(TaxTakenOffController.submit(taxYearEOY, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 
@@ -149,7 +149,7 @@ class TaxTakenOffPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aTaxTakenOffPage.copy(form = aTaxTakenOffPage.form.fill(value = true))
+        val pageModel = aTaxPaidQuestionPage.copy(form = aTaxPaidQuestionPage.form.fill(value = true))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
@@ -160,9 +160,9 @@ class TaxTakenOffPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val claimCYAModel = aClaimCYAModel.copy(startDate = aTaxTakenOffPage.titleFirstDate, endDate = Some(aTaxTakenOffPage.titleSecondDate))
-        val pageForm = new FormsProvider().taxTakenOffYesNoForm(userScenario.isAgent, aTaxTakenOffPage.taxYear, claimCYAModel)
-        val pageModel = aTaxTakenOffPage.copy(form = pageForm.bind(Map(YesNoForm.yesNo -> "")))
+        val claimCYAModel = aClaimCYAModel.copy(startDate = aTaxPaidQuestionPage.titleFirstDate, endDate = Some(aTaxPaidQuestionPage.titleSecondDate))
+        val pageForm = new FormsProvider().taxTakenOffYesNoForm(userScenario.isAgent, aTaxPaidQuestionPage.taxYear, claimCYAModel)
+        val pageModel = aTaxPaidQuestionPage.copy(form = pageForm.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)

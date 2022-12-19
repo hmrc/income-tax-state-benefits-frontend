@@ -48,16 +48,16 @@
 }
 
 @layout(
-    pageTitle = messages("jobseekers.reviewClaimPage.title"),
+    pageTitle = messages("jobSeekersAllowance.reviewClaimPage.title"),
     taxYear = Some(pageModel.taxYear),
     isAgent = request.user.isAgent
 ) {
     @heading(
-        messages("jobseekers.reviewClaimPage.title"),
-        Some(messages("common.jobseekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
+        messages("jobSeekersAllowance.reviewClaimPage.title"),
+        Some(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
     )
 
-    @if(!pageModel.isCustomerAdded){<p class="govuk-body">@messages("jobseekers.reviewClaimPage.p1")</p>}
+    @if(!pageModel.isCustomerAdded){<p class="govuk-body">@messages("jobSeekersAllowance.reviewClaimPage.p1")</p>}
 
     @{
         def viewToSummaryListRow(
@@ -75,37 +75,37 @@
 
         val startDateSummaryListRow = Some({
             val optRoute = if (pageModel.isInYear || pageModel.isIgnored) None else Some(StartDateController.show(pageModel.taxYear, pageModel.sessionDataId))
-            viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowanceStartDate")), translatedDateFormatter(pageModel.startDate), optRoute, messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.startDate.hiddenText")))
+            viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowance.startDate")), translatedDateFormatter(pageModel.startDate), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.startDate.hiddenText")))
         })
         val endDateQuestionSummaryListRow = if (pageModel.isInYear) None else Some({
-            val optRoute = if (pageModel.isIgnored) None else Some(DidClaimEndInTaxYearController.show(pageModel.taxYear, pageModel.sessionDataId))
-            viewToSummaryListRow(messages("common.jobSeekersAllowanceEndDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)), optRoute, messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
+            val optRoute = if (pageModel.isIgnored) None else Some(EndDateQuestionController.show(pageModel.taxYear, pageModel.sessionDataId))
+            viewToSummaryListRow(messages("common.jobSeekersAllowance.endDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
         })
         val endDateSummaryListRow = if (pageModel.isInYear) None else pageModel.endDateQuestion match {
             case Some(true) => Some({
                 val optRoute = if (pageModel.isIgnored) None else Some(EndDateController.show(pageModel.taxYear, pageModel.sessionDataId))
-                viewToSummaryListRow(messages("common.jobSeekersAllowanceEndDate"), pageModel.endDate.fold("")(translatedDateFormatter(_)), optRoute, messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.endDate.hiddenText")))
+                viewToSummaryListRow(messages("common.jobSeekersAllowance.endDate"), pageModel.endDate.fold("")(translatedDateFormatter(_)), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.endDate.hiddenText")))
             })
             case _ => None
         }
         val amountSummaryListRow = if (pageModel.isInYear) None else Some(
-            viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowanceAmount"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+            viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowance.amount"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
                 pageModel.amount.fold("")(amount => bigDecimalCurrency(amount.toString)),
                 if (pageModel.isIgnored) None else Some(AmountController.show(pageModel.taxYear, pageModel.sessionDataId)),
-                messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.amount.hiddenText")))
+                messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.amount.hiddenText")))
         )
         val taxPaidQuestionSummaryListRow = if (pageModel.isInYear) None else Some(
-            viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowanceTaxTakenOffQuestion"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+            viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowance.taxTakenOffQuestion"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
                 pageModel.taxPaidQuestion.fold("")(toYesOrNo(_)),
-                if (pageModel.isIgnored) None else Some(TaxTakenOffController.show(pageModel.taxYear, pageModel.sessionDataId)),
-                messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.taxPaidQuestion.hiddenText")))
+                if (pageModel.isIgnored) None else Some(TaxPaidQuestionController.show(pageModel.taxYear, pageModel.sessionDataId)),
+                messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.taxPaidQuestion.hiddenText")))
         )
         val taxPaidSummaryListRow = if (pageModel.isInYear) None else pageModel.taxPaidQuestion match {
             case Some(true) => Some(
-                viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowanceTaxTakenOff"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+                viewToSummaryListRow(messages(appendUserTypeSuffix("common.jobSeekersAllowance.taxTakenOff"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
                     pageModel.taxPaid.fold("")(amount => bigDecimalCurrency(amount.toString)),
-                    if (pageModel.isIgnored) None else Some(TaxTakenOffAmountController.show(pageModel.taxYear, pageModel.sessionDataId)),
-                    messages(appendUserTypeSuffix("jobseekers.reviewClaimPage.taxPaid.hiddenText"))))
+                    if (pageModel.isIgnored) None else Some(TaxPaidController.show(pageModel.taxYear, pageModel.sessionDataId)),
+                    messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText"))))
             case _ => None
         }
 
@@ -129,10 +129,10 @@
         <div class="govuk-button-group">
             @if(!pageModel.isIgnored) {
                 @button("common.saveAndContinue", classes = Some("govuk-!-margin-top-6"), attributes = Map("id" -> "save-and-continue-button-id"))
-                @link(RemoveClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, "common.removeClaim", id = Some("remove-link-id"), hiddenText = Some("jobseekers.reviewClaimPage.removeClaim.hiddenText"))
+                @link(RemoveClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, "common.removeClaim", id = Some("remove-link-id"), hiddenText = Some("jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText"))
             } else {
                 @link(JobSeekersAllowanceController.show(pageModel.taxYear).url, "common.back", id = Some("back-link-id"))
-                @button("jobseekers.reviewClaimPage.restoreClaim", classes = Some("govuk-button--secondary"), attributes = Map("id" -> "restore-claim-button-id"))
+                @button("jobSeekersAllowance.reviewClaimPage.restoreClaim", classes = Some("govuk-button--secondary"), attributes = Map("id" -> "restore-claim-button-id"))
             }
         </div>
         }
