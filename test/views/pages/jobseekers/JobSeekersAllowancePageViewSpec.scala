@@ -16,6 +16,7 @@
 
 package views.pages.jobseekers
 
+import controllers.jobseekers.routes.SectionCompletedQuestionController
 import controllers.session.routes.UserSessionDataController
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
@@ -37,7 +38,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
     val summaryListRowRemovedSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(2) > p"
     val addMissingClaimButtonSelector = "#add-missing-claim-button-id"
     val addMissingClaimFormSelector = "#main-content > div > div > form"
-    val buttonSelector = "#continue-button-id"
+    val buttonSelector = "#continue"
 
     def summaryListRowSelector(row: Int, isInYear: Boolean = false): String = s"div.govuk-summary-list__row:nth-child($row) ${if (!isInYear) "> div:nth-child(1)" else ""}"
 
@@ -137,7 +138,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         elementNotOnPageCheck(Selectors.summaryListRowSelector(1))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY).url, Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY).url))
       }
 
       "render Job Seeker's Allowance with job seeker's allowance items" which {
@@ -163,7 +164,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Value2Text(taxYearEOY), Selectors.summaryListRowValueSelector(2, 2), "row-2-2")
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY).url, Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY).url))
       }
 
       "render the page for an inYear tax claim" which {
@@ -182,7 +183,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
           Selectors.summaryListRowViewLinkSelector(1, isInYear = true), UserSessionDataController.loadToSession(taxYear, aBenefitSummaryListRowData.benefitId).url,
           Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1, isInYear = true)))
         elementNotOnPageCheck(Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, None)
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYear).url))
       }
     }
   }
