@@ -41,12 +41,12 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(EndOfYearFilterAction(taxYear, appConfig))
-      .andThen(UserSessionDataRequestRefinerAction(sessionDataId, stateBenefitsService, errorHandler))
+      .andThen(UserSessionDataRequestRefinerAction(taxYear: Int, sessionDataId, stateBenefitsService, errorHandler))
 
   def sessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
-      .andThen(UserSessionDataRequestRefinerAction(sessionDataId, stateBenefitsService, errorHandler))
+      .andThen(UserSessionDataRequestRefinerAction(taxYear, sessionDataId, stateBenefitsService, errorHandler))
 
   def endOfYear(taxYear: Int): ActionBuilder[AuthorisationRequest, AnyContent] =
     authAction

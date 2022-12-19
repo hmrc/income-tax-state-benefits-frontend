@@ -16,27 +16,30 @@
 
 package actions
 
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.errors.HttpParserError
 import models.requests.UserSessionDataRequest
-import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.mvc.Results.InternalServerError
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
+import play.api.mvc.Results.{InternalServerError, Redirect}
 import support.UnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
 import support.builders.requests.AuthorisationRequestBuilder.anAuthorisationRequest
 import support.mocks.{MockErrorHandler, MockStateBenefitsService}
+import support.providers.TaxYearProvider
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext
 
 class UserSessionDataRequestRefinerActionSpec extends UnitTest
   with MockStateBenefitsService
-  with MockErrorHandler {
+  with MockErrorHandler
+  with TaxYearProvider {
 
   private val executionContext = ExecutionContext.global
   private val sessionDataId: UUID = UUID.randomUUID()
 
-  private val underTest = UserSessionDataRequestRefinerAction(sessionDataId, mockStateBenefitsService, mockErrorHandler)(executionContext)
+  private val underTest = UserSessionDataRequestRefinerAction(taxYear, sessionDataId, mockStateBenefitsService, mockErrorHandler)(executionContext)
 
   ".executionContext" should {
     "return the given execution context" in {
@@ -45,6 +48,12 @@ class UserSessionDataRequestRefinerActionSpec extends UnitTest
   }
 
   ".refine" should {
+    "redirect to JobSeekersAllowance when getting session data result in NOT_FOUND" in {
+      mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(NOT_FOUND)))
+
+      await(underTest.refine(anAuthorisationRequest)) shouldBe Left(Redirect(JobSeekersAllowanceController.show(taxYear)))
+    }
+
     "handle InternalServerError when when getting session data result in an error" in {
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)

@@ -17,8 +17,10 @@
 package actions
 
 import config.ErrorHandler
+import controllers.jobseekers.routes.JobSeekersAllowanceController
 import models.requests.{AuthorisationRequest, UserSessionDataRequest}
-import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -26,7 +28,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-case class UserSessionDataRequestRefinerAction(sessionDataId: UUID,
+case class UserSessionDataRequestRefinerAction(taxYear: Int,
+                                               sessionDataId: UUID,
                                                stateBenefitsService: StateBenefitsService,
                                                errorHandler: ErrorHandler)
                                               (implicit ec: ExecutionContext)
@@ -36,6 +39,7 @@ case class UserSessionDataRequestRefinerAction(sessionDataId: UUID,
 
   override protected[actions] def refine[A](input: AuthorisationRequest[A]): Future[Either[Result, UserSessionDataRequest[A]]] = {
     stateBenefitsService.getUserSessionData(input.user, sessionDataId)(hc(input.request)).map {
+      case Left(error) if error.status == NOT_FOUND => Left(Redirect(JobSeekersAllowanceController.show(taxYear)))
       case Left(_) => Left(errorHandler.handleError(INTERNAL_SERVER_ERROR)(input.request))
       case Right(stateBenefitsUserData) => Right(UserSessionDataRequest(stateBenefitsUserData, input.user, input.request))
     }
