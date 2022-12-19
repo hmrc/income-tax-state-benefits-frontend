@@ -67,7 +67,7 @@ class EndDateQuestionControllerSpec extends ControllerUnitTest
       status(result) shouldBe BAD_REQUEST
       contentType(result) shouldBe Some("text/html")
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#error-summary-title").isEmpty shouldBe false
+      document.select(".govuk-error-summary").isEmpty shouldBe false
     }
 
     "redirect to ReviewClaim page when Yes is submitted and isFinished" in {

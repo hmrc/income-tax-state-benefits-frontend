@@ -67,7 +67,7 @@ class AmountControllerSpec extends ControllerUnitTest
       status(result) shouldBe BAD_REQUEST
       contentType(result) shouldBe Some("text/html")
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#error-summary-title").isEmpty shouldBe false
+      document.select(".govuk-error-summary").isEmpty shouldBe false
     }
 
     "handle internal server error when updating amount fails" in {
