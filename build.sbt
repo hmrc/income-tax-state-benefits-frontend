@@ -59,6 +59,8 @@ lazy val twirlImports: Seq[String] = Seq(
   "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
 )
 
+routesImport += "config.Binders._"
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)

@@ -18,7 +18,8 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType
 import models.pages.jobseekers.ReviewClaimPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,23 +40,28 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.sessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(ReviewClaimPage(taxYear, isInYear = InYearUtil.inYear(taxYear), request.stateBenefitsUserData)))
+           benefitType: BenefitType,
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.sessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
+    Ok(pageView(ReviewClaimPage(taxYear, benefitType, isInYear = InYearUtil.inYear(taxYear), request.stateBenefitsUserData)))
   }
 
   def saveAndContinue(taxYear: Int,
-                      sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
-      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
-      case Left(_) => errorHandler.internalServerError()
+                      benefitType: BenefitType,
+                      sessionDataId: UUID): Action[AnyContent] =
+    actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
+      stateBenefitsService.saveStateBenefit(request.stateBenefitsUserData).map {
+        case Right(_) => Redirect(ClaimsController.show(taxYear, benefitType))
+        case Left(_) => errorHandler.internalServerError()
+      }
     }
-  }
 
   def restoreClaim(taxYear: Int,
-                   sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
-    stateBenefitsService.restoreClaim(request.user, sessionDataId).map {
-      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
-      case Left(_) => errorHandler.internalServerError()
+                   benefitType: BenefitType,
+                   sessionDataId: UUID): Action[AnyContent] =
+    actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
+      stateBenefitsService.restoreClaim(request.user, sessionDataId).map {
+        case Right(_) => Redirect(ClaimsController.show(taxYear, benefitType))
+        case Left(_) => errorHandler.internalServerError()
+      }
     }
-  }
 }

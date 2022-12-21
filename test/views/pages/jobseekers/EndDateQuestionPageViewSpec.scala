@@ -18,6 +18,7 @@ package views.pages.jobseekers
 
 import controllers.jobseekers.routes.EndDateQuestionController
 import forms.YesNoForm
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -90,7 +91,7 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         fieldSetH1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY))
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, aEndDateQuestionPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, JobSeekersAllowance, aEndDateQuestionPage.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 

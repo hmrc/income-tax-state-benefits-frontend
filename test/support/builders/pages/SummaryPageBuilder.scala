@@ -16,7 +16,7 @@
 
 package support.builders.pages
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
 import models.BenefitType._
 import models.pages.SummaryPage
 import models.pages.elements.TaskListItem
@@ -31,7 +31,7 @@ object SummaryPageBuilder {
       //      TaskListItem(StatePension, controllers.routes.SummaryController.show(taxYear), CustomerOrHmrcAdded),
       //      TaskListItem(StatePensionLumpSum, controllers.routes.SummaryController.show(taxYear), HmrcAdded),
       //      TaskListItem(EmploymentSupportAllowance, controllers.routes.SummaryController.show(taxYear), InProgress),
-      TaskListItem(JobSeekersAllowance, JobSeekersAllowanceController.show(taxYear), NotStarted)
+      TaskListItem(JobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance), NotStarted)
       //      TaskListItem(OtherStateBenefits, controllers.routes.SummaryController.show(taxYear), Completed)
     )
   )

@@ -16,18 +16,20 @@
 
 package models.pages
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
 import models.BenefitType.JobSeekersAllowance
 import models.pages.elements.TaskListItem
 import models.pages.elements.TaskListTag.Completed
 
-case class SummaryPage(taxYear: Int, taskListItems: Seq[TaskListItem])
+case class SummaryPage(taxYear: Int,
+                       taskListItems: Seq[TaskListItem])
 
 object SummaryPage {
 
   def apply(taxYear: Int): SummaryPage = {
     val taskListItems: Seq[TaskListItem] = Seq(
-      TaskListItem(JobSeekersAllowance, JobSeekersAllowanceController.show(taxYear), Completed)
+      //      TaskListItem(EmploymentSupportAllowance, ClaimsController.show(taxYear, EmploymentSupportAllowance), Completed),
+      TaskListItem(JobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance), Completed)
     )
 
     SummaryPage(taxYear, taskListItems)

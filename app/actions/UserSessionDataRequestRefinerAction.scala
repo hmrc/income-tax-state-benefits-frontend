@@ -17,7 +17,8 @@
 package actions
 
 import config.ErrorHandler
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType
 import models.requests.{AuthorisationRequest, UserSessionDataRequest}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.mvc.Results.Redirect
@@ -29,6 +30,7 @@ import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 case class UserSessionDataRequestRefinerAction(taxYear: Int,
+                                               benefitType: BenefitType,
                                                sessionDataId: UUID,
                                                stateBenefitsService: StateBenefitsService,
                                                errorHandler: ErrorHandler)
@@ -39,7 +41,7 @@ case class UserSessionDataRequestRefinerAction(taxYear: Int,
 
   override protected[actions] def refine[A](input: AuthorisationRequest[A]): Future[Either[Result, UserSessionDataRequest[A]]] = {
     stateBenefitsService.getUserSessionData(input.user, sessionDataId)(hc(input.request)).map {
-      case Left(error) if error.status == NOT_FOUND => Left(Redirect(JobSeekersAllowanceController.show(taxYear)))
+      case Left(error) if error.status == NOT_FOUND => Left(Redirect(ClaimsController.show(taxYear, benefitType)))
       case Left(_) => Left(errorHandler.handleError(INTERNAL_SERVER_ERROR)(input.request))
       case Right(stateBenefitsUserData) => Right(UserSessionDataRequest(stateBenefitsUserData, input.user, input.request))
     }

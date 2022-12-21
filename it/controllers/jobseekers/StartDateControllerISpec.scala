@@ -18,6 +18,7 @@ package controllers.jobseekers
 
 import controllers.jobseekers.routes.ReviewClaimController
 import forms.DateForm.{day, month, year}
+import models.BenefitType.JobSeekersAllowance
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
@@ -84,7 +85,7 @@ class StartDateControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId).url
     }
   }
 }

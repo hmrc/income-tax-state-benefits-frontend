@@ -18,22 +18,23 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.AppConfig
-import models.pages.jobseekers.JobSeekersAllowancePage
+import models.BenefitType
+import models.pages.jobseekers.ClaimsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.InYearUtil.inYear
 import utils.SessionHelper
-import views.html.pages.jobseekers.JobSeekersAllowancePageView
+import views.html.pages.jobseekers.ClaimsPageView
 
 import javax.inject.Inject
 
-class JobSeekersAllowanceController @Inject()(actionsProvider: ActionsProvider,
-                                              pageView: JobSeekersAllowancePageView)
-                                             (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
+class ClaimsController @Inject()(actionsProvider: ActionsProvider,
+                                 pageView: ClaimsPageView)
+                                (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
-    Ok(pageView(JobSeekersAllowancePage(taxYear, inYear(taxYear), request.incomeTaxUserData)))
+  def show(taxYear: Int, benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
+    Ok(pageView(ClaimsPage(taxYear, benefitType, inYear(taxYear), request.incomeTaxUserData)))
   }
 }

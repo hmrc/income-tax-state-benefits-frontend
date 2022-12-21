@@ -20,6 +20,7 @@ import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.routes.SummaryController
 import forms.jobseekers.FormsProvider
+import models.BenefitType
 import models.pages.jobseekers.SectionCompletedQuestionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,13 +37,15 @@ class SectionCompletedQuestionController @Inject()(actionsProvider: ActionsProvi
                                                   (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
-    Ok(pageView(SectionCompletedQuestionPage(taxYear, formsProvider.sectionCompletedYesNoForm())))
+  def show(taxYear: Int,
+           benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
+    Ok(pageView(SectionCompletedQuestionPage(taxYear, benefitType, formsProvider.sectionCompletedYesNoForm())))
   }
 
-  def submit(taxYear: Int): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
+  def submit(taxYear: Int,
+             benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
     formsProvider.sectionCompletedYesNoForm().bindFromRequest().fold(
-      formWithErrors => BadRequest(pageView(SectionCompletedQuestionPage(taxYear, formWithErrors))),
+      formWithErrors => BadRequest(pageView(SectionCompletedQuestionPage(taxYear, benefitType, formWithErrors))),
       _ => Redirect(SummaryController.show(taxYear))
     )
   }

@@ -17,6 +17,7 @@
 package controllers.session
 
 import controllers.jobseekers.routes.{ReviewClaimController, StartDateController}
+import models.BenefitType.JobSeekersAllowance
 import models.StateBenefitsUserData
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -32,8 +33,9 @@ import java.util.UUID
 
 class UserSessionDataControllerISpec extends IntegrationTest {
 
-  private def url(taxYear: Int, benefitId: Option[UUID] = None): String = {
-    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/session-data${benefitId.fold("")(id => s"?benefitId=$id")}"
+  private def url(taxYear: Int,
+                  benefitId: Option[UUID] = None): String = {
+    s"/update-and-submit-income-tax-return/state-benefits/$taxYear/session-data?benefitType=jobSeekersAllowance${benefitId.fold("")(id => s"&benefitId=$id")}"
   }
 
   private val sessionDataId = UUID.randomUUID()
@@ -58,7 +60,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe StartDateController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe StartDateController.show(taxYearEOY, JobSeekersAllowance, sessionDataId).url
     }
   }
 
@@ -72,7 +74,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe ReviewClaimController.show(taxYear, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYear, JobSeekersAllowance, sessionDataId).url
     }
 
     "redirect to ReviewClaim when benefitId found" in {
@@ -84,7 +86,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId).url
     }
   }
 }

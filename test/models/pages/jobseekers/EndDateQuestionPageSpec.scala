@@ -17,6 +17,7 @@
 package models.pages.jobseekers
 
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -33,8 +34,9 @@ class EndDateQuestionPageSpec extends UnitTest
     "return page with pre-filled form when endDateQuestion has value" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(anyQuestionValue))))
 
-      EndDateQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
+      EndDateQuestionPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm.fill(value = anyQuestionValue)
       )
@@ -43,8 +45,9 @@ class EndDateQuestionPageSpec extends UnitTest
     "return page without pre-filled form when endDateQuestion is None" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = None)))
 
-      EndDateQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
+      EndDateQuestionPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm,
       )
@@ -53,8 +56,9 @@ class EndDateQuestionPageSpec extends UnitTest
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = pageForm.bind(Map("wrong-key" -> "wrong-value"))
 
-      EndDateQuestionPage.apply(taxYear, aStateBenefitsUserData, formWithErrors) shouldBe EndDateQuestionPage(
+      EndDateQuestionPage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe EndDateQuestionPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = formWithErrors
       )

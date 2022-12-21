@@ -36,7 +36,9 @@
 
 @taskList(taskListItems: Seq[TaskListItem]) = {
     <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
-        @taskListItem(taskListItems.head)
+        @for(item <- taskListItems){
+            @taskListItem(item)
+        }
     </ol>
 }
 

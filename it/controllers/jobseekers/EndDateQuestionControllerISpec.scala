@@ -18,6 +18,7 @@ package controllers.jobseekers
 
 import controllers.jobseekers.routes.ReviewClaimController
 import forms.YesNoForm
+import models.BenefitType.JobSeekersAllowance
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
@@ -82,7 +83,7 @@ class EndDateQuestionControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId).url
     }
 
     "redirect To amount page when answer is No" in {
@@ -96,7 +97,7 @@ class EndDateQuestionControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, sessionDataId).url
+      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId).url
     }
   }
 }

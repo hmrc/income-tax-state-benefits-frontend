@@ -18,7 +18,7 @@
 @import controllers.session.routes.UserSessionDataController
 
 @import models.pages.elements.BenefitSummaryListRowData
-@import models.pages.jobseekers.JobSeekersAllowancePage
+@import models.pages.jobseekers.ClaimsPage
 @import models.requests.UserPriorDataRequest
 
 @import utils.ViewUtils.bigDecimalCurrency
@@ -41,7 +41,7 @@
     button: Button
 )
 
-@(pageModel: JobSeekersAllowancePage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
+@(pageModel: ClaimsPage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
 
 @titleText = @{ messages("common.jobSeekersAllowance") }
 
@@ -68,7 +68,7 @@
             @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
         </dt>
         <dd class="govuk-summary-list__actions ">
-            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.claimsPage.view.hiddenText"))
+            @link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.claimsPage.view.hiddenText"))
         </dd>
     </div>
     @if(rowData.isIgnored){
@@ -83,7 +83,7 @@
         @translatedDateFormatter(rowData.startDate)
     </dt>
     <dd class="govuk-summary-list__actions ">
-        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.claimsPage.view.hiddenText"))
+        @link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.claimsPage.view.hiddenText"))
     </dd>
 }
 
@@ -96,7 +96,7 @@
     }
 
     @if(!pageModel.isInYear) {
-        @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear)) {
+        @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, pageModel.benefitType)) {
             @govukButton(Button(
                 classes = "govuk-button--secondary",
                 content = Text(messages("common.addMissingClaim")),
@@ -105,7 +105,7 @@
         }
     }
     <div class="govuk-button-group govuk-!-margin-top-7">
-        @button(href = Some(SectionCompletedQuestionController.show(pageModel.taxYear).url), alternativeText = "common.continue")
+        @button(href = Some(SectionCompletedQuestionController.show(pageModel.taxYear, pageModel.benefitType).url), alternativeText = "common.continue")
     </div>
 }
 

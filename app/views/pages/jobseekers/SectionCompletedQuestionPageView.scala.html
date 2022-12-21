@@ -44,7 +44,7 @@
 
     @caption(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
-    @formWithCsrf(action = SectionCompletedQuestionController.submit(pageModel.taxYear)) {
+    @formWithCsrf(action = SectionCompletedQuestionController.submit(pageModel.taxYear, pageModel.benefitType)) {
         @inputRadio(
             items = Seq(
                 RadioItem(id = Some("value"), value = Some("true"), content = Text(messages("common.sectionCompletedQuestionPage.yes")), checked = pageModel.form("value").value.contains("true")),

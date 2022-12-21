@@ -16,6 +16,7 @@
 
 package models.pages.jobseekers
 
+import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -30,8 +31,9 @@ class ReviewClaimPageSpec extends UnitTest
 
   ".apply" should {
     "create correct page object" in {
-      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, isInYear, aStateBenefitsUserData) shouldBe ReviewClaimPage(
+      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, aStateBenefitsUserData) shouldBe ReviewClaimPage(
         taxYear = aStateBenefitsUserData.taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         isInYear = isInYear,
         isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,
@@ -51,8 +53,9 @@ class ReviewClaimPageSpec extends UnitTest
       val claim = aClaimCYAModel.copy(startDate = LocalDate.of(taxYearEOY - 1, 4, 6))
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claim))
 
-      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
+      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
         taxYear = aStateBenefitsUserData.taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         isInYear = isInYear,
         isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,
@@ -72,8 +75,9 @@ class ReviewClaimPageSpec extends UnitTest
       val claim = aClaimCYAModel.copy(startDate = LocalDate.of(taxYearEOY - 1, 4, 5))
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claim))
 
-      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
+      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
         taxYear = aStateBenefitsUserData.taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         isInYear = isInYear,
         isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,
@@ -93,8 +97,9 @@ class ReviewClaimPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYearEOY, 1, 1)))
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
+      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
         taxYear = aStateBenefitsUserData.taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         isInYear = isInYear,
         isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,
@@ -114,8 +119,9 @@ class ReviewClaimPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(endDate = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
+      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, stateBenefitsUserData) shouldBe ReviewClaimPage(
         taxYear = aStateBenefitsUserData.taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         isInYear = isInYear,
         isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,

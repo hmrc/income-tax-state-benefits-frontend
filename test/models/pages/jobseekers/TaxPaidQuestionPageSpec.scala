@@ -17,6 +17,7 @@
 package models.pages.jobseekers
 
 import forms.YesNoForm
+import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -34,8 +35,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(taxPaidQuestion = Some(true))
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -47,8 +49,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -59,8 +62,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = pageForm.bind(Map(YesNoForm.yesNo -> "wrong-value"))
 
-      TaxPaidQuestionPage.apply(taxYearEOY, aStateBenefitsUserData, formWithErrors) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         titleSecondDate = aStateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
@@ -72,8 +76,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 6), taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -85,8 +90,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 5), taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidQuestionPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = LocalDate.of(taxYear - 1, 4, 6),
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -98,8 +104,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYear, 1, 1)), taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -111,8 +118,9 @@ class TaxPaidQuestionPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(endDate = None, taxPaidQuestion = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidQuestionPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
+      TaxPaidQuestionPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidQuestionPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = LocalDate.of(taxYearEOY, 4, 5),
         sessionDataId = stateBenefitsUserData.sessionDataId.get,

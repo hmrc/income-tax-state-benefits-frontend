@@ -16,6 +16,7 @@
 
 package support.builders.pages.jobseekers
 
+import models.BenefitType.JobSeekersAllowance
 import models.pages.jobseekers.ReviewClaimPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -25,6 +26,7 @@ object ReviewClaimPageBuilder {
 
   val aReviewClaimPage: ReviewClaimPage = new ReviewClaimPage(
     taxYear = taxYearEOY,
+    benefitType = JobSeekersAllowance,
     sessionDataId = aStateBenefitsUserData.sessionDataId.get,
     isInYear = false,
     isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,

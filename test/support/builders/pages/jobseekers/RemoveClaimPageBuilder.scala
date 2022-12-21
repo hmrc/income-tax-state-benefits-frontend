@@ -16,6 +16,7 @@
 
 package support.builders.pages.jobseekers
 
+import models.BenefitType.JobSeekersAllowance
 import models.pages.jobseekers.RemoveClaimPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -25,6 +26,7 @@ object RemoveClaimPageBuilder {
 
   val aRemoveClaimPage: RemoveClaimPage = RemoveClaimPage(
     taxYear = taxYearEOY,
+    benefitType = JobSeekersAllowance,
     sessionDataId = aStateBenefitsUserData.sessionDataId.get,
     itemsFirstDate = aClaimCYAModel.startDate,
     itemsSecondDate = aClaimCYAModel.endDate.get,

@@ -23,7 +23,7 @@ import support.IntegrationTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.UserBuilder.aUser
 
-class JobSeekersAllowanceControllerISpec extends IntegrationTest {
+class ClaimsControllerISpec extends IntegrationTest {
 
   private def url(taxYear: Int): String =
     s"/update-and-submit-income-tax-return/state-benefits/$taxYear/jobseekers-allowance/claims"

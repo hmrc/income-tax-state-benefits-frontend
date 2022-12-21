@@ -18,6 +18,7 @@ package views.pages.jobseekers
 
 import controllers.jobseekers.routes.SectionCompletedQuestionController
 import forms.YesNoForm
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -90,7 +91,7 @@ class SectionCompletedQuestionPageViewSpec extends ViewUnitTest {
         fieldSetH1Check(userScenario.commonExpectedResults.expectedHeading)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(SectionCompletedQuestionController.submit(taxYearEOY).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(SectionCompletedQuestionController.submit(taxYearEOY, JobSeekersAllowance).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 

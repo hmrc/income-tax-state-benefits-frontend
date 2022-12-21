@@ -16,7 +16,8 @@
 
 package views.pages
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -89,7 +90,7 @@ class SummaryPageViewSpec extends ViewUnitTest {
         captionCheck(userScenario.commonExpectedResults.expectedCaption(taxYear))
         h1Check(userScenario.commonExpectedResults.expectedHeading)
         textOnPageCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceSelector)
-        linkCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceLinkSelector, JobSeekersAllowanceController.show(taxYear).url)
+        linkCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceLinkSelector, ClaimsController.show(taxYear, JobSeekersAllowance).url)
         textOnPageCheck(userScenario.commonExpectedResults.notStartedText, Selectors.jobSeekersAllowanceStatusSelector)
         buttonCheck(userScenario.commonExpectedResults.buttonText, Selectors.buttonSelector, Some(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
       }

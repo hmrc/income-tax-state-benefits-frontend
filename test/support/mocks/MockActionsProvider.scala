@@ -18,8 +18,8 @@ package support.mocks
 
 import actions.ActionsProvider
 import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
-import models.{IncomeTaxUserData, StateBenefitsUserData}
-import org.scalamock.handlers.{CallHandler1, CallHandler2}
+import models.{BenefitType, IncomeTaxUserData, StateBenefitsUserData}
+import org.scalamock.handlers.{CallHandler1, CallHandler3}
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc._
 import support.builders.UserBuilder.aUser
@@ -35,52 +35,27 @@ trait MockActionsProvider extends MockFactory
 
   def mockPriorDataFor(taxYear: Int,
                        result: IncomeTaxUserData): CallHandler1[Int, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
-    val actionBuilder: ActionBuilder[UserPriorDataRequest, AnyContent] = new ActionBuilder[UserPriorDataRequest, AnyContent] {
-      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
-
-      override def invokeBlock[A](request: Request[A], block: UserPriorDataRequest[A] => Future[Result]): Future[Result] =
-        block(UserPriorDataRequest(result, aUser, request))
-
-      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
-    }
-
     (mockActionsProvider.priorDataFor(_: Int))
       .expects(taxYear)
-      .returns(value = actionBuilder)
+      .returns(value = userPriorDataRequestActionBuilder(result))
   }
 
   def mockEndOfYearSessionDataFor(taxYear: Int,
+                                  benefitType: BenefitType,
                                   sessionDataId: UUID,
-                                  result: StateBenefitsUserData): CallHandler2[Int, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
-    val actionBuilder: ActionBuilder[UserSessionDataRequest, AnyContent] = new ActionBuilder[UserSessionDataRequest, AnyContent] {
-      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
-
-      override def invokeBlock[A](request: Request[A], block: UserSessionDataRequest[A] => Future[Result]): Future[Result] =
-        block(UserSessionDataRequest(result, aUser, request))
-
-      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
-    }
-
-    (mockActionsProvider.endOfYearSessionDataFor(_: Int, _: UUID))
-      .expects(taxYear, sessionDataId)
-      .returns(value = actionBuilder)
+                                  result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+    (mockActionsProvider.endOfYearSessionDataFor(_: Int, _: BenefitType, _: UUID))
+      .expects(taxYear, benefitType, sessionDataId)
+      .returns(value = userSessionDataRequestActionBuilder(result))
   }
 
   def mockSessionDataFor(taxYear: Int,
+                         benefitType: BenefitType,
                          sessionDataId: UUID,
-                         result: StateBenefitsUserData): CallHandler2[Int, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
-    val actionBuilder: ActionBuilder[UserSessionDataRequest, AnyContent] = new ActionBuilder[UserSessionDataRequest, AnyContent] {
-      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
-
-      override def invokeBlock[A](request: Request[A], block: UserSessionDataRequest[A] => Future[Result]): Future[Result] =
-        block(UserSessionDataRequest(result, aUser, request))
-
-      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
-    }
-
-    (mockActionsProvider.sessionDataFor(_: Int, _: UUID))
-      .expects(taxYear, sessionDataId)
-      .returns(value = actionBuilder)
+                         result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+    (mockActionsProvider.sessionDataFor(_: Int, _: BenefitType, _: UUID))
+      .expects(taxYear, benefitType, sessionDataId)
+      .returns(value = userSessionDataRequestActionBuilder(result))
   }
 
   def mockEndOfYear(taxYear: Int): CallHandler1[Int, ActionBuilder[AuthorisationRequest, AnyContent]] = {
@@ -95,6 +70,28 @@ trait MockActionsProvider extends MockFactory
 
       override def invokeBlock[A](request: Request[A], block: AuthorisationRequest[A] => Future[Result]): Future[Result] =
         block(AuthorisationRequest(aUser, request))
+
+      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
+    }
+
+
+  private def userSessionDataRequestActionBuilder(result: StateBenefitsUserData): ActionBuilder[UserSessionDataRequest, AnyContent] =
+    new ActionBuilder[UserSessionDataRequest, AnyContent] {
+      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
+
+      override def invokeBlock[A](request: Request[A], block: UserSessionDataRequest[A] => Future[Result]): Future[Result] =
+        block(UserSessionDataRequest(result, aUser, request))
+
+      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
+    }
+
+
+  private def userPriorDataRequestActionBuilder(result: IncomeTaxUserData): ActionBuilder[UserPriorDataRequest, AnyContent] =
+    new ActionBuilder[UserPriorDataRequest, AnyContent] {
+      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
+
+      override def invokeBlock[A](request: Request[A], block: UserPriorDataRequest[A] => Future[Result]): Future[Result] =
+        block(UserPriorDataRequest(result, aUser, request))
 
       override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
     }

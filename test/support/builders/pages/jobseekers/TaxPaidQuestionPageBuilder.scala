@@ -17,6 +17,7 @@
 package support.builders.pages.jobseekers
 
 import forms.YesNoForm
+import models.BenefitType.JobSeekersAllowance
 import models.pages.jobseekers.TaxPaidQuestionPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.utils.TaxYearUtils.taxYearEOY
@@ -28,6 +29,7 @@ object TaxPaidQuestionPageBuilder {
 
   val aTaxPaidQuestionPage: TaxPaidQuestionPage = TaxPaidQuestionPage(
     taxYear = taxYearEOY,
+    benefitType = JobSeekersAllowance,
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-01-01"),
     titleSecondDate = aClaimCYAModel.endDate.get,
     sessionDataId = UUID.randomUUID(),

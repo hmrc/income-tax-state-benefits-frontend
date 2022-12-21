@@ -19,6 +19,7 @@ package views.pages.jobseekers
 import controllers.jobseekers.routes.TaxPaidQuestionController
 import forms.YesNoForm
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -141,7 +142,7 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         hintTextCheck(userScenario.specificExpectedResults.get.expectedHintText)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 
