@@ -68,12 +68,12 @@
             @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
         </dt>
         <dd class="govuk-summary-list__actions ">
-            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
+            @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.claimsPage.view.hiddenText"))
         </dd>
     </div>
     @if(rowData.isIgnored){
     <div>
-        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"jobSeekersAllowance.benefitTypeClaimsPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
+        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"common.claimsPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
     </div>
     }
 }
@@ -83,7 +83,7 @@
         @translatedDateFormatter(rowData.startDate)
     </dt>
     <dd class="govuk-summary-list__actions ">
-        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.benefitTypeClaimsPage.view.hiddenText"))
+        @link(UserSessionDataController.loadToSession(pageModel.taxYear, rowData.benefitId).url, "common.view", hiddenText = Some("jobSeekersAllowance.claimsPage.view.hiddenText"))
     </dd>
 }
 

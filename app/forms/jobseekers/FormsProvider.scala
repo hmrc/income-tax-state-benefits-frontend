@@ -52,7 +52,7 @@ class FormsProvider() {
   }
 
   def endDateYesNoForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
-    missingInputError = "jobSeekersAllowance.endDateQuestionPage.error", Seq(taxYear.toString)
+    missingInputError = "common.endDateQuestionPage.error", Seq(taxYear.toString)
   )
 
   def endDateForm(taxYear: Int,
@@ -99,6 +99,6 @@ class FormsProvider() {
   )
 
   def sectionCompletedYesNoForm(): Form[Boolean] = YesNoForm.yesNoForm(
-    "jobSeekersAllowance.sectionCompletedQuestionPage.error"
+    "common.sectionCompletedQuestionPage.error"
   )
 }

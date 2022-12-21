@@ -50,7 +50,6 @@ class MessagesSpec extends ViewUnitTest {
   private val defaults = allLanguages("default")
   private val welsh = allLanguages("cy")
 
-
   "the messages file must have welsh translations" should {
     "check all keys in the default file other than those in the exclusion list has a corresponding translation" in {
       defaults.keys.foreach(
