@@ -46,7 +46,7 @@ class FormsProviderSpec extends UnitTest
 
     "return a form that contains error when data is incorrect" in {
       underTest.endDateYesNoForm(taxYear = taxYear).bind(wrongKeyData).errors shouldBe Seq(
-        FormError("value", Seq("jobSeekersAllowance.endDateQuestionPage.error"), Seq(taxYear.toString))
+        FormError("value", Seq("common.endDateQuestionPage.error"), Seq(taxYear.toString))
       )
     }
   }
@@ -110,7 +110,7 @@ class FormsProviderSpec extends UnitTest
 
     "return a form that contains error when data is incorrect" in {
       underTest.sectionCompletedYesNoForm().bind(wrongKeyData).errors shouldBe Seq(
-        FormError("value", Seq("jobSeekersAllowance.sectionCompletedQuestionPage.error"))
+        FormError("value", Seq("common.sectionCompletedQuestionPage.error"))
       )
     }
   }

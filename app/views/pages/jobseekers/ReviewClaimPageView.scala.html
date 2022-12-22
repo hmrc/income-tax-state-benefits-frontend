@@ -57,7 +57,7 @@
         Some(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
     )
 
-    @if(!pageModel.isCustomerAdded){<p class="govuk-body">@messages("jobSeekersAllowance.reviewClaimPage.p1")</p>}
+    @if(!pageModel.isCustomerAdded){<p class="govuk-body">@messages("common.reviewClaimPage.p1")</p>}
 
     @{
         def viewToSummaryListRow(
@@ -79,12 +79,12 @@
         })
         val endDateQuestionSummaryListRow = if (pageModel.isInYear) None else Some({
             val optRoute = if (pageModel.isIgnored) None else Some(EndDateQuestionController.show(pageModel.taxYear, pageModel.sessionDataId))
-            viewToSummaryListRow(messages("common.jobSeekersAllowance.endDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
+            viewToSummaryListRow(messages("common.claim.endDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
         })
         val endDateSummaryListRow = if (pageModel.isInYear) None else pageModel.endDateQuestion match {
             case Some(true) => Some({
                 val optRoute = if (pageModel.isIgnored) None else Some(EndDateController.show(pageModel.taxYear, pageModel.sessionDataId))
-                viewToSummaryListRow(messages("common.jobSeekersAllowance.endDate"), pageModel.endDate.fold("")(translatedDateFormatter(_)), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.endDate.hiddenText")))
+                viewToSummaryListRow(messages("common.claim.endDate"), pageModel.endDate.fold("")(translatedDateFormatter(_)), optRoute, messages(appendUserTypeSuffix("jobSeekersAllowance.reviewClaimPage.endDate.hiddenText")))
             })
             case _ => None
         }
@@ -132,7 +132,7 @@
                 @link(RemoveClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, "common.removeClaim", id = Some("remove-link-id"), hiddenText = Some("jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText"))
             } else {
                 @link(JobSeekersAllowanceController.show(pageModel.taxYear).url, "common.back", id = Some("back-link-id"))
-                @button("jobSeekersAllowance.reviewClaimPage.restoreClaim", classes = Some("govuk-button--secondary"), attributes = Map("id" -> "restore-claim-button-id"))
+                @button("common.reviewClaimPage.restoreClaim", classes = Some("govuk-button--secondary"), attributes = Map("id" -> "restore-claim-button-id"))
             }
         </div>
         }

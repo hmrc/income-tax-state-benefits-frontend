@@ -36,7 +36,7 @@
 
 @(pageModel: SectionCompletedQuestionPage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages("jobSeekersAllowance.sectionCompletedQuestionPage.title")}
+@titleText = @{messages("common.sectionCompletedQuestionPage.title")}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
@@ -47,8 +47,8 @@
     @formWithCsrf(action = SectionCompletedQuestionController.submit(pageModel.taxYear)) {
         @inputRadio(
             items = Seq(
-                RadioItem(id = Some("value"), value = Some("true"), content = Text(messages("jobSeekersAllowance.sectionCompletedQuestionPage.yes")), checked = pageModel.form("value").value.contains("true")),
-                RadioItem(id = Some("value-no"), value = Some("false"), content = Text(messages("jobSeekersAllowance.sectionCompletedQuestionPage.no")), checked = pageModel.form("value").value.contains("false"))
+                RadioItem(id = Some("value"), value = Some("true"), content = Text(messages("common.sectionCompletedQuestionPage.yes")), checked = pageModel.form("value").value.contains("true")),
+                RadioItem(id = Some("value-no"), value = Some("false"), content = Text(messages("common.sectionCompletedQuestionPage.no")), checked = pageModel.form("value").value.contains("false"))
             ),
             legendHeading = Some(Html(titleText)),
             legendHidden = false,
