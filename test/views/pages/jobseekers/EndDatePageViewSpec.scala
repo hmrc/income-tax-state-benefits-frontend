@@ -16,9 +16,8 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.EndDateController
-import forms.jobseekers.FormsProvider
-import forms.{DateForm, DateFormData}
+import controllers.routes.EndDateController
+import forms.{DateForm, DateFormData, FormsProvider}
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -27,9 +26,9 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
-import support.builders.pages.jobseekers.EndDatePageBuilder.anEndDatePage
+import support.builders.pages.EndDatePageBuilder.anEndDatePage
 import utils.ViewUtils.translatedDateFormatter
-import views.html.pages.jobseekers.EndDatePageView
+import views.html.pages.EndDatePageView
 
 import java.time.LocalDate
 
@@ -149,7 +148,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = formsProvider.endDateForm(taxYear, userScenario.isAgent, aClaimCYAModel.startDate).fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
+        val form = formsProvider.endDateForm(taxYear, JobSeekersAllowance, userScenario.isAgent, aClaimCYAModel.startDate).fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -162,7 +161,8 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = formsProvider.endDateForm(taxYear, userScenario.isAgent, aClaimCYAModel.startDate).bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
+        val form = formsProvider.endDateForm(taxYear, JobSeekersAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          .bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -177,7 +177,8 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = formsProvider.endDateForm(taxYear, userScenario.isAgent, aClaimCYAModel.startDate).bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
+        val form = formsProvider.endDateForm(taxYear, JobSeekersAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          .bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -194,7 +195,8 @@ class EndDatePageViewSpec extends ViewUnitTest {
 
         val startDate = LocalDate.of(taxYearEOY, 1, 1)
 
-        val form = formsProvider.endDateForm(taxYearEOY, userScenario.isAgent, startDate).bind(Map(DateForm.day -> "1", DateForm.month -> "1", DateForm.year -> taxYearEOY.toString))
+        val form = formsProvider.endDateForm(taxYearEOY, JobSeekersAllowance, userScenario.isAgent, startDate)
+          .bind(Map(DateForm.day -> "1", DateForm.month -> "1", DateForm.year -> taxYearEOY.toString))
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 

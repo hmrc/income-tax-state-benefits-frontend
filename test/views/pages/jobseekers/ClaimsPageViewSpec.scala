@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.SectionCompletedQuestionController
+import controllers.routes.SectionCompletedQuestionController
 import controllers.session.routes.UserSessionDataController
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
@@ -25,9 +25,9 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.ClaimsPageBuilder.aClaimsPage
-import support.builders.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
-import views.html.pages.jobseekers.ClaimsPageView
+import support.builders.pages.ClaimsPageBuilder.aClaimsPage
+import support.builders.pages.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
+import views.html.pages.ClaimsPageView
 
 import java.time.LocalDate
 

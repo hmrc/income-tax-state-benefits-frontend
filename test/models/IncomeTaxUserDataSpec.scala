@@ -16,6 +16,7 @@
 
 package models
 
+import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
@@ -26,34 +27,34 @@ import support.builders.StateBenefitsDataBuilder.aStateBenefitsData
 
 class IncomeTaxUserDataSpec extends UnitTest {
 
-  ".hmrcJobSeekersAllowances" should {
+  ".hmrcAllowancesFor(...)" should {
     "return empty set" when {
       "when stateBenefits is None" in {
         val underTest = anIncomeTaxUserData.copy(stateBenefits = None)
 
-        underTest.hmrcJobSeekersAllowances shouldBe Set.empty
+        underTest.hmrcAllowancesFor(JobSeekersAllowance) shouldBe Set.empty
       }
 
-      "when HMRC jobSeekersAllowances is None" in {
+      "when HMRC benefitType is None" in {
         val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = None)
         val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
-        underTest.hmrcJobSeekersAllowances shouldBe Set.empty
+        underTest.hmrcAllowancesFor(JobSeekersAllowance) shouldBe Set.empty
       }
 
-      "when HMRC jobSeekersAllowances is empty Set" in {
-        val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set.empty))
+      "when HMRC benefitType is empty Set" in {
+        val stateBenefitsData = aStateBenefitsData.copy(employmentSupportAllowances = Some(Set.empty))
         val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
-        underTest.hmrcJobSeekersAllowances shouldBe Set.empty
+        underTest.hmrcAllowancesFor(EmploymentSupportAllowance) shouldBe Set.empty
       }
     }
 
-    "return HMRC jobSeekersAllowances when exist" in {
+    "return HMRC benefitType when exist" in {
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit)))
       val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
-      underTest.hmrcJobSeekersAllowances shouldBe Set(aStateBenefit)
+      underTest.hmrcAllowancesFor(JobSeekersAllowance) shouldBe Set(aStateBenefit)
     }
   }
 
@@ -62,35 +63,35 @@ class IncomeTaxUserDataSpec extends UnitTest {
       "when stateBenefits is None" in {
         val underTest = anIncomeTaxUserData.copy(stateBenefits = None)
 
-        underTest.customerJobSeekersAllowances shouldBe Set.empty
+        underTest.customerAllowancesFor(EmploymentSupportAllowance) shouldBe Set.empty
       }
 
-      "when customer customerAddedStateBenefitsData is None" in {
+      "when customer AddedStateBenefitsData is None" in {
         val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = None)))
 
-        underTest.customerJobSeekersAllowances shouldBe Set.empty
+        underTest.customerAllowancesFor(JobSeekersAllowance) shouldBe Set.empty
       }
 
-      "when customer jobSeekersAllowances is None" in {
-        val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = None)
+      "when customer benefitType is None" in {
+        val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(employmentSupportAllowances = None)
         val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData))))
 
-        underTest.customerJobSeekersAllowances shouldBe Set.empty
+        underTest.customerAllowancesFor(EmploymentSupportAllowance) shouldBe Set.empty
       }
 
-      "when jobSeekersAllowances is empty Set" in {
-        val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set.empty))
+      "when benefitType is empty Set" in {
+        val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(employmentSupportAllowances = Some(Set.empty))
         val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData))))
 
-        underTest.customerJobSeekersAllowances shouldBe Set.empty
+        underTest.customerAllowancesFor(EmploymentSupportAllowance) shouldBe Set.empty
       }
     }
 
-    "return jobSeekersAllowances when exist" in {
+    "return benefitType when exist" in {
       val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aCustomerAddedStateBenefit)))
       val underTest = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData))))
 
-      underTest.customerJobSeekersAllowances shouldBe Set(aCustomerAddedStateBenefit)
+      underTest.customerAllowancesFor(JobSeekersAllowance) shouldBe Set(aCustomerAddedStateBenefit)
     }
   }
 }

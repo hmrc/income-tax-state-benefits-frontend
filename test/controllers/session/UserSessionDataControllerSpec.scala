@@ -16,7 +16,7 @@
 
 package controllers.session
 
-import controllers.jobseekers.routes.{ClaimsController, ReviewClaimController, StartDateController}
+import controllers.routes.{ClaimsController, ReviewClaimController, StartDateController}
 import models.BenefitType.JobSeekersAllowance
 import models.StateBenefitsUserData
 import models.errors.HttpParserError
@@ -44,7 +44,7 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
   ".create" should {
     "return error when stateBenefitsService.createOrUpdate(...) returns Left" in {
       mockEndOfYear(taxYearEOY)
-      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, aUser), Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser), Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
       val result = underTest.create(taxYearEOY, JobSeekersAllowance).apply(fakeIndividualRequest)
@@ -56,7 +56,7 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
       val sessionDataId = UUID.randomUUID()
 
       mockEndOfYear(taxYearEOY)
-      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, aUser), Right(sessionDataId))
+      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser), Right(sessionDataId))
 
       val result = await(underTest.create(taxYearEOY, JobSeekersAllowance).apply(fakeIndividualRequest))
 
@@ -75,7 +75,7 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
 
     "return error when stateBenefitsService.createOrUpdate(...) returns Left" in {
       mockPriorDataFor(taxYearEOY, anIncomeTaxUserData)
-      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
       val result = underTest.loadToSession(taxYearEOY, JobSeekersAllowance, aStateBenefit.benefitId).apply(fakeIndividualRequest)
@@ -85,7 +85,7 @@ class UserSessionDataControllerSpec extends ControllerUnitTest
 
     "redirect to ReviewClaimController when stateBenefitsService.createOrUpdate(...) returns Right" in {
       mockPriorDataFor(taxYearEOY, anIncomeTaxUserData)
-      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, Right(sessionDataId))
+      mockCreateOrUpdate(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, Right(sessionDataId))
 
       val result = await(underTest.loadToSession(taxYearEOY, JobSeekersAllowance, aStateBenefit.benefitId).apply(fakeIndividualRequest))
 

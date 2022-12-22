@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.ReviewClaimController
+import controllers.routes.ReviewClaimController
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -25,9 +25,9 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
-import support.builders.pages.jobseekers.RemoveClaimPageBuilder.aRemoveClaimPage
+import support.builders.pages.RemoveClaimPageBuilder.aRemoveClaimPage
 import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter}
-import views.html.pages.jobseekers.RemoveClaimPageView
+import views.html.pages.RemoveClaimPageView
 
 import java.time.LocalDate
 

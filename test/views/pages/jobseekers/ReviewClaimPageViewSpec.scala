@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes._
+import controllers.routes._
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -24,9 +24,9 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.ReviewClaimPageBuilder.aReviewClaimPage
+import support.builders.pages.ReviewClaimPageBuilder.aReviewClaimPage
 import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter}
-import views.html.pages.jobseekers.ReviewClaimPageView
+import views.html.pages.ReviewClaimPageView
 
 class ReviewClaimPageViewSpec extends ViewUnitTest {
 
@@ -89,7 +89,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedTitle: String = "Review Jobseeker’s allowance claim"
+    override val expectedTitle: String = "Review Jobseeker’s Allowance claim"
     override val expectedHeading: String = "Jobseeker’s Allowance"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedExternalDataText: String = "This data is from the Department of Work and Pensions (DWP)"
@@ -107,7 +107,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedTitle: String = "Review Jobseeker’s allowance claim"
+    override val expectedTitle: String = "Review Jobseeker’s Allowance claim"
     override val expectedHeading: String = "Jobseeker’s Allowance"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedExternalDataText: String = "This data is from the Department of Work and Pensions (DWP)"

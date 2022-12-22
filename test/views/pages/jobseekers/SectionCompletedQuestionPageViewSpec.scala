@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.SectionCompletedQuestionController
+import controllers.routes.SectionCompletedQuestionController
 import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
@@ -25,8 +25,8 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.SectionCompletedQuestionPageBuilder.aSectionCompletedQuestionPage
-import views.html.pages.jobseekers.SectionCompletedQuestionPageView
+import support.builders.pages.SectionCompletedQuestionPageBuilder.aSectionCompletedQuestionPage
+import views.html.pages.SectionCompletedQuestionPageView
 
 class SectionCompletedQuestionPageViewSpec extends ViewUnitTest {
 

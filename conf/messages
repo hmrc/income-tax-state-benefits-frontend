@@ -197,7 +197,7 @@ jobSeekersAllowance.taxPaidQuestionPage.error.agent = Select yes if your client 
 jobSeekersAllowance.taxPaidQuestionPage.error.individual = Select yes if you had any tax taken off your Jobseeker’s Allowance between {0} and {1}
 
 #################       Jobseeker’s Allowance - Review claim page       ########################################
-jobSeekersAllowance.reviewClaimPage.title = Review Jobseeker’s allowance claim
+jobSeekersAllowance.reviewClaimPage.title = Review Jobseeker’s Allowance claim
 jobSeekersAllowance.reviewClaimPage.startDate.hiddenText.agent = Change the date your client started getting Jobseeker’s Allowance
 jobSeekersAllowance.reviewClaimPage.startDate.hiddenText.individual = Change the date you started getting Jobseeker’s Allowance
 jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText.agent = Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April {0}

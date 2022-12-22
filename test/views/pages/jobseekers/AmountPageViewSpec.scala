@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.AmountController
+import controllers.routes.AmountController
 import forms.AmountForm
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
@@ -25,9 +25,9 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.AmountPageBuilder.anAmountPage
+import support.builders.pages.AmountPageBuilder.anAmountPage
 import utils.ViewUtils.translatedDateFormatter
-import views.html.pages.jobseekers.AmountPageView
+import views.html.pages.AmountPageView
 
 import java.time.LocalDate
 
