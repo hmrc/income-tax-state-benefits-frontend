@@ -33,7 +33,7 @@ class FormsProvider() {
   private val APRIL = 4
   private val SIX = 6
 
-  def startDateForm(taxYear: Int, isAgent: Boolean)
+  def  startDateForm(taxYear: Int, isAgent: Boolean, endDate: Option[LocalDate] = None)
                    (implicit messages: Messages): Form[DateFormData] = {
     lazy val isAgentSuffix = if (isAgent) "agent" else "individual"
     val emptyDayKey = s"jobSeekersAllowance.startDatePage.error.empty.day.$isAgentSuffix"
@@ -42,12 +42,19 @@ class FormsProvider() {
     val invalidDateKey = s"jobSeekersAllowance.startDatePage.error.invalid.date.$isAgentSuffix"
     val tooLongAgoKey = Some(s"jobSeekersAllowance.startDatePage.error.tooLongAgo.$isAgentSuffix")
 
+    val mapping = dateMapping(emptyDayKey, emptyMonthKey, emptyYearKey, invalidDateKey, tooLongAgoKey)
+      .verifying(
+        messages(s"jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.$isAgentSuffix", taxYear.toString),
+        dateFormData => dateFormData.toLocalDate.forall(_.isBefore(LocalDate.of(taxYear, APRIL, SIX)))
+      )
+
     Form(
-      dateMapping(emptyDayKey, emptyMonthKey, emptyYearKey, invalidDateKey, tooLongAgoKey)
-        .verifying(
-          messages(s"jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.$isAgentSuffix", taxYear.toString),
-          dateFormData => dateFormData.toLocalDate.forall(_.isBefore(LocalDate.of(taxYear, APRIL, SIX)))
+      endDate.map(date =>
+        mapping.verifying(
+          messages(s"jobSeekersAllowance.startDatePage.error.mustBeBefore.date.$isAgentSuffix", translatedDateFormatter(date)),
+          dateFormData => dateFormData.toLocalDate.forall(_.isBefore(date))
         )
+      ).getOrElse(mapping)
     )
   }
 

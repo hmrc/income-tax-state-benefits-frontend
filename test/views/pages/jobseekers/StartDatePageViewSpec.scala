@@ -27,6 +27,7 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.pages.jobseekers.StartDatePageBuilder.aStartDatePage
+import utils.ViewUtils.translatedDateFormatter
 import views.html.pages.jobseekers.StartDatePageView
 
 import java.time.LocalDate
@@ -55,6 +56,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
     val expectedInvalidDateErrorText: String
     val expectedMustBeSameAsOrBeforeErrorText: Int => String
+    val expectedMustBeBeforeErrorText: String => String
   }
 
   trait CommonExpectedResults {
@@ -81,6 +83,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedInvalidDateErrorText: String = "The date you started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date you started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
+    override val expectedMustBeBeforeErrorText: String => String = (date: String) => s"The date you started getting Jobseeker’s Allowance must be before $date"
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -89,6 +92,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedInvalidDateErrorText: String = "The date you started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date you started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
+    override val expectedMustBeBeforeErrorText: String => String = (date: String) => s"The date you started getting Jobseeker’s Allowance must be before $date"
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -97,6 +101,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedInvalidDateErrorText: String = "The date your client started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
+    override val expectedMustBeBeforeErrorText: String => String = (date: String) => s"The date your client started getting Jobseeker’s Allowance must be before $date"
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -105,6 +110,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedInvalidDateErrorText: String = "The date your client started getting Jobseeker’s Allowance must be a real date"
     override val expectedMustBeSameAsOrBeforeErrorText: Int => String = (taxYear: Int) => s"The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
+    override val expectedMustBeBeforeErrorText: String => String = (date: String) => s"The date your client started getting Jobseeker’s Allowance must be before $date"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -175,6 +181,23 @@ class StartDatePageViewSpec extends ViewUnitTest {
         errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYear), Selectors.mustBeSameAsOrBeforeErrorHref)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "6")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "4")
+        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYear.toString)
+      }
+
+      "render page with mustBeBefore error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val endDate = LocalDate.of(taxYear, 1, 10)
+        val form = formsProvider.startDateForm(taxYear, userScenario.isAgent, Some(endDate))
+                    .bind(Map(DateForm.day -> "11", DateForm.month -> "1", DateForm.year -> taxYear.toString))
+        val pageModel = aStartDatePage.copy(taxYear = taxYearEOY, form = form)
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle, userScenario.isWelsh)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeBeforeErrorText(translatedDateFormatter(endDate)), Selectors.mustBeSameAsOrBeforeErrorHref)
+        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "11")
+        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "1")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYear.toString)
       }
     }

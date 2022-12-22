@@ -106,6 +106,8 @@ employmentSupportAllowance.startDatePage.error.tooLongAgo.agent = The date your 
 employmentSupportAllowance.startDatePage.error.tooLongAgo.individual = The date you started getting Employment and Support Allowance must be after 1 January 1900
 employmentSupportAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent = The date your client started getting Employment and Support Allowance must be the same as or before 5 April {0}
 employmentSupportAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = The date you started getting Employment and Support Allowance must be the same as or before 5 April {0}
+employmentSupportAllowance.startDatePage.error.mustBeBefore.date.agent = The date your client started getting Employment and Support Allowance must be before {0}
+employmentSupportAllowance.startDatePage.error.mustBeBefore.date.individual = The date you started getting Employment and Support Allowance must be before {0}
 
 #################       Employment and Support Allowance - End Date Page       ########################################
 employmentSupportAllowance.endDatePage.error.empty.day.agent = The date your client’s Employment and Support Allowance ended must include a day
@@ -167,6 +169,8 @@ jobSeekersAllowance.startDatePage.error.tooLongAgo.agent = The date your client 
 jobSeekersAllowance.startDatePage.error.tooLongAgo.individual = The date you started getting Jobseeker’s Allowance must be after 1 January 1900
 jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent = The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
 jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = The date you started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
+jobSeekersAllowance.startDatePage.error.mustBeBefore.date.agent = The date your client started getting Jobseeker’s Allowance must be before {0}
+jobSeekersAllowance.startDatePage.error.mustBeBefore.date.individual = The date you started getting Jobseeker’s Allowance must be before {0}
 
 #################       Jobseeker’s Allowance - End Date Page       ########################################
 jobSeekersAllowance.endDatePage.error.empty.day.agent = The date your client’s Jobseeker’s Allowance ended must include a day
