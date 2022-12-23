@@ -44,13 +44,13 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
   def show(taxYear: Int,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
-    Ok(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, request.user.isAgent))))
+    Ok(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)))))
   }
 
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
-    formsProvider.startDateForm(taxYear, request.user.isAgent).bindFromRequest().fold(
+    formsProvider.startDateForm(taxYear, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
       formData => claimService.updateStartDate(request.stateBenefitsUserData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()
