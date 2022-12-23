@@ -18,6 +18,7 @@ package models.pages.jobseekers
 
 import forms.jobseekers.FormsProvider
 import forms.{DateForm, DateFormData}
+import models.BenefitType.JobSeekersAllowance
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.providers.{MessagesProvider, TaxYearProvider}
@@ -30,8 +31,9 @@ class StartDatePageSpec extends ControllerUnitTest
 
   "StartDatePage.apply(...)" should {
     "return page with pre-filled form when start date is preset" in {
-      StartDatePage.apply(taxYear, aStateBenefitsUserData, pageForm) shouldBe StartDatePage(
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, pageForm) shouldBe StartDatePage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = pageForm.fill(value = DateFormData(aStateBenefitsUserData.claim.get.startDate))
       )
@@ -40,8 +42,9 @@ class StartDatePageSpec extends ControllerUnitTest
     "return page without pre-filled form when start date is not preset" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = None)
 
-      StartDatePage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe StartDatePage(
+      StartDatePage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe StartDatePage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm
       )
@@ -50,8 +53,9 @@ class StartDatePageSpec extends ControllerUnitTest
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = pageForm.bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
 
-      StartDatePage.apply(taxYear, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = pageForm.bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
       )

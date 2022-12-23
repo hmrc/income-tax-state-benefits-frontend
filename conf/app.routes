@@ -17,40 +17,40 @@ GET   /timeout                          controllers.SessionExpiredController.tim
 GET         /:taxYear/summary           controllers.SummaryController.show(taxYear: Int)
 
 
-###########################     JobSeeker's Allowance Endpoints     ###########################
-GET         /:taxYear/jobseekers-allowance/claims                                               controllers.jobseekers.JobSeekersAllowanceController.show(taxYear: Int)
+###########################     Claims Endpoints     ###########################
+GET         /:taxYear/:benefitType/claims                                               controllers.jobseekers.ClaimsController.show(taxYear: Int, benefitType: models.BenefitType)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/start-date                            controllers.jobseekers.StartDateController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/start-date                            controllers.jobseekers.StartDateController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/start-date                            controllers.jobseekers.StartDateController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/start-date                            controllers.jobseekers.StartDateController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.EndDateQuestionController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.EndDateQuestionController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.EndDateQuestionController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/did-claim-end-in-tax-year             controllers.jobseekers.EndDateQuestionController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/end-date                              controllers.jobseekers.EndDateController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/end-date                              controllers.jobseekers.EndDateController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/end-date                              controllers.jobseekers.EndDateController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/end-date                              controllers.jobseekers.EndDateController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/amount                                controllers.jobseekers.AmountController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/amount                                controllers.jobseekers.AmountController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/amount                                controllers.jobseekers.AmountController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/amount                                controllers.jobseekers.AmountController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxPaidQuestionController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxPaidQuestionController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxPaidQuestionController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/tax-taken-off                         controllers.jobseekers.TaxPaidQuestionController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxPaidController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxPaidController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxPaidController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/tax-taken-off-amount                  controllers.jobseekers.TaxPaidController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/review-claim                          controllers.jobseekers.ReviewClaimController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/review-claim/save                     controllers.jobseekers.ReviewClaimController.saveAndContinue(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/review-claim/restore                  controllers.jobseekers.ReviewClaimController.restoreClaim(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/review-claim                          controllers.jobseekers.ReviewClaimController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/review-claim/save                     controllers.jobseekers.ReviewClaimController.saveAndContinue(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/review-claim/restore                  controllers.jobseekers.ReviewClaimController.restoreClaim(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/:sessionDataId/remove                                controllers.jobseekers.RemoveClaimController.show(taxYear: Int, sessionDataId: java.util.UUID)
-POST        /:taxYear/jobseekers-allowance/:sessionDataId/remove                                controllers.jobseekers.RemoveClaimController.submit(taxYear: Int, sessionDataId: java.util.UUID)
+GET         /:taxYear/:benefitType/:sessionDataId/remove                                controllers.jobseekers.RemoveClaimController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
+POST        /:taxYear/:benefitType/:sessionDataId/remove                                controllers.jobseekers.RemoveClaimController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/jobseekers-allowance/section-completed                                    controllers.jobseekers.SectionCompletedQuestionController.show(taxYear: Int)
-POST        /:taxYear/jobseekers-allowance/section-completed                                    controllers.jobseekers.SectionCompletedQuestionController.submit(taxYear: Int)
+GET         /:taxYear/:benefitType/section-completed                                    controllers.jobseekers.SectionCompletedQuestionController.show(taxYear: Int, benefitType: models.BenefitType)
+POST        /:taxYear/:benefitType/section-completed                                    controllers.jobseekers.SectionCompletedQuestionController.submit(taxYear: Int, benefitType: models.BenefitType)
 
 ###########################     UserSessionData Controller Endpoints     ###########################
-POST         /:taxYear/session-data         controllers.session.UserSessionDataController.create(taxYear: Int)
-GET          /:taxYear/session-data         controllers.session.UserSessionDataController.loadToSession(taxYear: Int, benefitId: java.util.UUID)
+POST         /:taxYear/session-data         controllers.session.UserSessionDataController.create(taxYear: Int, benefitType: models.BenefitType)
+GET          /:taxYear/session-data         controllers.session.UserSessionDataController.loadToSession(taxYear: Int, benefitType: models.BenefitType, benefitId: java.util.UUID)
 
 ###########################     Error pages     ####################################
 GET        /error/you-need-to-sign-up                       controllers.errors.IndividualAuthErrorController.show

@@ -16,19 +16,20 @@
 
 package controllers.jobseekers
 
+import models.BenefitType.JobSeekersAllowance
 import play.api.http.Status.OK
 import play.api.test.Helpers.{contentType, status}
 import support.ControllerUnitTest
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.mocks.MockActionsProvider
-import views.html.pages.jobseekers.JobSeekersAllowancePageView
+import views.html.pages.jobseekers.ClaimsPageView
 
-class JobSeekersAllowanceControllerSpec extends ControllerUnitTest
+class ClaimsControllerSpec extends ControllerUnitTest
   with MockActionsProvider {
 
-  private val pageView = inject[JobSeekersAllowancePageView]
+  private val pageView = inject[ClaimsPageView]
 
-  private val underTest = new JobSeekersAllowanceController(
+  private val underTest = new ClaimsController(
     mockActionsProvider,
     pageView
   )
@@ -37,7 +38,7 @@ class JobSeekersAllowanceControllerSpec extends ControllerUnitTest
     "return a successful response" in {
       mockPriorDataFor(taxYear, anIncomeTaxUserData)
 
-      val result = underTest.show(taxYear).apply(fakeIndividualRequest)
+      val result = underTest.show(taxYear, JobSeekersAllowance).apply(fakeIndividualRequest)
 
       status(result) shouldBe OK
       contentType(result) shouldBe Some("text/html")

@@ -19,6 +19,7 @@ package views.pages.jobseekers
 import controllers.jobseekers.routes.EndDateController
 import forms.jobseekers.FormsProvider
 import forms.{DateForm, DateFormData}
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -140,7 +141,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
-        formPostLinkCheck(EndDateController.submit(taxYearEOY, anEndDatePage.sessionDataId).url, Selectors.formSelector)
+        formPostLinkCheck(EndDateController.submit(taxYearEOY, JobSeekersAllowance, anEndDatePage.sessionDataId).url, Selectors.formSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 

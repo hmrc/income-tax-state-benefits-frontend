@@ -17,6 +17,7 @@
 package support.builders.pages.jobseekers
 
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import models.pages.jobseekers.AmountPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.utils.TaxYearUtils.taxYearEOY
@@ -27,9 +28,10 @@ import java.util.UUID
 object AmountPageBuilder {
 
   val anAmountPage: AmountPage = AmountPage(
+    taxYear = taxYearEOY,
+    benefitType = JobSeekersAllowance,
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-04-23"),
     titleSecondDate = aClaimCYAModel.endDate.get,
-    taxYear = taxYearEOY,
     sessionDataId = UUID.randomUUID(),
     form = new FormsProvider().jsaAmountForm()
   )

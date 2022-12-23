@@ -18,6 +18,7 @@ package models.pages.jobseekers
 
 import forms.AmountForm
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -35,8 +36,9 @@ class TaxPaidPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(taxPaid = Some(123.45))
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -48,8 +50,9 @@ class TaxPaidPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(taxPaid = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -60,8 +63,9 @@ class TaxPaidPageSpec extends UnitTest
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = pageForm.bind(Map(AmountForm.amount -> "wrong-amount"))
 
-      TaxPaidPage.apply(taxYearEOY, aStateBenefitsUserData, formWithErrors) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYearEOY, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe TaxPaidPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         titleSecondDate = aStateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
@@ -73,8 +77,9 @@ class TaxPaidPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 6), taxPaid = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -86,8 +91,9 @@ class TaxPaidPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(startDate = LocalDate.of(taxYear - 1, 4, 5), taxPaid = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidPage.apply(taxYear, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = LocalDate.of(taxYear - 1, 4, 6),
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -99,8 +105,9 @@ class TaxPaidPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(endDate = Some(LocalDate.of(taxYear, 1, 1)), taxPaid = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
@@ -112,8 +119,9 @@ class TaxPaidPageSpec extends UnitTest
       val claimCYAModel = aClaimCYAModel.copy(endDate = None, taxPaid = None)
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(claimCYAModel))
 
-      TaxPaidPage.apply(taxYearEOY, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
+      TaxPaidPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe TaxPaidPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = LocalDate.of(taxYearEOY, 4, 5),
         sessionDataId = stateBenefitsUserData.sessionDataId.get,

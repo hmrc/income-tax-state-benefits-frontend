@@ -17,6 +17,7 @@
 package support.builders.pages.jobseekers
 
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import models.pages.jobseekers.SectionCompletedQuestionPage
 import support.utils.TaxYearUtils.taxYearEOY
 
@@ -24,6 +25,7 @@ object SectionCompletedQuestionPageBuilder {
 
   val aSectionCompletedQuestionPage: SectionCompletedQuestionPage = SectionCompletedQuestionPage(
     taxYear = taxYearEOY,
+    benefitType = JobSeekersAllowance,
     form = new FormsProvider().sectionCompletedYesNoForm()
   )
 }

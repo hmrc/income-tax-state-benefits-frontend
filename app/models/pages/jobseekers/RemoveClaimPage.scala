@@ -16,13 +16,14 @@
 
 package models.pages.jobseekers
 
-import models.{ClaimCYAModel, StateBenefitsUserData}
+import models.{BenefitType, ClaimCYAModel, StateBenefitsUserData}
 import utils.InYearUtil.toDateWithinTaxYear
 
 import java.time.LocalDate
 import java.util.UUID
 
 case class RemoveClaimPage(taxYear: Int,
+                           benefitType: BenefitType,
                            sessionDataId: UUID,
                            itemsFirstDate: LocalDate,
                            itemsSecondDate: LocalDate,
@@ -35,11 +36,14 @@ case class RemoveClaimPage(taxYear: Int,
 
 object RemoveClaimPage {
 
-  def apply(taxYear: Int, stateBenefitsUserData: StateBenefitsUserData): RemoveClaimPage = {
+  def apply(taxYear: Int,
+            benefitType: BenefitType,
+            stateBenefitsUserData: StateBenefitsUserData): RemoveClaimPage = {
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
 
     RemoveClaimPage(
       taxYear = taxYear,
+      benefitType = benefitType,
       sessionDataId = stateBenefitsUserData.sessionDataId.get,
       itemsFirstDate = toDateWithinTaxYear(taxYear, claimCYAModel.startDate),
       itemsSecondDate = claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")),

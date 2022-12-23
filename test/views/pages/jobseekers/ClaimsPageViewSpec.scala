@@ -18,21 +18,22 @@ package views.pages.jobseekers
 
 import controllers.jobseekers.routes.SectionCompletedQuestionController
 import controllers.session.routes.UserSessionDataController
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.JobSeekersAllowancePageBuilder.aJobSeekersAllowancePage
+import support.builders.pages.jobseekers.ClaimsPageBuilder.aClaimsPage
 import support.builders.pages.jobseekers.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
-import views.html.pages.jobseekers.JobSeekersAllowancePageView
+import views.html.pages.jobseekers.ClaimsPageView
 
 import java.time.LocalDate
 
-class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
+class ClaimsPageViewSpec extends ViewUnitTest {
 
-  private val page: JobSeekersAllowancePageView = inject[JobSeekersAllowancePageView]
+  private val page: ClaimsPageView = inject[ClaimsPageView]
 
   object Selectors {
     val summaryListRowRemovedSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(2) > p"
@@ -128,7 +129,7 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aJobSeekersAllowancePage.copy(summaryListDataRows = Seq.empty)
+        val pageModel = aClaimsPage.copy(summaryListDataRows = Seq.empty)
 
         implicit val document: Document = Jsoup.parse(page(pageModel).body)
 
@@ -137,15 +138,15 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         elementNotOnPageCheck(Selectors.summaryListRowSelector(1))
-        formPostLinkCheck(UserSessionDataController.create(taxYearEOY).url, Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY).url))
+        formPostLinkCheck(UserSessionDataController.create(taxYearEOY, JobSeekersAllowance).url, Selectors.addMissingClaimFormSelector)
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY, JobSeekersAllowance).url))
       }
 
       "render Job Seeker's Allowance with job seeker's allowance items" which {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aJobSeekersAllowancePage.copy(summaryListDataRows = Seq(
+        val pageModel = aClaimsPage.copy(summaryListDataRows = Seq(
           aBenefitSummaryListRowData.copy(amount = Some(100.00), startDate = LocalDate.parse(s"$taxYearEOY-01-01"), endDate = LocalDate.parse(s"$taxYearEOY-01-31"), isIgnored = false),
           aBenefitSummaryListRowData.copy(amount = Some(200.20), startDate = LocalDate.parse(s"$taxYearEOY-02-01"), endDate = LocalDate.parse(s"$taxYearEOY-04-05"), isIgnored = true)
         ))
@@ -158,19 +159,19 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1Value1Text, Selectors.summaryListRowValueSelector(1, 1), "row-1-1")
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1Value2Text(taxYearEOY), Selectors.summaryListRowValueSelector(1, 2), "row-1-2")
-        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1),
-          UserSessionDataController.loadToSession(taxYearEOY, aBenefitSummaryListRowData.benefitId).url, Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1)))
+        linkCheck(userScenario.commonExpectedResults.expectedViewLinkText, Selectors.summaryListRowViewLinkSelector(1), UserSessionDataController.loadToSession(taxYearEOY,
+          JobSeekersAllowance, aBenefitSummaryListRowData.benefitId).url, Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1)))
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Value1Text, Selectors.summaryListRowValueSelector(2, 1), "row-2-1")
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Value2Text(taxYearEOY), Selectors.summaryListRowValueSelector(2, 2), "row-2-2")
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
-        formPostLinkCheck(UserSessionDataController.create(taxYearEOY).url, Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY).url))
+        formPostLinkCheck(UserSessionDataController.create(taxYearEOY, JobSeekersAllowance).url, Selectors.addMissingClaimFormSelector)
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY, JobSeekersAllowance).url))
       }
 
       "render the page for an inYear tax claim" which {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = aJobSeekersAllowancePage.copy(taxYear = taxYear, isInYear = true)
+        val pageModel = aClaimsPage.copy(taxYear = taxYear, isInYear = true)
 
         implicit val document: Document = Jsoup.parse(page(pageModel).body)
 
@@ -180,10 +181,10 @@ class JobSeekersAllowancePageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow1TextInYear, Selectors.summaryListRowValueSelector(1, 1, isInYear = true), "row-1")
         linkCheck(userScenario.commonExpectedResults.expectedViewLinkText,
-          Selectors.summaryListRowViewLinkSelector(1, isInYear = true), UserSessionDataController.loadToSession(taxYear, aBenefitSummaryListRowData.benefitId).url,
+          Selectors.summaryListRowViewLinkSelector(1, isInYear = true), UserSessionDataController.loadToSession(taxYear, JobSeekersAllowance, aBenefitSummaryListRowData.benefitId).url,
           Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1, isInYear = true)))
         elementNotOnPageCheck(Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYear).url))
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYear, JobSeekersAllowance).url))
       }
     }
   }

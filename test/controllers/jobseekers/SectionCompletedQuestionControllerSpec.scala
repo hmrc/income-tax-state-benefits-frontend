@@ -19,6 +19,7 @@ package controllers.jobseekers
 import controllers.routes.SummaryController
 import forms.YesNoForm
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.mvc.Results.Redirect
@@ -47,7 +48,7 @@ class SectionCompletedQuestionControllerSpec extends ControllerUnitTest
     "return a successful response" in {
       mockPriorDataFor(taxYearEOY, anIncomeTaxUserData)
 
-      val result = underTest.show(taxYearEOY).apply(fakeIndividualRequest)
+      val result = underTest.show(taxYearEOY, JobSeekersAllowance).apply(fakeIndividualRequest)
 
       status(result) shouldBe OK
       contentType(result) shouldBe Some("text/html")
@@ -59,7 +60,7 @@ class SectionCompletedQuestionControllerSpec extends ControllerUnitTest
       mockPriorDataFor(taxYearEOY, anIncomeTaxUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "")
-      val result = underTest.submit(taxYearEOY).apply(request)
+      val result = underTest.submit(taxYearEOY, JobSeekersAllowance).apply(request)
 
       status(result) shouldBe BAD_REQUEST
       contentType(result) shouldBe Some("text/html")
@@ -72,7 +73,7 @@ class SectionCompletedQuestionControllerSpec extends ControllerUnitTest
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
 
-      await(underTest.submit(taxYearEOY)(request)) shouldBe Redirect(SummaryController.show(taxYearEOY))
+      await(underTest.submit(taxYearEOY, JobSeekersAllowance)(request)) shouldBe Redirect(SummaryController.show(taxYearEOY))
     }
 
     "redirect to Summary page when No is submitted" in {
@@ -80,7 +81,7 @@ class SectionCompletedQuestionControllerSpec extends ControllerUnitTest
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
 
-      await(underTest.submit(taxYearEOY)(request)) shouldBe Redirect(SummaryController.show(taxYearEOY))
+      await(underTest.submit(taxYearEOY, JobSeekersAllowance)(request)) shouldBe Redirect(SummaryController.show(taxYearEOY))
     }
   }
 }

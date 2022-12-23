@@ -20,8 +20,8 @@ import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.jobseekers.routes.{EndDateQuestionController, ReviewClaimController}
 import forms.jobseekers.FormsProvider
-import models.StateBenefitsUserData
 import models.pages.jobseekers.StartDatePage
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.ClaimService
@@ -42,24 +42,31 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, request.user.isAgent))))
+           benefitType: BenefitType,
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
+    Ok(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, request.user.isAgent))))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+             benefitType: BenefitType,
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
     formsProvider.startDateForm(taxYear, request.user.isAgent).bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, request.stateBenefitsUserData, formWithErrors)))),
+      formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
       formData => claimService.updateStartDate(request.stateBenefitsUserData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(userData) => Redirect(getRedirectCall(taxYear, userData))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, benefitType, userData))
       }
     )
   }
 
   private def getRedirectCall(taxYear: Int,
+                              benefitType: BenefitType,
                               userData: StateBenefitsUserData): Call = {
     val sessionDataId = userData.sessionDataId.get
-    if (userData.isFinished) ReviewClaimController.show(taxYear, sessionDataId) else EndDateQuestionController.show(taxYear, sessionDataId)
+    if (userData.isFinished) {
+      ReviewClaimController.show(taxYear, benefitType, sessionDataId)
+    } else {
+      EndDateQuestionController.show(taxYear, benefitType, sessionDataId)
+    }
   }
 }

@@ -16,13 +16,14 @@
 
 package models.pages.jobseekers
 
-import models.{ClaimCYAModel, StateBenefitsUserData}
+import models.{BenefitType, ClaimCYAModel, StateBenefitsUserData}
 import utils.InYearUtil.toDateWithinTaxYear
 
 import java.time.LocalDate
 import java.util.UUID
 
 case class ReviewClaimPage(taxYear: Int,
+                           benefitType: BenefitType,
                            sessionDataId: UUID,
                            isInYear: Boolean,
                            isCustomerAdded: Boolean,
@@ -39,12 +40,14 @@ case class ReviewClaimPage(taxYear: Int,
 object ReviewClaimPage {
 
   def apply(taxYear: Int,
+            benefitType: BenefitType,
             isInYear: Boolean,
             stateBenefitsUserData: StateBenefitsUserData): ReviewClaimPage = {
     val claimCYAModel: ClaimCYAModel = stateBenefitsUserData.claim.get
 
     ReviewClaimPage(
       taxYear = taxYear,
+      benefitType = benefitType,
       sessionDataId = stateBenefitsUserData.sessionDataId.get,
       isInYear = isInYear,
       isCustomerAdded = !stateBenefitsUserData.isPriorSubmission,

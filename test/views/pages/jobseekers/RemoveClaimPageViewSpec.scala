@@ -17,6 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.jobseekers.routes.ReviewClaimController
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -193,7 +194,7 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
         textOnPageCheck(userScenario.commonExpectedResults.expectedTaxPaidRowValue, Selectors.taxPaidRowValueSelector)
         checkElementsCount(6, Selectors.rowsSelector)
         buttonCheck(userScenario.commonExpectedResults.removeButton, Selectors.buttonSelector)
-        linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector, href = ReviewClaimController.show(taxYearEOY, aRemoveClaimPage.sessionDataId).url,
+        linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector, href = ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, aRemoveClaimPage.sessionDataId).url,
           Some(doNotRemoveLinkHiddenText), Some(Selectors.removeLinkHiddenSelector))
       }
 
@@ -212,7 +213,7 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
         checkElementsCount(4, Selectors.rowsSelector)
         buttonCheck(userScenario.commonExpectedResults.removeButton, Selectors.buttonSelector)
         linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector,
-          href = ReviewClaimController.show(taxYearEOY, aRemoveClaimPage.sessionDataId).url,
+          href = ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, aRemoveClaimPage.sessionDataId).url,
           Some(doNotRemoveLinkHiddenText), Some(Selectors.removeLinkHiddenSelector))
       }
     }

@@ -16,7 +16,8 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType.JobSeekersAllowance
 import play.api.http.HeaderNames
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
@@ -80,7 +81,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe JobSeekersAllowanceController.show(taxYearEOY).url
+      result.headers("Location").head shouldBe ClaimsController.show(taxYearEOY, JobSeekersAllowance).url
     }
   }
 
@@ -105,7 +106,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
       }
 
       result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe JobSeekersAllowanceController.show(taxYearEOY).url
+      result.headers("Location").head shouldBe ClaimsController.show(taxYearEOY, JobSeekersAllowance).url
     }
   }
 }

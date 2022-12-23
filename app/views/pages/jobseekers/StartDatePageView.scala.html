@@ -51,7 +51,7 @@
 
     @caption(messages("common.jobSeekersAllowance.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
 
-    @formWithCsrf(action = StartDateController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCsrf(action = StartDateController.submit(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)) {
         @dateInput(
             form = pageModel.form,
             id = DateForm.formValuesPrefix,

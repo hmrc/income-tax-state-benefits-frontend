@@ -16,7 +16,8 @@
 
 package actions
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType.JobSeekersAllowance
 import models.errors.HttpParserError
 import models.requests.UserSessionDataRequest
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
@@ -39,7 +40,13 @@ class UserSessionDataRequestRefinerActionSpec extends UnitTest
   private val executionContext = ExecutionContext.global
   private val sessionDataId: UUID = UUID.randomUUID()
 
-  private val underTest = UserSessionDataRequestRefinerAction(taxYear, sessionDataId, mockStateBenefitsService, mockErrorHandler)(executionContext)
+  private val underTest = UserSessionDataRequestRefinerAction(
+    taxYear,
+    JobSeekersAllowance,
+    sessionDataId,
+    mockStateBenefitsService,
+    mockErrorHandler
+  )(executionContext)
 
   ".executionContext" should {
     "return the given execution context" in {
@@ -51,7 +58,7 @@ class UserSessionDataRequestRefinerActionSpec extends UnitTest
     "redirect to JobSeekersAllowance when getting session data result in NOT_FOUND" in {
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(NOT_FOUND)))
 
-      await(underTest.refine(anAuthorisationRequest)) shouldBe Left(Redirect(JobSeekersAllowanceController.show(taxYear)))
+      await(underTest.refine(anAuthorisationRequest)) shouldBe Left(Redirect(ClaimsController.show(taxYear, JobSeekersAllowance)))
     }
 
     "handle InternalServerError when when getting session data result in an error" in {

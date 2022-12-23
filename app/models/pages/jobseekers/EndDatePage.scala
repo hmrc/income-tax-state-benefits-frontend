@@ -17,25 +17,28 @@
 package models.pages.jobseekers
 
 import forms.DateFormData
-import models.StateBenefitsUserData
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.data.Form
 
 import java.time.LocalDate
 import java.util.UUID
 
 case class EndDatePage(taxYear: Int,
+                       benefitType: BenefitType,
                        sessionDataId: UUID,
                        form: Form[DateFormData])
 
 object EndDatePage {
 
   def apply(taxYear: Int,
+            benefitType: BenefitType,
             stateBenefitsUserData: StateBenefitsUserData,
             form: Form[DateFormData]): EndDatePage = {
     val optEndDate: Option[LocalDate] = stateBenefitsUserData.claim.flatMap(_.endDate)
 
     EndDatePage(
       taxYear = taxYear,
+      benefitType = benefitType,
       stateBenefitsUserData.sessionDataId.get,
       form = optEndDate.fold(form)(localDate => if (form.hasErrors) form else form.fill(DateFormData(localDate)))
     )

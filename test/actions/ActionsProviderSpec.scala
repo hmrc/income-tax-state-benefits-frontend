@@ -17,6 +17,7 @@
 package actions
 
 import controllers.errors.routes.UnauthorisedUserErrorController
+import models.BenefitType.JobSeekersAllowance
 import models.IncomeTaxUserData
 import models.authorisation.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
 import models.errors.HttpParserError
@@ -90,7 +91,7 @@ class ActionsProviderSpec extends ControllerUnitTest
     "redirect to UnauthorisedUserErrorController when authentication fails" in {
       mockFailToAuthenticate()
 
-      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
@@ -98,7 +99,7 @@ class ActionsProviderSpec extends ControllerUnitTest
     "redirect to Income Tax Submission Overview when in year" in {
       mockAuthAsIndividual(Some(aUser.nino))
 
-      val underTest = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYear, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
         Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
@@ -109,7 +110,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
-      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
     }
@@ -118,7 +119,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
 
-      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }
@@ -128,7 +129,7 @@ class ActionsProviderSpec extends ControllerUnitTest
     "redirect to UnauthorisedUserErrorController when authentication fails" in {
       mockFailToAuthenticate()
 
-      val underTest = actionsProvider.sessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.sessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
@@ -138,7 +139,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
-      val underTest = actionsProvider.sessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.sessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
     }
@@ -147,7 +148,7 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
 
-      val underTest = actionsProvider.sessionDataFor(taxYearEOY, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.sessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }

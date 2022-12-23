@@ -16,6 +16,7 @@
 
 package models.pages.jobseekers
 
+import models.BenefitType.JobSeekersAllowance
 import models.pages.elements.BenefitSummaryListRowData
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
@@ -28,11 +29,11 @@ import support.providers.TaxYearProvider
 
 import java.time.LocalDate
 
-class JobSeekersAllowancePageSpec extends UnitTest
+class ClaimsPageSpec extends UnitTest
   with TaxYearProvider {
 
   ".apply" should {
-    "create correct JobSeekersAllowancePage object" in {
+    "create correct ClaimsPage object" in {
       val now = LocalDate.now()
       val stateBenefit_1 = aStateBenefit.copy(startDate = now.minusDays(0))
       val stateBenefit_2 = aStateBenefit.copy(startDate = now.minusDays(2))
@@ -50,8 +51,9 @@ class JobSeekersAllowancePageSpec extends UnitTest
         BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_1),
       )
 
-      JobSeekersAllowancePage.apply(taxYear = taxYear, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe JobSeekersAllowancePage(
+      ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe ClaimsPage(
         taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
         isInYear = false,
         summaryListDataRows = summaryListDataRows
       )

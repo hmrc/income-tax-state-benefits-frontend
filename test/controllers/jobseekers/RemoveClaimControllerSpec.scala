@@ -16,7 +16,8 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType.JobSeekersAllowance
 import models.errors.HttpParserError
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.Results.{InternalServerError, Redirect}
@@ -48,9 +49,9 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
 
   ".show" should {
     "return a successful response" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
 
-      val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
+      val result = underTest.show(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest)
 
       status(result) shouldBe OK
       contentType(result) shouldBe Some("text/html")
@@ -59,24 +60,24 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "return error when stateBenefitsService.removeClaim(...) returns error" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
       mockRemoveClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
       val request = fakeIndividualRequest.withMethod(POST.method)
-      val result = underTest.submit(taxYearEOY, sessionDataId).apply(request)
+      val result = underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "redirect to JobSeekersAllowanceController when stateBenefitsService.removeClaim(...) succeeds" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
+    "redirect to ClaimsController when stateBenefitsService.removeClaim(...) succeeds" in {
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
       mockRemoveClaim(aUser, sessionDataId, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
 
-      await(underTest.submit(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+      await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
+        Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
     }
   }
 }

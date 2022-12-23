@@ -16,14 +16,20 @@
 
 package models.pages.jobseekers
 
-import models.IncomeTaxUserData
 import models.pages.elements.BenefitSummaryListRowData
+import models.{BenefitType, IncomeTaxUserData}
 
-case class JobSeekersAllowancePage(taxYear: Int, isInYear: Boolean, summaryListDataRows: Seq[BenefitSummaryListRowData])
+case class ClaimsPage(taxYear: Int,
+                      benefitType: BenefitType,
+                      isInYear: Boolean,
+                      summaryListDataRows: Seq[BenefitSummaryListRowData])
 
-object JobSeekersAllowancePage {
+object ClaimsPage {
 
-  def apply(taxYear: Int, isInYear: Boolean, incomeTaxUserData: IncomeTaxUserData): JobSeekersAllowancePage = {
+  def apply(taxYear: Int,
+            benefitType: BenefitType,
+            isInYear: Boolean,
+            incomeTaxUserData: IncomeTaxUserData): ClaimsPage = {
     val hmrcData = incomeTaxUserData.hmrcJobSeekersAllowances
       .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
 
@@ -33,6 +39,6 @@ object JobSeekersAllowancePage {
     val benefitSummaryListRowData = (hmrcData ++ customerData)
       .sortWith((it1, it2) => it1.startDate.isBefore(it2.startDate))
 
-    JobSeekersAllowancePage(taxYear, isInYear, benefitSummaryListRowData)
+    ClaimsPage(taxYear, benefitType, isInYear, benefitSummaryListRowData)
   }
 }

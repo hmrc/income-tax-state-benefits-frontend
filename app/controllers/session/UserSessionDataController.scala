@@ -18,8 +18,8 @@ package controllers.session
 
 import actions.ActionsProvider
 import config.ErrorHandler
-import controllers.jobseekers.routes.{JobSeekersAllowanceController, ReviewClaimController, StartDateController}
-import models.StateBenefitsUserData
+import controllers.jobseekers.routes.{ClaimsController, ReviewClaimController, StartDateController}
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
@@ -36,19 +36,22 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
                                          (implicit ec: ExecutionContext, mcc: MessagesControllerComponents)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def create(taxYear: Int): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>
+  def create(taxYear: Int,
+             benefitType: BenefitType): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>
     stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, request.user)).map {
       case Left(_) => errorHandler.internalServerError()
-      case Right(uuid) => Redirect(StartDateController.show(taxYear, uuid))
+      case Right(uuid) => Redirect(StartDateController.show(taxYear, benefitType, uuid))
     }
   }
 
-  def loadToSession(taxYear: Int, benefitId: UUID): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
+  def loadToSession(taxYear: Int,
+                    benefitType: BenefitType,
+                    benefitId: UUID): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
     StateBenefitsUserData(taxYear, request.user, benefitId, request.incomeTaxUserData) match {
-      case None => Future.successful(Redirect(JobSeekersAllowanceController.show(taxYear)))
+      case None => Future.successful(Redirect(ClaimsController.show(taxYear, benefitType)))
       case Some(stateBenefitsUserData) => stateBenefitsService.createOrUpdate(stateBenefitsUserData).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, uuid))
+        case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, benefitType, uuid))
       }
     }
   }

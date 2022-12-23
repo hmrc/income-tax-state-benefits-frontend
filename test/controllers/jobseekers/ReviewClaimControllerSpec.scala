@@ -16,7 +16,8 @@
 
 package controllers.jobseekers
 
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType.JobSeekersAllowance
 import models.errors.HttpParserError
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.Results.{InternalServerError, Redirect}
@@ -47,9 +48,9 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   "show" should {
     "return a successful response" in {
-      mockSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
 
-      val result = underTest.show(taxYearEOY, sessionDataId).apply(fakeIndividualRequest)
+      val result = underTest.show(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest)
 
       status(result) shouldBe OK
       contentType(result) shouldBe Some("text/html")
@@ -58,45 +59,45 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   ".saveAndContinue" should {
     "handle internal server error when updating saveStateBenefit fails" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockSaveStateBenefit(aStateBenefitsUserData, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
-      val result = underTest.saveAndContinue(taxYearEOY, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
+      val result = underTest.saveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
     "redirect to JobSeekersAllowance Page on successful save of StateBenefit" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockSaveStateBenefit(aStateBenefitsUserData, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
 
-      await(underTest.saveAndContinue(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+      await(underTest.saveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
+        Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
     }
   }
 
   ".restoreClaim" should {
     "handle internal server error when restoreClaim fails" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockRestoreClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
-      val result = underTest.restoreClaim(taxYearEOY, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
+      val result = underTest.restoreClaim(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
     "redirect to JobSeekersAllowance Page on successful claim restore" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, sessionDataId, aStateBenefitsUserData)
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockRestoreClaim(aUser, sessionDataId, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
 
-      await(underTest.restoreClaim(taxYearEOY, sessionDataId).apply(request)) shouldBe
-        Redirect(JobSeekersAllowanceController.show(taxYearEOY))
+      await(underTest.restoreClaim(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
+        Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
     }
   }
 }

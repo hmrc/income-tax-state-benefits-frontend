@@ -78,10 +78,10 @@
 
     @govukSummaryList(SummaryList(summaryListOptionalRows.flatten))
 
-    @formWithCSRF(action = RemoveClaimController.submit(pageModel.taxYear, pageModel.sessionDataId)) {
+    @formWithCSRF(action = RemoveClaimController.submit(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)) {
         <div class="govuk-button-group">
             @button(alternativeText = "common.removeClaim", classes = Some("govuk-!-margin-top-6 govuk-button--warning"), attributes = Map("id" -> "remove-claim-button-id"))
-            @link(link = ReviewClaimController.show(pageModel.taxYear, pageModel.sessionDataId).url, messageKeyOrValue = "common.removeClaimPage.link", hiddenText = Some("jobSeekersAllowance.removeClaimPage.link.hidden"), id = Some("do-not-remove-claim-link-id"))
+            @link(link = ReviewClaimController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId).url, messageKeyOrValue = "common.removeClaimPage.link", hiddenText = Some("jobSeekersAllowance.removeClaimPage.link.hidden"), id = Some("do-not-remove-claim-link-id"))
         </div>
     }
 }

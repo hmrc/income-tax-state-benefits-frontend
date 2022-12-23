@@ -16,6 +16,7 @@
 
 package models.pages.jobseekers
 
+import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.providers.TaxYearProvider
@@ -29,8 +30,9 @@ class RemoveClaimPageSpec extends UnitTest
     "return prefilled data when end date is present and start date is within tax year" in {
       val claim = aStateBenefitsUserData.claim.get
 
-      RemoveClaimPage.apply(taxYearEOY, aStateBenefitsUserData) shouldBe RemoveClaimPage(
+      RemoveClaimPage.apply(taxYearEOY, JobSeekersAllowance, aStateBenefitsUserData) shouldBe RemoveClaimPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         itemsFirstDate = claim.startDate,
         itemsSecondDate = claim.endDate.get,
@@ -46,8 +48,9 @@ class RemoveClaimPageSpec extends UnitTest
       val claim = aStateBenefitsUserData.claim.get.copy(endDate = None)
       val stateBenefitsData = aStateBenefitsUserData.copy(claim = Some(claim))
 
-      RemoveClaimPage.apply(taxYearEOY, stateBenefitsData) shouldBe RemoveClaimPage(
+      RemoveClaimPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsData) shouldBe RemoveClaimPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         sessionDataId = stateBenefitsData.sessionDataId.get,
         itemsFirstDate = claim.startDate,
         itemsSecondDate = LocalDate.parse(s"$taxYearEOY-04-05"),
@@ -62,8 +65,9 @@ class RemoveClaimPageSpec extends UnitTest
     "return prefilled data when start date is not within tax year" in {
       val claim = aStateBenefitsUserData.claim.get.copy(startDate = LocalDate.of(taxYearEOY - 1, 4, 5))
       val stateBenefitsData = aStateBenefitsUserData.copy(claim = Some(claim))
-      RemoveClaimPage.apply(taxYearEOY, stateBenefitsData) shouldBe RemoveClaimPage(
+      RemoveClaimPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsData) shouldBe RemoveClaimPage(
         taxYear = taxYearEOY,
+        benefitType = JobSeekersAllowance,
         sessionDataId = stateBenefitsData.sessionDataId.get,
         itemsFirstDate = LocalDate.of(taxYearEOY - 1, 4, 6),
         itemsSecondDate = claim.endDate.get,

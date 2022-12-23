@@ -18,7 +18,8 @@ package controllers.jobseekers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.jobseekers.routes.JobSeekersAllowanceController
+import controllers.jobseekers.routes.ClaimsController
+import models.BenefitType
 import models.pages.jobseekers.RemoveClaimPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,14 +40,16 @@ class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId) { implicit request =>
-    Ok(pageView(RemoveClaimPage(taxYear, request.stateBenefitsUserData)))
+           benefitType: BenefitType,
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
+    Ok(pageView(RemoveClaimPage(taxYear, benefitType, request.stateBenefitsUserData)))
   }
 
   def submit(taxYear: Int,
-             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, sessionDataId).async { implicit request =>
+             benefitType: BenefitType,
+             sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
     stateBenefitsService.removeClaim(request.user, sessionDataId).map {
-      case Right(_) => Redirect(JobSeekersAllowanceController.show(taxYear))
+      case Right(_) => Redirect(ClaimsController.show(taxYear, benefitType))
       case Left(_) => errorHandler.internalServerError()
     }
   }

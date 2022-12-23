@@ -17,6 +17,7 @@
 package support.builders.pages.jobseekers
 
 import forms.jobseekers.FormsProvider
+import models.BenefitType.JobSeekersAllowance
 import models.pages.jobseekers.EndDateQuestionPage
 import support.utils.TaxYearUtils.taxYearEOY
 
@@ -26,6 +27,7 @@ object EndDateQuestionPageBuilder {
 
   val aEndDateQuestionPage: EndDateQuestionPage = EndDateQuestionPage(
     taxYear = taxYearEOY,
+    benefitType = JobSeekersAllowance,
     sessionDataId = UUID.randomUUID(),
     form = new FormsProvider().endDateYesNoForm(taxYearEOY)
   )

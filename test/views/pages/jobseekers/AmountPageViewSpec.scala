@@ -18,6 +18,7 @@ package views.pages.jobseekers
 
 import controllers.jobseekers.routes.AmountController
 import forms.AmountForm
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -126,7 +127,7 @@ class AmountPageViewSpec extends ViewUnitTest {
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedP1Text, Selectors.paragraphTextSelector)
         amountBoxLabelCheck(userScenario.commonExpectedResults.expectedLabelText)
         amountBoxHintCheck(userScenario.commonExpectedResults.expectedHintText)
-        formPostLinkCheck(AmountController.submit(taxYearEOY, anAmountPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(AmountController.submit(taxYearEOY, JobSeekersAllowance, anAmountPage.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 

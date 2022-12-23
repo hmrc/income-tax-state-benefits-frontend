@@ -16,9 +16,11 @@
 
 package models.pages.jobseekers
 
+import models.BenefitType
 import play.api.data.Form
 
 case class SectionCompletedQuestionPage(taxYear: Int,
+                                        benefitType: BenefitType,
                                         form: Form[Boolean])
 
 

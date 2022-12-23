@@ -17,6 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.jobseekers.routes._
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -220,23 +221,26 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
           textOnPageCheck(get.expectedStartDateText, summaryListRowFieldNameSelector(1))
           textOnPageCheck(translatedStartDate, summaryListRowFieldValueSelector(1))
-          linkCheck(s"$expectedChangeLinkText ${get.expectedStartDateHiddenText}", changeLink(1), StartDateController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedStartDateHiddenText}", changeLink(1),
+            StartDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
           textOnPageCheck(expectedEndDateQuestionText(taxYearEOY), summaryListRowFieldNameSelector(2))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
           linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
-            EndDateQuestionController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
+            EndDateQuestionController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
           textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
           textOnPageCheck(translatedEndDate, summaryListRowFieldValueSelector(3))
-          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3), EndDateController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3),
+            EndDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
           textOnPageCheck(get.expectedAmountText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
           textOnPageCheck(bigDecimalCurrency(pageModel.amount.get.toString()), summaryListRowFieldValueSelector(4))
-          linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(4), AmountController.show(taxYearEOY, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(4),
+            AmountController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(5), "for the tax paid question")
           checkElementsCount(6, rowsSelector)
           buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveAndContinueButtonSelector)
-          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
-          linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, pageModel.sessionDataId).url,
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Selectors.pageFormSelector)
+          linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url,
             Some(expectedRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
           elementNotOnPageCheck(restoreClaimButtonSelector)
           elementNotOnPageCheck(backLinkSelector)
@@ -250,7 +254,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
           implicit val document: Document = Jsoup.parse(page(pageModel).body)
           textOnPageCheck(userScenario.commonExpectedResults.expectedExternalDataText, Selectors.p1)
-          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Selectors.pageFormSelector)
         }
 
         "the claim is ignored" which {
@@ -261,13 +265,13 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
           implicit val document: Document = Jsoup.parse(page(pageModel).body)
           buttonCheck(userScenario.commonExpectedResults.expectedRestoreClaimButtonText, restoreClaimButtonSelector)
-          linkCheck(expectedBackText, backLinkSelector, JobSeekersAllowanceController.show(taxYearEOY).url)
+          linkCheck(expectedBackText, backLinkSelector, ClaimsController.show(taxYearEOY, JobSeekersAllowance).url)
           elementNotOnPageCheck(changeLink(1))
           elementNotOnPageCheck(changeLink(2))
           elementNotOnPageCheck(changeLink(3))
           elementNotOnPageCheck(changeLink(4))
           elementNotOnPageCheck(changeLink(5))
-          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, pageModel.sessionDataId).url, Selectors.pageFormSelector)
+          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Selectors.pageFormSelector)
         }
       }
 
@@ -290,7 +294,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           textOnPageCheck(translatedStartDate, summaryListRowFieldValueSelector(1))
           elementNotOnPageCheck(changeLink(1))
           checkElementsCount(count = 1, rowsSelector)
-          linkCheck(expectedContinueButtonText, continueButtonSelector, JobSeekersAllowanceController.show(taxYear).url)
+          linkCheck(expectedContinueButtonText, continueButtonSelector, ClaimsController.show(taxYear, JobSeekersAllowance).url)
           elementNotOnPageCheck(restoreClaimButtonSelector)
           elementNotOnPageCheck(backLinkSelector)
         }

@@ -18,6 +18,7 @@ package views.pages.jobseekers
 
 import controllers.jobseekers.routes.TaxPaidController
 import forms.AmountForm
+import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -126,7 +127,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedP1Text, Selectors.paragraphTextSelector)
         amountBoxLabelCheck(userScenario.commonExpectedResults.expectedLabelText)
         amountBoxHintCheck(userScenario.commonExpectedResults.expectedHintText)
-        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, aTaxPaidPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, JobSeekersAllowance, aTaxPaidPage.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 

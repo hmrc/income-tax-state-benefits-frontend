@@ -17,6 +17,7 @@
 package actions
 
 import config.{AppConfig, ErrorHandler}
+import models.BenefitType
 import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 import services.StateBenefitsService
@@ -37,16 +38,16 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
 
-  def endOfYearSessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+  def endOfYearSessionDataFor(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(EndOfYearFilterAction(taxYear, appConfig))
-      .andThen(UserSessionDataRequestRefinerAction(taxYear: Int, sessionDataId, stateBenefitsService, errorHandler))
+      .andThen(UserSessionDataRequestRefinerAction(taxYear, benefitType, sessionDataId, stateBenefitsService, errorHandler))
 
-  def sessionDataFor(taxYear: Int, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+  def sessionDataFor(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
-      .andThen(UserSessionDataRequestRefinerAction(taxYear, sessionDataId, stateBenefitsService, errorHandler))
+      .andThen(UserSessionDataRequestRefinerAction(taxYear, benefitType, sessionDataId, stateBenefitsService, errorHandler))
 
   def endOfYear(taxYear: Int): ActionBuilder[AuthorisationRequest, AnyContent] =
     authAction
