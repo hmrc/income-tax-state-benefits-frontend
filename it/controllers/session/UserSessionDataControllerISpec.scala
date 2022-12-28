@@ -16,7 +16,7 @@
 
 package controllers.session
 
-import controllers.jobseekers.routes.{ReviewClaimController, StartDateController}
+import controllers.routes.{ReviewClaimController, StartDateController}
 import models.BenefitType.JobSeekersAllowance
 import models.StateBenefitsUserData
 import play.api.http.HeaderNames
@@ -69,7 +69,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userPriorDataStub(aUser.nino, taxYear, anAllStateBenefitsData)
-        createOrUpdateUserDataStub(StateBenefitsUserData(taxYear, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
+        createOrUpdateUserDataStub(StateBenefitsUserData(taxYear, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
         urlGet(url(taxYear, Some(aStateBenefit.benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -81,7 +81,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userPriorDataStub(aUser.nino, taxYearEOY, anAllStateBenefitsData)
-        createOrUpdateUserDataStub(StateBenefitsUserData(taxYearEOY, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
+        createOrUpdateUserDataStub(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
         urlGet(url(taxYearEOY, Some(aStateBenefit.benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 

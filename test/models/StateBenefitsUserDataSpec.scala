@@ -16,6 +16,7 @@
 
 package models
 
+import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
@@ -71,8 +72,8 @@ class StateBenefitsUserDataSpec extends UnitTest {
 
   ".apply(taxYear: Int, user: User)" should {
     "create correct StateBenefitsUserData instance" in {
-      StateBenefitsUserData.apply(anyTaxYear, aUser) shouldBe StateBenefitsUserData(
-        benefitType = BenefitType.JobSeekersAllowance.typeName,
+      StateBenefitsUserData.apply(anyTaxYear, EmploymentSupportAllowance, aUser) shouldBe StateBenefitsUserData(
+        benefitType = EmploymentSupportAllowance.typeName,
         sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,
@@ -88,15 +89,15 @@ class StateBenefitsUserDataSpec extends UnitTest {
     "create correct StateBenefitsUserData instance when benefitId not found" in {
       val unknownBenefitId = UUID.randomUUID()
 
-      StateBenefitsUserData.apply(anyTaxYear, aUser, unknownBenefitId, anIncomeTaxUserData) shouldBe None
+      StateBenefitsUserData.apply(anyTaxYear, JobSeekersAllowance, aUser, unknownBenefitId, anIncomeTaxUserData) shouldBe None
     }
 
     "create correct StateBenefitsUserData instance when benefitId found in HMRC added data" in {
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit)))
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
-      StateBenefitsUserData.apply(anyTaxYear, aUser, aStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
-        benefitType = BenefitType.JobSeekersAllowance.typeName,
+      StateBenefitsUserData.apply(anyTaxYear, JobSeekersAllowance, aUser, aStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
+        benefitType = JobSeekersAllowance.typeName,
         sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,
@@ -111,8 +112,8 @@ class StateBenefitsUserDataSpec extends UnitTest {
       val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aCustomerAddedStateBenefit)))
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData))))
 
-      StateBenefitsUserData.apply(anyTaxYear, aUser, aCustomerAddedStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
-        benefitType = BenefitType.JobSeekersAllowance.typeName,
+      StateBenefitsUserData.apply(anyTaxYear, EmploymentSupportAllowance, aUser, aCustomerAddedStateBenefit.benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
+        benefitType = EmploymentSupportAllowance.typeName,
         sessionDataId = None,
         sessionId = aUser.sessionId,
         mtdItId = aUser.mtditid,

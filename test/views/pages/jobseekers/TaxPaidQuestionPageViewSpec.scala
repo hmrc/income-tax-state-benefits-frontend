@@ -16,9 +16,8 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.TaxPaidQuestionController
-import forms.YesNoForm
-import forms.jobseekers.FormsProvider
+import controllers.routes.TaxPaidQuestionController
+import forms.{FormsProvider, YesNoForm}
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -27,9 +26,9 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
-import support.builders.pages.jobseekers.TaxPaidQuestionPageBuilder.aTaxPaidQuestionPage
+import support.builders.pages.TaxPaidQuestionPageBuilder.aTaxPaidQuestionPage
 import utils.ViewUtils.translatedDateFormatter
-import views.html.pages.jobseekers.TaxPaidQuestionPageView
+import views.html.pages.TaxPaidQuestionPageView
 
 import java.time.LocalDate
 
@@ -162,7 +161,7 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
         val claimCYAModel = aClaimCYAModel.copy(startDate = aTaxPaidQuestionPage.titleFirstDate, endDate = Some(aTaxPaidQuestionPage.titleSecondDate))
-        val pageForm = new FormsProvider().taxTakenOffYesNoForm(userScenario.isAgent, aTaxPaidQuestionPage.taxYear, claimCYAModel)
+        val pageForm = new FormsProvider().taxTakenOffYesNoForm(aTaxPaidQuestionPage.taxYear, JobSeekersAllowance, userScenario.isAgent, claimCYAModel)
         val pageModel = aTaxPaidQuestionPage.copy(form = pageForm.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 

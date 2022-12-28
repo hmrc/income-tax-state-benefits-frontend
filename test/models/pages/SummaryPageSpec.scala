@@ -16,8 +16,8 @@
 
 package models.pages
 
-import controllers.jobseekers.routes.ClaimsController
-import models.BenefitType.JobSeekersAllowance
+import controllers.routes.ClaimsController
+import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
 import models.pages.elements.TaskListItem
 import models.pages.elements.TaskListTag.Completed
 import support.UnitTest
@@ -31,6 +31,7 @@ class SummaryPageSpec extends UnitTest
       SummaryPage.apply(taxYear = taxYear) shouldBe SummaryPage(
         taxYear = taxYear,
         taskListItems = Seq(
+          TaskListItem(EmploymentSupportAllowance, ClaimsController.show(taxYear, EmploymentSupportAllowance), Completed),
           TaskListItem(JobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance), Completed)
         )
       )

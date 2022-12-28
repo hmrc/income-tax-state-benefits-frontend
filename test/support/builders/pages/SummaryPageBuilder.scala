@@ -16,7 +16,7 @@
 
 package support.builders.pages
 
-import controllers.jobseekers.routes.ClaimsController
+import controllers.routes.ClaimsController
 import models.BenefitType._
 import models.pages.SummaryPage
 import models.pages.elements.TaskListItem

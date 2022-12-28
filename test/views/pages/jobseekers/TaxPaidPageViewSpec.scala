@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.TaxPaidController
+import controllers.routes.TaxPaidController
 import forms.AmountForm
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
@@ -25,9 +25,9 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.TaxPaidPageBuilder.aTaxPaidPage
+import support.builders.pages.TaxPaidPageBuilder.aTaxPaidPage
 import utils.ViewUtils.translatedDateFormatter
-import views.html.pages.jobseekers.TaxPaidPageView
+import views.html.pages.TaxPaidPageView
 
 import java.time.LocalDate
 

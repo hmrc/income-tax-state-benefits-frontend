@@ -18,7 +18,7 @@ package controllers.session
 
 import actions.ActionsProvider
 import config.ErrorHandler
-import controllers.jobseekers.routes.{ClaimsController, ReviewClaimController, StartDateController}
+import controllers.routes.{ClaimsController, ReviewClaimController, StartDateController}
 import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +38,7 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
 
   def create(taxYear: Int,
              benefitType: BenefitType): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>
-    stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, request.user)).map {
+    stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, benefitType, request.user)).map {
       case Left(_) => errorHandler.internalServerError()
       case Right(uuid) => Redirect(StartDateController.show(taxYear, benefitType, uuid))
     }
@@ -47,7 +47,7 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
   def loadToSession(taxYear: Int,
                     benefitType: BenefitType,
                     benefitId: UUID): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
-    StateBenefitsUserData(taxYear, request.user, benefitId, request.incomeTaxUserData) match {
+    StateBenefitsUserData(taxYear, benefitType, request.user, benefitId, request.incomeTaxUserData) match {
       case None => Future.successful(Redirect(ClaimsController.show(taxYear, benefitType)))
       case Some(stateBenefitsUserData) => stateBenefitsService.createOrUpdate(stateBenefitsUserData).map {
         case Left(_) => errorHandler.internalServerError()

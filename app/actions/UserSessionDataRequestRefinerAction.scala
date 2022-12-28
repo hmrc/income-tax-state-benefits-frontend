@@ -17,7 +17,7 @@
 package actions
 
 import config.ErrorHandler
-import controllers.jobseekers.routes.ClaimsController
+import controllers.routes.ClaimsController
 import models.BenefitType
 import models.requests.{AuthorisationRequest, UserSessionDataRequest}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}

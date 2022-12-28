@@ -16,7 +16,7 @@
 
 package actions
 
-import controllers.jobseekers.routes.ClaimsController
+import controllers.routes.ClaimsController
 import models.BenefitType.JobSeekersAllowance
 import models.errors.HttpParserError
 import models.requests.UserSessionDataRequest

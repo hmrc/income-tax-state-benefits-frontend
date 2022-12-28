@@ -44,19 +44,19 @@ object Binders {
     }
 
   private def mapToBenefitType(value: String): Either[String, BenefitType] = value match {
-    case "state-pension" | "statePension" => Right(BenefitType.StatePension)
-    case "state-pension-lump-sum" | "statePensionLumpSum" => Right(BenefitType.StatePensionLumpSum)
+//    case "state-pension" | "statePension" => Right(BenefitType.StatePension)
+//    case "state-pension-lump-sum" | "statePensionLumpSum" => Right(BenefitType.StatePensionLumpSum)
     case "employment-support-allowance" | "employmentSupportAllowance" => Right(BenefitType.EmploymentSupportAllowance)
     case "jobseekers-allowance" | "jobSeekersAllowance" => Right(BenefitType.JobSeekersAllowance)
-    case "other-state-benefits" | "otherStateBenefits" => Right(BenefitType.OtherStateBenefits)
+//    case "other-state-benefits" | "otherStateBenefits" => Right(BenefitType.OtherStateBenefits)
     case _ => Left(s"Unknown benefit type $value")
   }
 
   private def mapToString(value: BenefitType) = value match {
-    case BenefitType.StatePension => "state-pension"
-    case BenefitType.StatePensionLumpSum => "state-pension-lump-sum"
+//    case BenefitType.StatePension => "state-pension"
+//    case BenefitType.StatePensionLumpSum => "state-pension-lump-sum"
     case BenefitType.EmploymentSupportAllowance => "employment-support-allowance"
     case BenefitType.JobSeekersAllowance => "jobseekers-allowance"
-    case BenefitType.OtherStateBenefits => "other-state-benefits"
+//    case BenefitType.OtherStateBenefits => "other-state-benefits"
   }
 }

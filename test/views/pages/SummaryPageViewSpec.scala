@@ -16,7 +16,7 @@
 
 package views.pages
 
-import controllers.jobseekers.routes.ClaimsController
+import controllers.routes.ClaimsController
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
 import org.jsoup.Jsoup

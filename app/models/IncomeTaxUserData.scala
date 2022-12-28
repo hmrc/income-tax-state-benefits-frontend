@@ -20,12 +20,38 @@ import play.api.libs.json.{Json, OFormat}
 
 case class IncomeTaxUserData(stateBenefits: Option[AllStateBenefitsData] = None) {
 
-  lazy val hmrcJobSeekersAllowances: Set[StateBenefit] = stateBenefits
+  def hmrcAllowancesFor(benefitType: BenefitType): Set[StateBenefit] = benefitType match {
+//    case BenefitType.StatePension => ???
+//    case BenefitType.StatePensionLumpSum => ???
+    case BenefitType.EmploymentSupportAllowance => hmrcEmploymentSupportAllowances
+    case BenefitType.JobSeekersAllowance => hmrcJobSeekersAllowances
+//    case BenefitType.OtherStateBenefits => ???
+  }
+
+  def customerAllowancesFor(benefitType: BenefitType): Set[CustomerAddedStateBenefit] = benefitType match {
+//    case BenefitType.StatePension => ???
+//    case BenefitType.StatePensionLumpSum => ???
+    case BenefitType.EmploymentSupportAllowance => customerEmploymentSupportAllowances
+    case BenefitType.JobSeekersAllowance => customerJobSeekersAllowances
+//    case BenefitType.OtherStateBenefits => ???
+  }
+
+  private lazy val hmrcEmploymentSupportAllowances: Set[StateBenefit] = stateBenefits
+    .flatMap(_.stateBenefitsData)
+    .flatMap(_.employmentSupportAllowances)
+    .getOrElse(Set.empty)
+
+  private lazy val customerEmploymentSupportAllowances: Set[CustomerAddedStateBenefit] = stateBenefits
+    .flatMap(_.customerAddedStateBenefitsData)
+    .flatMap(_.employmentSupportAllowances)
+    .getOrElse(Set.empty)
+
+  private lazy val hmrcJobSeekersAllowances: Set[StateBenefit] = stateBenefits
     .flatMap(_.stateBenefitsData)
     .flatMap(_.jobSeekersAllowances)
     .getOrElse(Set.empty)
 
-  lazy val customerJobSeekersAllowances: Set[CustomerAddedStateBenefit] = stateBenefits
+  private lazy val customerJobSeekersAllowances: Set[CustomerAddedStateBenefit] = stateBenefits
     .flatMap(_.customerAddedStateBenefitsData)
     .flatMap(_.jobSeekersAllowances)
     .getOrElse(Set.empty)

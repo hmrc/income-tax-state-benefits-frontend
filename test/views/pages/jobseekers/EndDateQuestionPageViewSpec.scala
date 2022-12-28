@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.jobseekers.routes.EndDateQuestionController
+import controllers.routes.EndDateQuestionController
 import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
@@ -25,8 +25,8 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.jobseekers.EndDateQuestionPageBuilder.aEndDateQuestionPage
-import views.html.pages.jobseekers.EndDateQuestionPageView
+import support.builders.pages.EndDateQuestionPageBuilder.aEndDateQuestionPage
+import views.html.pages.EndDateQuestionPageView
 
 class EndDateQuestionPageViewSpec extends ViewUnitTest {
 
