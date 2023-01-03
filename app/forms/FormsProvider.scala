@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,9 +103,5 @@ class FormsProvider() {
   def taxPaidAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
     // TODO: This is wrong and will be implemented in another story. Test should be added when properly implemented
     emptyFieldKey = "empty error"
-  )
-
-  def sectionCompletedYesNoForm(): Form[Boolean] = YesNoForm.yesNoForm(
-    "common.sectionCompletedQuestionPage.error"
   )
 }

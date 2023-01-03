@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.SectionCompletedQuestionController
+@import controllers.routes.SummaryController
 @import controllers.session.routes.UserSessionDataController
 
 @import models.pages.elements.BenefitSummaryListRowData
@@ -108,7 +108,7 @@
         }
     }
     <div class="govuk-button-group govuk-!-margin-top-7">
-        @button(href = Some(SectionCompletedQuestionController.show(pageModel.taxYear, pageModel.benefitType).url), alternativeText = "common.continue")
+        @button(href = Some(SummaryController.show(pageModel.taxYear).url), alternativeText = "common.continue")
     </div>
 }
 

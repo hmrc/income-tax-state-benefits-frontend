@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,18 +99,6 @@ class FormsProviderSpec extends UnitTest
     "return form with error when data is equal to zero" in {
       underTest.amountForm(JobSeekersAllowance).bind(zeroAmount).errors shouldBe Seq(
         FormError(AmountForm.amount, Seq("jobSeekersAllowance.amountPage.lessThanZero.amount.error"), Seq())
-      )
-    }
-  }
-
-  ".sectionCompletedYesNoForm" should {
-    "return a form that maps data when data is correct" in {
-      underTest.sectionCompletedYesNoForm().bind(correctBooleanData).errors shouldBe Seq.empty
-    }
-
-    "return a form that contains error when data is incorrect" in {
-      underTest.sectionCompletedYesNoForm().bind(wrongKeyData).errors shouldBe Seq(
-        FormError("value", Seq("common.sectionCompletedQuestionPage.error"))
       )
     }
   }

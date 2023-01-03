@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,12 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
   def show(taxYear: Int,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
-    Ok(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)))))
+    Ok(pageView(StartDatePage(taxYear,
+                              benefitType,
+                              request.stateBenefitsUserData,
+                              formsProvider.startDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)))
+      )
+    )
   }
 
   def submit(taxYear: Int,
