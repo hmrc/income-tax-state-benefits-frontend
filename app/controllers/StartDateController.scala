@@ -44,7 +44,12 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
   def show(taxYear: Int,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
-    Ok(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.startDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)))))
+    Ok(pageView(StartDatePage(taxYear,
+                              benefitType,
+                              request.stateBenefitsUserData,
+                              formsProvider.startDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)))
+      )
+    )
   }
 
   def submit(taxYear: Int,

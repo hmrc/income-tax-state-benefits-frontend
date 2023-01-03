@@ -102,16 +102,4 @@ class FormsProviderSpec extends UnitTest
       )
     }
   }
-
-  ".sectionCompletedYesNoForm" should {
-    "return a form that maps data when data is correct" in {
-      underTest.sectionCompletedYesNoForm().bind(correctBooleanData).errors shouldBe Seq.empty
-    }
-
-    "return a form that contains error when data is incorrect" in {
-      underTest.sectionCompletedYesNoForm().bind(wrongKeyData).errors shouldBe Seq(
-        FormError("value", Seq("common.sectionCompletedQuestionPage.error"))
-      )
-    }
-  }
 }

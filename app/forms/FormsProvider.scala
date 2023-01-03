@@ -104,8 +104,4 @@ class FormsProvider() {
     // TODO: This is wrong and will be implemented in another story. Test should be added when properly implemented
     emptyFieldKey = "empty error"
   )
-
-  def sectionCompletedYesNoForm(): Form[Boolean] = YesNoForm.yesNoForm(
-    "common.sectionCompletedQuestionPage.error"
-  )
 }

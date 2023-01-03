@@ -16,7 +16,7 @@
 
 package views.pages.jobseekers
 
-import controllers.routes.SectionCompletedQuestionController
+import controllers.routes.SummaryController
 import controllers.session.routes.UserSessionDataController
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserPriorDataRequest
@@ -139,7 +139,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         elementNotOnPageCheck(Selectors.summaryListRowSelector(1))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, JobSeekersAllowance).url, Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY, JobSeekersAllowance).url))
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SummaryController.show(taxYearEOY).url))
       }
 
       "render Job Seeker's Allowance with job seeker's allowance items" which {
@@ -165,7 +165,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         textOnPageCheck(userScenario.commonExpectedResults.expectedSummaryListRow2Value2Text(taxYearEOY), Selectors.summaryListRowValueSelector(2, 2), "row-2-2")
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedSummaryListRowRemovedText, Selectors.summaryListRowRemovedSelector(2))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, JobSeekersAllowance).url, Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYearEOY, JobSeekersAllowance).url))
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SummaryController.show(taxYearEOY).url))
       }
 
       "render the page for an inYear tax claim" which {
@@ -184,7 +184,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
           Selectors.summaryListRowViewLinkSelector(1, isInYear = true), UserSessionDataController.loadToSession(taxYear, JobSeekersAllowance, aBenefitSummaryListRowData.benefitId).url,
           Some(expectedViewLinkHiddenText), Some(Selectors.summaryListRowViewLinkHiddenTextSelector(1, isInYear = true)))
         elementNotOnPageCheck(Selectors.addMissingClaimFormSelector)
-        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SectionCompletedQuestionController.show(taxYear, JobSeekersAllowance).url))
+        buttonCheck(expectedButtonText, Selectors.buttonSelector, Some(SummaryController.show(taxYear).url))
       }
     }
   }

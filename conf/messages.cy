@@ -50,10 +50,6 @@ common.taxPaidPage.textBox.label = Amount of tax taken off
 common.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
 common.reviewClaimPage.restoreClaim = Restore claim
 common.removeClaimPage.link = Don’t remove claim
-common.sectionCompletedQuestionPage.title = Have you completed this section?
-common.sectionCompletedQuestionPage.yes = Yes, I’ve completed this section
-common.sectionCompletedQuestionPage.no = No, I’ll come back to it later
-common.sectionCompletedQuestionPage.error = Select whether you’ve completed this section
 
 common.employmentSupportAllowance = Employment and Support Allowance
 common.employmentSupportAllowance.caption = Employment and Support Allowance for 6 April {0} to 5 April {1}
