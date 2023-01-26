@@ -73,10 +73,12 @@
         <dd class="govuk-summary-list__actions ">
             @link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some(s"$pageKeysPrefix.view.hiddenText"))
         </dd>
-    @if(rowData.isIgnored){
-        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"common.claimsPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
-    }
     </div>
+    @if(rowData.isIgnored){
+    <div>
+        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"common.claimsPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
+    </div>
+    }
 }
 
 @inYearSummaryListRow(rowData: BenefitSummaryListRowData) = {
