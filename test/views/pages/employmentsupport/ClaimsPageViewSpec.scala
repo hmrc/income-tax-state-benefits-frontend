@@ -36,12 +36,10 @@ class ClaimsPageViewSpec extends ViewUnitTest {
   private val page: ClaimsPageView = inject[ClaimsPageView]
 
   object Selectors {
-
+    val summaryListRowRemovedSelector: Int => String = (row: Int) => s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(2) > p"
     val addMissingClaimButtonSelector = "#add-missing-claim-button-id"
     val addMissingClaimFormSelector = "#main-content > div > div > form"
     val buttonSelector = "#continue"
-
-    def summaryListRowRemovedSelector(row: Int): String = s"div.govuk-summary-list__row:nth-child($row) > div:nth-child(1) > p"
 
     def summaryListRowSelector(row: Int, isInYear: Boolean = false): String = s"div.govuk-summary-list__row:nth-child($row) ${if (!isInYear) "> div:nth-child(1)" else ""}"
 
