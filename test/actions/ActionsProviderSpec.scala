@@ -17,6 +17,7 @@
 package actions
 
 import controllers.errors.routes.UnauthorisedUserErrorController
+import controllers.routes.ClaimsController
 import models.BenefitType.JobSeekersAllowance
 import models.IncomeTaxUserData
 import models.authorisation.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
@@ -125,11 +126,11 @@ class ActionsProviderSpec extends ControllerUnitTest
     }
   }
 
-  ".sessionDataFor(taxYear)" should {
+  ".reviewClaimSessionDataFor(...)" should {
     "redirect to UnauthorisedUserErrorController when authentication fails" in {
       mockFailToAuthenticate()
 
-      val underTest = actionsProvider.sessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.reviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
     }
@@ -139,16 +140,26 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
-      val underTest = actionsProvider.sessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.reviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+    }
+
+    "redirect to ClaimsController when ReviewClaimFilterAction returns Redirect" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData.copy(claim = None)))
+
+      val underTest = actionsProvider.reviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
     }
 
     "return successful UserSessionDataRequest when user session data exists" in {
       mockAuthAsIndividual(Some(aUser.nino))
       mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
 
-      val underTest = actionsProvider.sessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+      val underTest = actionsProvider.reviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }

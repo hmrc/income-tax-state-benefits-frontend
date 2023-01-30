@@ -17,7 +17,8 @@
 package actions
 
 import controllers.routes.ClaimsController
-import models.BenefitType.JobSeekersAllowance
+import models.BenefitType
+import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
 import models.errors.HttpParserError
 import models.requests.UserSessionDataRequest
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND}
@@ -40,13 +41,15 @@ class UserSessionDataRequestRefinerActionSpec extends UnitTest
   private val executionContext = ExecutionContext.global
   private val sessionDataId: UUID = UUID.randomUUID()
 
-  private val underTest = UserSessionDataRequestRefinerAction(
+  private def createAction(benefitType: BenefitType) = UserSessionDataRequestRefinerAction(
     taxYear,
-    JobSeekersAllowance,
+    benefitType,
     sessionDataId,
     mockStateBenefitsService,
     mockErrorHandler
   )(executionContext)
+
+  private val underTest = createAction(JobSeekersAllowance)
 
   ".executionContext" should {
     "return the given execution context" in {
@@ -55,7 +58,7 @@ class UserSessionDataRequestRefinerActionSpec extends UnitTest
   }
 
   ".refine" should {
-    "redirect to JobSeekersAllowance when getting session data result in NOT_FOUND" in {
+    "redirect to ClaimsController when getting session data result in NOT_FOUND" in {
       mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(NOT_FOUND)))
 
       await(underTest.refine(anAuthorisationRequest)) shouldBe Left(Redirect(ClaimsController.show(taxYear, JobSeekersAllowance)))
@@ -66,6 +69,14 @@ class UserSessionDataRequestRefinerActionSpec extends UnitTest
       mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
 
       await(underTest.refine(anAuthorisationRequest)) shouldBe Left(InternalServerError)
+    }
+
+    "redirect to ClaimsController when benefitType from response differs from the URL one" in {
+      val underTest = createAction(EmploymentSupportAllowance)
+
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData.copy(benefitType = JobSeekersAllowance.typeName)))
+
+      await(underTest.refine(anAuthorisationRequest)) shouldBe Left(Redirect(ClaimsController.show(taxYear, EmploymentSupportAllowance)))
     }
 
     "return StateBenefitsUserData when the service returns data" in {

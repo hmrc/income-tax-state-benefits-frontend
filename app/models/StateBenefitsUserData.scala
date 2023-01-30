@@ -31,6 +31,8 @@ case class StateBenefitsUserData(benefitType: String,
 
   lazy val isHmrcData: Boolean = claim.exists(_.isHmrcData)
 
+  lazy val isCustomerAddedData: Boolean = !isHmrcData
+
   lazy val isFinished: Boolean = claim.exists(_.isFinished)
 }
 

@@ -41,7 +41,7 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
 
   def show(taxYear: Int,
            benefitType: BenefitType,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.sessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.reviewClaimSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
     Ok(pageView(ReviewClaimPage(taxYear, benefitType, isInYear = InYearUtil.inYear(taxYear), request.stateBenefitsUserData)))
   }
 

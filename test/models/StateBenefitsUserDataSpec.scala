@@ -56,6 +56,28 @@ class StateBenefitsUserDataSpec extends UnitTest {
     }
   }
 
+  ".isCustomerAddedData" should {
+    "return true" when {
+      "claim is None" in {
+        val underTest = aStateBenefitsUserData.copy(claim = None)
+
+        underTest.isCustomerAddedData shouldBe true
+      }
+
+      "claim.isHmrcData is false" in {
+        val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = false)))
+
+        underTest.isCustomerAddedData shouldBe true
+      }
+    }
+
+    "return false when claim.isHmrcData is true" in {
+      val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = true)))
+
+      underTest.isCustomerAddedData shouldBe false
+    }
+  }
+
   ".isFinished" should {
     "return false when claim is None" in {
       aStateBenefitsUserData.copy(claim = None).isFinished shouldBe false

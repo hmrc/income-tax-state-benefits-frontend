@@ -43,7 +43,8 @@ case class UserSessionDataRequestRefinerAction(taxYear: Int,
     stateBenefitsService.getUserSessionData(input.user, sessionDataId)(hc(input.request)).map {
       case Left(error) if error.status == NOT_FOUND => Left(Redirect(ClaimsController.show(taxYear, benefitType)))
       case Left(_) => Left(errorHandler.handleError(INTERNAL_SERVER_ERROR)(input.request))
-      case Right(stateBenefitsUserData) => Right(UserSessionDataRequest(stateBenefitsUserData, input.user, input.request))
+      case Right(userData) if userData.benefitType != benefitType.typeName => Left(Redirect(ClaimsController.show(taxYear, benefitType)))
+      case Right(userData) => Right(UserSessionDataRequest(userData, input.user, input.request))
     }
   }
 }
