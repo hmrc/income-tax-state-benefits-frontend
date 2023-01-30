@@ -40,6 +40,7 @@ trait Formatters {
   private[mappings] def currencyFormatter(requiredKey: String,
                                           invalidNumericKey: String,
                                           maxAmountKey: String,
+                                          maxAmountValue: BigDecimal,
                                           minAmountKey: Option[String],
                                           args: Seq[String] = Seq.empty[String]
                                          ): Formatter[BigDecimal] =
@@ -74,7 +75,7 @@ trait Formatters {
 
       private def betweenLimits(input: Either[Seq[FormError], BigDecimal], key: String) = {
         input.flatMap {
-          case value if value >= BigDecimal("100000000000") => Left(Seq(FormError(key, maxAmountKey, args)))
+          case value if value >= maxAmountValue => Left(Seq(FormError(key, maxAmountKey, Seq(maxAmountValue))))
           case value if value <= BigDecimal("0") && minAmountKey.isDefined => Left(Seq(FormError(key, minAmountKey.get, args)))
           case value => Right(value)
         }

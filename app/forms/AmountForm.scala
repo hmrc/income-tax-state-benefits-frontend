@@ -27,6 +27,7 @@ object AmountForm {
                   emptyFieldKey: String,
                   wrongFormatKey: String = "common.error.invalid_currency_format",
                   exceedsMaxAmountKey: String = "common.error.amountMaxLimit",
+                  maxAmountValue: BigDecimal = BigDecimal(100_000_000_000d),
                   underMinAmountKey: Option[String] = None,
                   emptyFieldArguments: Seq[String] = Seq.empty[String]
                 ): Form[BigDecimal] = Form(
@@ -34,6 +35,7 @@ object AmountForm {
       requiredKey = emptyFieldKey,
       wrongFormatKey = wrongFormatKey,
       maxAmountKey = exceedsMaxAmountKey,
+      maxAmountValue = maxAmountValue,
       minAmountKey = underMinAmountKey,
       args = emptyFieldArguments
     )

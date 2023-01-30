@@ -40,10 +40,11 @@ object MappingUtil extends Formatters {
   def currency(requiredKey: String,
                wrongFormatKey: String = "common.error.invalid_currency_format",
                maxAmountKey: String = "common.error.amountMaxLimit",
+               maxAmountValue: BigDecimal = BigDecimal(100_000_000_000d),
                minAmountKey: Option[String] = None,
                args: Seq[String] = Seq.empty[String]
               ): FieldMapping[BigDecimal] =
-    of(currencyFormatter(requiredKey, wrongFormatKey, maxAmountKey, minAmountKey, args))
+    of(currencyFormatter(requiredKey, wrongFormatKey, maxAmountKey, maxAmountValue, minAmountKey, args))
 
   def dateMapping(emptyDayKey: String,
                   emptyMonthKey: String,

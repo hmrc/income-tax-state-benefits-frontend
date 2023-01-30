@@ -33,6 +33,6 @@ object TaxPaidPageBuilder {
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-04-23"),
     titleSecondDate = aClaimCYAModel.endDate.get,
     sessionDataId = UUID.randomUUID(),
-    form = new FormsProvider().taxPaidAmountForm()
+    form = new FormsProvider().taxPaidAmountForm(JobSeekersAllowance, isAgent = false, maxAmount = aClaimCYAModel.amount.get - 1)
   )
 }

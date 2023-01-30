@@ -89,7 +89,7 @@ class AmountFormSpec extends UnitTest {
     "invalidate a currency that is too big" in {
       val testInput = Map(amount -> testCurrencyTooBig)
       val bigCurrencyTest = theForm().bind(testInput)
-      bigCurrencyTest.errors should contain(FormError(amount, "too big"))
+      bigCurrencyTest.errors should contain(FormError(amount, "too big", Seq(BigDecimal(100_000_000_000d))))
     }
   }
 }

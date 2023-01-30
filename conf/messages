@@ -47,6 +47,9 @@ common.endDateQuestionPage.error = Select yes if this claim ended in the tax yea
 common.amountPage.p1.agent = This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax.
 common.amountPage.p1.individual = This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax.
 common.taxPaidPage.textBox.label = Amount of tax taken off
+common.taxPaidPage.wrongFormat.amount.error = The amount of tax paid must be a number
+common.taxPaidPage.zeroOrLess.amount.error = The amount of tax paid must be more than £0
+common.taxPaidPage.exceedsMax.amount.error = The amount of tax paid must be less than £{0}
 common.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
 common.reviewClaimPage.restoreClaim = Restore claim
 common.removeClaimPage.link = Don’t remove claim
@@ -129,6 +132,10 @@ employmentSupportAllowance.amountPage.exceedsMax.amount.error = The amount of Em
 employmentSupportAllowance.taxPaidQuestionPage.error.agent = Select yes if your client had any tax taken off their Employment and Support Allowance between {0} and {1}
 employmentSupportAllowance.taxPaidQuestionPage.error.individual = Select yes if you had any tax taken off your Employment and Support Allowance between {0} and {1}
 
+#################       Employment and Support Allowance - Tax Paid Page        ########################################
+employmentSupportAllowance.taxPaidPage.empty.amount.error.agent = Enter the amount of tax taken off your client’s Employment and Support Allowance
+employmentSupportAllowance.taxPaidPage.empty.amount.error.individual = Enter the amount of tax taken off your Employment and Support Allowance
+
 #################       Employment and Support Allowance - Review claim page       ########################################
 employmentSupportAllowance.reviewClaimPage.title = Review Employment and Support Allowance claim
 employmentSupportAllowance.reviewClaimPage.startDate.hiddenText.agent = Change the date your client started getting Employment and Support Allowance
@@ -192,6 +199,10 @@ jobSeekersAllowance.amountPage.exceedsMax.amount.error = The amount of Jobseeker
 jobSeekersAllowance.taxPaidQuestionPage.error.agent = Select yes if your client had any tax taken off their Jobseeker’s Allowance between {0} and {1}
 jobSeekersAllowance.taxPaidQuestionPage.error.individual = Select yes if you had any tax taken off your Jobseeker’s Allowance between {0} and {1}
 
+#################       Jobseeker’s Allowance - Tax Paid Page        ########################################
+jobSeekersAllowance.taxPaidPage.empty.amount.error.agent = Enter the amount of tax taken off your client’s Jobseeker’s Allowance
+jobSeekersAllowance.taxPaidPage.empty.amount.error.individual = Enter the amount of tax taken off your Jobseeker’s Allowance
+
 #################       Jobseeker’s Allowance - Review claim page       ########################################
 jobSeekersAllowance.reviewClaimPage.title = Review Jobseeker’s Allowance claim
 jobSeekersAllowance.reviewClaimPage.startDate.hiddenText.agent = Change the date your client started getting Jobseeker’s Allowance
@@ -249,4 +260,3 @@ taxYear-error-template.paragraph.2 = Check that you’ve entered the correct web
 timeout.button = Sign in
 timeout.heading = For your security, we signed you out
 timeout.p1 = We did not save your answers.
-

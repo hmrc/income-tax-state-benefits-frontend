@@ -17,7 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.routes.TaxPaidController
-import forms.AmountForm
+import forms.{AmountForm, FormsProvider}
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.TaxPaidPageBuilder.aTaxPaidPage
 import utils.ViewUtils.translatedDateFormatter
 import views.html.pages.TaxPaidPageView
@@ -47,7 +48,6 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     val expectedHintText: String
     val expectedLabelText: String
     val expectedButtonText: String
-    val expectedErrorText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -55,7 +55,6 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: String = "empty error"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -63,46 +62,55 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: String = "empty error"
   }
 
   trait SpecificExpectedResults {
-    val expectedHeading: (LocalDate, LocalDate) => String
     val expectedTitle: (LocalDate, LocalDate) => String
     val expectedErrorTitle: (LocalDate, LocalDate) => String
     val expectedP1Text: String
+    val expectedErrorText: String
+
+    def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String
   }
 
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
-    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
-      s"How much tax was taken off your client’s Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your client’s Jobseeker’s Allowance"
+
+    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between " +
+      s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
   }
 
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
-    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
-      s"How much tax was taken off your client’s Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your client’s Jobseeker’s Allowance"
+
+    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between " +
+      s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
   }
 
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
-    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
-      s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your Jobseeker’s Allowance"
+
+    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
+      s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
   }
 
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
-    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
-      s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your Jobseeker’s Allowance"
+
+    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
+      s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -115,32 +123,34 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   userScenarios.foreach { userScenario =>
     import userScenario.commonExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
+      val pageForm = new FormsProvider().taxPaidAmountForm(JobSeekersAllowance, isAgent = userScenario.isAgent, maxAmount = aClaimCYAModel.amount.get - 1)
+      val pageModel = aTaxPaidPage.copy(form = pageForm)
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        implicit val document: Document = Jsoup.parse(underTest(aTaxPaidPage).body)
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(aTaxPaidPage.titleFirstDate, aTaxPaidPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.specificExpectedResults.get.expectedTitle(aTaxPaidPage.titleFirstDate, aTaxPaidPage.titleSecondDate))
+        h1Check(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
         textOnPageCheck(userScenario.specificExpectedResults.get.expectedP1Text, Selectors.paragraphTextSelector)
         amountBoxLabelCheck(userScenario.commonExpectedResults.expectedLabelText)
         amountBoxHintCheck(userScenario.commonExpectedResults.expectedHintText)
-        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, JobSeekersAllowance, aTaxPaidPage.sessionDataId).url, Selectors.continueButtonFormSelector)
+        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
         buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
       }
 
       "render page with empty selection error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = aTaxPaidPage.copy(form = aTaxPaidPage.form.bind(Map(AmountForm.amount -> "")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = pageModel.copy(form = pageModel.form.bind(Map(AmountForm.amount -> "")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(aTaxPaidPage.titleFirstDate, aTaxPaidPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedErrorText, Selectors.errorHref)
+        errorAboveElementCheck(userScenario.specificExpectedResults.get.expectedErrorText)
       }
     }
   }

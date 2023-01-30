@@ -28,7 +28,7 @@ import java.time.LocalDate
 class TaxPaidPageSpec extends UnitTest
   with TaxYearProvider {
 
-  private val pageForm = new FormsProvider().taxPaidAmountForm()
+  private val pageForm = new FormsProvider().taxPaidAmountForm(JobSeekersAllowance, isAgent = false, maxAmount = aClaimCYAModel.amount.get - 1)
 
   "TaxPaidPage.apply(...)" should {
     "return page with pre-filled form when taxPaid is preset" in {
