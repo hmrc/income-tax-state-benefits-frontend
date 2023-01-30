@@ -53,7 +53,7 @@ trait MockActionsProvider extends MockFactory
                          benefitType: BenefitType,
                          sessionDataId: UUID,
                          result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
-    (mockActionsProvider.sessionDataFor(_: Int, _: BenefitType, _: UUID))
+    (mockActionsProvider.reviewClaimSessionDataFor(_: Int, _: BenefitType, _: UUID))
       .expects(taxYear, benefitType, sessionDataId)
       .returns(value = userSessionDataRequestActionBuilder(result))
   }
