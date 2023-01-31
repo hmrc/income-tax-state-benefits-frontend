@@ -17,7 +17,7 @@
 package views.pages.employmentsupport
 
 import controllers.routes.TaxPaidController
-import forms.AmountForm
+import forms.{AmountForm, FormsProvider}
 import models.BenefitType.EmploymentSupportAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.TaxPaidPageBuilder.aTaxPaidPage
 import utils.ViewUtils.translatedDateFormatter
 import views.html.pages.TaxPaidPageView
@@ -47,7 +48,6 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     val expectedHintText: String
     val expectedLabelText: String
     val expectedButtonText: String
-    val expectedErrorText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -55,7 +55,6 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: String = "empty error"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -63,13 +62,13 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: String = "empty error"
   }
 
   trait SpecificExpectedResults {
     val expectedTitle: (LocalDate, LocalDate) => String
     val expectedErrorTitle: (LocalDate, LocalDate) => String
     val expectedP1Text: String
+    val expectedErrorText: String
 
     def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String
   }
@@ -78,6 +77,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your client’s Employment and Support Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Employment and Support Allowance between " +
       s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
@@ -87,6 +87,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your client’s Employment and Support Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Employment and Support Allowance between " +
       s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
@@ -96,6 +97,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your Employment and Support Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
       s"How much tax was taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
@@ -105,6 +107,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedErrorText: String = "Enter the amount of tax taken off your Employment and Support Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
       s"How much tax was taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
@@ -120,7 +123,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   userScenarios.foreach { userScenario =>
     import userScenario.commonExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
-      val pageModel = aTaxPaidPage.copy(benefitType = EmploymentSupportAllowance)
+      val pageForm = new FormsProvider().taxPaidAmountForm(EmploymentSupportAllowance, isAgent = userScenario.isAgent, maxAmount = aClaimCYAModel.amount.get - 1)
+      val pageModel = aTaxPaidPage.copy(benefitType = EmploymentSupportAllowance, form = pageForm)
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
@@ -145,8 +149,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText)
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedErrorText, Selectors.errorHref)
+        errorAboveElementCheck(userScenario.specificExpectedResults.get.expectedErrorText)
       }
     }
   }

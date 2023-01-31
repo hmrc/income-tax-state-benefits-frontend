@@ -34,7 +34,7 @@ class FormsProvider() {
 
   def startDateForm(taxYear: Int, benefitType: BenefitType, isAgent: Boolean, endDate: Option[LocalDate] = None)
                    (implicit messages: Messages): Form[DateFormData] = {
-    lazy val isAgentSuffix = if (isAgent) "agent" else "individual"
+    lazy val isAgentSuffix = userType(isAgent)
     val emptyDayKey = s"${benefitType.typeName}.startDatePage.error.empty.day.$isAgentSuffix"
     val emptyMonthKey = s"${benefitType.typeName}.startDatePage.error.empty.month.$isAgentSuffix"
     val emptyYearKey = s"${benefitType.typeName}.startDatePage.error.empty.year.$isAgentSuffix"
@@ -66,7 +66,7 @@ class FormsProvider() {
                   isAgent: Boolean,
                   claimStartDate: LocalDate)
                  (implicit messages: Messages): Form[DateFormData] = {
-    lazy val isAgentSuffix = if (isAgent) "agent" else "individual"
+    lazy val isAgentSuffix = userType(isAgent)
     val emptyDayKey = s"${benefitType.typeName}.endDatePage.error.empty.day.$isAgentSuffix"
     val emptyMonthKey = s"${benefitType.typeName}.endDatePage.error.empty.month.$isAgentSuffix"
     val emptyYearKey = s"${benefitType.typeName}.endDatePage.error.empty.year.$isAgentSuffix"
@@ -97,11 +97,16 @@ class FormsProvider() {
     val titleFirstDate = translatedDateFormatter(toDateWithinTaxYear(taxYear, claimCYAModel.startDate))
     val titleSecondDate = translatedDateFormatter(claimCYAModel.endDate.getOrElse(LocalDate.parse(s"$taxYear-04-05")))
 
-    YesNoForm.yesNoForm(s"${benefitType.typeName}.taxPaidQuestionPage.error.${if (isAgent) "agent" else "individual"}", Seq(titleFirstDate, titleSecondDate))
+    YesNoForm.yesNoForm(s"${benefitType.typeName}.taxPaidQuestionPage.error.${userType(isAgent)}", Seq(titleFirstDate, titleSecondDate))
   }
 
-  def taxPaidAmountForm(): Form[BigDecimal] = AmountForm.amountForm(
-    // TODO: This is wrong and will be implemented in another story. Test should be added when properly implemented
-    emptyFieldKey = "empty error"
+  def taxPaidAmountForm(benefitType: BenefitType, isAgent: Boolean, maxAmount: BigDecimal): Form[BigDecimal] = AmountForm.amountForm(
+    emptyFieldKey = s"${benefitType.typeName}.taxPaidPage.empty.amount.error.${userType(isAgent)}",
+    wrongFormatKey = "common.taxPaidPage.wrongFormat.amount.error",
+    maxAmountValue = maxAmount,
+    exceedsMaxAmountKey = "common.taxPaidPage.exceedsMax.amount.error",
+    underMinAmountKey = Some("common.taxPaidPage.zeroOrLess.amount.error")
   )
+
+  private def userType(isAgent: Boolean): String = if (isAgent) "agent" else "individual"
 }
