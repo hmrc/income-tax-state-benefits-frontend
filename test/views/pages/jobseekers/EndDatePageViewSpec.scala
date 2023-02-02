@@ -135,7 +135,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        fieldSetH1Check(userScenario.commonExpectedResults.expectedHeading)
+        h1Check(userScenario.commonExpectedResults.expectedHeading, isFieldSetH1 = true)
         textOnPageCheck(userScenario.commonExpectedResults.expectedHintText, Selectors.hintSelector)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")

@@ -140,7 +140,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.specificExpectedResults.get.expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        fieldSetH1Check(userScenario.specificExpectedResults.get.expectedHeading)
+        h1Check(userScenario.specificExpectedResults.get.expectedHeading, isFieldSetH1 = true)
         textOnPageCheck(userScenario.commonExpectedResults.expectedHintText, Selectors.hintSelector)
         inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
         inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")

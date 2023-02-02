@@ -53,18 +53,13 @@ trait ViewHelper {
     }
   }
 
-  def h1Check(header: String, size: String = "l")(implicit document: Document): Unit = {
+  def h1Check(header: String, isFieldSetH1: Boolean = false, size: String = "l")(implicit document: Document): Unit = {
     s"have a page heading of '$header'" in {
-      val headingAndCaption = document.select(s"h1.govuk-heading-$size").text()
-      val caption = document.select(s"h1 > span.govuk-caption-$size").text()
-      headingAndCaption.replace(caption, "").trim shouldBe header
-    }
-  }
-
-  def fieldSetH1Check(heading: String)(implicit document: Document): Unit = {
-    s"have a page heading of '$heading'" in {
-      val documentHeading = document.select("h1.govuk-fieldset__heading").text()
-      documentHeading shouldBe heading
+      if (isFieldSetH1) {
+        document.select("h1.govuk-fieldset__heading").text shouldBe header
+      } else {
+        document.select(s"h1.govuk-heading-$size").text shouldBe header
+      }
     }
   }
 

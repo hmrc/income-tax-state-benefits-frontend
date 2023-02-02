@@ -137,7 +137,7 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        fieldSetH1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxPaidQuestionPage.titleFirstDate, aTaxPaidQuestionPage.titleSecondDate))
+        h1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxPaidQuestionPage.titleFirstDate, aTaxPaidQuestionPage.titleSecondDate), isFieldSetH1 = true)
         hintTextCheck(userScenario.specificExpectedResults.get.expectedHintText)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
