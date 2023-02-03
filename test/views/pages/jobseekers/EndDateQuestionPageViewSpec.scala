@@ -88,7 +88,7 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        fieldSetH1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY))
+        h1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY), isFieldSetH1 = true)
         radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
         formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, JobSeekersAllowance, aEndDateQuestionPage.sessionDataId).url, Selectors.continueButtonFormSelector)
