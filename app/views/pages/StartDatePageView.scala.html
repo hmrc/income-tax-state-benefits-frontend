@@ -44,9 +44,11 @@
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 
-    @errorSummary(pageModel.form.errors.map{ error =>
+    @errorSummary(pageModel.form.errors.distinct.map{ error =>
         error.key match {
-            case value if value.isEmpty => error.copy(key = "value-for-day")
+            case "invalidOrNotAllowed" | "emptyDayMonth" | "emptyDayYear" | "emptyDay" | "emptyAll" => error.copy(key = DateForm.day)
+            case "emptyMonthYear" | "emptyMonth" => error.copy(key = DateForm.month)
+            case "emptyYear" => error.copy(key = DateForm.year)
             case _ => error
         }
     })

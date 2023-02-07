@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.DateForm.validateStartDate
 import forms.validation.mappings.MappingUtil.dateMapping
 import models.{BenefitType, ClaimCYAModel}
 import play.api.data.Form
@@ -24,37 +25,21 @@ import utils.InYearUtil.toDateWithinTaxYear
 import utils.ViewUtils.translatedDateFormatter
 
 import java.time.LocalDate
+import java.time.Month.APRIL
 import javax.inject.Singleton
 
 @Singleton
 class FormsProvider() {
 
-  private val APRIL = 4
   private val SIX = 6
 
-  def startDateForm(taxYear: Int, benefitType: BenefitType, isAgent: Boolean, endDate: Option[LocalDate] = None)
-                   (implicit messages: Messages): Form[DateFormData] = {
-    lazy val isAgentSuffix = userType(isAgent)
-    val emptyDayKey = s"${benefitType.typeName}.startDatePage.error.empty.day.$isAgentSuffix"
-    val emptyMonthKey = s"${benefitType.typeName}.startDatePage.error.empty.month.$isAgentSuffix"
-    val emptyYearKey = s"${benefitType.typeName}.startDatePage.error.empty.year.$isAgentSuffix"
-    val invalidDateKey = s"${benefitType.typeName}.startDatePage.error.invalid.date.$isAgentSuffix"
-    val tooLongAgoKey = Some(s"${benefitType.typeName}.startDatePage.error.tooLongAgo.$isAgentSuffix")
-
-    val mapping = dateMapping(emptyDayKey, emptyMonthKey, emptyYearKey, invalidDateKey, tooLongAgoKey)
-      .verifying(
-        messages(s"${benefitType.typeName}.startDatePage.error.mustBeSameAsOrBefore.date.$isAgentSuffix", taxYear.toString),
-        dateFormData => dateFormData.toLocalDate.forall(_.isBefore(LocalDate.of(taxYear, APRIL, SIX)))
-      )
-
-    Form(
-      endDate.map(date =>
-        mapping.verifying(
-          messages(s"${benefitType.typeName}.startDatePage.error.mustBeBefore.date.$isAgentSuffix", translatedDateFormatter(date)),
-          dateFormData => dateFormData.toLocalDate.forall(_.isBefore(date))
-        )
-      ).getOrElse(mapping)
-    )
+  def validatedStartDateForm(dateForm: Form[DateFormData],
+                             taxYear: Int,
+                             benefitType: BenefitType,
+                             isAgent: Boolean,
+                             endDate: Option[LocalDate])
+                            (implicit messages: Messages): Form[DateFormData] = {
+    dateForm.copy(errors = validateStartDate(dateForm.get, taxYear, benefitType, isAgent, endDate))
   }
 
   def endDateYesNoForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(

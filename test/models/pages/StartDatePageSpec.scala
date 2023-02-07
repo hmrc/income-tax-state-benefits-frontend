@@ -16,7 +16,7 @@
 
 package models.pages
 
-import forms.{DateForm, DateFormData, FormsProvider}
+import forms.{DateForm, DateFormData}
 import models.BenefitType.JobSeekersAllowance
 import support.ControllerUnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
@@ -26,7 +26,7 @@ class StartDatePageSpec extends ControllerUnitTest
   with TaxYearProvider
   with MessagesProvider {
 
-  private val pageForm = new FormsProvider().startDateForm(taxYear, JobSeekersAllowance, isAgent = false)
+  private val pageForm = DateForm.dateForm()
 
   "StartDatePage.apply(...)" should {
     "return page with pre-filled form when start date is preset" in {
@@ -50,13 +50,15 @@ class StartDatePageSpec extends ControllerUnitTest
     }
 
     "return page with pre-filled form with errors when form has errors" in {
-      val formWithErrors = pageForm.bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
+      val formData = DateFormData(day = "6", month = "4", year = taxYear.toString)
+      val form = pageForm.bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
 
       StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
         taxYear = taxYear,
         benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
-        form = pageForm.bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
+        form = formWithErrors
       )
     }
   }

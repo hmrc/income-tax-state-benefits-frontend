@@ -29,11 +29,6 @@ object StartDatePageBuilder {
     taxYear = taxYearEOY,
     benefitType = JobSeekersAllowance,
     sessionDataId = UUID.randomUUID(),
-    form = DateForm.dateForm(
-      emptyDayKey = "emptyDay.key",
-      emptyMonthKey = "emptyMonth.key",
-      emptyYearKey = "emptyYear.key",
-      invalidDateKey = "invalidDate.key"
-    )
+    form = DateForm.dateForm()
   )
 }
