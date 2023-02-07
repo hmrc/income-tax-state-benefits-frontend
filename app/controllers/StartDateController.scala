@@ -19,7 +19,7 @@ package controllers
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.routes.{EndDateQuestionController, ReviewClaimController}
-import forms.FormsProvider
+import forms.{DateForm, FormsProvider}
 import models.pages.StartDatePage
 import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
@@ -45,19 +45,20 @@ class StartDateController @Inject()(actionsProvider: ActionsProvider,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
     Ok(pageView(StartDatePage(taxYear,
-                              benefitType,
-                              request.stateBenefitsUserData,
-                              formsProvider.startDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)))
-      )
-    )
+      benefitType,
+      request.stateBenefitsUserData,
+      DateForm.dateForm()
+    )))
   }
 
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
-    formsProvider.startDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.flatMap(_.endDate)).bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
-      formData => claimService.updateStartDate(request.stateBenefitsUserData, formData.toLocalDate.get).map {
+    val stateBenefitsUserData = request.stateBenefitsUserData
+    val simpleDateForm = DateForm.dateForm().bindFromRequest()
+    formsProvider.validatedStartDateForm(simpleDateForm, taxYear, benefitType, request.user.isAgent, stateBenefitsUserData.claim.flatMap(_.endDate)).fold(
+      formWithErrors => Future.successful(BadRequest(pageView(StartDatePage(taxYear, benefitType, stateBenefitsUserData, formWithErrors)))),
+      formData => claimService.updateStartDate(stateBenefitsUserData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(userData) => Redirect(getRedirectCall(taxYear, benefitType, userData))
       }
