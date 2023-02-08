@@ -133,7 +133,7 @@ employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.individual = T
 employmentSupportAllowance.amountPage.textBox.label = Amount of Employment and Support Allowance
 employmentSupportAllowance.amountPage.empty.amount.error = Enter the amount of Employment and Support Allowance
 employmentSupportAllowance.amountPage.wrongFormat.amount.error = The amount of Employment and Support Allowance must be a number
-employmentSupportAllowance.amountPage.lessThanZero.amount.error = The amount of Employment and Support Allowance must be more than £0
+employmentSupportAllowance.amountPage.minimumOrLess.amount.error = The amount of Employment and Support Allowance must be more than £{0}
 employmentSupportAllowance.amountPage.exceedsMax.amount.error = The amount of Employment and Support Allowance must be less than £100,000,000,000
 
 #################       Employment and Support Allowance - Tax Paid Question Page        ########################################
@@ -205,10 +205,10 @@ jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your
 jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
 
 #################       Jobseeker’s Allowance - Amount Page       ########################################
-jobSeekersAllowance.amountPage.textBox.label = Amount of Jobseeker’s allowance
+jobSeekersAllowance.amountPage.textBox.label = Amount of Jobseeker’s Allowance
 jobSeekersAllowance.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
 jobSeekersAllowance.amountPage.wrongFormat.amount.error = The amount of Jobseeker’s Allowance must be a number
-jobSeekersAllowance.amountPage.lessThanZero.amount.error = The amount of Jobseeker’s Allowance must be more than £0
+jobSeekersAllowance.amountPage.minimumOrLess.amount.error = The amount of Jobseeker’s Allowance must be more than £{0}
 jobSeekersAllowance.amountPage.exceedsMax.amount.error = The amount of Jobseeker’s Allowance must be less than £100,000,000,000
 
 #################       Jobseeker’s Allowance - Tax Paid Question Page        ########################################

@@ -23,7 +23,7 @@ import support.UnitTest
 class AmountFormSpec extends UnitTest {
 
   private def theForm(): Form[BigDecimal] = {
-    amountForm("nothing to see here", "this not good", "too big")
+    amountForm("nothing to see here", "too small", -101, "too big", wrongFormatKey = "this not good")
   }
 
   private val testCurrencyValid = 1000

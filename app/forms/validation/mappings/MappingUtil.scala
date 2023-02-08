@@ -17,8 +17,8 @@
 package forms.validation.mappings
 
 import forms.DateForm.{day, filter, month, year}
-import forms.DateFormData
-import play.api.data.Forms.{default, mapping, of, optional, text}
+import forms.{AmountBoundaries, DateFormData}
+import play.api.data.Forms._
 import play.api.data.{FieldMapping, Mapping}
 
 import java.time.LocalDate
@@ -38,13 +38,10 @@ object MappingUtil extends Formatters {
   }
 
   def currency(requiredKey: String,
+               amountBoundaries: AmountBoundaries,
                wrongFormatKey: String = "common.error.invalid_currency_format",
-               maxAmountKey: String = "common.error.amountMaxLimit",
-               maxAmountValue: BigDecimal = BigDecimal(100_000_000_000d),
-               minAmountKey: Option[String] = None,
-               args: Seq[String] = Seq.empty[String]
-              ): FieldMapping[BigDecimal] =
-    of(currencyFormatter(requiredKey, wrongFormatKey, maxAmountKey, maxAmountValue, minAmountKey, args))
+               args: Seq[String] = Seq.empty[String]): FieldMapping[BigDecimal] =
+    of(currencyFormatter(requiredKey, amountBoundaries, wrongFormatKey, args))
 
   def dateMapping(emptyDayKey: String,
                   emptyMonthKey: String,

@@ -77,9 +77,8 @@ class AmountControllerSpec extends ControllerUnitTest
       mockInternalServerError(InternalServerError)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
-      val result = underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      status(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe INTERNAL_SERVER_ERROR
     }
 
     "redirect to next Page on successful amount update and journey not completed" in {

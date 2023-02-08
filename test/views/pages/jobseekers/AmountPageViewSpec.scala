@@ -17,7 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.routes.AmountController
-import forms.AmountForm
+import forms.{AmountForm, FormsProvider}
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -47,23 +47,38 @@ class AmountPageViewSpec extends ViewUnitTest {
     val expectedHintText: String
     val expectedLabelText: String
     val expectedButtonText: String
-    val expectedErrorText: String
+    val expectedEmptyAmountErrorText: String
+    val expectedMaxAmountErrorText: String
+    val expectedMoreThanZeroAmountErrorText: String
+    val expectedIncorrectFormatAmountErrorText: String
+
+    def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = "For example, £123.56"
-    override val expectedLabelText: String = "Amount of Jobseeker’s allowance"
+    override val expectedLabelText: String = "Amount of Jobseeker’s Allowance"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: String = "Enter the amount of Jobseeker’s Allowance"
+    override val expectedEmptyAmountErrorText: String = "Enter the amount of Jobseeker’s Allowance"
+    override val expectedMaxAmountErrorText: String = "The amount of Jobseeker’s Allowance must be less than £100,000,000,000"
+    override val expectedMoreThanZeroAmountErrorText: String = "The amount of Jobseeker’s Allowance must be more than £0"
+    override val expectedIncorrectFormatAmountErrorText: String = "The amount of Jobseeker’s Allowance must be a number"
+
+    override def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String = s"The amount of Jobseeker’s Allowance must be more than £$amount"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = "For example, £123.56"
-    override val expectedLabelText: String = "Amount of Jobseeker’s allowance"
+    override val expectedLabelText: String = "Amount of Jobseeker’s Allowance"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: String = "Enter the amount of Jobseeker’s Allowance"
+    override val expectedEmptyAmountErrorText: String = "Enter the amount of Jobseeker’s Allowance"
+    override val expectedMaxAmountErrorText: String = "The amount of Jobseeker’s Allowance must be less than £100,000,000,000"
+    override val expectedMoreThanZeroAmountErrorText: String = "The amount of Jobseeker’s Allowance must be more than £0"
+    override val expectedIncorrectFormatAmountErrorText: String = "The amount of Jobseeker’s Allowance must be a number"
+
+    override def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String = s"The amount of Jobseeker’s Allowance must be more than £$amount"
   }
 
   trait SpecificExpectedResults {
@@ -139,8 +154,58 @@ class AmountPageViewSpec extends ViewUnitTest {
 
         titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText)
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedEmptyAmountErrorText, Selectors.errorHref)
+        errorAboveElementCheck(userScenario.commonExpectedResults.expectedEmptyAmountErrorText)
+      }
+
+      "render page with max amount error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "100,000,000,000")))
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedMaxAmountErrorText, Selectors.errorHref)
+        errorAboveElementCheck(userScenario.commonExpectedResults.expectedMaxAmountErrorText)
+      }
+
+      "render page with must be more than zero amount error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "0")))
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedMoreThanZeroAmountErrorText, Selectors.errorHref)
+        errorAboveElementCheck(userScenario.commonExpectedResults.expectedMoreThanZeroAmountErrorText)
+      }
+
+      "render page with incorrect format amount error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "abc")))
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedIncorrectFormatAmountErrorText, Selectors.errorHref)
+        errorAboveElementCheck(userScenario.commonExpectedResults.expectedIncorrectFormatAmountErrorText)
+      }
+
+      "render page with amount must be more than ... error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val form = new FormsProvider().amountForm(JobSeekersAllowance, Some(10))
+        val pageModel = anAmountPage.copy(form = form.bind(Map(AmountForm.amount -> "10")))
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(userScenario.commonExpectedResults.expectedAmountMustBeMoreErrorText(amount = 10), Selectors.errorHref)
+        errorAboveElementCheck(userScenario.commonExpectedResults.expectedAmountMustBeMoreErrorText(amount = 10))
       }
     }
   }
