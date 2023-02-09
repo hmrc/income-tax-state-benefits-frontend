@@ -19,7 +19,7 @@ package controllers
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
 import controllers.routes.{AmountController, ReviewClaimController}
-import forms.FormsProvider
+import forms.{DateForm, FormsProvider}
 import models.pages.EndDatePage
 import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
@@ -44,19 +44,15 @@ class EndDateController @Inject()(actionsProvider: ActionsProvider,
   def show(taxYear: Int,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
-    Ok(pageView(EndDatePage(
-      taxYear,
-      benefitType,
-      request.stateBenefitsUserData,
-      formsProvider.endDateForm(taxYear, benefitType, request.user.isAgent, request.stateBenefitsUserData.claim.get.startDate)
-    )))
+    Ok(pageView(EndDatePage(taxYear, benefitType, request.stateBenefitsUserData, DateForm.dateForm())))
   }
 
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
     val sessionData = request.stateBenefitsUserData
-    formsProvider.endDateForm(taxYear, benefitType, request.user.isAgent, sessionData.claim.get.startDate).bindFromRequest().fold(
+    val simpleDateForm = DateForm.dateForm().bindFromRequest()
+    formsProvider.validatedEndDateForm(simpleDateForm, taxYear, benefitType, request.user.isAgent, sessionData.claim.get.startDate).fold(
       formWithErrors => Future.successful(BadRequest(pageView(EndDatePage(taxYear, benefitType, sessionData, formWithErrors)))),
       formData => claimService.updateEndDate(sessionData, formData.toLocalDate.get).map {
         case Left(_) => errorHandler.internalServerError()

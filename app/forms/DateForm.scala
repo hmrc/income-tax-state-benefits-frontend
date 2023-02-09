@@ -52,13 +52,29 @@ object DateForm extends InputFilters {
                         isAgent: Boolean,
                         endDate: Option[LocalDate])
                        (implicit messages: Messages): Seq[FormError] = {
-    lazy val emptyDateFieldsValidationValue = emptyDateFieldsValidation(formData, benefitType, datePageName = "startDatePage", isAgent)
-    lazy val invalidDateFormatValidationValue = invalidDateFormatValidation(formData, benefitType, datePageName = "startDatePage", isAgent)
-    lazy val startDateSpecificValidationValue = startDateSpecificValidation(formData.toLocalDate.get, taxYear, benefitType, isAgent, endDate)
+    lazy val emptyDateFieldsErrors = emptyDateFieldsValidation(formData, benefitType, datePageName = "startDatePage", isAgent)
+    lazy val invalidDateFormatErrors = invalidDateFormatValidation(formData, benefitType, datePageName = "startDatePage", isAgent)
+    lazy val startDateSpecificErrors = startDateSpecificValidation(formData.toLocalDate.get, taxYear, benefitType, isAgent, endDate)
 
-    emptyDateFieldsValidationValue match {
-      case _ :: _ => emptyDateFieldsValidationValue
-      case _ => if (invalidDateFormatValidationValue.nonEmpty) invalidDateFormatValidationValue else startDateSpecificValidationValue
+    emptyDateFieldsErrors match {
+      case _ :: _ => emptyDateFieldsErrors
+      case _ => if (invalidDateFormatErrors.nonEmpty) invalidDateFormatErrors else startDateSpecificErrors
+    }
+  }
+
+  def validateEndDate(formData: DateFormData,
+                      taxYear: Int,
+                      benefitType: BenefitType,
+                      isAgent: Boolean,
+                      startDate: LocalDate)
+                     (implicit messages: Messages): Seq[FormError] = {
+    lazy val emptyDateFieldsErrors = emptyDateFieldsValidation(formData, benefitType, datePageName = "endDatePage", isAgent)
+    lazy val invalidDateFormatErrors = invalidDateFormatValidation(formData, benefitType, datePageName = "endDatePage", isAgent)
+    lazy val endDateSpecificErrors = endDateSpecificValidation(formData.toLocalDate.get, taxYear, benefitType, isAgent, startDate)
+
+    emptyDateFieldsErrors match {
+      case _ :: _ => emptyDateFieldsErrors
+      case _ => if (invalidDateFormatErrors.nonEmpty) invalidDateFormatErrors else endDateSpecificErrors
     }
   }
 
@@ -80,6 +96,25 @@ object DateForm extends InputFilters {
       case (false, _, _) => Seq(FormError("invalidOrNotAllowed", tooLongAgoErrorMessage))
       case (true, false, _) => Seq(FormError("invalidOrNotAllowed", mustBeSameAsOrBeforeErrorMessage, Seq(taxYear.toString)))
       case (true, _, false) => Seq(FormError("invalidOrNotAllowed", mustBeBeforeErrorMessage, Seq(translatedDateFormatter(endDate.get))))
+      case _ => Seq.empty
+    }
+  }
+
+  private def endDateSpecificValidation(endDate: LocalDate,
+                                        taxYear: Int,
+                                        benefitType: BenefitType,
+                                        isAgent: Boolean,
+                                        startDate: LocalDate)
+                                       (implicit messages: Messages): Seq[FormError] = {
+    val isAfterStartDate = endDate.isAfter(startDate)
+    val isBeforeEOY = endDate.isBefore(LocalDate.of(taxYear, APRIL, SIX))
+
+    lazy val mustBeEndOfYearErrorMessage = s"${benefitType.typeName}.endDatePage.error.mustBeEndOfYear.${userType(isAgent)}"
+    lazy val mustBeAfterStartDateErrorMessage = s"${benefitType.typeName}.endDatePage.error.mustBeAfterStartDate.${userType(isAgent)}"
+
+    (isAfterStartDate, isBeforeEOY) match {
+      case (false, _) => Seq(FormError("invalidOrNotAllowed", mustBeAfterStartDateErrorMessage, Seq(translatedDateFormatter(startDate))))
+      case (true, false) => Seq(FormError("invalidOrNotAllowed", mustBeEndOfYearErrorMessage, Seq(taxYear.toString)))
       case _ => Seq.empty
     }
   }

@@ -35,6 +35,11 @@ import java.time.LocalDate
 class EndDatePageViewSpec extends ViewUnitTest {
 
   private val formsProvider = new FormsProvider()
+  private val dateForm = DateForm.dateForm()
+
+  private val day: String = "day"
+  private val month: String = "month"
+  private val year: String = "year"
 
   private val underTest = inject[EndDatePageView]
 
@@ -46,9 +51,20 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val inputYearField: String = s"#${DateForm.year}"
     val buttonSelector: String = "#continue"
     val dateFormLevelErrorHref: String = "#value-for-day"
+
+    def invalidErrorHref(dayMonthOrYear: String): String = s"#value-for-$dayMonthOrYear"
   }
 
   trait SpecificExpectedResults {
+    val expectedEmptyDayErrorText: String
+    val expectedEmptyDayMonthErrorText: String
+    val expectedEmptyDayYearErrorText: String
+    val expectedEmptyMonthErrorText: String
+    val expectedEmptyMonthYearErrorText: String
+    val expectedEmptyYearErrorText: String
+    val expectedAllFieldsEmptyErrorText: String
+    val expectedInvalidDateErrorText: String
+
     def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String
 
     def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String
@@ -59,7 +75,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val expectedHeading: String
     val expectedErrorTitle: String
     val expectedHintText: String
-    val expectedInvalidDateErrorText: String
     val expectedButtonText: String
 
     def expectedCaption(taxYear: Int): String
@@ -70,7 +85,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedHintText: String = "For example, 23 3 2007"
-    override val expectedInvalidDateErrorText: String = "Enter the date the Employment and Support Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
 
     override def expectedCaption(taxYear: Int): String = s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
@@ -81,37 +95,72 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedHintText: String = "For example, 23 3 2007"
-    override val expectedInvalidDateErrorText: String = "Enter the date the Employment and Support Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
 
     override def expectedCaption(taxYear: Int): String = s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
-    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your Employment and Support Allowance claim ended must be between 6 April ${taxYear - 1} and 5 April $taxYear"
+    override val expectedEmptyDayErrorText: String = "The date your Employment and Support Allowance claim ended must include a day"
+    override val expectedEmptyDayMonthErrorText: String = "The date your Employment and Support Allowance claim ended must include a day and month"
+    override val expectedEmptyDayYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a day and year"
+    override val expectedEmptyMonthErrorText: String = "The date your Employment and Support Allowance claim ended must include a month"
+    override val expectedEmptyMonthYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a month and year"
+    override val expectedEmptyYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a year"
+    override val expectedAllFieldsEmptyErrorText: String = "Enter the date your Employment and Support Allowance claim ended"
+    override val expectedInvalidDateErrorText: String = "The date your Employment and Support Allowance claim ended must be a real date"
+
+    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
       s"The date your Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your Employment and Support Allowance claim ended must be between 6 April ${taxYear - 1} and 5 April $taxYear"
+    override val expectedEmptyDayErrorText: String = "The date your Employment and Support Allowance claim ended must include a day"
+    override val expectedEmptyDayMonthErrorText: String = "The date your Employment and Support Allowance claim ended must include a day and month"
+    override val expectedEmptyDayYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a day and year"
+    override val expectedEmptyMonthErrorText: String = "The date your Employment and Support Allowance claim ended must include a month"
+    override val expectedEmptyMonthYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a month and year"
+    override val expectedEmptyYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a year"
+    override val expectedAllFieldsEmptyErrorText: String = "Enter the date your Employment and Support Allowance claim ended"
+    override val expectedInvalidDateErrorText: String = "The date your Employment and Support Allowance claim ended must be a real date"
+
+    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
       s"The date your Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
+    override val expectedEmptyDayErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a day"
+    override val expectedEmptyDayMonthErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a day and month"
+    override val expectedEmptyDayYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a day and year"
+    override val expectedEmptyMonthErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a month"
+    override val expectedEmptyMonthYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a month and year"
+    override val expectedEmptyYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a year"
+    override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client’s Employment and Support Allowance claim ended"
+    override val expectedInvalidDateErrorText: String = "The date your client’s Employment and Support Allowance claim ended must be a real date"
+
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
-      s"The date your client’s Employment and Support Allowance claim ended must be between 6 April ${taxYear - 1} and 5 April $taxYear"
+      s"The date your client’s Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
       s"The date your client’s Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
+    override val expectedEmptyDayErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a day"
+    override val expectedEmptyDayMonthErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a day and month"
+    override val expectedEmptyDayYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a day and year"
+    override val expectedEmptyMonthErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a month"
+    override val expectedEmptyMonthYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a month and year"
+    override val expectedEmptyYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a year"
+    override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client’s Employment and Support Allowance claim ended"
+    override val expectedInvalidDateErrorText: String = "The date your client’s Employment and Support Allowance claim ended must be a real date"
+
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
-      s"The date your client’s Employment and Support Allowance claim ended must be between 6 April ${taxYear - 1} and 5 April $taxYear"
+      s"The date your client’s Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
       s"The date your client’s Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
@@ -150,7 +199,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = formsProvider.endDateForm(taxYear, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate).fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
+        val form = dateForm.fill(DateFormData(LocalDate.of(taxYearEOY, 2, 1)))
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -159,19 +208,133 @@ class EndDatePageViewSpec extends ViewUnitTest {
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
       }
 
+      "render page with empty date fields error" when {
+        "no date was entered" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "", month = "", year = "")
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedAllFieldsEmptyErrorText, Selectors.invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+        }
+
+        "date with missing day" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "", month = "2", year = taxYearEOY.toString)
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyDayErrorText, Selectors.invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        }
+
+        "date with missing day and month" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "", month = "", year = taxYearEOY.toString)
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyDayMonthErrorText, Selectors.invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        }
+
+        "date with missing day and year" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "", month = "2", year = "")
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyDayYearErrorText, Selectors.invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+        }
+
+        "date with missing month" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "1", month = "", year = taxYearEOY.toString)
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyMonthErrorText, Selectors.invalidErrorHref(month))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        }
+
+        "date with missing month and year" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "1", month = "", year = "")
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyMonthYearErrorText, Selectors.invalidErrorHref(month))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+        }
+
+        "date with missing year" which {
+          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val formData = DateFormData(day = "1", month = "2", year = "")
+          val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+          val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyYearErrorText, Selectors.invalidErrorHref(year))
+          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
+          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
+          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+        }
+      }
+
       "render page with invalid date error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = formsProvider.endDateForm(taxYear, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
-          .bind(Map(DateForm.day -> "dd", DateForm.month -> "mm", DateForm.year -> "yyyy"))
-        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = form)
+        val formData = DateFormData(day = "1", month = "2", year = "yyyy")
+        val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedInvalidDateErrorText, Selectors.dateFormLevelErrorHref)
-        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "dd")
-        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "mm")
+        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedInvalidDateErrorText, Selectors.invalidErrorHref(day))
+        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
+        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
         inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "yyyy")
       }
 
@@ -179,9 +342,10 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val form = formsProvider.endDateForm(taxYear, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
-          .bind(Map(DateForm.day -> "6", DateForm.month -> "4", DateForm.year -> taxYear.toString))
-        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = form)
+
+        val formData = DateFormData(day = "6", month = "4", year = taxYear.toString)
+        val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYear, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
@@ -197,9 +361,9 @@ class EndDatePageViewSpec extends ViewUnitTest {
 
         val startDate = LocalDate.of(taxYearEOY, 1, 1)
 
-        val form = formsProvider.endDateForm(taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, startDate)
-          .bind(Map(DateForm.day -> "1", DateForm.month -> "1", DateForm.year -> taxYearEOY.toString))
-        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = form)
+        val formData = DateFormData(day = "1", month = "1", year = taxYearEOY.toString)
+        val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYear, EmploymentSupportAllowance, userScenario.isAgent, startDate)
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)

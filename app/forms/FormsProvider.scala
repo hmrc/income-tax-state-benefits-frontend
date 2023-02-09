@@ -16,8 +16,7 @@
 
 package forms
 
-import forms.DateForm.validateStartDate
-import forms.validation.mappings.MappingUtil.dateMapping
+import forms.DateForm.{validateEndDate, validateStartDate}
 import models.{BenefitType, ClaimCYAModel}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -25,13 +24,10 @@ import utils.InYearUtil.toDateWithinTaxYear
 import utils.ViewUtils.translatedDateFormatter
 
 import java.time.LocalDate
-import java.time.Month.APRIL
 import javax.inject.Singleton
 
 @Singleton
 class FormsProvider() {
-
-  private val SIX = 6
 
   def validatedStartDateForm(dateForm: Form[DateFormData],
                              taxYear: Int,
@@ -47,29 +43,13 @@ class FormsProvider() {
     missingInputError = "common.endDateQuestionPage.error", Seq(taxYear.toString)
   )
 
-  // TODO: Test in template test
-  def endDateForm(taxYear: Int,
-                  benefitType: BenefitType,
-                  isAgent: Boolean,
-                  claimStartDate: LocalDate)
-                 (implicit messages: Messages): Form[DateFormData] = {
-    lazy val isAgentSuffix = userType(isAgent)
-    val emptyDayKey = s"${benefitType.typeName}.endDatePage.error.empty.day.$isAgentSuffix"
-    val emptyMonthKey = s"${benefitType.typeName}.endDatePage.error.empty.month.$isAgentSuffix"
-    val emptyYearKey = s"${benefitType.typeName}.endDatePage.error.empty.year.$isAgentSuffix"
-    val invalidDateKey = s"${benefitType.typeName}.endDatePage.error.invalid.date"
-
-    Form(
-      dateMapping(emptyDayKey, emptyMonthKey, emptyYearKey, invalidDateKey, None)
-        .verifying(
-          messages(s"${benefitType.typeName}.endDatePage.error.mustBeEndOfYear.$isAgentSuffix", (taxYear - 1).toString, taxYear.toString),
-          dateFormData => dateFormData.toLocalDate
-            .forall(date => date.isAfter(LocalDate.of(taxYear - 1, APRIL, SIX - 1)) && date.isBefore(LocalDate.of(taxYear, APRIL, SIX)))
-        ).verifying(
-        messages(s"${benefitType.typeName}.endDatePage.error.mustBeAfterStartDate.$isAgentSuffix", translatedDateFormatter(claimStartDate)),
-        dateFormData => dateFormData.toLocalDate.forall(date => date.isAfter(claimStartDate))
-      )
-    )
+  def validatedEndDateForm(dateForm: Form[DateFormData],
+                           taxYear: Int,
+                           benefitType: BenefitType,
+                           isAgent: Boolean,
+                           startDate: LocalDate)
+                          (implicit messages: Messages): Form[DateFormData] = {
+    dateForm.copy(errors = validateEndDate(dateForm.get, taxYear, benefitType, isAgent, startDate))
   }
 
   def amountForm(benefitType: BenefitType, minAmount: Option[BigDecimal] = None): Form[BigDecimal] = AmountForm.amountForm(
