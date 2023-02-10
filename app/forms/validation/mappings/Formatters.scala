@@ -16,6 +16,7 @@
 
 package forms.validation.mappings
 
+import forms.AmountBoundaries
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -23,13 +24,11 @@ import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
 
-  private[mappings] def stringFormatter(errorKey: String, optional: Boolean = false): Formatter[String] = new Formatter[String] {
+  private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
         case None => Left(Seq(FormError(key, errorKey)))
-        case Some(x) if x.trim.isEmpty && optional => Left(Seq(FormError(key, errorKey)))
-        case Some(x) if x.trim.isEmpty && optional => Right(x.trim)
         case Some(s) => Right(s.trim)
       }
 
@@ -38,47 +37,43 @@ trait Formatters {
   }
 
   private[mappings] def currencyFormatter(requiredKey: String,
+                                          boundaries: AmountBoundaries,
                                           invalidNumericKey: String,
-                                          maxAmountKey: String,
-                                          maxAmountValue: BigDecimal,
-                                          minAmountKey: Option[String],
-                                          args: Seq[String] = Seq.empty[String]
-                                         ): Formatter[BigDecimal] =
-    new Formatter[BigDecimal] {
-      private val baseFormatter = stringFormatter(requiredKey)
+                                          args: Seq[String] = Seq.empty[String]): Formatter[BigDecimal] = new Formatter[BigDecimal] {
+    private val baseFormatter = stringFormatter(requiredKey)
 
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] = {
-        betweenLimits(validAmount(baseFormatter
-          .bind(key, data)
-          .map(_.replace(",", ""))
-          .map(_.replace("£", ""))
-          .map(_.replaceAll("""\s""", "")), key), key)
-      }
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] = {
+      betweenLimits(validAmount(baseFormatter
+        .bind(key, data)
+        .map(_.replace(",", ""))
+        .map(_.replace("£", ""))
+        .map(_.replaceAll("""\s""", "")), key), key)
+    }
 
-      override def unbind(key: String, value: BigDecimal): Map[String, String] = baseFormatter.unbind(key, value.toString)
+    override def unbind(key: String, value: BigDecimal): Map[String, String] = baseFormatter.unbind(key, value.toString)
 
-      private def validAmount(input: Either[Seq[FormError], String], key: String): Either[Seq[FormError], BigDecimal] = {
+    private def validAmount(input: Either[Seq[FormError], String], key: String): Either[Seq[FormError], BigDecimal] = {
 
-        val is2dp = """-?\d+|\d*\.\d{1,2}"""
-        val validNumeric = """-?[0-9.]*"""
+      val is2dp = """-?\d+|\d*\.\d{1,2}"""
+      val validNumeric = """-?[0-9.]*"""
 
-        input.flatMap {
-          case s if s.isEmpty => Left(Seq(FormError(key, requiredKey, args)))
-          case s if !s.matches(validNumeric) => Left(Seq(FormError(key, invalidNumericKey, args)))
-          case s if !s.matches(is2dp) => Left(Seq(FormError(key, invalidNumericKey, args)))
-          case s =>
-            nonFatalCatch
-              .either(BigDecimal(s.replaceAll("£", "")))
-              .left.map(_ => Seq(FormError(key, invalidNumericKey, args)))
-        }
-      }
-
-      private def betweenLimits(input: Either[Seq[FormError], BigDecimal], key: String) = {
-        input.flatMap {
-          case value if value >= maxAmountValue => Left(Seq(FormError(key, maxAmountKey, Seq(maxAmountValue))))
-          case value if value <= BigDecimal("0") && minAmountKey.isDefined => Left(Seq(FormError(key, minAmountKey.get, args)))
-          case value => Right(value)
-        }
+      input.flatMap {
+        case s if s.isEmpty => Left(Seq(FormError(key, requiredKey, args)))
+        case s if !s.matches(validNumeric) => Left(Seq(FormError(key, invalidNumericKey, args)))
+        case s if !s.matches(is2dp) => Left(Seq(FormError(key, invalidNumericKey, args)))
+        case s =>
+          nonFatalCatch
+            .either(BigDecimal(s.replaceAll("£", "")))
+            .left.map(_ => Seq(FormError(key, invalidNumericKey, args)))
       }
     }
+
+    private def betweenLimits(input: Either[Seq[FormError], BigDecimal], key: String): Either[Seq[FormError], BigDecimal] = {
+      input.flatMap {
+        case value if value <= boundaries.exclusiveMin => Left(Seq(FormError(key, boundaries.exclusiveMinMsgKey, Seq(boundaries.exclusiveMin))))
+        case value if value >= boundaries.exclusiveMax => Left(Seq(FormError(key, boundaries.exclusiveMaxMsgKey, Seq(boundaries.exclusiveMax))))
+        case value => Right(value)
+      }
+    }
+  }
 }

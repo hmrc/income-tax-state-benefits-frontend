@@ -44,13 +44,15 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
   def show(taxYear: Int,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
-    Ok(pageView(AmountPage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.amountForm(benefitType))))
+    val taxPaid = request.stateBenefitsUserData.claim.flatMap(_.taxPaid)
+    Ok(pageView(AmountPage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.amountForm(benefitType, minAmount = taxPaid))))
   }
 
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
-    formsProvider.amountForm(benefitType).bindFromRequest().fold(
+    val taxPaid = request.stateBenefitsUserData.claim.flatMap(_.taxPaid)
+    formsProvider.amountForm(benefitType, minAmount = taxPaid).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(AmountPage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
       amount => claimService.updateAmount(request.stateBenefitsUserData, amount).map {
         case Left(_) => errorHandler.internalServerError()
@@ -70,4 +72,3 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
     }
   }
 }
-

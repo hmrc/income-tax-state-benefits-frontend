@@ -52,7 +52,7 @@ class TaxPaidController @Inject()(actionsProvider: ActionsProvider,
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
-    val claimAmount = request.stateBenefitsUserData.claim.flatMap(claim => claim.amount).get
+    val claimAmount = request.stateBenefitsUserData.claim.flatMap(_.amount).get
     formsProvider.taxPaidAmountForm(benefitType, request.user.isAgent, maxAmount = claimAmount).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(TaxPaidPage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
       amount => claimService.updateTaxPaidAmount(request.stateBenefitsUserData, amount).map {
