@@ -117,15 +117,24 @@ employmentSupportAllowance.startDatePage.error.mustBeBefore.date.agent = The dat
 employmentSupportAllowance.startDatePage.error.mustBeBefore.date.individual = The date you started getting Employment and Support Allowance must be before {0}
 
 #################       Employment and Support Allowance - End Date Page       ########################################
-employmentSupportAllowance.endDatePage.error.empty.day.agent = The date your client’s Employment and Support Allowance ended must include a day
-employmentSupportAllowance.endDatePage.error.empty.day.individual = The date your Employment and Support Allowance ended must include a day
-employmentSupportAllowance.endDatePage.error.empty.month.agent = The date your client’s Employment and Support Allowance ended must include a month
-employmentSupportAllowance.endDatePage.error.empty.month.individual = The date your Employment and Support Allowance ended must include a month
-employmentSupportAllowance.endDatePage.error.empty.year.agent = The date your client’s Employment and Support Allowance ended must include a year
-employmentSupportAllowance.endDatePage.error.empty.year.individual = The date your Employment and Support Allowance ended must include a year
-employmentSupportAllowance.endDatePage.error.invalid.date = Enter the date the Employment and Support Allowance ended must be a real date
-employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Employment and Support Allowance claim ended must be between 6 April {0} and 5 April {1}
-employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Employment and Support Allowance claim ended must be between 6 April {0} and 5 April {1}
+employmentSupportAllowance.endDatePage.error.empty.day.agent = The date your client’s Employment and Support Allowance claim ended must include a day
+employmentSupportAllowance.endDatePage.error.empty.day.individual = The date your Employment and Support Allowance claim ended must include a day
+employmentSupportAllowance.endDatePage.error.empty.dayMonth.agent = The date your client’s Employment and Support Allowance claim ended must include a day and month
+employmentSupportAllowance.endDatePage.error.empty.dayMonth.individual = The date your Employment and Support Allowance claim ended must include a day and month
+employmentSupportAllowance.endDatePage.error.empty.dayYear.agent = The date your client’s Employment and Support Allowance claim ended must include a day and year
+employmentSupportAllowance.endDatePage.error.empty.dayYear.individual = The date your Employment and Support Allowance claim ended must include a day and year
+employmentSupportAllowance.endDatePage.error.empty.month.agent = The date your client’s Employment and Support Allowance claim ended must include a month
+employmentSupportAllowance.endDatePage.error.empty.month.individual = The date your Employment and Support Allowance claim ended must include a month
+employmentSupportAllowance.endDatePage.error.empty.monthYear.agent = The date your client’s Employment and Support Allowance claim ended must include a month and year
+employmentSupportAllowance.endDatePage.error.empty.monthYear.individual = The date your Employment and Support Allowance claim ended must include a month and year
+employmentSupportAllowance.endDatePage.error.empty.year.agent = The date your client’s Employment and Support Allowance claim ended must include a year
+employmentSupportAllowance.endDatePage.error.empty.year.individual = The date your Employment and Support Allowance claim ended must include a year
+employmentSupportAllowance.endDatePage.error.empty.all.agent = Enter the date your client’s Employment and Support Allowance claim ended
+employmentSupportAllowance.endDatePage.error.empty.all.individual = Enter the date your Employment and Support Allowance claim ended
+employmentSupportAllowance.endDatePage.error.invalid.date.agent = The date your client’s Employment and Support Allowance claim ended must be a real date
+employmentSupportAllowance.endDatePage.error.invalid.date.individual = The date your Employment and Support Allowance claim ended must be a real date
+employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Employment and Support Allowance claim ended must be the same as or before 5 April {0}
+employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Employment and Support Allowance claim ended must be the same as or before 5 April {0}
 employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Employment and Support Allowance claim ended must be after {0}
 employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Employment and Support Allowance claim ended must be after {0}
 
@@ -192,15 +201,24 @@ jobSeekersAllowance.startDatePage.error.mustBeBefore.date.agent = The date your 
 jobSeekersAllowance.startDatePage.error.mustBeBefore.date.individual = The date you started getting Jobseeker’s Allowance must be before {0}
 
 #################       Jobseeker’s Allowance - End Date Page       ########################################
-jobSeekersAllowance.endDatePage.error.empty.day.agent = The date your client’s Jobseeker’s Allowance ended must include a day
-jobSeekersAllowance.endDatePage.error.empty.day.individual = The date your Jobseeker’s Allowance ended must include a day
-jobSeekersAllowance.endDatePage.error.empty.month.agent = The date your client’s Jobseeker’s Allowance ended must include a month
-jobSeekersAllowance.endDatePage.error.empty.month.individual = The date your Jobseeker’s Allowance ended must include a month
-jobSeekersAllowance.endDatePage.error.empty.year.agent = The date your client’s Jobseeker’s Allowance ended must include a year
-jobSeekersAllowance.endDatePage.error.empty.year.individual = The date your Jobseeker’s Allowance ended must include a year
-jobSeekersAllowance.endDatePage.error.invalid.date = Enter the date the Jobseeker’s Allowance ended must be a real date
-jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
-jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Jobseeker’s Allowance claim ended must be between 6 April {0} and 5 April {1}
+jobSeekersAllowance.endDatePage.error.empty.day.agent = The date your client’s Jobseeker’s Allowance claim ended must include a day
+jobSeekersAllowance.endDatePage.error.empty.day.individual = The date your Jobseeker’s Allowance claim ended must include a day
+jobSeekersAllowance.endDatePage.error.empty.dayMonth.agent = The date your client’s Jobseeker’s Allowance claim ended must include a day and month
+jobSeekersAllowance.endDatePage.error.empty.dayMonth.individual = The date your Jobseeker’s Allowance claim ended must include a day and month
+jobSeekersAllowance.endDatePage.error.empty.dayYear.agent = The date your client’s Jobseeker’s Allowance claim ended must include a day and year
+jobSeekersAllowance.endDatePage.error.empty.dayYear.individual = The date your Jobseeker’s Allowance claim ended must include a day and year
+jobSeekersAllowance.endDatePage.error.empty.month.agent = The date your client’s Jobseeker’s Allowance claim ended must include a month
+jobSeekersAllowance.endDatePage.error.empty.month.individual = The date your Jobseeker’s Allowance claim ended must include a month
+jobSeekersAllowance.endDatePage.error.empty.monthYear.agent = The date your client’s Jobseeker’s Allowance claim ended must include a month and year
+jobSeekersAllowance.endDatePage.error.empty.monthYear.individual = The date your Jobseeker’s Allowance claim ended must include a month and year
+jobSeekersAllowance.endDatePage.error.empty.year.agent = The date your client’s Jobseeker’s Allowance claim ended must include a year
+jobSeekersAllowance.endDatePage.error.empty.year.individual = The date your Jobseeker’s Allowance claim ended must include a year
+jobSeekersAllowance.endDatePage.error.empty.all.agent = Enter the date your client’s Jobseeker’s Allowance claim ended
+jobSeekersAllowance.endDatePage.error.empty.all.individual = Enter the date your Jobseeker’s Allowance claim ended
+jobSeekersAllowance.endDatePage.error.invalid.date.agent = The date your client’s Jobseeker’s Allowance claim ended must be a real date
+jobSeekersAllowance.endDatePage.error.invalid.date.individual = The date your Jobseeker’s Allowance claim ended must be a real date
+jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Jobseeker’s Allowance claim ended must be the same as or before 5 April {0}
+jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Jobseeker’s Allowance claim ended must be the same as or before 5 April {0}
 jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Jobseeker’s Allowance claim ended must be after {0}
 jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
 

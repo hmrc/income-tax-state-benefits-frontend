@@ -16,12 +16,9 @@
 
 package forms.validation.mappings
 
-import forms.DateForm.{day, filter, month, year}
-import forms.{AmountBoundaries, DateFormData}
+import forms.AmountBoundaries
 import play.api.data.Forms._
 import play.api.data.{FieldMapping, Mapping}
-
-import java.time.LocalDate
 
 object MappingUtil extends Formatters {
 
@@ -43,24 +40,4 @@ object MappingUtil extends Formatters {
                args: Seq[String] = Seq.empty[String]): FieldMapping[BigDecimal] =
     of(currencyFormatter(requiredKey, amountBoundaries, wrongFormatKey, args))
 
-  def dateMapping(emptyDayKey: String,
-                  emptyMonthKey: String,
-                  emptyYearKey: String,
-                  invalidDateKey: String,
-                  tooLongAgoKey: Option[String]): Mapping[DateFormData] = {
-    val dateMapping = mapping(
-      day -> trimmedText.transform[String](filter, identity).verifying(emptyDayKey, _.nonEmpty),
-      month -> trimmedText.transform[String](filter, identity).verifying(emptyMonthKey, _.nonEmpty),
-      year -> trimmedText.transform[String](filter, identity).verifying(emptyYearKey, _.nonEmpty)
-    )(DateFormData.apply)(DateFormData.unapply)
-      .verifying(invalidDateKey, dateFormData => dateFormData.isValidLocalDate)
-
-    tooLongAgoKey.map(key =>
-      dateMapping.verifying(
-        key,
-        dateFormData => !dateFormData.isValidLocalDate ||
-          dateFormData.isValidLocalDate && dateFormData.toLocalDate.forall(_.isAfter(LocalDate.parse("1900-01-01")))
-      )
-    ).getOrElse(dateMapping)
-  }
 }
