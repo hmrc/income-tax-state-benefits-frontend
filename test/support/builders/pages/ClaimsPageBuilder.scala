@@ -18,7 +18,7 @@ package support.builders.pages
 
 import models.BenefitType.JobSeekersAllowance
 import models.pages.ClaimsPage
-import support.builders.pages.elements.BenefitSummaryListRowDataBuilder.aBenefitSummaryListRowData
+import support.builders.pages.elements.BenefitDataRowBuilder.aBenefitDataRow
 import support.utils.TaxYearUtils.taxYearEOY
 
 object ClaimsPageBuilder {
@@ -27,6 +27,7 @@ object ClaimsPageBuilder {
     taxYear = taxYearEOY,
     benefitType = JobSeekersAllowance,
     isInYear = false,
-    summaryListDataRows = Seq(aBenefitSummaryListRowData)
+    benefitDataRows = Seq(aBenefitDataRow),
+    ignoredBenefitDataRows = Seq(aBenefitDataRow.copy(isIgnored = true))
   )
 }

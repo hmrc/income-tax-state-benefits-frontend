@@ -206,10 +206,10 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
+    import userScenario.commonExpectedResults._
+    import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${agentTest(userScenario.isAgent)}" should {
-      import Selectors._
-      import userScenario.commonExpectedResults._
-      import userScenario.specificExpectedResults._
       val pageModel = aReviewClaimPage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance)
       "render end of year version of ReviewJobSeekersAllowanceClaim page" when {
         "customer added data" which {
@@ -222,8 +222,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
           welshToggleCheck(userScenario.isWelsh)
-          titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
-          captionCheck(userScenario.commonExpectedResults.expectedCaption(taxYearEOY))
+          titleCheck(expectedTitle, userScenario.isWelsh)
+          captionCheck(expectedCaption(taxYearEOY))
           elementNotOnPageCheck(p1)
 
           textOnPageCheck(get.expectedStartDateText, summaryListRowFieldNameSelector(1))
@@ -245,8 +245,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(5), "for the tax paid question")
           checkElementsCount(6, rowsSelector)
-          buttonCheck(userScenario.commonExpectedResults.expectedSaveButtonText, saveAndContinueButtonSelector)
-          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Selectors.pageFormSelector)
+          buttonCheck(expectedSaveButtonText, saveAndContinueButtonSelector)
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, pageFormSelector)
           linkCheck(expectedRemoveLinkText, removeLinkSelector, RemoveClaimController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url,
             Some(expectedRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
           elementNotOnPageCheck(restoreClaimButtonSelector)
@@ -260,8 +260,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           val page = pageModel.copy(isCustomerAdded = false)
 
           implicit val document: Document = Jsoup.parse(underTest(page).body)
-          textOnPageCheck(userScenario.commonExpectedResults.expectedExternalDataText, Selectors.p1)
-          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, EmploymentSupportAllowance, page.sessionDataId).url, Selectors.pageFormSelector)
+          textOnPageCheck(expectedExternalDataText, p1)
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, EmploymentSupportAllowance, page.sessionDataId).url, pageFormSelector)
         }
 
         "the claim is ignored" which {
@@ -271,14 +271,14 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           val page = pageModel.copy(isIgnored = true)
 
           implicit val document: Document = Jsoup.parse(underTest(page).body)
-          buttonCheck(userScenario.commonExpectedResults.expectedRestoreClaimButtonText, restoreClaimButtonSelector)
+          buttonCheck(expectedRestoreClaimButtonText, restoreClaimButtonSelector)
           linkCheck(expectedBackText, backLinkSelector, ClaimsController.show(taxYearEOY, EmploymentSupportAllowance).url)
           elementNotOnPageCheck(changeLink(1))
           elementNotOnPageCheck(changeLink(2))
           elementNotOnPageCheck(changeLink(3))
           elementNotOnPageCheck(changeLink(4))
           elementNotOnPageCheck(changeLink(5))
-          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, EmploymentSupportAllowance, page.sessionDataId).url, Selectors.pageFormSelector)
+          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, EmploymentSupportAllowance, page.sessionDataId).url, pageFormSelector)
         }
       }
 
@@ -293,8 +293,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val document: Document = Jsoup.parse(underTest(page).body)
 
           welshToggleCheck(userScenario.isWelsh)
-          titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
-          captionCheck(userScenario.commonExpectedResults.expectedCaption(taxYear))
+          titleCheck(expectedTitle, userScenario.isWelsh)
+          captionCheck(expectedCaption(taxYear))
           elementNotOnPageCheck(p1)
 
           textOnPageCheck(get.expectedStartDateText, summaryListRowFieldNameSelector(1))

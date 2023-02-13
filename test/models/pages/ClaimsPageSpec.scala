@@ -17,7 +17,7 @@
 package models.pages
 
 import models.BenefitType.JobSeekersAllowance
-import models.pages.elements.BenefitSummaryListRowData
+import models.pages.elements.BenefitDataRow
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
@@ -36,7 +36,7 @@ class ClaimsPageSpec extends UnitTest
     "create correct ClaimsPage object" in {
       val now = LocalDate.now()
       val stateBenefit_1 = aStateBenefit.copy(startDate = now.minusDays(0))
-      val stateBenefit_2 = aStateBenefit.copy(startDate = now.minusDays(2))
+      val stateBenefit_2 = aStateBenefit.copy(startDate = now.minusDays(2), dateIgnored = None)
       val stateBenefit_3 = aCustomerAddedStateBenefit.copy(startDate = now.minusDays(1))
       val stateBenefit_4 = aCustomerAddedStateBenefit.copy(startDate = now.minusDays(3))
 
@@ -44,18 +44,18 @@ class ClaimsPageSpec extends UnitTest
       val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_3, stateBenefit_4)))
       val incomeTaxUserData = anIncomeTaxUserData.copy(Some(anAllStateBenefitsData.copy(Some(stateBenefitsData), Some(customerAddedStateBenefitsData))))
 
-      val summaryListDataRows = Seq(
-        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_4),
-        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_2),
-        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_3),
-        BenefitSummaryListRowData.mapFrom(taxYear, stateBenefit_1),
+      val benefitDataRows = Seq(
+        BenefitDataRow.mapFrom(taxYear, stateBenefit_4),
+        BenefitDataRow.mapFrom(taxYear, stateBenefit_2),
+        BenefitDataRow.mapFrom(taxYear, stateBenefit_3)
       )
 
       ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe ClaimsPage(
         taxYear = taxYear,
         benefitType = JobSeekersAllowance,
         isInYear = false,
-        summaryListDataRows = summaryListDataRows
+        benefitDataRows = benefitDataRows,
+        ignoredBenefitDataRows = Seq(BenefitDataRow.mapFrom(taxYear, stateBenefit_1))
       )
     }
   }

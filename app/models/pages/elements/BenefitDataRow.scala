@@ -21,15 +21,15 @@ import models.{CustomerAddedStateBenefit, StateBenefit}
 import java.time.LocalDate
 import java.util.UUID
 
-case class BenefitSummaryListRowData(benefitId: UUID,
-                                     amount: Option[BigDecimal],
-                                     startDate: LocalDate,
-                                     endDate: LocalDate,
-                                     isIgnored: Boolean)
+case class BenefitDataRow(benefitId: UUID,
+                          amount: Option[BigDecimal],
+                          startDate: LocalDate,
+                          endDate: LocalDate,
+                          isIgnored: Boolean)
 
-object BenefitSummaryListRowData {
+object BenefitDataRow {
 
-  def mapFrom(taxYear: Int, stateBenefit: StateBenefit): BenefitSummaryListRowData = BenefitSummaryListRowData(
+  def mapFrom(taxYear: Int, stateBenefit: StateBenefit): BenefitDataRow = BenefitDataRow(
     benefitId = stateBenefit.benefitId,
     amount = stateBenefit.amount,
     startDate = stateBenefit.startDate,
@@ -37,7 +37,7 @@ object BenefitSummaryListRowData {
     isIgnored = stateBenefit.dateIgnored.nonEmpty
   )
 
-  def mapFrom(taxYear: Int, customerAddedStateBenefit: CustomerAddedStateBenefit): BenefitSummaryListRowData = BenefitSummaryListRowData(
+  def mapFrom(taxYear: Int, customerAddedStateBenefit: CustomerAddedStateBenefit): BenefitDataRow = BenefitDataRow(
     benefitId = customerAddedStateBenefit.benefitId,
     amount = customerAddedStateBenefit.amount,
     startDate = customerAddedStateBenefit.startDate,

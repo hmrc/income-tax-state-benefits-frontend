@@ -174,7 +174,9 @@ class EndDatePageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
     import userScenario.commonExpectedResults._
+    import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${agentTest(userScenario.isAgent)}" should {
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
@@ -184,15 +186,15 @@ class EndDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
+        titleCheck(expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.commonExpectedResults.expectedHeading, isFieldSetH1 = true)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedHintText, Selectors.hintSelector)
-        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
-        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
-        formPostLinkCheck(EndDateController.submit(taxYearEOY, EmploymentSupportAllowance, anEndDatePage.sessionDataId).url, Selectors.formSelector)
-        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
+        h1Check(expectedHeading, isFieldSetH1 = true)
+        textOnPageCheck(expectedHintText, hintSelector)
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = "")
+        formPostLinkCheck(EndDateController.submit(taxYearEOY, EmploymentSupportAllowance, anEndDatePage.sessionDataId).url, formSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
       }
 
       "render page with pre-filled form" which {
@@ -203,9 +205,9 @@ class EndDatePageViewSpec extends ViewUnitTest {
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = form)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
-        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = taxYearEOY.toString)
       }
 
       "render page with empty date fields error" when {
@@ -218,11 +220,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedAllFieldsEmptyErrorText, Selectors.invalidErrorHref(day))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedAllFieldsEmptyErrorText, invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = "")
         }
 
         "date with missing day" which {
@@ -234,11 +236,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyDayErrorText, Selectors.invalidErrorHref(day))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedEmptyDayErrorText, invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = taxYearEOY.toString)
         }
 
         "date with missing day and month" which {
@@ -250,11 +252,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyDayMonthErrorText, Selectors.invalidErrorHref(day))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedEmptyDayMonthErrorText, invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = taxYearEOY.toString)
         }
 
         "date with missing day and year" which {
@@ -266,11 +268,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyDayYearErrorText, Selectors.invalidErrorHref(day))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedEmptyDayYearErrorText, invalidErrorHref(day))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = "")
         }
 
         "date with missing month" which {
@@ -282,11 +284,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyMonthErrorText, Selectors.invalidErrorHref(month))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedEmptyMonthErrorText, invalidErrorHref(month))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = taxYearEOY.toString)
         }
 
         "date with missing month and year" which {
@@ -298,11 +300,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyMonthYearErrorText, Selectors.invalidErrorHref(month))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedEmptyMonthYearErrorText, invalidErrorHref(month))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = "")
         }
 
         "date with missing year" which {
@@ -314,11 +316,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
           val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, EmploymentSupportAllowance, form = pageForm)
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-          titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-          errorSummaryCheck(userScenario.specificExpectedResults.get.expectedEmptyYearErrorText, Selectors.invalidErrorHref(year))
-          inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
-          inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
-          inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "")
+          titleCheck(expectedErrorTitle, userScenario.isWelsh)
+          errorSummaryCheck(get.expectedEmptyYearErrorText, invalidErrorHref(year))
+          inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+          inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+          inputFieldValueCheck(DateForm.year, inputYearField, value = "")
         }
       }
 
@@ -331,11 +333,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedInvalidDateErrorText, Selectors.invalidErrorHref(day))
-        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
-        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "2")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = "yyyy")
+        titleCheck(expectedErrorTitle, userScenario.isWelsh)
+        errorSummaryCheck(get.expectedInvalidDateErrorText, invalidErrorHref(day))
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = "yyyy")
       }
 
       "render page with mustBeEndOfYear error" which {
@@ -348,11 +350,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeSameAsOrBeforeErrorText(taxYear), Selectors.dateFormLevelErrorHref)
-        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "6")
-        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "4")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYear.toString)
+        titleCheck(expectedErrorTitle, userScenario.isWelsh)
+        errorSummaryCheck(get.expectedMustBeSameAsOrBeforeErrorText(taxYear), dateFormLevelErrorHref)
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "6")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "4")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = taxYear.toString)
       }
 
       "render page with mustBeAfterStartDate error" which {
@@ -366,11 +368,11 @@ class EndDatePageViewSpec extends ViewUnitTest {
         val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.commonExpectedResults.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedMustBeAfterStartDateErrorText(startDate), Selectors.dateFormLevelErrorHref)
-        inputFieldValueCheck(DateForm.day, Selectors.inputDayField, value = "1")
-        inputFieldValueCheck(DateForm.month, Selectors.inputMonthField, value = "1")
-        inputFieldValueCheck(DateForm.year, Selectors.inputYearField, value = taxYearEOY.toString)
+        titleCheck(expectedErrorTitle, userScenario.isWelsh)
+        errorSummaryCheck(get.expectedMustBeAfterStartDateErrorText(startDate), dateFormLevelErrorHref)
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "1")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = taxYearEOY.toString)
       }
     }
   }

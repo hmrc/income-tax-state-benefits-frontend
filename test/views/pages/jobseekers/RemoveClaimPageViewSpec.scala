@@ -168,34 +168,36 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
     import userScenario.commonExpectedResults._
+    import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
       "render page with a 'full' claim" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
         implicit val document: Document = Jsoup.parse(underTest(aRemoveClaimPage).body)
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
+        titleCheck(expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.commonExpectedResults.expectedHeading)
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedStartDateRowKey, Selectors.startDateRowKeySelector)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedStartDateRowValue, Selectors.startDateRowValueSelector)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedEndDateQuestionRowKey, Selectors.endDateQuestionRowKeySelector)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedEndDateQuestionRowValue, Selectors.endDateQuestionRowValueSelector, "duplicate")
-        textOnPageCheck(userScenario.commonExpectedResults.expectedEndDateRowKey, Selectors.endDateRowKeySelector)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedEndDateRowValue, Selectors.endDateRowValueSelector)
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedAmountRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.amountRowKeySelector)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedAmountRowValue, Selectors.amountRowValueSelector)
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedTaxPaidQuestionRowKey(
-          aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.taxPaidQuestionRowKeySelector
+        h1Check(expectedHeading)
+        textOnPageCheck(get.expectedStartDateRowKey, startDateRowKeySelector)
+        textOnPageCheck(expectedStartDateRowValue, startDateRowValueSelector)
+        textOnPageCheck(expectedEndDateQuestionRowKey, endDateQuestionRowKeySelector)
+        textOnPageCheck(expectedEndDateQuestionRowValue, endDateQuestionRowValueSelector, "duplicate")
+        textOnPageCheck(expectedEndDateRowKey, endDateRowKeySelector)
+        textOnPageCheck(expectedEndDateRowValue, endDateRowValueSelector)
+        textOnPageCheck(get.expectedAmountRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), amountRowKeySelector)
+        textOnPageCheck(expectedAmountRowValue, amountRowValueSelector)
+        textOnPageCheck(get.expectedTaxPaidQuestionRowKey(
+          aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), taxPaidQuestionRowKeySelector
         )
-        textOnPageCheck(userScenario.commonExpectedResults.expectedTaxPaidQuestionRowValue, Selectors.taxPaidQuestionRowValueSelector)
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedTaxPaidRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), Selectors.taxPaidRowKeySelector)
-        textOnPageCheck(userScenario.commonExpectedResults.expectedTaxPaidRowValue, Selectors.taxPaidRowValueSelector)
-        checkElementsCount(6, Selectors.rowsSelector)
-        buttonCheck(userScenario.commonExpectedResults.removeButton, Selectors.buttonSelector)
-        linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector, href = ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, aRemoveClaimPage.sessionDataId).url,
-          Some(doNotRemoveLinkHiddenText), Some(Selectors.removeLinkHiddenSelector))
+        textOnPageCheck(expectedTaxPaidQuestionRowValue, taxPaidQuestionRowValueSelector)
+        textOnPageCheck(get.expectedTaxPaidRowKey(aRemoveClaimPage.itemsFirstDate, aRemoveClaimPage.itemsSecondDate), taxPaidRowKeySelector)
+        textOnPageCheck(expectedTaxPaidRowValue, taxPaidRowValueSelector)
+        checkElementsCount(6, rowsSelector)
+        buttonCheck(removeButton, buttonSelector)
+        linkCheck(doNotRemoveLink, linkSelector, ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, aRemoveClaimPage.sessionDataId).url,
+          Some(doNotRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
       }
 
       "render page with a 'min' claim" which {
@@ -204,17 +206,16 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(aRemoveClaimPage.copy(endDateQuestion = Some(false), taxPaidQuestion = Some(false))).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
+        titleCheck(expectedTitle, userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.commonExpectedResults.expectedHeading)
+        h1Check(expectedHeading)
 
-        textOnPageCheck(userScenario.commonExpectedResults.no, Selectors.endDateQuestionRowValueSelector)
-        textOnPageCheck(userScenario.commonExpectedResults.no, Selectors.amountRowValueSelector, "duplicate")
-        checkElementsCount(4, Selectors.rowsSelector)
-        buttonCheck(userScenario.commonExpectedResults.removeButton, Selectors.buttonSelector)
-        linkCheck(userScenario.commonExpectedResults.doNotRemoveLink, Selectors.linkSelector,
-          href = ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, aRemoveClaimPage.sessionDataId).url,
-          Some(doNotRemoveLinkHiddenText), Some(Selectors.removeLinkHiddenSelector))
+        textOnPageCheck(userScenario.commonExpectedResults.no, endDateQuestionRowValueSelector)
+        textOnPageCheck(userScenario.commonExpectedResults.no, amountRowValueSelector, "duplicate")
+        checkElementsCount(4, rowsSelector)
+        buttonCheck(removeButton, buttonSelector)
+        linkCheck(doNotRemoveLink, linkSelector, ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, aRemoveClaimPage.sessionDataId).url,
+          Some(doNotRemoveLinkHiddenText), Some(removeLinkHiddenSelector))
       }
     }
   }

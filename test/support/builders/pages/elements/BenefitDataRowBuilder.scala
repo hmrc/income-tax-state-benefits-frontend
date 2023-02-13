@@ -16,15 +16,15 @@
 
 package support.builders.pages.elements
 
-import models.pages.elements.BenefitSummaryListRowData
+import models.pages.elements.BenefitDataRow
 import support.utils.TaxYearUtils.taxYearEOY
 
 import java.time.LocalDate
 import java.util.UUID
 
-object BenefitSummaryListRowDataBuilder {
+object BenefitDataRowBuilder {
 
-  val aBenefitSummaryListRowData: BenefitSummaryListRowData = BenefitSummaryListRowData(
+  val aBenefitDataRow: BenefitDataRow = BenefitDataRow(
     benefitId = UUID.randomUUID(),
     amount = Some(100.00),
     startDate = LocalDate.parse(s"$taxYearEOY-01-01"),
