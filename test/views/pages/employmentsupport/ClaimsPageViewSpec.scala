@@ -41,6 +41,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
     val removedClaimP1Selector = "p.govuk-body"
     val addMissingClaimFormSelector = "#main-content > div > div > form"
     val buttonSelector = "#continue"
+    val secondaryButton = ".govuk-button.govuk-button--secondary"
 
     def summaryListRowSelector(row: Int, isIgnoredList: Boolean): String = s"${if (isIgnoredList) "#ignored-" else "#"}benefits-summary-list-id > div:nth-child($row)"
 
@@ -148,11 +149,28 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYear).url))
       }
 
+      "render the page for an inYear tax claim when there are no benefits" which {
+        implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = aClaimsPage.copy(benefitType = EmploymentSupportAllowance, taxYear = taxYear, isInYear = true, benefitDataRows = Seq.empty, ignoredBenefitDataRows = Seq.empty)
+
+        implicit val document: Document = Jsoup.parse(page(pageModel).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(expectedTitle, userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYear))
+        h1Check(expectedHeading)
+        elementNotOnPageCheck(addMissingClaimFormSelector)
+        elementNotOnPageCheck(removedClaimH2Selector)
+        buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYear).url))
+        elementNotOnPageCheck(secondaryButton)
+      }
+
       "render page without any claims" which {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aClaimsPage.copy(benefitType = EmploymentSupportAllowance, benefitDataRows = Seq.empty)
+        val pageModel = aClaimsPage.copy(benefitType = EmploymentSupportAllowance, benefitDataRows = Seq.empty, ignoredBenefitDataRows = Seq.empty)
 
         implicit val document: Document = Jsoup.parse(page(pageModel).body)
 
@@ -162,7 +180,9 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         elementNotOnPageCheck(summaryListRowSelector(1, isIgnoredList = false))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
+        buttonCheck(expectedAddMissingClaimButtonText, addMissingClaimButtonSelector, None)
         buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYearEOY).url))
+        textOnPageCheck(expectedButtonText, secondaryButton)
       }
 
       "render page with one normal claim only" which {
@@ -187,7 +207,9 @@ class ClaimsPageViewSpec extends ViewUnitTest {
           UserSessionDataController.loadToSession(taxYearEOY, EmploymentSupportAllowance, aBenefitDataRow.benefitId).url, Some(summaryListRowViewLinkHiddenTextSelector(1)))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
         elementNotOnPageCheck(removedClaimH2Selector)
+        buttonCheck(expectedAddMissingClaimButtonText, addMissingClaimButtonSelector, None)
         buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYearEOY).url))
+        textOnPageCheck(expectedAddMissingClaimButtonText, secondaryButton)
       }
 
       "render page with one ignored claim only" which {
@@ -209,6 +231,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         elementNotOnPageCheck(summaryListRowSelector(1, isIgnoredList = false))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
+        buttonCheck(expectedAddMissingClaimButtonText, addMissingClaimButtonSelector, None)
         textOnPageCheck(expectedRemovedClaimsText, removedClaimH2Selector)
         textOnPageCheck(get.expectedRemovedClaimsParagraphText(isPlural = false), removedClaimP1Selector)
         textOnPageCheck("£200.20", summaryListRowValueSelector(1, 1, isIgnoredList = true))
@@ -216,6 +239,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         linkCheck(s"$expectedViewLinkText $expectedViewLinkHiddenText", summaryListRowViewLinkSelector(1, isIgnoredList = true), UserSessionDataController.loadToSession(taxYearEOY,
           EmploymentSupportAllowance, aBenefitDataRow.benefitId).url, Some(summaryListRowViewLinkHiddenTextSelector(1)), additionalTestText = "ignore")
         buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYearEOY).url))
+        textOnPageCheck(expectedAddMissingClaimButtonText, secondaryButton)
       }
 
       "render page with multiple ignored claims only" which {
@@ -239,6 +263,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         h1Check(expectedHeading)
         elementNotOnPageCheck(summaryListRowSelector(1, isIgnoredList = false))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
+        buttonCheck(expectedAddMissingClaimButtonText, addMissingClaimButtonSelector, None)
         textOnPageCheck(expectedRemovedClaimsText, removedClaimH2Selector)
         textOnPageCheck(get.expectedRemovedClaimsParagraphText(isPlural = true), removedClaimP1Selector)
         textOnPageCheck("£100.20", summaryListRowValueSelector(1, 1, isIgnoredList = true))
@@ -250,6 +275,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         linkCheck(s"$expectedViewLinkText $expectedViewLinkHiddenText", summaryListRowViewLinkSelector(2, isIgnoredList = true), UserSessionDataController.loadToSession(taxYearEOY,
           EmploymentSupportAllowance, aBenefitDataRow.benefitId).url, Some(summaryListRowViewLinkHiddenTextSelector(2)), additionalTestText = "ignore row 2")
         buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYearEOY).url))
+        textOnPageCheck(expectedAddMissingClaimButtonText, secondaryButton)
       }
 
       "render page with one normal claim and one ignored claim" which {
@@ -274,6 +300,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         linkCheck(s"$expectedViewLinkText $expectedViewLinkHiddenText", summaryListRowViewLinkSelector(1),
           UserSessionDataController.loadToSession(taxYearEOY, EmploymentSupportAllowance, aBenefitDataRow.benefitId).url, Some(summaryListRowViewLinkHiddenTextSelector(1)))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
+        buttonCheck(expectedAddMissingClaimButtonText, addMissingClaimButtonSelector, None)
         textOnPageCheck(expectedRemovedClaimsText, removedClaimH2Selector)
         textOnPageCheck(get.expectedRemovedClaimsParagraphText(false), removedClaimP1Selector)
         textOnPageCheck("£200.20", summaryListRowValueSelector(1, 1, isIgnoredList = true))
@@ -281,6 +308,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         linkCheck(s"$expectedViewLinkText $expectedViewLinkHiddenText", summaryListRowViewLinkSelector(1, isIgnoredList = true), UserSessionDataController.loadToSession(taxYearEOY,
           EmploymentSupportAllowance, aBenefitDataRow.benefitId).url, Some(summaryListRowViewLinkHiddenTextSelector(1)), additionalTestText = "ignore")
         buttonCheck(expectedButtonText, buttonSelector, Some(SummaryController.show(taxYearEOY).url))
+        textOnPageCheck(expectedAddMissingClaimButtonText, secondaryButton)
       }
     }
   }

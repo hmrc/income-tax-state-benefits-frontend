@@ -47,6 +47,8 @@
 
 @titleText = @{ messages(s"common.$benefitTypeKey") }
 
+@hasBenefits = @{ pageModel.benefitDataRows.nonEmpty || pageModel.ignoredBenefitDataRows.nonEmpty }
+
 @mapToSummaryListRow(rowData: BenefitDataRow) = @{
     val keyContent = if(pageModel.isInYear) translatedDateFormatter(rowData.startDate) else rowData.amount.map(amount => bigDecimalCurrency(amount.toString)).getOrElse("")
     val valueContent = if(pageModel.isInYear) HtmlContent(link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some(messages(s"$pageKeysPrefix.view.hiddenText"))))
@@ -74,7 +76,7 @@
         @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, pageModel.benefitType)) {
             @button(
                 alternativeText = "common.addMissingClaim",
-                classes = Some("govuk-button--secondary"),
+                classes = if (hasBenefits) Some("govuk-button--secondary") else None,
                 attributes = Map("id" -> "add-missing-claim-button-id")
             )
         }
@@ -91,7 +93,11 @@
     }
 
     <div class="govuk-button-group govuk-!-margin-top-7">
-        @button(href = Some(SummaryController.show(pageModel.taxYear).url), alternativeText = "common.continue")
+        @button(
+            href = Some(SummaryController.show(pageModel.taxYear).url),
+            alternativeText = "common.continue",
+            classes = if (pageModel.isInYear || hasBenefits) None else Some("govuk-button--secondary")
+        )
     </div>
 }
 
