@@ -125,7 +125,9 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
     import userScenario.commonExpectedResults._
+    import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
@@ -135,14 +137,14 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.specificExpectedResults.get.expectedHeading(aTaxPaidQuestionPage.titleFirstDate, aTaxPaidQuestionPage.titleSecondDate), isFieldSetH1 = true)
-        hintTextCheck(userScenario.specificExpectedResults.get.expectedHintText)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
-        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
+        h1Check(get.expectedHeading(aTaxPaidQuestionPage.titleFirstDate, aTaxPaidQuestionPage.titleSecondDate), isFieldSetH1 = true)
+        hintTextCheck(get.expectedHintText)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
+        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
       }
 
       "render page with filled in form using selected 'Yes' value" which {
@@ -152,8 +154,8 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         val pageModel = aTaxPaidQuestionPage.copy(form = aTaxPaidQuestionPage.form.fill(value = true))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = true)
+        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = true)
       }
 
       "render page with empty selection error" which {
@@ -165,11 +167,11 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         val pageModel = aTaxPaidQuestionPage.copy(form = pageForm.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedValueErrorText(pageModel.titleFirstDate, pageModel.titleSecondDate), Selectors.errorHref)
-        errorAboveElementCheck(userScenario.specificExpectedResults.get.expectedErrorText(pageModel.titleFirstDate, pageModel.titleSecondDate))
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
+        errorSummaryCheck(get.expectedValueErrorText(pageModel.titleFirstDate, pageModel.titleSecondDate), errorHref)
+        errorAboveElementCheck(get.expectedErrorText(pageModel.titleFirstDate, pageModel.titleSecondDate))
       }
     }
   }

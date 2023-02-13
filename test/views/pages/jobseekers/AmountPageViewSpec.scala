@@ -128,7 +128,9 @@ class AmountPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
     import userScenario.commonExpectedResults._
+    import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
@@ -136,14 +138,14 @@ class AmountPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(anAmountPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.specificExpectedResults.get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate))
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedP1Text, Selectors.paragraphTextSelector)
-        amountBoxLabelCheck(userScenario.commonExpectedResults.expectedLabelText)
-        amountBoxHintCheck(userScenario.commonExpectedResults.expectedHintText)
-        formPostLinkCheck(AmountController.submit(taxYearEOY, JobSeekersAllowance, anAmountPage.sessionDataId).url, Selectors.continueButtonFormSelector)
-        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
+        h1Check(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate))
+        textOnPageCheck(get.expectedP1Text, paragraphTextSelector)
+        amountBoxLabelCheck(expectedLabelText)
+        amountBoxHintCheck(expectedHintText)
+        formPostLinkCheck(AmountController.submit(taxYearEOY, JobSeekersAllowance, anAmountPage.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
       }
 
       "render page with empty selection error" which {
@@ -152,10 +154,10 @@ class AmountPageViewSpec extends ViewUnitTest {
         val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedEmptyAmountErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedEmptyAmountErrorText)
+        errorSummaryCheck(expectedEmptyAmountErrorText, errorHref)
+        errorAboveElementCheck(expectedEmptyAmountErrorText)
       }
 
       "render page with max amount error" which {
@@ -164,10 +166,10 @@ class AmountPageViewSpec extends ViewUnitTest {
         val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "100,000,000,000")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedMaxAmountErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedMaxAmountErrorText)
+        errorSummaryCheck(expectedMaxAmountErrorText, errorHref)
+        errorAboveElementCheck(expectedMaxAmountErrorText)
       }
 
       "render page with must be more than zero amount error" which {
@@ -176,10 +178,10 @@ class AmountPageViewSpec extends ViewUnitTest {
         val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "0")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedMoreThanZeroAmountErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedMoreThanZeroAmountErrorText)
+        errorSummaryCheck(expectedMoreThanZeroAmountErrorText, errorHref)
+        errorAboveElementCheck(expectedMoreThanZeroAmountErrorText)
       }
 
       "render page with incorrect format amount error" which {
@@ -188,10 +190,10 @@ class AmountPageViewSpec extends ViewUnitTest {
         val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "abc")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedIncorrectFormatAmountErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedIncorrectFormatAmountErrorText)
+        errorSummaryCheck(expectedIncorrectFormatAmountErrorText, errorHref)
+        errorAboveElementCheck(expectedIncorrectFormatAmountErrorText)
       }
 
       "render page with amount must be more than ... error" which {
@@ -202,10 +204,10 @@ class AmountPageViewSpec extends ViewUnitTest {
         val pageModel = anAmountPage.copy(form = form.bind(Map(AmountForm.amount -> "10")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedAmountMustBeMoreErrorText(amount = 10), Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedAmountMustBeMoreErrorText(amount = 10))
+        errorSummaryCheck(expectedAmountMustBeMoreErrorText(amount = 10), errorHref)
+        errorAboveElementCheck(expectedAmountMustBeMoreErrorText(amount = 10))
       }
     }
   }

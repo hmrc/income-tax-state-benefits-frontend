@@ -121,7 +121,9 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
     import userScenario.commonExpectedResults._
+    import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
       val pageForm = new FormsProvider().taxPaidAmountForm(EmploymentSupportAllowance, isAgent = userScenario.isAgent, maxAmount = aClaimCYAModel.amount.get - 1)
       val pageModel = aTaxPaidPage.copy(benefitType = EmploymentSupportAllowance, form = pageForm)
@@ -131,14 +133,14 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.specificExpectedResults.get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
-        textOnPageCheck(userScenario.specificExpectedResults.get.expectedP1Text, Selectors.paragraphTextSelector)
-        amountBoxLabelCheck(userScenario.commonExpectedResults.expectedLabelText)
-        amountBoxHintCheck(userScenario.commonExpectedResults.expectedHintText)
-        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Selectors.continueButtonFormSelector)
-        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
+        h1Check(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
+        textOnPageCheck(get.expectedP1Text, paragraphTextSelector)
+        amountBoxLabelCheck(expectedLabelText)
+        amountBoxHintCheck(expectedHintText)
+        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
       }
 
       "render page with empty selection error" which {
@@ -147,10 +149,10 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
         val page = pageModel.copy(form = pageModel.form.bind(Map(AmountForm.amount -> "")))
         implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(userScenario.specificExpectedResults.get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(userScenario.specificExpectedResults.get.expectedErrorText, Selectors.errorHref)
-        errorAboveElementCheck(userScenario.specificExpectedResults.get.expectedErrorText)
+        errorSummaryCheck(get.expectedErrorText, errorHref)
+        errorAboveElementCheck(get.expectedErrorText)
       }
     }
   }

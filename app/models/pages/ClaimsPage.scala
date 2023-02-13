@@ -16,13 +16,14 @@
 
 package models.pages
 
-import models.pages.elements.BenefitSummaryListRowData
+import models.pages.elements.BenefitDataRow
 import models.{BenefitType, IncomeTaxUserData}
 
 case class ClaimsPage(taxYear: Int,
                       benefitType: BenefitType,
                       isInYear: Boolean,
-                      summaryListDataRows: Seq[BenefitSummaryListRowData])
+                      benefitDataRows: Seq[BenefitDataRow],
+                      ignoredBenefitDataRows: Seq[BenefitDataRow])
 
 object ClaimsPage {
 
@@ -31,14 +32,15 @@ object ClaimsPage {
             isInYear: Boolean,
             incomeTaxUserData: IncomeTaxUserData): ClaimsPage = {
     val hmrcData = incomeTaxUserData.hmrcAllowancesFor(benefitType)
-      .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
+      .map(BenefitDataRow.mapFrom(taxYear, _)).toSeq
 
     val customerData = incomeTaxUserData.customerAllowancesFor(benefitType)
-      .map(BenefitSummaryListRowData.mapFrom(taxYear, _)).toSeq
+      .map(BenefitDataRow.mapFrom(taxYear, _)).toSeq
 
-    val benefitSummaryListRowData = (hmrcData ++ customerData)
+    val (ignoredBenefitDataRows, benefitDataRows) = (hmrcData ++ customerData)
       .sortWith((it1, it2) => it1.startDate.isBefore(it2.startDate))
+      .partition(_.isIgnored)
 
-    ClaimsPage(taxYear, benefitType, isInYear, benefitSummaryListRowData)
+    ClaimsPage(taxYear, benefitType, isInYear, benefitDataRows, ignoredBenefitDataRows)
   }
 }

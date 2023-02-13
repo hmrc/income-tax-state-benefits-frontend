@@ -23,12 +23,12 @@ import support.providers.TaxYearProvider
 
 import java.time.LocalDate
 
-class BenefitSummaryListRowDataSpec extends UnitTest
+class BenefitDataRowSpec extends UnitTest
   with TaxYearProvider {
 
   "mapFrom stateBenefit" should {
     "return correct BenefitSummaryListRowData" in {
-      BenefitSummaryListRowData.mapFrom(taxYear, aStateBenefit) shouldBe BenefitSummaryListRowData(
+      BenefitDataRow.mapFrom(taxYear, aStateBenefit) shouldBe BenefitDataRow(
         benefitId = aStateBenefit.benefitId,
         amount = aStateBenefit.amount,
         startDate = aStateBenefit.startDate,
@@ -38,7 +38,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
     }
 
     "return correct BenefitSummaryListRowData when state benefit has not endDate" in {
-      BenefitSummaryListRowData.mapFrom(taxYear, aStateBenefit.copy(endDate = None)) shouldBe BenefitSummaryListRowData(
+      BenefitDataRow.mapFrom(taxYear, aStateBenefit.copy(endDate = None)) shouldBe BenefitDataRow(
         benefitId = aStateBenefit.benefitId,
         amount = aStateBenefit.amount,
         startDate = aStateBenefit.startDate,
@@ -50,7 +50,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
 
   "mapFrom customerAddedStateBenefit" should {
     "return correct BenefitSummaryListRowData" in {
-      BenefitSummaryListRowData.mapFrom(taxYear, aCustomerAddedStateBenefit) shouldBe BenefitSummaryListRowData(
+      BenefitDataRow.mapFrom(taxYear, aCustomerAddedStateBenefit) shouldBe BenefitDataRow(
         benefitId = aCustomerAddedStateBenefit.benefitId,
         amount = aCustomerAddedStateBenefit.amount,
         startDate = aCustomerAddedStateBenefit.startDate,
@@ -60,7 +60,7 @@ class BenefitSummaryListRowDataSpec extends UnitTest
     }
 
     "return correct BenefitSummaryListRowData when customer added state benefit has not endDate" in {
-      BenefitSummaryListRowData.mapFrom(taxYear, aCustomerAddedStateBenefit.copy(endDate = None)) shouldBe BenefitSummaryListRowData(
+      BenefitDataRow.mapFrom(taxYear, aCustomerAddedStateBenefit.copy(endDate = None)) shouldBe BenefitDataRow(
         benefitId = aCustomerAddedStateBenefit.benefitId,
         amount = aCustomerAddedStateBenefit.amount,
         startDate = aCustomerAddedStateBenefit.startDate,

@@ -17,7 +17,7 @@
 @import controllers.routes.SummaryController
 @import controllers.session.routes.UserSessionDataController
 
-@import models.pages.elements.BenefitSummaryListRowData
+@import models.pages.elements.BenefitDataRow
 @import models.pages.ClaimsPage
 @import models.requests.UserPriorDataRequest
 
@@ -29,14 +29,13 @@
 @import views.html.templates.helpers.Button
 @import views.html.templates.helpers.Heading
 @import views.html.templates.helpers.Link
-
+@import views.html.templates.helpers.SummaryList
 
 @this(
     layout: Layout,
     heading: Heading,
-    govukSummaryList: GovukSummaryList,
+    summaryList: SummaryList,
     link: Link,
-    govukButton : GovukButton,
     formWithCSRF: FormWithCSRF,
     button: Button
 )
@@ -48,65 +47,49 @@
 
 @titleText = @{ messages(s"common.$benefitTypeKey") }
 
-@summaryList = {
-<dl class="govuk-summary-list govuk-!-margin-bottom-3 ">
-    @for(rowData <- pageModel.summaryListDataRows) {
-        @summaryListRow(rowData)
-    }
-</dl>
-}
+@mapToSummaryListRow(rowData: BenefitDataRow) = @{
+    val keyContent = if(pageModel.isInYear) translatedDateFormatter(rowData.startDate) else rowData.amount.map(amount => bigDecimalCurrency(amount.toString)).getOrElse("")
+    val valueContent = if(pageModel.isInYear) HtmlContent(link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some(messages(s"$pageKeysPrefix.view.hiddenText"))))
+    else HtmlContent(messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate)))
 
-@summaryListRow(rowData: BenefitSummaryListRowData) = {
-    <div  class="govuk-summary-list__row" style="border-bottom: 0px;">
-        @{ if(pageModel.isInYear) inYearSummaryListRow(rowData) else endOfYearSummaryListRow(rowData) }
-    </div>
-}
-
-@endOfYearSummaryListRow(rowData: BenefitSummaryListRowData) = {
-    <div>
-        <dt class="govuk-summary-list__key govuk-!-width-one-quarters govuk-!-font-weight-regular " style="vertical-align:middle;">
-            @rowData.amount.map(amount => bigDecimalCurrency(amount.toString))
-        </dt>
-        <dt class="govuk-summary-list__key govuk-!-width-three-quarters govuk-!-font-weight-regular " style="vertical-align:middle;">
-            @messages("common.dateRange", translatedDateFormatter(rowData.startDate), translatedDateFormatter(rowData.endDate))
-        </dt>
-        <dd class="govuk-summary-list__actions ">
-            @link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some(s"$pageKeysPrefix.view.hiddenText"))
-        </dd>
-    </div>
-    @if(rowData.isIgnored){
-    <div>
-        <p class="govuk-body govuk-!-margin-bottom-0">@messages(s"common.claimsPage.p1.${if(request.user.isAgent) "agent" else "individual"}")</p>
-    </div>
-    }
-}
-
-@inYearSummaryListRow(rowData: BenefitSummaryListRowData) = {
-    <dt class="govuk-summary-list__key govuk-!-width-one-quarters govuk-!-font-weight-regular " style="vertical-align:middle;">
-        @translatedDateFormatter(rowData.startDate)
-    </dt>
-    <dd class="govuk-summary-list__actions ">
-        @link(UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId).url, "common.view", hiddenText = Some(s"$pageKeysPrefix.view.hiddenText"))
-    </dd>
+    toSummaryListRow(
+        key = HtmlContent(keyContent),
+        value = valueContent,
+        keyClasses = if(pageModel.isInYear) "govuk-!-width-three-quarters govuk-!-font-weight-regular" else "govuk-!-width-one-quarters govuk-!-font-weight-regular",
+        valueClasses = if(pageModel.isInYear) "govuk-!-width-one-quarters govuk-!-font-weight-regular right-align" else "govuk-!-width-three-quarters govuk-!-font-weight-regular",
+        actionClasses = if(pageModel.isInYear) "govuk-!-width-one-third" else "",
+        actions = if(pageModel.isInYear) None else Some(Seq((UserSessionDataController.loadToSession(pageModel.taxYear, pageModel.benefitType, rowData.benefitId), messages("common.view"), Some(messages(s"$pageKeysPrefix.view.hiddenText")))))
+    )
 }
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
     @heading(titleText, Some(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
 
-    @if(pageModel.summaryListDataRows.nonEmpty){
-        @summaryList
+    @if(pageModel.benefitDataRows.nonEmpty) @{
+        summaryList(pageModel.benefitDataRows.map(mapToSummaryListRow), Map("id" -> "benefits-summary-list-id"))
     }
 
     @if(!pageModel.isInYear) {
         @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, pageModel.benefitType)) {
-            @govukButton(Button(
-                classes = "govuk-button--secondary",
-                content = Text(messages("common.addMissingClaim")),
+            @button(
+                alternativeText = "common.addMissingClaim",
+                classes = Some("govuk-button--secondary"),
                 attributes = Map("id" -> "add-missing-claim-button-id")
-            ))
+            )
         }
     }
+
+    @if(pageModel.ignoredBenefitDataRows.nonEmpty){
+        <h2 class="govuk-heading-m">@messages("common.claimsPage.h2")</h2>
+
+        <p class="govuk-body govuk-!-margin-bottom-2">
+            @messages(s"common.claimsPage.p1.${if(pageModel.ignoredBenefitDataRows.size == 1) "singular" else "plural"}.${if(request.user.isAgent) "agent" else "individual"}")
+        </p>
+
+        @summaryList(pageModel.ignoredBenefitDataRows.map(mapToSummaryListRow), Map("id" -> "ignored-benefits-summary-list-id"))
+    }
+
     <div class="govuk-button-group govuk-!-margin-top-7">
         @button(href = Some(SummaryController.show(pageModel.taxYear).url), alternativeText = "common.continue")
     </div>

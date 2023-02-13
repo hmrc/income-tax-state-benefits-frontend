@@ -78,6 +78,8 @@ class SummaryPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
+    import userScenario.commonExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${agentTest(userScenario.isAgent)}" should {
       "render summary page with multiple task list items" which {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
@@ -86,13 +88,13 @@ class SummaryPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(page(aSummaryPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.commonExpectedResults.expectedTitle, userScenario.isWelsh)
-        captionCheck(userScenario.commonExpectedResults.expectedCaption(taxYear))
-        h1Check(userScenario.commonExpectedResults.expectedHeading)
-        textOnPageCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceSelector)
-        linkCheck(userScenario.commonExpectedResults.jobSeekersAllowance, Selectors.jobSeekersAllowanceLinkSelector, ClaimsController.show(taxYear, JobSeekersAllowance).url)
-        textOnPageCheck(userScenario.commonExpectedResults.notStartedText, Selectors.jobSeekersAllowanceStatusSelector)
-        buttonCheck(userScenario.commonExpectedResults.buttonText, Selectors.buttonSelector, Some(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
+        titleCheck(expectedTitle, userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYear))
+        h1Check(expectedHeading)
+        textOnPageCheck(jobSeekersAllowance, jobSeekersAllowanceSelector)
+        linkCheck(jobSeekersAllowance, jobSeekersAllowanceLinkSelector, ClaimsController.show(taxYear, JobSeekersAllowance).url)
+        textOnPageCheck(notStartedText, jobSeekersAllowanceStatusSelector)
+        buttonCheck(buttonText, buttonSelector, Some(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
       }
     }
   }

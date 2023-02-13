@@ -77,6 +77,7 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
   )
 
   userScenarios.foreach { userScenario =>
+    import Selectors._
     import userScenario.commonExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)}" should {
       "render page with empty form" which {
@@ -86,13 +87,13 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(aEndDateQuestionPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
+        titleCheck(expectedTitle(taxYearEOY), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(userScenario.commonExpectedResults.expectedHeading(taxYearEOY), isFieldSetH1 = true)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
-        formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, JobSeekersAllowance, aEndDateQuestionPage.sessionDataId).url, Selectors.continueButtonFormSelector)
-        buttonCheck(userScenario.commonExpectedResults.expectedButtonText, Selectors.buttonSelector)
+        h1Check(expectedHeading(taxYearEOY), isFieldSetH1 = true)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
+        formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, JobSeekersAllowance, aEndDateQuestionPage.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
       }
 
       "render page with filled in form using selected 'Yes' value" which {
@@ -102,8 +103,8 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         val pageModel = aEndDateQuestionPage.copy(form = aEndDateQuestionPage.form.fill(value = true))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.commonExpectedResults.expectedTitle(taxYearEOY), userScenario.isWelsh)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = true)
+        titleCheck(expectedTitle(taxYearEOY), userScenario.isWelsh)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = true)
       }
 
       "render page with empty selection error" which {
@@ -113,12 +114,12 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         val pageModel = aEndDateQuestionPage.copy(form = aEndDateQuestionPage.form.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(userScenario.commonExpectedResults.expectedErrorTitle(taxYearEOY), userScenario.isWelsh)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedYesText, radioNumber = 1, checked = false)
-        radioButtonCheck(userScenario.commonExpectedResults.expectedNoText, radioNumber = 2, checked = false)
+        titleCheck(expectedErrorTitle(taxYearEOY), userScenario.isWelsh)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
 
-        errorSummaryCheck(userScenario.commonExpectedResults.expectedErrorText(taxYearEOY), Selectors.errorHref)
-        errorAboveElementCheck(userScenario.commonExpectedResults.expectedErrorText(taxYearEOY))
+        errorSummaryCheck(expectedErrorText(taxYearEOY), errorHref)
+        errorAboveElementCheck(expectedErrorText(taxYearEOY))
       }
     }
   }
