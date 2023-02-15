@@ -19,11 +19,13 @@ package controllers
 import controllers.routes.ClaimsController
 import models.BenefitType.JobSeekersAllowance
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
+import uk.gov.hmrc.http.HttpResponse
 
 import java.util.UUID
 
@@ -38,7 +40,7 @@ class RemoveClaimControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlGet(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -49,7 +51,7 @@ class RemoveClaimControllerISpec extends IntegrationTest {
     "render the Remove Claim Page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlGet(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 
@@ -61,7 +63,7 @@ class RemoveClaimControllerISpec extends IntegrationTest {
     "redirect to income tax submission overview when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
       }
 
@@ -72,8 +74,8 @@ class RemoveClaimControllerISpec extends IntegrationTest {
     "delete data and redirect to next page" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        removeClaimStub(aUser.nino, sessionDataId)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
+        removeClaimStub(aUser.nino, sessionDataId, HttpResponse(NO_CONTENT, ""))
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 

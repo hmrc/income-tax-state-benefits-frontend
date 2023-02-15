@@ -30,48 +30,48 @@ class ClaimService @Inject()(stateBenefitsService: StateBenefitsService)
   def updateStartDate(stateBenefitsUserData: StateBenefitsUserData, startDate: LocalDate)
                      (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val updatedClaim = stateBenefitsUserData.claim.fold(ClaimCYAModel(startDate = startDate, isHmrcData = false))(_.copy(startDate = startDate))
-    createOrUpdateClaim(stateBenefitsUserData, Some(updatedClaim))
+    updateClaim(stateBenefitsUserData, Some(updatedClaim))
   }
 
   def updateEndDateQuestion(stateBenefitsUserData: StateBenefitsUserData, question: Boolean)
                            (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val endDate = if (question) stateBenefitsUserData.claim.flatMap(_.endDate) else None
     val updatedClaim = stateBenefitsUserData.claim.map(_.copy(endDateQuestion = Some(question), endDate = endDate))
-    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+    updateClaim(stateBenefitsUserData, updatedClaim)
   }
 
   def updateEndDate(stateBenefitsUserData: StateBenefitsUserData,
                     endDate: LocalDate)
                    (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val updatedClaim = stateBenefitsUserData.claim.map(_.copy(endDate = Some(endDate)))
-    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+    updateClaim(stateBenefitsUserData, updatedClaim)
   }
 
   def updateAmount(stateBenefitsUserData: StateBenefitsUserData,
                    amount: BigDecimal)
                   (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val updatedClaim = stateBenefitsUserData.claim.map(_.copy(amount = Some(amount)))
-    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+    updateClaim(stateBenefitsUserData, updatedClaim)
   }
 
   def updateTaxPaidQuestion(stateBenefitsUserData: StateBenefitsUserData, question: Boolean)
                            (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val taxPaid = if (question) stateBenefitsUserData.claim.flatMap(_.taxPaid) else None
     val updatedClaim = stateBenefitsUserData.claim.map(_.copy(taxPaidQuestion = Some(question), taxPaid = taxPaid))
-    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+    updateClaim(stateBenefitsUserData, updatedClaim)
   }
 
   def updateTaxPaidAmount(stateBenefitsUserData: StateBenefitsUserData,
                           amount: BigDecimal)
                          (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val updatedClaim = stateBenefitsUserData.claim.map(_.copy(taxPaid = Some(amount)))
-    createOrUpdateClaim(stateBenefitsUserData, updatedClaim)
+    updateClaim(stateBenefitsUserData, updatedClaim)
   }
 
-  private def createOrUpdateClaim(originalUserData: StateBenefitsUserData, withClaim: Option[ClaimCYAModel])
-                                 (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
+  private def updateClaim(originalUserData: StateBenefitsUserData, withClaim: Option[ClaimCYAModel])
+                         (implicit headerCarrier: HeaderCarrier): Future[Either[Unit, StateBenefitsUserData]] = {
     val updatedUserData = originalUserData.copy(claim = withClaim)
-    stateBenefitsService.createOrUpdate(updatedUserData).map {
+    stateBenefitsService.updateSessionData(updatedUserData).map {
       case Left(_) => Left(())
       case Right(_) => Right(updatedUserData)
     }

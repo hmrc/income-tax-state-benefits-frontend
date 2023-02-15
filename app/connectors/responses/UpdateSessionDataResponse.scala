@@ -21,26 +21,19 @@ import connectors.errors.ApiError
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-import java.util.UUID
+case class UpdateSessionDataResponse(httpResponse: HttpResponse, result: Either[ApiError, Unit])
 
-case class CreateOrUpdateUserDataResponse(httpResponse: HttpResponse, result: Either[ApiError, UUID])
+object UpdateSessionDataResponse {
 
-object CreateOrUpdateUserDataResponse {
-
-  implicit val createOrUpdateUserDataResponseReads: HttpReads[CreateOrUpdateUserDataResponse] = new HttpReads[CreateOrUpdateUserDataResponse] with Parser {
+  implicit val updateSessionDataResponseReads: HttpReads[UpdateSessionDataResponse] = new HttpReads[UpdateSessionDataResponse] with Parser {
 
     override protected[connectors] val parserName: String = this.getClass.getSimpleName
 
-    override def read(method: String, url: String, response: HttpResponse): CreateOrUpdateUserDataResponse = response.status match {
-      case OK => CreateOrUpdateUserDataResponse(response, extractResult(response))
+    override def read(method: String, url: String, response: HttpResponse): UpdateSessionDataResponse = response.status match {
+      case NO_CONTENT => UpdateSessionDataResponse(response, Right(()))
       case NOT_FOUND | INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE | BAD_REQUEST | UNPROCESSABLE_ENTITY =>
-        CreateOrUpdateUserDataResponse(response, handleError(response, response.status))
-      case _ => CreateOrUpdateUserDataResponse(response, handleError(response, INTERNAL_SERVER_ERROR))
-    }
-
-    private def extractResult(response: HttpResponse): Either[ApiError, UUID] = {
-      response.json.validate[UUID]
-        .fold[Either[ApiError, UUID]](_ => badSuccessJsonResponse, parsedModel => Right(parsedModel))
+        UpdateSessionDataResponse(response, handleError(response, response.status))
+      case _ => UpdateSessionDataResponse(response, handleError(response, INTERNAL_SERVER_ERROR))
     }
   }
 }

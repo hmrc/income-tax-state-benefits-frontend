@@ -20,12 +20,14 @@ import controllers.routes.ReviewClaimController
 import forms.AmountForm.amount
 import models.BenefitType.JobSeekersAllowance
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
+import uk.gov.hmrc.http.HttpResponse
 
 import java.util.UUID
 
@@ -40,7 +42,7 @@ class AmountControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlGet(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -51,7 +53,7 @@ class AmountControllerISpec extends IntegrationTest {
     "render the Amount page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlGet(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 
@@ -63,7 +65,7 @@ class AmountControllerISpec extends IntegrationTest {
     "redirect to income tax submission overview when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         val formData = Map(s"$amount" -> "100")
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
@@ -77,8 +79,8 @@ class AmountControllerISpec extends IntegrationTest {
 
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        createOrUpdateUserDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithNewAmount)), sessionDataId)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
+        updateSessionDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithNewAmount)), HttpResponse(NO_CONTENT, ""))
         val formData = Map(s"$amount" -> "100")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }

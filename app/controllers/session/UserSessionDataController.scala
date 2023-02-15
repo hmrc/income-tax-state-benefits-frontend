@@ -38,7 +38,7 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
 
   def create(taxYear: Int,
              benefitType: BenefitType): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>
-    stateBenefitsService.createOrUpdate(StateBenefitsUserData(taxYear, benefitType, request.user)).map {
+    stateBenefitsService.createSessionData(StateBenefitsUserData(taxYear, benefitType, request.user)).map {
       case Left(_) => errorHandler.internalServerError()
       case Right(uuid) => Redirect(StartDateController.show(taxYear, benefitType, uuid))
     }
@@ -49,7 +49,7 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
                     benefitId: UUID): Action[AnyContent] = actionsProvider.priorDataFor(taxYear).async { implicit request =>
     StateBenefitsUserData(taxYear, benefitType, request.user, benefitId, request.incomeTaxUserData) match {
       case None => Future.successful(Redirect(ClaimsController.show(taxYear, benefitType)))
-      case Some(stateBenefitsUserData) => stateBenefitsService.createOrUpdate(stateBenefitsUserData).map {
+      case Some(stateBenefitsUserData) => stateBenefitsService.createSessionData(stateBenefitsUserData).map {
         case Left(_) => errorHandler.internalServerError()
         case Right(uuid) => Redirect(ReviewClaimController.show(taxYear, benefitType, uuid))
       }

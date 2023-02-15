@@ -26,7 +26,6 @@ import support.mocks.MockStateBenefitsService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ClaimServiceSpec extends UnitTest
@@ -34,7 +33,6 @@ class ClaimServiceSpec extends UnitTest
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
-  private val sessionDataId = UUID.randomUUID()
   private val startDate = LocalDate.now()
   private val endDate = LocalDate.now()
 
@@ -45,7 +43,7 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = None)
       val expectedClaim = ClaimCYAModel(startDate = startDate, isHmrcData = false)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateStartDate(userData, startDate)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
@@ -54,13 +52,13 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(startDate = LocalDate.of(2022, 2, 2))))
       val expectedClaim = aClaimCYAModel.copy(startDate = startDate)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateStartDate(userData, startDate)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
-    "return Left when createOrUpdate fails" in {
-      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(startDate = startDate))), Left(HttpParserError(BAD_REQUEST)))
+    "return Left when updateSessionData fails" in {
+      mockUpdateSessionData(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(startDate = startDate))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateStartDate(aStateBenefitsUserData, startDate)) shouldBe Left(())
     }
@@ -71,7 +69,7 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate))))
       val expectedClaim = aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateEndDateQuestion(userData, question = false)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
@@ -80,13 +78,13 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate))))
       val expectedClaim = aClaimCYAModel.copy(endDateQuestion = Some(true), endDate = Some(endDate))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
-    "return Left when createOrUpdate fails" in {
-      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(true)))), Left(HttpParserError(BAD_REQUEST)))
+    "return Left when updateSessionData fails" in {
+      mockUpdateSessionData(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(true)))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateEndDateQuestion(aStateBenefitsUserData, question = true)) shouldBe Left(())
     }
@@ -97,13 +95,13 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(LocalDate.of(2022, 2, 2)))))
       val expectedClaim = aClaimCYAModel.copy(endDate = Some(endDate))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateEndDate(userData, endDate)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
-    "return Left when createOrUpdate fails" in {
-      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate)))), Left(HttpParserError(BAD_REQUEST)))
+    "return Left when updateSessionData fails" in {
+      mockUpdateSessionData(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDate = Some(endDate)))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateEndDate(aStateBenefitsUserData, endDate)) shouldBe Left(())
     }
@@ -114,13 +112,13 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(100))))
       val expectedClaim = aClaimCYAModel.copy(amount = Some(200))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateAmount(userData, 200)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
-    "return Left when createOrUpdate fails" in {
-      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
+    "return Left when updateSessionData fails" in {
+      mockUpdateSessionData(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateAmount(aStateBenefitsUserData, amount = 100)) shouldBe Left(())
     }
@@ -131,7 +129,7 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
       val expectedClaim = aClaimCYAModel.copy(taxPaidQuestion = Some(false), taxPaid = None)
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateTaxPaidQuestion(userData, question = false)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
@@ -140,13 +138,13 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
       val expectedClaim = aClaimCYAModel.copy(taxPaidQuestion = Some(true), taxPaid = Some(100))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateEndDateQuestion(userData, question = true)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
-    "return Left when createOrUpdate fails" in {
-      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaidQuestion = Some(true)))), Left(HttpParserError(BAD_REQUEST)))
+    "return Left when updateSessionData fails" in {
+      mockUpdateSessionData(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaidQuestion = Some(true)))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateEndDateQuestion(aStateBenefitsUserData, question = true)) shouldBe Left(())
     }
@@ -157,13 +155,13 @@ class ClaimServiceSpec extends UnitTest
       val userData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100))))
       val expectedClaim = aClaimCYAModel.copy(taxPaid = Some(200))
 
-      mockCreateOrUpdate(userData.copy(claim = Some(expectedClaim)), Right(sessionDataId))
+      mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 
       await(underTest.updateTaxPaidAmount(userData, 200)) shouldBe Right(aStateBenefitsUserData.copy(claim = Some(expectedClaim)))
     }
 
-    "return Left when createOrUpdate fails" in {
-      mockCreateOrUpdate(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
+    "return Left when updateSessionData fails" in {
+      mockUpdateSessionData(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = Some(100)))), Left(HttpParserError(BAD_REQUEST)))
 
       await(underTest.updateTaxPaidAmount(aStateBenefitsUserData, amount = 100)) shouldBe Left(())
     }

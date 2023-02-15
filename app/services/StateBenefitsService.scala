@@ -46,11 +46,19 @@ class StateBenefitsService @Inject()(stateBenefitsConnector: StateBenefitsConnec
     }
   }
 
-  def createOrUpdate(stateBenefitsUserData: StateBenefitsUserData)
-                    (implicit hc: HeaderCarrier): Future[Either[HttpParserError, UUID]] = {
-    stateBenefitsConnector.createOrUpdate(stateBenefitsUserData).map {
+  def createSessionData(stateBenefitsUserData: StateBenefitsUserData)
+                       (implicit hc: HeaderCarrier): Future[Either[HttpParserError, UUID]] = {
+    stateBenefitsConnector.createSessionData(stateBenefitsUserData).map {
       case Left(error) => Left(HttpParserError(error.status))
       case Right(uuid) => Right(uuid)
+    }
+  }
+
+  def updateSessionData(stateBenefitsUserData: StateBenefitsUserData)
+                       (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
+    stateBenefitsConnector.updateSessionData(stateBenefitsUserData).map {
+      case Left(error) => Left(HttpParserError(error.status))
+      case Right(_) => Right(())
     }
   }
 

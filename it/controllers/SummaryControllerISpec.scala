@@ -18,10 +18,12 @@ package controllers
 
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.UserBuilder.aUser
+import uk.gov.hmrc.http.HttpResponse
 
 class SummaryControllerISpec extends IntegrationTest {
 
@@ -33,7 +35,7 @@ class SummaryControllerISpec extends IntegrationTest {
     "render the contractor summary page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userPriorDataStub(aUser.nino, taxYear, anAllStateBenefitsData)
+        userPriorDataStub(aUser.nino, taxYear, HttpResponse(OK, Json.toJson(anAllStateBenefitsData).toString))
         urlGet(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -43,7 +45,7 @@ class SummaryControllerISpec extends IntegrationTest {
     "render the contractor summary page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userPriorDataStub(aUser.nino, taxYearEOY, anAllStateBenefitsData)
+        userPriorDataStub(aUser.nino, taxYearEOY, HttpResponse(OK, Json.toJson(anAllStateBenefitsData).toString))
         urlGet(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 

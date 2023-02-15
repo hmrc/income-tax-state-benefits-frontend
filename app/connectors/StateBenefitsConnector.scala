@@ -51,11 +51,21 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     }
   }
 
-  def createOrUpdate(stateBenefitsUserData: StateBenefitsUserData)
-                    (implicit hc: HeaderCarrier): Future[Either[ApiError, UUID]] = {
-    val response = createOrUpdateData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
+  def createSessionData(stateBenefitsUserData: StateBenefitsUserData)
+                       (implicit hc: HeaderCarrier): Future[Either[ApiError, UUID]] = {
+    val response = createUserSessionData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
 
-    response.map { response: CreateOrUpdateUserDataResponse =>
+    response.map { response: CreateSessionDataResponse =>
+      if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
+      response.result
+    }
+  }
+
+  def updateSessionData(stateBenefitsUserData: StateBenefitsUserData)
+                       (implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
+    val response = updateUserSessionData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
+
+    response.map { response: UpdateSessionDataResponse =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -107,10 +117,18 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     httpClient.GET[GetUserSessionDataResponse](stateBenefitsBEUrl)
   }
 
-  private def createOrUpdateData(stateBenefitsUserData: StateBenefitsUserData)
-                                (implicit hc: HeaderCarrier): Future[CreateOrUpdateUserDataResponse] = {
+  private def createUserSessionData(stateBenefitsUserData: StateBenefitsUserData)
+                                   (implicit hc: HeaderCarrier): Future[CreateSessionDataResponse] = {
     val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data"
-    httpClient.POST[StateBenefitsUserData, CreateOrUpdateUserDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
+    httpClient.POST[StateBenefitsUserData, CreateSessionDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
+  }
+
+  private def updateUserSessionData(stateBenefitsUserData: StateBenefitsUserData)
+                                   (implicit hc: HeaderCarrier): Future[UpdateSessionDataResponse] = {
+    val nino = stateBenefitsUserData.nino
+    val sessionDataId = stateBenefitsUserData.sessionDataId.get
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/nino/$nino/session/$sessionDataId"
+    httpClient.PUT[StateBenefitsUserData, UpdateSessionDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
   }
 
   private def removeClaimData(nino: String, sessionDataId: UUID)

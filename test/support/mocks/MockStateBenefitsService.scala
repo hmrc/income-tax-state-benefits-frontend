@@ -46,9 +46,16 @@ trait MockStateBenefitsService extends MockFactory {
       .returning(Future.successful(result))
   }
 
-  def mockCreateOrUpdate(stateBenefitsUserData: StateBenefitsUserData,
-                         result: Either[HttpParserError, UUID]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, UUID]]] = {
-    (mockStateBenefitsService.createOrUpdate(_: StateBenefitsUserData)(_: HeaderCarrier))
+  def mockCreateSessionData(stateBenefitsUserData: StateBenefitsUserData,
+                            result: Either[HttpParserError, UUID]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, UUID]]] = {
+    (mockStateBenefitsService.createSessionData(_: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(stateBenefitsUserData, *)
+      .returning(Future.successful(result))
+  }
+
+  def mockUpdateSessionData(stateBenefitsUserData: StateBenefitsUserData,
+                            result: Either[HttpParserError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
+    (mockStateBenefitsService.updateSessionData(_: StateBenefitsUserData)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
