@@ -29,7 +29,6 @@ import support.mocks.MockPagerDutyLoggerService
 import support.providers.TaxYearProvider
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
@@ -37,7 +36,8 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   with TaxYearProvider
   with MockFactory {
 
-  private val sessionDataId = UUID.randomUUID()
+  private val nino = aStateBenefitsUserData.nino
+  private val sessionDataId = aStateBenefitsUserData.sessionDataId.get
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
     .withExtraHeaders("mtditid" -> aUser.mtditid, "X-Session-ID" -> aUser.sessionId)
@@ -174,7 +174,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   }
 
   ".saveStateBenefit(...)" should {
-    val url = "/income-tax"
+    val url = s"/benefits/nino/$nino/session/$sessionDataId"
     "Return a success result when BE returns 204" in {
       saveStateBenefitStub(url, HttpResponse(NO_CONTENT, ""))
 
@@ -190,7 +190,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   }
 
   ".removeClaim(...)" should {
-    val removeClaimUrl = s"/session-data/nino/${aUser.nino}/session/$sessionDataId"
+    val removeClaimUrl = s"/claim-data/nino/${aUser.nino}/session/$sessionDataId"
     "Return an empty response in the success case when BE returns 204" in {
       removeClaimStub(removeClaimUrl, HttpResponse(NO_CONTENT, ""))
 
@@ -206,7 +206,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   }
 
   ".restoreClaim(...)" should {
-    val restoreUrl = s"/session-data/nino/${aUser.nino}/session/$sessionDataId/ignore"
+    val restoreUrl = s"/claim-data/nino/${aUser.nino}/session/$sessionDataId/ignore"
     "Return an empty response in the success case when BE returns 204" in {
       restoreClaimStub(restoreUrl, HttpResponse(NO_CONTENT, ""))
 

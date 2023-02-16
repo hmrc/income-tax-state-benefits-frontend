@@ -107,7 +107,9 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
 
   private def saveUserData(stateBenefitsUserData: StateBenefitsUserData)
                           (implicit hc: HeaderCarrier): Future[SaveUserDataResponse] = {
-    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + "/income-tax"
+    val nino = stateBenefitsUserData.nino
+    val sessionDataId = stateBenefitsUserData.sessionDataId.get
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/benefits/nino/$nino/session/$sessionDataId"
     httpClient.PUT[StateBenefitsUserData, SaveUserDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
   }
 
@@ -133,13 +135,13 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
 
   private def removeClaimData(nino: String, sessionDataId: UUID)
                              (implicit hc: HeaderCarrier): Future[RemoveClaimResponse] = {
-    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/nino/$nino/session/$sessionDataId"
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/claim-data/nino/$nino/session/$sessionDataId"
     httpClient.DELETE[RemoveClaimResponse](stateBenefitsBEUrl)
   }
 
   private def restoreClaimData(nino: String, sessionDataId: UUID)
                               (implicit hc: HeaderCarrier): Future[RestoreClaimResponse] = {
-    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/session-data/nino/$nino/session/$sessionDataId/ignore"
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/claim-data/nino/$nino/session/$sessionDataId/ignore"
     httpClient.DELETE[RestoreClaimResponse](stateBenefitsBEUrl)
   }
 }
