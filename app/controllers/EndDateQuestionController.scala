@@ -44,13 +44,14 @@ class EndDateQuestionController @Inject()(actionsProvider: ActionsProvider,
   def show(taxYear: Int,
            benefitType: BenefitType,
            sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
-    Ok(pageView(EndDateQuestionPage(taxYear, benefitType, request.stateBenefitsUserData, formsProvider.endDateYesNoForm(taxYear))))
+    val userData = request.stateBenefitsUserData
+    Ok(pageView(EndDateQuestionPage(taxYear, benefitType, userData, formsProvider.endDateYesNoForm(taxYear, userData.claim.get.startDate))))
   }
 
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
-    formsProvider.endDateYesNoForm(taxYear).bindFromRequest().fold(
+    formsProvider.endDateYesNoForm(taxYear, request.stateBenefitsUserData.claim.get.startDate).bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(pageView(EndDateQuestionPage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
       yesNoValue => claimService.updateEndDateQuestion(request.stateBenefitsUserData, yesNoValue).map {
         case Left(_) => errorHandler.internalServerError()

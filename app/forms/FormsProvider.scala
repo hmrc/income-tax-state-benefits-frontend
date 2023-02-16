@@ -38,9 +38,9 @@ class FormsProvider() {
     dateForm.copy(errors = validateStartDate(dateForm.get, taxYear, benefitType, isAgent, endDate))
   }
 
-  // TODO: Test in template test
-  def endDateYesNoForm(taxYear: Int): Form[Boolean] = YesNoForm.yesNoForm(
-    missingInputError = "common.endDateQuestionPage.error", Seq(taxYear.toString)
+  def endDateYesNoForm(taxYear: Int, startDate: LocalDate)(implicit messages: Messages): Form[Boolean] = YesNoForm.yesNoForm(
+    missingInputError = "common.endDateQuestionPage.error",
+    Seq(translatedDateFormatter(toDateWithinTaxYear(taxYear, startDate)), taxYear.toString)
   )
 
   def validatedEndDateForm(dateForm: Form[DateFormData],

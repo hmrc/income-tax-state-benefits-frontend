@@ -16,9 +16,10 @@
 
 package support.builders.pages
 
-import forms.FormsProvider
+import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.pages.EndDateQuestionPage
+import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.utils.TaxYearUtils.taxYearEOY
 
 import java.util.UUID
@@ -28,7 +29,8 @@ object EndDateQuestionPageBuilder {
   val aEndDateQuestionPage: EndDateQuestionPage = EndDateQuestionPage(
     taxYear = taxYearEOY,
     benefitType = JobSeekersAllowance,
+    titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
     sessionDataId = UUID.randomUUID(),
-    form = new FormsProvider().endDateYesNoForm(taxYearEOY)
+    form = YesNoForm.yesNoForm("default.error", Seq.empty)
   )
 }

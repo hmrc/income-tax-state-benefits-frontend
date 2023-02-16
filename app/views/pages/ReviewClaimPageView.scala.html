@@ -80,7 +80,7 @@
         })
         val endDateQuestionSummaryListRow = if (pageModel.isInYear) None else Some({
             val optRoute = if (pageModel.isIgnored) None else Some(EndDateQuestionController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
-            viewToSummaryListRow(messages("common.claim.endDateQuestion", pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
+            viewToSummaryListRow(messages("common.claim.endDateQuestion", translatedDateFormatter(pageModel.itemsFirstDate), pageModel.taxYear.toString), pageModel.endDateQuestion.fold("")(toYesOrNo(_)), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.endDateQuestion.hiddenText"), pageModel.taxYear.toString))
         })
         val endDateSummaryListRow = if (pageModel.isInYear) None else pageModel.endDateQuestion match {
             case Some(true) => Some({

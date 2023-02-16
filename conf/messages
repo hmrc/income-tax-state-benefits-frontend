@@ -38,7 +38,7 @@ common.inProgress = In progress
 
 common.stateBenefits.caption = State benefits for 6 April {0} to 5 April {1}
 
-common.claim.endDateQuestion = Did this claim end in the tax year ending 5 April {0}?
+common.claim.endDateQuestion = Did this claim end between {0} and 5 April {1}?
 common.claim.endDate = When did this claim end?
 
 common.claimsPage.h2 = Removed claims
@@ -46,7 +46,7 @@ common.claimsPage.p1.singular.agent = This claim will not be included in your cl
 common.claimsPage.p1.plural.agent = These claims will not be included in your client’s return.
 common.claimsPage.p1.singular.individual = This claim will not be included in your return.
 common.claimsPage.p1.plural.individual = These claims will not be included in your return.
-common.endDateQuestionPage.error = Select yes if this claim ended in the tax year ending 5 April {0}
+common.endDateQuestionPage.error = Select yes if this claim ended between {0} and 5 April {1}
 common.amountPage.p1.agent = This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax.
 common.amountPage.p1.individual = This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax.
 common.taxPaidPage.textBox.label = Amount of tax taken off

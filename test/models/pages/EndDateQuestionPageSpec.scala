@@ -16,7 +16,7 @@
 
 package models.pages
 
-import forms.FormsProvider
+import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
@@ -28,15 +28,16 @@ class EndDateQuestionPageSpec extends UnitTest
 
   private val anyQuestionValue = true
 
-  private val pageForm = new FormsProvider().endDateYesNoForm(taxYear)
+  private val pageForm = YesNoForm.yesNoForm("", Seq.empty)
 
   "EndDateQuestionPage.apply" should {
     "return page with pre-filled form when endDateQuestion has value" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = Some(anyQuestionValue))))
 
-      EndDateQuestionPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
-        taxYear = taxYear,
+      EndDateQuestionPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
+        taxYear = taxYearEOY,
         benefitType = JobSeekersAllowance,
+        titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm.fill(value = anyQuestionValue)
       )
@@ -45,9 +46,10 @@ class EndDateQuestionPageSpec extends UnitTest
     "return page without pre-filled form when endDateQuestion is None" in {
       val stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(endDateQuestion = None)))
 
-      EndDateQuestionPage.apply(taxYear, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
-        taxYear = taxYear,
+      EndDateQuestionPage.apply(taxYearEOY, JobSeekersAllowance, stateBenefitsUserData, pageForm) shouldBe EndDateQuestionPage(
+        taxYear = taxYearEOY,
         benefitType = JobSeekersAllowance,
+        titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
         form = pageForm,
       )
@@ -56,9 +58,10 @@ class EndDateQuestionPageSpec extends UnitTest
     "return page with pre-filled form with errors when form has errors" in {
       val formWithErrors = pageForm.bind(Map("wrong-key" -> "wrong-value"))
 
-      EndDateQuestionPage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe EndDateQuestionPage(
-        taxYear = taxYear,
+      EndDateQuestionPage.apply(taxYearEOY, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe EndDateQuestionPage(
+        taxYear = taxYearEOY,
         benefitType = JobSeekersAllowance,
+        titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
         form = formWithErrors
       )
