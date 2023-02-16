@@ -159,7 +159,9 @@ trait WireMockStubs {
 
   protected def saveStateBenefitStub(stateBenefitsUserData: StateBenefitsUserData,
                                      httpResponse: HttpResponse): StubMapping = {
-    val mappingBuilder = put(urlMatching(s"/income-tax-state-benefits/income-tax"))
+    val nino = stateBenefitsUserData.nino
+    val sessionDataId = stateBenefitsUserData.sessionDataId.get
+    val mappingBuilder = put(urlMatching(s"/income-tax-state-benefits/benefits/nino/$nino/session/$sessionDataId"))
       .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
     stubMapping(httpResponse, mappingBuilder)
   }
@@ -172,7 +174,7 @@ trait WireMockStubs {
   protected def removeClaimStub(nino: String,
                                 sessionDataId: UUID,
                                 httpResponse: HttpResponse): StubMapping = {
-    stubMapping(httpResponse, delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId")))
+    stubMapping(httpResponse, delete(urlMatching(s"/income-tax-state-benefits/claim-data/nino/$nino/session/$sessionDataId")))
   }
 
   protected def removeClaimStub(url: String,
@@ -183,7 +185,7 @@ trait WireMockStubs {
   protected def restoreClaimStub(nino: String,
                                  sessionDataId: UUID,
                                  httpResponse: HttpResponse): StubMapping = {
-    stubMapping(httpResponse, delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId/ignore")))
+    stubMapping(httpResponse, delete(urlMatching(s"/income-tax-state-benefits/claim-data/nino/$nino/session/$sessionDataId/ignore")))
   }
 
   protected def restoreClaimStub(url: String,
