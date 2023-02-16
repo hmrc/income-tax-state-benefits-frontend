@@ -67,17 +67,31 @@ class StateBenefitsServiceSpec extends UnitTest
     }
   }
 
-  ".createOrUpdate(...)" should {
+  ".createSessionData(...)" should {
     "return error when fails to create data" in {
       mockCreateOrUpdate(aStateBenefitsUserData, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      await(underTest.createSessionData(aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
     }
 
-    "return correct result" in {
+    "delegate to stateBenefitsConnector.createSessionData() and return the result" in {
       mockCreateOrUpdate(aStateBenefitsUserData, Right(sessionDataId))
 
-      await(underTest.createOrUpdate(aStateBenefitsUserData)) shouldBe Right(sessionDataId)
+      await(underTest.createSessionData(aStateBenefitsUserData)) shouldBe Right(sessionDataId)
+    }
+  }
+
+  ".updateSessionData(...)" should {
+    "return error when fails to create data" in {
+      mockCreateOrUpdate(aStateBenefitsUserData, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
+
+      await(underTest.createSessionData(aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+    }
+
+    "create session data with and return its sessionDataId" in {
+      mockCreateOrUpdate(aStateBenefitsUserData, Right(sessionDataId))
+
+      await(underTest.createSessionData(aStateBenefitsUserData)) shouldBe Right(sessionDataId)
     }
   }
 

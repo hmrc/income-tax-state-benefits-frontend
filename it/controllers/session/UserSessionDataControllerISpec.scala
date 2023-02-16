@@ -20,7 +20,7 @@ import controllers.routes.{ReviewClaimController, StartDateController}
 import models.BenefitType.JobSeekersAllowance
 import models.StateBenefitsUserData
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{CREATED, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
@@ -28,6 +28,7 @@ import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.StateBenefitBuilder.aStateBenefit
 import support.builders.UserBuilder.aUser
+import uk.gov.hmrc.http.HttpResponse
 
 import java.util.UUID
 
@@ -55,7 +56,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       val sessionDataId = UUID.randomUUID()
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        stubPost(url = "/income-tax-state-benefits/session-data", status = OK, responseBody = Json.toJson(sessionDataId).toString())
+        createSessionDataStub(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser), HttpResponse(CREATED, Json.toJson(sessionDataId).toString))
         urlPost(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 
@@ -68,8 +69,8 @@ class UserSessionDataControllerISpec extends IntegrationTest {
     "redirect to ReviewClaim when benefitId found and in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userPriorDataStub(aUser.nino, taxYear, anAllStateBenefitsData)
-        createOrUpdateUserDataStub(StateBenefitsUserData(taxYear, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
+        userPriorDataStub(aUser.nino, taxYear, HttpResponse(OK, Json.toJson(anAllStateBenefitsData).toString))
+        createSessionDataStub(StateBenefitsUserData(taxYear, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, HttpResponse(CREATED, Json.toJson(sessionDataId).toString))
         urlGet(url(taxYear, Some(aStateBenefit.benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -80,8 +81,9 @@ class UserSessionDataControllerISpec extends IntegrationTest {
     "redirect to ReviewClaim when benefitId found" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userPriorDataStub(aUser.nino, taxYearEOY, anAllStateBenefitsData)
-        createOrUpdateUserDataStub(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get, sessionDataId)
+        userPriorDataStub(aUser.nino, taxYearEOY, HttpResponse(OK, Json.toJson(anAllStateBenefitsData).toString))
+        createSessionDataStub(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser, aStateBenefit.benefitId, anIncomeTaxUserData).get,
+          HttpResponse(CREATED, Json.toJson(sessionDataId).toString))
         urlGet(url(taxYearEOY, Some(aStateBenefit.benefitId)), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 

@@ -17,28 +17,33 @@
 package connectors.responses
 
 import connectors.errors.{ApiError, SingleErrorBody}
-import connectors.responses.RemoveClaimResponse.removeClaimResponseReads
+import connectors.responses.CreateSessionDataResponse.createSessionDataResponseReads
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitTest
 import uk.gov.hmrc.http.HttpResponse
 
-class RemoveClaimResponseSpec extends UnitTest {
+import java.util.UUID
+
+class CreateSessionDataResponseSpec extends UnitTest {
 
   private val anyHeaders: Map[String, Seq[String]] = Map.empty
-  private val anyMethod: String = "DELETE"
+  private val anyMethod: String = "POST"
   private val anyUrl = "/any-url"
+  private val anySessionDataId = UUID.randomUUID()
 
-  private val underTest = removeClaimResponseReads
+  private val underTest = createSessionDataResponseReads
 
-  "removeClaimResponseReads" should {
-    "convert JsValue to RemoveUserDataResponse" when {
-      "status is NO_CONTENT and return unit" in {
-        val httpResponse: HttpResponse = HttpResponse.apply(NO_CONTENT, Json.toJson(""), anyHeaders)
+  "CreateSessionDataResponse" should {
+    "convert JsValue to CreateSessionDataResponse" when {
+      "status is CREATED and valid jsValue" in {
+        val jsValue: JsValue = Json.toJson(anySessionDataId)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        val httpResponse: HttpResponse = HttpResponse.apply(CREATED, jsValue, anyHeaders)
+
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
-          Right(())
+          Right(anySessionDataId)
         )
       }
 
@@ -50,7 +55,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(NOT_FOUND, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
           Left(ApiError(NOT_FOUND, SingleErrorBody.parsingError))
         )
@@ -61,7 +66,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
           Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("some-code", "some-reason")))
         )
@@ -72,7 +77,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(SERVICE_UNAVAILABLE, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
           Left(ApiError(SERVICE_UNAVAILABLE, SingleErrorBody("some-code", "some-reason")))
         )
@@ -83,7 +88,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
           Left(ApiError(BAD_REQUEST, SingleErrorBody("some-code", "some-reason")))
         )
@@ -94,7 +99,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(UNPROCESSABLE_ENTITY, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
           Left(ApiError(UNPROCESSABLE_ENTITY, SingleErrorBody("some-code", "some-reason")))
         )
@@ -105,7 +110,7 @@ class RemoveClaimResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(FAILED_DEPENDENCY, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe RemoveClaimResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateSessionDataResponse(
           httpResponse,
           Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("some-code", "some-reason")))
         )

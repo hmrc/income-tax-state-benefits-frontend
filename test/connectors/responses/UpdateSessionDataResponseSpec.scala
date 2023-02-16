@@ -17,47 +17,28 @@
 package connectors.responses
 
 import connectors.errors.{ApiError, SingleErrorBody}
-import connectors.responses.CreateOrUpdateUserDataResponse.createOrUpdateUserDataResponseReads
+import connectors.responses.UpdateSessionDataResponse.updateSessionDataResponseReads
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitTest
 import uk.gov.hmrc.http.HttpResponse
 
-import java.util.UUID
-
-class CreateOrUpdateUserDataResponseSpec extends UnitTest {
+class UpdateSessionDataResponseSpec extends UnitTest {
 
   private val anyHeaders: Map[String, Seq[String]] = Map.empty
   private val anyMethod: String = "POST"
   private val anyUrl = "/any-url"
-  private val anySessionDataId = UUID.randomUUID()
 
-  private val underTest = createOrUpdateUserDataResponseReads
+  private val underTest = updateSessionDataResponseReads
 
-  "CreateOrUpdateUserDataResponse" should {
-    "convert JsValue to CreateOrUpdateUserDataResponse" when {
-      "status is OK and valid jsValue" in {
-        val jsValue: JsValue = Json.toJson(anySessionDataId)
+  "UpdateSessionDataResponse" should {
+    "convert JsValue to UpdateSessionDataResponse" when {
+      "status is NO_CONTENT and valid jsValue" in {
+        val httpResponse: HttpResponse = HttpResponse.apply(NO_CONTENT, Json.toJson(""), anyHeaders)
 
-        val httpResponse: HttpResponse = HttpResponse.apply(OK, jsValue, anyHeaders)
-
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
-          Right(anySessionDataId)
-        )
-      }
-
-      "status is OK and invalid jsValue" in {
-        val jsValue: JsValue = Json.parse(
-          """
-            |{}
-            |""".stripMargin)
-
-        val httpResponse: HttpResponse = HttpResponse.apply(OK, jsValue, anyHeaders)
-
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
-          httpResponse,
-          Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError))
+          Right(())
         )
       }
 
@@ -69,7 +50,7 @@ class CreateOrUpdateUserDataResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(NOT_FOUND, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
           Left(ApiError(NOT_FOUND, SingleErrorBody.parsingError))
         )
@@ -80,7 +61,7 @@ class CreateOrUpdateUserDataResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
           Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("some-code", "some-reason")))
         )
@@ -91,7 +72,7 @@ class CreateOrUpdateUserDataResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(SERVICE_UNAVAILABLE, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
           Left(ApiError(SERVICE_UNAVAILABLE, SingleErrorBody("some-code", "some-reason")))
         )
@@ -102,7 +83,7 @@ class CreateOrUpdateUserDataResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
           Left(ApiError(BAD_REQUEST, SingleErrorBody("some-code", "some-reason")))
         )
@@ -113,7 +94,7 @@ class CreateOrUpdateUserDataResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(UNPROCESSABLE_ENTITY, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
           Left(ApiError(UNPROCESSABLE_ENTITY, SingleErrorBody("some-code", "some-reason")))
         )
@@ -124,7 +105,7 @@ class CreateOrUpdateUserDataResponseSpec extends UnitTest {
 
         val httpResponse: HttpResponse = HttpResponse.apply(FAILED_DEPENDENCY, jsValue, anyHeaders)
 
-        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe CreateOrUpdateUserDataResponse(
+        underTest.read(anyMethod, anyUrl, httpResponse) shouldBe UpdateSessionDataResponse(
           httpResponse,
           Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody("some-code", "some-reason")))
         )

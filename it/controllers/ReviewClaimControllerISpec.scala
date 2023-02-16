@@ -19,11 +19,13 @@ package controllers
 import controllers.routes.ClaimsController
 import models.BenefitType.JobSeekersAllowance
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
+import uk.gov.hmrc.http.HttpResponse
 
 import java.util.UUID
 
@@ -42,7 +44,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "render the ReviewJobSeekersAllowanceClaim page for in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlGet(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)))
       }
 
@@ -52,7 +54,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "render the ReviewJobSeekersAllowanceClaim page for end of year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlGet(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)))
       }
 
@@ -64,7 +66,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlPost(saveAndContinueUrl(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
       }
 
@@ -75,8 +77,8 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "persist amount and redirect to ReviewClaim" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        saveStateBenefitStub(aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
+        saveStateBenefitStub(aStateBenefitsUserData, HttpResponse(NO_CONTENT, ""))
         urlPost(saveAndContinueUrl(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 
@@ -89,7 +91,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         urlPost(restoreClaim(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
       }
 
@@ -100,8 +102,8 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "restore the given claim" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, aStateBenefitsUserData)
-        restoreClaimStub(aUser.nino, sessionDataId)
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
+        restoreClaimStub(aUser.nino, sessionDataId, HttpResponse(NO_CONTENT, ""))
         urlPost(restoreClaim(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 

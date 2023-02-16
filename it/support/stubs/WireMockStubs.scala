@@ -20,27 +20,19 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import models.StateBenefitsUserData
 import models.authorisation.Enrolment.Agent
-import models.{AllStateBenefitsData, StateBenefitsUserData}
-import play.api.http.Status.{NO_CONTENT, OK, UNAUTHORIZED}
+import play.api.http.ContentTypes.JSON
+import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.{JsObject, Json}
+import play.api.test.Helpers.CONTENT_TYPE
 import support.builders.UserBuilder.aUser
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+import uk.gov.hmrc.http.HttpResponse
 
 import java.util.UUID
 
 trait WireMockStubs {
-
-  protected def stubGetWithHeadersCheck(url: String,
-                                        status: Int,
-                                        responseBody: String,
-                                        sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
-                                        mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid): StubMapping =
-    stubFor(get(urlMatching(url))
-      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
-      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
-      .willReturn(aResponse().withStatus(status).withBody(responseBody))
-    )
 
   protected def authoriseAgentOrIndividual(isAgent: Boolean, nino: Boolean = true): StubMapping = if (isAgent) authoriseAgent() else authoriseIndividual(nino)
 
@@ -122,112 +114,97 @@ trait WireMockStubs {
     )
   )
 
+  protected def stubGetWithHeadersCheck(url: String,
+                                        httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, get(urlMatching(url)))
+  }
+
   protected def userPriorDataStub(nino: String,
                                   taxYear: Int,
-                                  response: AllStateBenefitsData): StubMapping = {
-    stubGetWithHeadersCheck(
-      url = s"/income-tax-state-benefits/prior-data/nino/$nino/tax-year/$taxYear",
-      status = OK,
-      responseBody = Json.toJson(response).toString(),
-      sessionHeader = "X-Session-ID" -> aUser.sessionId,
-      mtditidHeader = "mtditid" -> aUser.mtditid
-    )
+                                  httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, get(urlMatching(s"/income-tax-state-benefits/prior-data/nino/$nino/tax-year/$taxYear")))
   }
 
   protected def userSessionDataStub(nino: String,
                                     sessionDataId: UUID,
-                                    response: StateBenefitsUserData): StubMapping = {
-    stubGetWithHeadersCheck(
-      url = s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId",
-      status = OK,
-      responseBody = Json.toJson(response).toString(),
-      sessionHeader = "X-Session-ID" -> aUser.sessionId,
-      mtditidHeader = "mtditid" -> aUser.mtditid
-    )
+                                    httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, get(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId")))
   }
 
-  protected def createOrUpdateUserDataStub(stateBenefitsUserData: StateBenefitsUserData,
-                                           response: UUID): StubMapping = {
-    stubFor(post(urlMatching(s"/income-tax-state-benefits/session-data"))
-      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
-      .withHeader("mtditid", equalTo(aUser.mtditid))
+  protected def createSessionDataStub(stateBenefitsUserData: StateBenefitsUserData,
+                                      httpResponse: HttpResponse): StubMapping = {
+    createSessionDataStub(s"/income-tax-state-benefits/session-data", stateBenefitsUserData, httpResponse)
+  }
+
+  protected def createSessionDataStub(url: String,
+                                      stateBenefitsUserData: StateBenefitsUserData,
+                                      httpResponse: HttpResponse): StubMapping = {
+    val mappingBuilder = post(urlMatching(url)).withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString))
+    stubMapping(httpResponse, mappingBuilder)
+  }
+
+  protected def updateSessionDataStub(stateBenefitsUserData: StateBenefitsUserData,
+                                      httpResponse: HttpResponse): StubMapping = {
+    val nino = stateBenefitsUserData.nino
+    val sessionDataId = stateBenefitsUserData.sessionDataId.get
+    updateSessionDataStub(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId", stateBenefitsUserData, httpResponse)
+  }
+
+  protected def updateSessionDataStub(url: String,
+                                      stateBenefitsUserData: StateBenefitsUserData,
+                                      httpResponse: HttpResponse): StubMapping = {
+    val mappingBuilder = put(urlMatching(url)).withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString))
+    stubMapping(httpResponse, mappingBuilder)
+  }
+
+  protected def saveStateBenefitStub(stateBenefitsUserData: StateBenefitsUserData,
+                                     httpResponse: HttpResponse): StubMapping = {
+    val mappingBuilder = put(urlMatching(s"/income-tax-state-benefits/income-tax"))
       .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
-      .willReturn(aResponse().withStatus(OK).withBody(Json.toJson(response).toString())))
-  }
-
-  protected def createUserSessionDataStub(url: String,
-                                          status: Int,
-                                          responseBody: String,
-                                          sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
-                                          mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
-                                         ): StubMapping = {
-    stubFor(post(urlMatching(url))
-      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
-      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
-      .willReturn(aResponse().withStatus(status).withBody(responseBody))
-    )
-  }
-
-  protected def saveStateBenefitStub(stateBenefitsUserData: StateBenefitsUserData): StubMapping = {
-    stubFor(put(urlMatching(s"/income-tax-state-benefits/income-tax"))
-      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
-      .withHeader("mtditid", equalTo(aUser.mtditid))
-      .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
-      .willReturn(aResponse().withStatus(NO_CONTENT)))
+    stubMapping(httpResponse, mappingBuilder)
   }
 
   protected def saveStateBenefitStub(url: String,
-                                     status: Int,
-                                     responseBody: String,
-                                     sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
-                                     mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
-                                    ): StubMapping = {
-    stubFor(put(urlMatching(url))
-      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
-      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
-      .willReturn(aResponse().withStatus(status).withBody(responseBody))
-    )
+                                     httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, put(urlMatching(url)))
   }
 
   protected def removeClaimStub(nino: String,
-                                sessionDataId: UUID): StubMapping = {
-    stubFor(delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId"))
-      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
-      .withHeader("mtditid", equalTo(aUser.mtditid))
-      .willReturn(aResponse().withStatus(NO_CONTENT)))
+                                sessionDataId: UUID,
+                                httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId")))
   }
 
   protected def removeClaimStub(url: String,
-                                status: Int,
-                                responseBody: String,
-                                sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
-                                mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
-                               ): StubMapping = {
-    stubFor(delete(urlMatching(url))
-      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
-      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
-      .willReturn(aResponse().withStatus(status).withBody(responseBody))
-    )
+                                httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, delete(urlMatching(url)))
   }
 
   protected def restoreClaimStub(nino: String,
-                                 sessionDataId: UUID): StubMapping = {
-    stubFor(delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId/ignore"))
-      .withHeader("X-Session-ID", equalTo(aUser.sessionId))
-      .withHeader("mtditid", equalTo(aUser.mtditid))
-      .willReturn(aResponse().withStatus(NO_CONTENT)))
+                                 sessionDataId: UUID,
+                                 httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, delete(urlMatching(s"/income-tax-state-benefits/session-data/nino/$nino/session/$sessionDataId/ignore")))
   }
 
   protected def restoreClaimStub(url: String,
-                                 status: Int,
-                                 responseBody: String,
-                                 sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
-                                 mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid
-                                ): StubMapping = {
-    stubFor(delete(urlMatching(url))
-      .withHeader(sessionHeader._1, equalTo(sessionHeader._2))
-      .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2))
-      .willReturn(aResponse().withStatus(status).withBody(responseBody))
-    )
+                                 httpResponse: HttpResponse): StubMapping = {
+    stubMapping(httpResponse, delete(urlMatching(url)))
+  }
+
+  private def stubMapping(httpResponse: HttpResponse,
+                          mappingBuilder: MappingBuilder,
+                          sessionHeader: (String, String) = "X-Session-ID" -> aUser.sessionId,
+                          mtditidHeader: (String, String) = "mtditid" -> aUser.mtditid,
+                          requestHeaders: Seq[HttpHeader] = Seq.empty): StubMapping = {
+    val responseBuilder = aResponse()
+      .withStatus(httpResponse.status)
+      .withBody(httpResponse.body)
+      .withHeader(CONTENT_TYPE, JSON)
+
+    val mappingBuilderWithHeaders: MappingBuilder = requestHeaders
+      .foldLeft(mappingBuilder.withHeader(sessionHeader._1, equalTo(sessionHeader._2))
+        .withHeader(mtditidHeader._1, equalTo(mtditidHeader._2)))((result, nxt) => result.withHeader(nxt.key(), equalTo(nxt.firstValue())))
+
+    stubFor(mappingBuilderWithHeaders.willReturn(responseBuilder))
   }
 }
