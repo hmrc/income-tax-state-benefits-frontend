@@ -29,8 +29,7 @@ case class ClaimCYAModel(benefitId: Option[UUID] = None,
                          submittedOn: Option[Instant] = None,
                          amount: Option[BigDecimal] = None,
                          taxPaidQuestion: Option[Boolean] = None,
-                         taxPaid: Option[BigDecimal] = None,
-                         isHmrcData: Boolean) {
+                         taxPaid: Option[BigDecimal] = None) {
 
   lazy val isFinished: Boolean = {
     val endDateIsFinished: Boolean = endDateQuestion match {
@@ -62,8 +61,7 @@ object ClaimCYAModel {
     submittedOn = stateBenefit.submittedOn,
     amount = stateBenefit.amount,
     taxPaidQuestion = Some(stateBenefit.taxPaid.isDefined),
-    taxPaid = stateBenefit.taxPaid,
-    isHmrcData = true
+    taxPaid = stateBenefit.taxPaid
   )
 
   def mapFrom(customerAddedStateBenefit: CustomerAddedStateBenefit): ClaimCYAModel = ClaimCYAModel(
@@ -75,7 +73,6 @@ object ClaimCYAModel {
     submittedOn = customerAddedStateBenefit.submittedOn,
     amount = customerAddedStateBenefit.amount,
     taxPaidQuestion = Some(customerAddedStateBenefit.taxPaid.isDefined),
-    taxPaid = customerAddedStateBenefit.taxPaid,
-    isHmrcData = false
+    taxPaid = customerAddedStateBenefit.taxPaid
   )
 }

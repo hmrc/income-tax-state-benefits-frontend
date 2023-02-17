@@ -214,7 +214,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     import userScenario.commonExpectedResults._
     import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${agentTest(userScenario.isAgent)}" should {
-      val pageModel = aReviewClaimPage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance)
+      val pageModel = aReviewClaimPage.copy(taxYear = taxYearEOY, isHmrcData = false, benefitType = EmploymentSupportAllowance)
       "render end of year version of ReviewEmploymentAndSupportAllowanceClaim page" when {
         "customer added data" which {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
@@ -261,7 +261,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val page = pageModel.copy(isCustomerAdded = false)
+          val page = pageModel.copy(isHmrcData = true)
 
           implicit val document: Document = Jsoup.parse(underTest(page).body)
           textOnPageCheck(expectedExternalDataText, p1)
@@ -291,7 +291,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val page = pageModel.copy(taxYear = taxYear, isInYear = true)
+          val page = pageModel.copy(taxYear = taxYear, isHmrcData = false, isInYear = true)
           val translatedStartDate = translatedDateFormatter(page.startDate)
 
           implicit val document: Document = Jsoup.parse(underTest(page).body)

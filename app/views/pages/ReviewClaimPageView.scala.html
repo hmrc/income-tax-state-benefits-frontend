@@ -62,7 +62,7 @@
     @caption(messages(s"common.reviewClaimPage.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
     @heading(titleText)
 
-    @if(!pageModel.isCustomerAdded){<p class="govuk-body">@messages("common.reviewClaimPage.p1")</p>}
+    @if(pageModel.isHmrcData){<p class="govuk-body">@messages("common.reviewClaimPage.p1")</p>}
 
     @{
         def viewToSummaryListRow(

@@ -16,6 +16,7 @@
 
 package models
 
+import models.BenefitDataType.{CustomerAdded, CustomerOverride, HmrcData}
 import play.api.libs.json.{Json, OFormat}
 
 import java.util.UUID
@@ -26,13 +27,13 @@ case class StateBenefitsUserData(benefitType: String,
                                  mtdItId: String,
                                  nino: String,
                                  taxYear: Int,
-                                 isPriorSubmission: Boolean,
+                                 benefitDataType: String,
                                  claim: Option[ClaimCYAModel]) {
 
-  lazy val isHmrcData: Boolean = claim.exists(_.isHmrcData)
-
-  lazy val isCustomerAddedData: Boolean = !isHmrcData
-
+  lazy val isPriorSubmission: Boolean = claim.exists(_.benefitId.isDefined)
+  lazy val isHmrcData: Boolean = benefitDataType == HmrcData.name
+  lazy val isCustomerAdded: Boolean = benefitDataType == CustomerAdded.name
+  lazy val isCustomerOverride: Boolean = benefitDataType == CustomerOverride.name
   lazy val isFinished: Boolean = claim.exists(_.isFinished)
 }
 
@@ -48,7 +49,7 @@ object StateBenefitsUserData {
     mtdItId = user.mtditid,
     nino = user.nino,
     taxYear = taxYear,
-    isPriorSubmission = false,
+    benefitDataType = CustomerAdded.name,
     claim = None
   )
 
@@ -57,23 +58,24 @@ object StateBenefitsUserData {
             user: User,
             benefitId: UUID,
             incomeTaxUserData: IncomeTaxUserData): Option[StateBenefitsUserData] = {
-    val optionalHmrcStateBenefit = incomeTaxUserData.hmrcAllowancesFor(benefitType).find(item => item.benefitId == benefitId)
-    val optionalCustomerStateBenefit = incomeTaxUserData.customerAllowancesFor(benefitType).find(item => item.benefitId == benefitId)
+    val optionalHmrcStateBenefit = incomeTaxUserData.hmrcAllowancesFor(benefitType).find(_.benefitId == benefitId)
+    val optionalCustomerStateBenefit = incomeTaxUserData.customerAllowancesFor(benefitType).find(_.benefitId == benefitId)
 
-    lazy val stateBenefitsUserData = StateBenefitsUserData(
+    lazy val userData = StateBenefitsUserData(
       benefitType = benefitType.typeName,
       sessionDataId = None,
       sessionId = user.sessionId,
       mtdItId = user.mtditid,
       nino = user.nino,
       taxYear = taxYear,
-      isPriorSubmission = true,
+      benefitDataType = HmrcData.name,
       claim = None
     )
 
     (optionalHmrcStateBenefit, optionalCustomerStateBenefit) match {
-      case (Some(benefit), _) => Some(stateBenefitsUserData.copy(claim = Some(ClaimCYAModel.mapFrom(benefit))))
-      case (_, Some(benefit)) => Some(stateBenefitsUserData.copy(claim = Some(ClaimCYAModel.mapFrom(benefit))))
+      case (Some(benefit), None) => Some(userData.copy(claim = Some(ClaimCYAModel.mapFrom(benefit))))
+      case (None, Some(benefit)) => Some(userData.copy(benefitDataType = CustomerAdded.name, claim = Some(ClaimCYAModel.mapFrom(benefit))))
+      case (Some(_), Some(benefit)) => Some(userData.copy(benefitDataType = CustomerOverride.name, claim = Some(ClaimCYAModel.mapFrom(benefit))))
       case (None, None) => None
     }
   }

@@ -41,7 +41,7 @@ class ClaimServiceSpec extends UnitTest
   ".updateStartDate" should {
     "create a new claim and update startDate when no claim exists" in {
       val userData = aStateBenefitsUserData.copy(claim = None)
-      val expectedClaim = ClaimCYAModel(startDate = startDate, isHmrcData = false)
+      val expectedClaim = ClaimCYAModel(startDate = startDate)
 
       mockUpdateSessionData(userData.copy(claim = Some(expectedClaim)), Right(()))
 

@@ -71,11 +71,11 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     }
   }
 
-  def saveStateBenefit(stateBenefitsUserData: StateBenefitsUserData)
-                      (implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
-    val response = saveUserData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
+  def saveClaim(stateBenefitsUserData: StateBenefitsUserData)
+               (implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
+    val response = saveClaimData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
 
-    response.map { response: SaveUserDataResponse =>
+    response.map { response: SaveClaimResponse =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -105,12 +105,12 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClient,
     httpClient.GET[GetIncomeTaxUserDataResponse](stateBenefitsBEUrl)
   }
 
-  private def saveUserData(stateBenefitsUserData: StateBenefitsUserData)
-                          (implicit hc: HeaderCarrier): Future[SaveUserDataResponse] = {
+  private def saveClaimData(stateBenefitsUserData: StateBenefitsUserData)
+                           (implicit hc: HeaderCarrier): Future[SaveClaimResponse] = {
     val nino = stateBenefitsUserData.nino
     val sessionDataId = stateBenefitsUserData.sessionDataId.get
-    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/benefits/nino/$nino/session/$sessionDataId"
-    httpClient.PUT[StateBenefitsUserData, SaveUserDataResponse](stateBenefitsBEUrl, stateBenefitsUserData)
+    val stateBenefitsBEUrl = appConfig.stateBenefitsServiceBaseUrl + s"/claim-data/nino/$nino/session/$sessionDataId"
+    httpClient.PUT[StateBenefitsUserData, SaveClaimResponse](stateBenefitsBEUrl, stateBenefitsUserData)
   }
 
   private def getUserSessionData(nino: String, sessionDataId: UUID)

@@ -32,8 +32,8 @@ case class ReviewClaimFilterAction(taxYear: Int,
 
   override protected[actions] def filter[A](request: UserSessionDataRequest[A]): Future[Option[Result]] = Future.successful {
     request.stateBenefitsUserData match {
-      case userData if userData.isHmrcData => None
-      case userData if userData.isCustomerAddedData && userData.isFinished => None
+      case userData if userData.isHmrcData || userData.isCustomerOverride => None
+      case userData if userData.isCustomerAdded && userData.isFinished => None
       case _ => Some(Redirect(ClaimsController.show(taxYear, benefitType)))
     }
   }

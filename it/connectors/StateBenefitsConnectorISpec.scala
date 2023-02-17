@@ -173,19 +173,19 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
     }
   }
 
-  ".saveStateBenefit(...)" should {
-    val url = s"/benefits/nino/$nino/session/$sessionDataId"
+  ".saveClaim(...)" should {
+    val url = s"/claim-data/nino/$nino/session/$sessionDataId"
     "Return a success result when BE returns 204" in {
       saveStateBenefitStub(url, HttpResponse(NO_CONTENT, ""))
 
-      await(underTest.saveStateBenefit(aStateBenefitsUserData)) shouldBe Right(())
+      await(underTest.saveClaim(aStateBenefitsUserData)) shouldBe Right(())
     }
 
     "Return a Left/Failure when BE returns code different than NO_CONTENT" in {
       saveStateBenefitStub(url, HttpResponse(NOT_FOUND, "{}"))
-      mockPagerDutyLog("SaveUserDataResponse")
+      mockPagerDutyLog("SaveClaimResponse")
 
-      await(underTest.saveStateBenefit(aStateBenefitsUserData)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
+      await(underTest.saveClaim(aStateBenefitsUserData)) shouldBe Left(ApiError(NOT_FOUND, SingleErrorBody("PARSING_ERROR", "Error while parsing response from API")))
     }
   }
 

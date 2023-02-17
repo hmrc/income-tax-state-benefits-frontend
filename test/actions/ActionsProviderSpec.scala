@@ -18,6 +18,7 @@ package actions
 
 import controllers.errors.routes.UnauthorisedUserErrorController
 import controllers.routes.ClaimsController
+import models.BenefitDataType.CustomerAdded
 import models.BenefitType.JobSeekersAllowance
 import models.IncomeTaxUserData
 import models.authorisation.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
@@ -147,7 +148,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
     "redirect to ClaimsController when ReviewClaimFilterAction returns Redirect" in {
       mockAuthAsIndividual(Some(aUser.nino))
-      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData.copy(claim = None)))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData.copy(benefitDataType = CustomerAdded.name, claim = None)))
 
       val underTest = actionsProvider.reviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 

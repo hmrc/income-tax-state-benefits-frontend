@@ -95,17 +95,17 @@ class StateBenefitsServiceSpec extends UnitTest
     }
   }
 
-  ".saveStateBenefit(...)" should {
+  ".saveClaim(...)" should {
     "return error when fails to save data" in {
-      mockSaveStateBenefit(aStateBenefitsUserData, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
+      mockSaveClaim(aStateBenefitsUserData, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      await(underTest.saveStateBenefit(aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      await(underTest.saveClaim(aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
     }
 
     "return correct result" in {
-      mockSaveStateBenefit(aStateBenefitsUserData, Right(()))
+      mockSaveClaim(aStateBenefitsUserData, Right(()))
 
-      await(underTest.saveStateBenefit(aStateBenefitsUserData)) shouldBe Right(())
+      await(underTest.saveClaim(aStateBenefitsUserData)) shouldBe Right(())
     }
   }
 

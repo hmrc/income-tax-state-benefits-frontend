@@ -60,9 +60,9 @@ trait MockStateBenefitsService extends MockFactory {
       .returning(Future.successful(result))
   }
 
-  def mockSaveStateBenefit(stateBenefitsUserData: StateBenefitsUserData,
-                           result: Either[HttpParserError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
-    (mockStateBenefitsService.saveStateBenefit(_: StateBenefitsUserData)(_: HeaderCarrier))
+  def mockSaveClaim(stateBenefitsUserData: StateBenefitsUserData,
+                    result: Either[HttpParserError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
+    (mockStateBenefitsService.saveClaim(_: StateBenefitsUserData)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
