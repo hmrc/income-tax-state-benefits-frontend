@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.routes.{ReviewClaimController, TaxPaidQuestionController}
+import controllers.routes.{ReviewClaimController, TaxPaidController}
 import forms.AmountForm.amount
 import forms.FormsProvider
 import models.BenefitType.JobSeekersAllowance
@@ -81,17 +81,27 @@ class AmountControllerSpec extends ControllerUnitTest
       status(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "redirect to next Page on successful amount update and journey not completed" in {
+    "redirect to TaxPaid page on successful amount update when tax paid question was yes and journey not completed" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
 
       await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
-        Redirect(TaxPaidQuestionController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
+        Redirect(TaxPaidController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
-    "redirect to ReviewClaim Page on successful amount update and when journey is completed" in {
+    "redirect to ReviewClaim page on successful amount update when tax paid question was no" in {
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaidQuestion = Some(false))))))
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$amount" -> "100")
+
+      await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
+        Redirect(ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
+    }
+
+    "redirect to ReviewClaim page on successful amount update when journey is completed" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockUpdateAmount(aStateBenefitsUserData, amount = 100, Right(aStateBenefitsUserData))
 

@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.routes.{AmountController, ReviewClaimController}
+import controllers.routes.{ReviewClaimController, TaxPaidQuestionController}
 import forms.DateForm.{day, formValuesPrefix, month, year}
 import forms.FormsProvider
 import models.BenefitType.JobSeekersAllowance
@@ -101,7 +101,7 @@ class EndDateControllerSpec extends ControllerUnitTest
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
 
       await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
-        Redirect(AmountController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
+        Redirect(TaxPaidQuestionController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
   }
 }
