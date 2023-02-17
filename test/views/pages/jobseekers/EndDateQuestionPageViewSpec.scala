@@ -17,7 +17,7 @@
 package views.pages.jobseekers
 
 import controllers.routes.EndDateQuestionController
-import forms.YesNoForm
+import forms.{FormsProvider, YesNoForm}
 import models.BenefitType.JobSeekersAllowance
 import models.requests.UserSessionDataRequest
 import org.jsoup.Jsoup
@@ -25,11 +25,16 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.EndDateQuestionPageBuilder.aEndDateQuestionPage
+import utils.ViewUtils.translatedDateFormatter
 import views.html.pages.EndDateQuestionPageView
+
+import java.time.LocalDate
 
 class EndDateQuestionPageViewSpec extends ViewUnitTest {
 
+  private val formsProvider = new FormsProvider()
   private val underTest: EndDateQuestionPageView = inject[EndDateQuestionPageView]
 
   object Selectors {
@@ -39,36 +44,48 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
   }
 
   trait CommonExpectedResults {
-    val expectedHeading: Int => String
-    val expectedTitle: Int => String
-    val expectedErrorTitle: Int => String
     val expectedCaption: Int => String
     val expectedYesText: String
     val expectedNoText: String
     val expectedButtonText: String
-    val expectedErrorText: Int => String
+
+    def expectedHeading(taxYear: Int, startDate: LocalDate): String
+
+    def expectedTitle(taxYear: Int, startDate: LocalDate): String
+
+    def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String
+
+    def expectedErrorText(taxYear: Int, startDate: LocalDate): String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedHeading: Int => String = (taxYear: Int) => s"Did this claim end in the tax year ending 5 April $taxYear?"
-    override val expectedTitle: Int => String = expectedHeading
-    override val expectedErrorTitle: Int => String = (taxYear: Int) => s"Error: ${expectedTitle(taxYear)}"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: Int => String = (taxYear: Int) => s"Select yes if this claim ended in the tax year ending 5 April $taxYear"
+
+    override def expectedHeading(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and 5 April $taxYear?"
+
+    override def expectedTitle(taxYear: Int, startDate: LocalDate): String = expectedHeading(taxYear, startDate)
+
+    override def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String = s"Error: ${expectedTitle(taxYear, startDate)}"
+
+    override def expectedErrorText(taxYear: Int, startDate: LocalDate): String = s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(defaultMessages)} and 5 April $taxYear"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedHeading: Int => String = (taxYear: Int) => s"Did this claim end in the tax year ending 5 April $taxYear?"
-    override val expectedTitle: Int => String = expectedHeading
-    override val expectedErrorTitle: Int => String = (taxYear: Int) => s"Error: ${expectedTitle(taxYear)}"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
     override val expectedButtonText: String = "Continue"
-    override val expectedErrorText: Int => String = (taxYear: Int) => s"Select yes if this claim ended in the tax year ending 5 April $taxYear"
+
+    override def expectedHeading(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and 5 April $taxYear?"
+
+    override def expectedTitle(taxYear: Int, startDate: LocalDate): String = expectedHeading(taxYear, startDate)
+
+    override def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String = s"Error: ${expectedTitle(taxYear, startDate)}"
+
+    override def expectedErrorText(taxYear: Int, startDate: LocalDate): String = s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(welshMessages)} and 5 April $taxYear"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, _]] = Seq(
@@ -87,9 +104,9 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(aEndDateQuestionPage).body)
 
         welshToggleCheck(userScenario.isWelsh)
-        titleCheck(expectedTitle(taxYearEOY), userScenario.isWelsh)
+        titleCheck(expectedTitle(taxYearEOY, aEndDateQuestionPage.titleFirstDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(expectedHeading(taxYearEOY), isFieldSetH1 = true)
+        h1Check(expectedHeading(taxYearEOY, aEndDateQuestionPage.titleFirstDate), isFieldSetH1 = true)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
         formPostLinkCheck(EndDateQuestionController.submit(taxYearEOY, JobSeekersAllowance, aEndDateQuestionPage.sessionDataId).url, continueButtonFormSelector)
@@ -103,7 +120,7 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         val pageModel = aEndDateQuestionPage.copy(form = aEndDateQuestionPage.form.fill(value = true))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(expectedTitle(taxYearEOY), userScenario.isWelsh)
+        titleCheck(expectedTitle(taxYearEOY, aEndDateQuestionPage.titleFirstDate), userScenario.isWelsh)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = true)
       }
 
@@ -111,15 +128,32 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aEndDateQuestionPage.copy(form = aEndDateQuestionPage.form.bind(Map(YesNoForm.yesNo -> "")))
+        val form = formsProvider.endDateYesNoForm(taxYearEOY, aClaimCYAModel.startDate)
+        val pageModel = aEndDateQuestionPage.copy(form = form.bind(Map(YesNoForm.yesNo -> "")))
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
-        titleCheck(expectedErrorTitle(taxYearEOY), userScenario.isWelsh)
+        titleCheck(expectedErrorTitle(taxYearEOY, aEndDateQuestionPage.titleFirstDate), userScenario.isWelsh)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
 
-        errorSummaryCheck(expectedErrorText(taxYearEOY), errorHref)
-        errorAboveElementCheck(expectedErrorText(taxYearEOY))
+        errorSummaryCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate), errorHref)
+        errorAboveElementCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate))
+      }
+
+      "render page with wrong data error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val form = formsProvider.endDateYesNoForm(taxYearEOY, aClaimCYAModel.startDate)
+        val pageModel = aEndDateQuestionPage.copy(form = form.bind(Map("wrongKey" -> "wrongValue")))
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(expectedErrorTitle(taxYearEOY, aEndDateQuestionPage.titleFirstDate), userScenario.isWelsh)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
+
+        errorSummaryCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate), errorHref)
+        errorAboveElementCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate))
       }
     }
   }

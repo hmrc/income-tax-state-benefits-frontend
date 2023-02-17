@@ -18,11 +18,14 @@ package models.pages
 
 import models.{BenefitType, StateBenefitsUserData}
 import play.api.data.Form
+import utils.InYearUtil.toDateWithinTaxYear
 
+import java.time.LocalDate
 import java.util.UUID
 
 case class EndDateQuestionPage(taxYear: Int,
                                benefitType: BenefitType,
+                               titleFirstDate: LocalDate,
                                sessionDataId: UUID,
                                form: Form[Boolean])
 
@@ -33,10 +36,12 @@ object EndDateQuestionPage {
             stateBenefitsUserData: StateBenefitsUserData,
             form: Form[Boolean]): EndDateQuestionPage = {
     val optQuestionValue = stateBenefitsUserData.claim.flatMap(_.endDateQuestion)
+    val titleFirstDate = toDateWithinTaxYear(taxYear, stateBenefitsUserData.claim.get.startDate)
 
     EndDateQuestionPage(
       taxYear = taxYear,
       benefitType = benefitType,
+      titleFirstDate = titleFirstDate,
       stateBenefitsUserData.sessionDataId.get,
       form = optQuestionValue.fold(form)(questionValue => if (form.hasErrors) form else form.fill(questionValue))
     )

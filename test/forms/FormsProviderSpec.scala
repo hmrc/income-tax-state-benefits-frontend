@@ -25,11 +25,9 @@ import support.providers.TaxYearProvider
 class FormsProviderSpec extends UnitTest
   with TaxYearProvider {
 
-  private val anyBoolean = true
   private val minAmount = BigDecimal(-100)
   private val maxAmount = BigDecimal(100_000)
   private val validAmount = maxAmount - 1
-  private val correctBooleanData = Map(YesNoForm.yesNo -> anyBoolean.toString)
   private val correctAmountData = Map(AmountForm.amount -> validAmount.toString)
   private val spacesAmountData = Map(AmountForm.amount -> "1 1 1")
   private val overMaximumAmount: Map[String, String] = Map(AmountForm.amount -> "100,000,000,000")
@@ -41,18 +39,6 @@ class FormsProviderSpec extends UnitTest
   private val emptyData: Map[String, String] = Map.empty
 
   private val underTest = new FormsProvider()
-
-  ".endDateYesNoForm" should {
-    "return a form that maps data when data is correct" in {
-      underTest.endDateYesNoForm(taxYear = taxYear).bind(correctBooleanData).errors shouldBe Seq.empty
-    }
-
-    "return a form that contains error when data is incorrect" in {
-      underTest.endDateYesNoForm(taxYear = taxYear).bind(wrongKeyData).errors shouldBe Seq(
-        FormError("value", Seq("common.endDateQuestionPage.error"), Seq(taxYear.toString))
-      )
-    }
-  }
 
   ".taxPaidAmountForm" should {
     "return a form that maps data when data is correct" in {
