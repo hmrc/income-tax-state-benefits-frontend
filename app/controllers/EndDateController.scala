@@ -18,7 +18,7 @@ package controllers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.routes.{AmountController, ReviewClaimController}
+import controllers.routes.{ReviewClaimController, TaxPaidQuestionController}
 import forms.{DateForm, FormsProvider}
 import models.pages.EndDatePage
 import models.{BenefitType, StateBenefitsUserData}
@@ -65,6 +65,7 @@ class EndDateController @Inject()(actionsProvider: ActionsProvider,
                               benefitType: BenefitType,
                               userData: StateBenefitsUserData) = {
     val sessionDataId = userData.sessionDataId.get
-    if (userData.isFinished) ReviewClaimController.show(taxYear, benefitType, sessionDataId) else AmountController.show(taxYear, benefitType, sessionDataId)
+    val isFinished = userData.isFinished
+    if (isFinished) ReviewClaimController.show(taxYear, benefitType, sessionDataId) else TaxPaidQuestionController.show(taxYear, benefitType, sessionDataId)
   }
 }

@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.routes.{ReviewClaimController, TaxPaidController}
+import controllers.routes.{AmountController, ReviewClaimController}
 import forms.{FormsProvider, YesNoForm}
 import models.BenefitType.JobSeekersAllowance
 import org.jsoup.Jsoup
@@ -80,14 +80,14 @@ class TaxPaidQuestionControllerSpec extends ControllerUnitTest
         Redirect(ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
-    "redirect to TaxTakenOffAmount page when Yes is submitted and not finished" in {
+    "redirect to Amount page when Yes is submitted and not finished" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
+      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
 
       await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId)(request)) shouldBe
-        Redirect(TaxPaidController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
+        Redirect(AmountController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
     "redirect to ReviewClaim page when No is submitted" in {

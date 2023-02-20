@@ -18,7 +18,7 @@ package controllers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.routes.{ReviewClaimController, TaxPaidQuestionController}
+import controllers.routes.{ReviewClaimController, TaxPaidController}
 import forms.FormsProvider
 import models.pages.AmountPage
 import models.{BenefitType, StateBenefitsUserData}
@@ -65,10 +65,11 @@ class AmountController @Inject()(actionsProvider: ActionsProvider,
                               benefitType: BenefitType,
                               userData: StateBenefitsUserData) = {
     val sessionDataId = userData.sessionDataId.get
-    if (userData.isFinished) {
-      ReviewClaimController.show(taxYear, benefitType, sessionDataId)
+    val wasTaxPaid = userData.claim.get.taxPaidQuestion.get
+    if (wasTaxPaid && !userData.isFinished) {
+      TaxPaidController.show(taxYear, benefitType, sessionDataId)
     } else {
-      TaxPaidQuestionController.show(taxYear, benefitType, sessionDataId)
+      ReviewClaimController.show(taxYear, benefitType, sessionDataId)
     }
   }
 }

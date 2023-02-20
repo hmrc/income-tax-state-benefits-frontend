@@ -18,7 +18,7 @@ package controllers
 
 import actions.ActionsProvider
 import config.{AppConfig, ErrorHandler}
-import controllers.routes.{ReviewClaimController, TaxPaidController}
+import controllers.routes.{AmountController, ReviewClaimController, TaxPaidController}
 import forms.FormsProvider
 import models.pages.TaxPaidQuestionPage
 import models.{BenefitType, StateBenefitsUserData}
@@ -55,20 +55,20 @@ class TaxPaidQuestionController @Inject()(actionsProvider: ActionsProvider,
       formWithErrors => Future.successful(BadRequest(pageView(TaxPaidQuestionPage(taxYear, benefitType, request.stateBenefitsUserData, formWithErrors)))),
       yesNoValue => claimService.updateTaxPaidQuestion(request.stateBenefitsUserData, yesNoValue).map {
         case Left(_) => errorHandler.internalServerError()
-        case Right(userData) => Redirect(getRedirectCall(taxYear, benefitType, yesNoValue, userData))
+        case Right(userData) => Redirect(getRedirectCall(taxYear, benefitType, userData))
       }
     )
   }
 
   private def getRedirectCall(taxYear: Int,
                               benefitType: BenefitType,
-                              yesNoValue: Boolean,
                               userData: StateBenefitsUserData): Call = {
     val sessionDataId = userData.sessionDataId.get
-    if (yesNoValue && !userData.isFinished) {
-      TaxPaidController.show(taxYear, benefitType, sessionDataId)
-    } else {
+    val noAmount = userData.claim.get.amount.isEmpty
+    if (userData.isFinished) {
       ReviewClaimController.show(taxYear, benefitType, sessionDataId)
+    } else {
+      if (noAmount) AmountController.show(taxYear, benefitType, sessionDataId) else TaxPaidController.show(taxYear, benefitType, sessionDataId)
     }
   }
 }
