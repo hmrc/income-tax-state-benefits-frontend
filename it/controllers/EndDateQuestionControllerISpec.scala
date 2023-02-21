@@ -74,27 +74,13 @@ class EndDateQuestionControllerISpec extends IntegrationTest {
       result.headers("Location").head shouldBe appConfig.incomeTaxSubmissionOverviewUrl(taxYear)
     }
 
-    "redirect to ReviewClaim page when answer is Yes" in {
+    "redirect to the next page when the update is successful" in {
       val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(true))
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         updateSessionDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), HttpResponse(NO_CONTENT, ""))
         val formData = Map(YesNoForm.yesNo -> "true")
-        urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
-      }
-
-      result.status shouldBe SEE_OTHER
-      result.headers("Location").head shouldBe ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId).url
-    }
-
-    "redirect To amount page when answer is No" in {
-      val modelWithExpectedData = aClaimCYAModel.copy(endDateQuestion = Some(false), endDate = None)
-      lazy val result: WSResponse = {
-        authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
-        updateSessionDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), HttpResponse(NO_CONTENT, ""))
-        val formData = Map(YesNoForm.yesNo -> "false")
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
 

@@ -55,7 +55,7 @@
             legendAsHeading = true,
             form = pageModel.form,
             inline = true,
-            hint = Some(Html(messages(s"common.amountWillBeOnTheP45.${if(request.user.isAgent) "agent" else "individual"}")))
+            hint = Some(Html(messages(s"common.useThe${if(pageModel.hasEndDate) "P45" else "P60"}.${if(request.user.isAgent) "agent" else "individual"}")))
         )
 
         @button()

@@ -28,6 +28,7 @@ case class TaxPaidQuestionPage(taxYear: Int,
                                titleFirstDate: LocalDate,
                                titleSecondDate: LocalDate,
                                sessionDataId: UUID,
+                               hasEndDate: Boolean,
                                form: Form[Boolean])
 
 object TaxPaidQuestionPage {
@@ -47,6 +48,7 @@ object TaxPaidQuestionPage {
       titleFirstDate = titleFirstDate,
       titleSecondDate = titleSecondDate,
       stateBenefitsUserData.sessionDataId.get,
+      hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.getOrElse(false),
       form = optQuestionValue.fold(form)(questionValue => if (form.hasErrors) form else form.fill(questionValue))
     )
   }
