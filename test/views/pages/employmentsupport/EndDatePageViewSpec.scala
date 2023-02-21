@@ -107,7 +107,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
-      s"The date your Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
+      s"The date your Employment and Support Allowance claim ended must be after the date it started, ${translatedDateFormatter(startDate)}"
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -123,7 +123,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
-      s"The date your Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
+      s"The date your Employment and Support Allowance claim ended must be after the date it started, ${translatedDateFormatter(startDate)}"
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -140,7 +140,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
       s"The date your client’s Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
-      s"The date your client’s Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
+      s"The date your client’s Employment and Support Allowance claim ended must be after the date it started, ${translatedDateFormatter(startDate)}"
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -157,7 +157,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
       s"The date your client’s Employment and Support Allowance claim ended must be the same as or before 5 April $taxYear"
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
-      s"The date your client’s Employment and Support Allowance claim ended must be after ${translatedDateFormatter(startDate)}"
+      s"The date your client’s Employment and Support Allowance claim ended must be after the date it started, ${translatedDateFormatter(startDate)}"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(

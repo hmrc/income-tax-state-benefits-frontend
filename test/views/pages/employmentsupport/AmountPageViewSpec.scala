@@ -48,11 +48,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     val expectedButtonText: String
     val expectedEmptyAmountErrorText: String
     val expectedMaxAmountErrorText: String
-    val expectedMoreThanZeroAmountErrorText: String
     val expectedIncorrectFormatAmountErrorText: String
     val expectedEnterTaxText: String
-
-    def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -61,11 +58,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedButtonText: String = "Continue"
     override val expectedEmptyAmountErrorText: String = "Enter the amount of Employment and Support Allowance"
     override val expectedMaxAmountErrorText: String = "The amount of Employment and Support Allowance must be less than £100,000,000,000"
-    override val expectedMoreThanZeroAmountErrorText: String = "The amount of Employment and Support Allowance must be more than £0"
     override val expectedIncorrectFormatAmountErrorText: String = "The amount of Employment and Support Allowance must be a number"
     override val expectedEnterTaxText: String = "Enter the amount before tax."
-
-    override def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String = s"The amount of Employment and Support Allowance must be more than £$amount"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -74,11 +68,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedButtonText: String = "Continue"
     override val expectedEmptyAmountErrorText: String = "Enter the amount of Employment and Support Allowance"
     override val expectedMaxAmountErrorText: String = "The amount of Employment and Support Allowance must be less than £100,000,000,000"
-    override val expectedMoreThanZeroAmountErrorText: String = "The amount of Employment and Support Allowance must be more than £0"
     override val expectedIncorrectFormatAmountErrorText: String = "The amount of Employment and Support Allowance must be a number"
     override val expectedEnterTaxText: String = "Enter the amount before tax."
-
-    override def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String = s"The amount of Employment and Support Allowance must be more than £$amount"
   }
 
   trait SpecificExpectedResults {
@@ -87,6 +78,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     val expectedErrorTitle: (LocalDate, LocalDate) => String
     val expectedP1P45Text: String
     val expectedP1P60Text: String
+
+    def expectedMoreThanTaxErrorText(amount: BigDecimal): String
   }
 
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
@@ -96,6 +89,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
+
+    override def expectedMoreThanTaxErrorText(amount: BigDecimal): String = s"The amount of Employment and Support Allowance your client got must be more than the amount of tax taken off it, £$amount"
   }
 
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
@@ -105,6 +100,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
+
+    override def expectedMoreThanTaxErrorText(amount: BigDecimal): String = s"The amount of Employment and Support Allowance your client got must be more than the amount of tax taken off it, £$amount"
   }
 
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
@@ -114,6 +111,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
     override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
+
+    override def expectedMoreThanTaxErrorText(amount: BigDecimal): String = s"The amount of Employment and Support Allowance you got must be more than the amount of tax taken off it, £$amount"
   }
 
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
@@ -123,6 +122,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
     override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
+
+    override def expectedMoreThanTaxErrorText(amount: BigDecimal): String = s"The amount of Employment and Support Allowance you got must be more than the amount of tax taken off it, £$amount"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -137,7 +138,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     import userScenario.commonExpectedResults._
     import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
-      val pageModel = anAmountPage.copy(benefitType = EmploymentSupportAllowance, form = new FormsProvider().amountForm(EmploymentSupportAllowance))
+      val pageModel = anAmountPage.copy(benefitType = EmploymentSupportAllowance, form = new FormsProvider().amountForm(EmploymentSupportAllowance, userScenario.isAgent))
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
@@ -207,18 +208,6 @@ class AmountPageViewSpec extends ViewUnitTest {
         errorAboveElementCheck(expectedMaxAmountErrorText)
       }
 
-      "render page with must be more than zero amount error" which {
-        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
-        implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val page = pageModel.copy(form = pageModel.form.bind(Map(AmountForm.amount -> "0")))
-        implicit val document: Document = Jsoup.parse(underTest(page).body)
-
-        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-
-        errorSummaryCheck(expectedMoreThanZeroAmountErrorText, errorHref)
-        errorAboveElementCheck(expectedMoreThanZeroAmountErrorText)
-      }
-
       "render page with incorrect format amount error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
@@ -231,18 +220,29 @@ class AmountPageViewSpec extends ViewUnitTest {
         errorAboveElementCheck(expectedIncorrectFormatAmountErrorText)
       }
 
-      "render page with amount must be more than ... error" which {
+      "render page with amount must be more than tax error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-
-        val form = new FormsProvider().amountForm(EmploymentSupportAllowance, Some(10))
+        val form = new FormsProvider().amountForm(EmploymentSupportAllowance, userScenario.isAgent, Some(10))
         val page = pageModel.copy(form = form.bind(Map(AmountForm.amount -> "10")))
         implicit val document: Document = Jsoup.parse(underTest(page).body)
 
         titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
 
-        errorSummaryCheck(expectedAmountMustBeMoreErrorText(amount = 10), errorHref)
-        errorAboveElementCheck(expectedAmountMustBeMoreErrorText(amount = 10))
+        errorSummaryCheck(get.expectedMoreThanTaxErrorText(amount = 10), errorHref)
+        errorAboveElementCheck(get.expectedMoreThanTaxErrorText(amount = 10))
+      }
+
+      "render page with must be more than zero amount error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val page = pageModel.copy(form = pageModel.form.bind(Map(AmountForm.amount -> "0")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
+
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(get.expectedMoreThanTaxErrorText(amount = 0), errorHref)
+        errorAboveElementCheck(get.expectedMoreThanTaxErrorText(amount = 0))
       }
     }
   }

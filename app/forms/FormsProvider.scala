@@ -52,9 +52,9 @@ class FormsProvider() {
     dateForm.copy(errors = validateEndDate(dateForm.get, taxYear, benefitType, isAgent, startDate))
   }
 
-  def amountForm(benefitType: BenefitType, minAmount: Option[BigDecimal] = None): Form[BigDecimal] = AmountForm.amountForm(
+  def amountForm(benefitType: BenefitType, isAgent: Boolean, minAmount: Option[BigDecimal] = None): Form[BigDecimal] = AmountForm.amountForm(
     emptyFieldKey = s"${benefitType.typeName}.amountPage.empty.amount.error",
-    minOrLessKey = s"${benefitType.typeName}.amountPage.minimumOrLess.amount.error",
+    minOrLessKey = s"${benefitType.typeName}.amountPage.mustBeMoreThanTax.amount.error.${userType(isAgent)}",
     minOrLessValue = minAmount.getOrElse(0),
     maxAmountKey = s"${benefitType.typeName}.amountPage.exceedsMax.amount.error",
     wrongFormatKey = s"${benefitType.typeName}.amountPage.wrongFormat.amount.error"
@@ -69,12 +69,11 @@ class FormsProvider() {
     YesNoForm.yesNoForm(s"${benefitType.typeName}.taxPaidQuestionPage.error.${userType(isAgent)}", Seq(titleFirstDate, titleSecondDate))
   }
 
-  // TODO: Test in template test
   def taxPaidAmountForm(benefitType: BenefitType, isAgent: Boolean, maxAmount: BigDecimal): Form[BigDecimal] = AmountForm.amountForm(
     emptyFieldKey = s"${benefitType.typeName}.taxPaidPage.empty.amount.error.${userType(isAgent)}",
     minOrLessKey = "common.taxPaidPage.zeroOrLess.amount.error",
     minOrLessValue = 0,
-    maxAmountKey = "common.taxPaidPage.exceedsMax.amount.error",
+    maxAmountKey = s"${benefitType.typeName}.taxPaidPage.exceedsAmount.amount.error.${userType(isAgent)}",
     maxAmountValue = maxAmount,
     wrongFormatKey = "common.taxPaidPage.wrongFormat.amount.error"
   )

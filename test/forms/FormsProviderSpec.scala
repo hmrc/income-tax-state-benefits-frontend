@@ -79,12 +79,6 @@ class FormsProviderSpec extends UnitTest
       )
     }
 
-    "return form with error when amount is over maximum" in {
-      underTest.taxPaidAmountForm(JobSeekersAllowance, isAgent = false, maxAmount = maxAmount).bind(overMaximumAmount).errors shouldBe Seq(
-        FormError(AmountForm.amount, Seq("common.taxPaidPage.exceedsMax.amount.error"), Seq(maxAmount))
-      )
-    }
-
     "return form with error when amount is under zero" in {
       underTest.taxPaidAmountForm(JobSeekersAllowance, isAgent = false, maxAmount = maxAmount).bind(belowMinimumAmount).errors shouldBe Seq(
         FormError(AmountForm.amount, Seq("common.taxPaidPage.zeroOrLess.amount.error"), Seq(0))

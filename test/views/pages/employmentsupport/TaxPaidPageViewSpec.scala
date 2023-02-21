@@ -47,18 +47,21 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     val expectedHintText: String
     val expectedLabelText: String
     val expectedButtonText: String
+    val expectedZeroOrLessErrorText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
+    override val expectedZeroOrLessErrorText: String = "The amount of tax paid must be more than £0"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of tax taken off"
     override val expectedButtonText: String = "Continue"
+    override val expectedZeroOrLessErrorText: String = "The amount of tax paid must be more than £0"
   }
 
   trait SpecificExpectedResults {
@@ -69,6 +72,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     val expectedErrorText: String
 
     def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String
+    def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String
   }
 
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
@@ -80,6 +84,9 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Employment and Support Allowance between " +
       s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+
+    override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String =
+      s"The amount of tax taken off must be less than the amount of Employment and Support Allowance your client got, £$amount"
   }
 
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
@@ -91,6 +98,9 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Employment and Support Allowance between " +
       s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+
+    override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String =
+      s"The amount of tax taken off must be less than the amount of Employment and Support Allowance your client got, £$amount"
   }
 
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
@@ -102,6 +112,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
       s"How much tax was taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+
+    override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String = s"The amount of tax taken off must be less than the amount of Employment and Support Allowance you got, £$amount"
   }
 
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
@@ -113,6 +125,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
       s"How much tax was taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+
+    override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String = s"The amount of tax taken off must be less than the amount of Employment and Support Allowance you got, £$amount"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -169,6 +183,32 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
         errorSummaryCheck(get.expectedErrorText, errorHref)
         errorAboveElementCheck(get.expectedErrorText)
+      }
+
+      "render page with tax must be less than amount error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val form = new FormsProvider().taxPaidAmountForm(EmploymentSupportAllowance, userScenario.isAgent, maxAmount = 10)
+        val page = pageModel.copy(form = form.bind(Map(AmountForm.amount -> "10")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
+
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(get.expectedTaxExceedsAmountErrorText(amount = 10), errorHref)
+        errorAboveElementCheck(get.expectedTaxExceedsAmountErrorText(amount = 10))
+      }
+
+      "render page with must be more than zero amount error" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val page = pageModel.copy(form = pageModel.form.bind(Map(AmountForm.amount -> "0")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
+
+        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+
+        errorSummaryCheck(expectedZeroOrLessErrorText, errorHref)
+        errorAboveElementCheck(expectedZeroOrLessErrorText)
       }
     }
   }

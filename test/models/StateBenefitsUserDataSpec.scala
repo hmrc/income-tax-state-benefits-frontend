@@ -168,7 +168,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
       ))
     }
 
-    "create customer override StateBenefitsUserData instance when benefitId found in HMRC and customer added added data" in {
+    "create customer override StateBenefitsUserData instance when benefitId found in HMRC and customer added data" in {
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit.copy(benefitId = benefitId))))
       val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aCustomerAddedStateBenefit.copy(benefitId = benefitId))))
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(

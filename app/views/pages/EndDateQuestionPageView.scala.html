@@ -38,8 +38,6 @@
 
 @(pageModel: EndDateQuestionPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@benefitTypeKey = @{ pageModel.benefitType.typeName }
-
 @titleText = @{messages("common.claim.endDateQuestion", translatedDateFormatter(pageModel.titleFirstDate), pageModel.taxYear.toString)}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {

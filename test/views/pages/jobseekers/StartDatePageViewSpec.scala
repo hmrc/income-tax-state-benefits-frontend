@@ -102,7 +102,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date you started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
 
-    override def expectedMustBeBeforeErrorText(date: String): String = s"The date you started getting Jobseeker’s Allowance must be before $date"
+    override def expectedMustBeBeforeErrorText(date: String): String = s"The date your Jobseeker’s Allowance claim started must be before the date it ended, $date"
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
@@ -120,7 +120,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date you started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
 
-    override def expectedMustBeBeforeErrorText(date: String): String = s"The date you started getting Jobseeker’s Allowance must be before $date"
+    override def expectedMustBeBeforeErrorText(date: String): String = s"The date your Jobseeker’s Allowance claim started must be before the date it ended, $date"
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -138,7 +138,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
 
-    override def expectedMustBeBeforeErrorText(date: String): String = s"The date your client started getting Jobseeker’s Allowance must be before $date"
+    override def expectedMustBeBeforeErrorText(date: String): String = s"The date your client’s Jobseeker’s Allowance claim started must be before the date it ended, $date"
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
@@ -156,7 +156,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April $taxYear"
 
-    override def expectedMustBeBeforeErrorText(date: String): String = s"The date your client started getting Jobseeker’s Allowance must be before $date"
+    override def expectedMustBeBeforeErrorText(date: String): String = s"The date your client’s Jobseeker’s Allowance claim started must be before the date it ended, $date"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
