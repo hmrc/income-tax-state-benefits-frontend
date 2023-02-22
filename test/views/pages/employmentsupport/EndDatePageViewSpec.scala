@@ -84,7 +84,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did this claim end?"
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedHintText: String = "For example, 23 3 2007"
+    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
 
     override def expectedCaption(taxYear: Int): String = s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
@@ -94,7 +94,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did this claim end?"
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedHintText: String = "For example, 23 3 2007"
+    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
 
     override def expectedCaption(taxYear: Int): String = s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"

@@ -85,7 +85,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedHintText: String = "For example, 23 3 2007"
+    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
   }
@@ -95,7 +95,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedHintText: String = "For example, 23 3 2007"
+    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
   }
