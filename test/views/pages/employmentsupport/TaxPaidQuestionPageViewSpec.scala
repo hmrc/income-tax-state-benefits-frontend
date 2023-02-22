@@ -53,26 +53,22 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
   }
 
   trait CommonExpectedResults {
-    val expectedCaption: Int => String
     val expectedYesText: String
     val expectedNoText: String
     val expectedButtonText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
     override val expectedButtonText: String = "Continue"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
     override val expectedButtonText: String = "Continue"
   }
-
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
@@ -148,7 +144,6 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedHeading(pageModel.titleFirstDate, pageModel.titleSecondDate), isFieldSetH1 = true)
         hintTextCheck(get.expectedHintP45Text)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
@@ -165,7 +160,6 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedHeading(pageModel.titleFirstDate, pageModel.titleSecondDate), isFieldSetH1 = true)
         hintTextCheck(get.expectedHintP60Text)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)

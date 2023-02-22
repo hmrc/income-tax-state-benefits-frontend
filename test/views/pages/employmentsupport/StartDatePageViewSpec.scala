@@ -73,19 +73,16 @@ class StartDatePageViewSpec extends ViewUnitTest {
   }
 
   trait CommonExpectedResults {
-    val expectedCaption: Int => String
     val expectedHintText: String
     val expectedButtonText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
   }
@@ -182,7 +179,6 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedHeading, isFieldSetH1 = true)
         textOnPageCheck(expectedHintText, hintSelector)
         inputFieldValueCheck(DateForm.day, inputDayField, value = "")

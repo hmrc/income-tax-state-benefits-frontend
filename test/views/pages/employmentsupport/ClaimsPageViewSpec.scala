@@ -59,7 +59,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
   trait CommonExpectedResults {
     val expectedTitle: String
     val expectedHeading: String
-    val expectedCaption: Int => String
     val expectedViewLinkText: String
     val expectedViewLinkHiddenText: String
     val expectedRow1Value2Text: Int => String
@@ -73,7 +72,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedTitle: String = "Employment and Support Allowance"
     override val expectedHeading: String = "Employment and Support Allowance"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedViewLinkText: String = "View"
     override val expectedViewLinkHiddenText: String = "View Employment and Support Allowance claim details"
     override val expectedRow1Value2Text: Int => String = (taxYear: Int) => s"1 January $taxYear to 31 January $taxYear"
@@ -87,7 +85,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedTitle: String = "Employment and Support Allowance"
     override val expectedHeading: String = "Employment and Support Allowance"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedViewLinkText: String = "View"
     override val expectedViewLinkHiddenText: String = "View Employment and Support Allowance claim details"
     override val expectedRow1Value2Text: Int => String = (taxYear: Int) => s"1 Ionawr $taxYear to 31 Ionawr $taxYear"
@@ -139,7 +136,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYear))
         h1Check(expectedHeading)
         textOnPageCheck(expectedSummaryListRow1TextInYear, summaryListRowValueSelector(1, 1))
         linkCheck(expectedViewLinkText, summaryListRowViewLinkSelector(1), UserSessionDataController.loadToSession(taxYear,
@@ -158,7 +154,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYear))
         h1Check(expectedHeading)
         elementNotOnPageCheck(addMissingClaimFormSelector)
         elementNotOnPageCheck(removedClaimH2Selector)
@@ -176,7 +171,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         elementNotOnPageCheck(summaryListRowSelector(1, isIgnoredList = false))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
@@ -199,7 +193,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         textOnPageCheck("£100", summaryListRowValueSelector(1, 1))
         textOnPageCheck(expectedRow1Value2Text(taxYearEOY), summaryListRowValueSelector(1, 2))
@@ -227,7 +220,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         elementNotOnPageCheck(summaryListRowSelector(1, isIgnoredList = false))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
@@ -259,7 +251,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         elementNotOnPageCheck(summaryListRowSelector(1, isIgnoredList = false))
         formPostLinkCheck(UserSessionDataController.create(taxYearEOY, EmploymentSupportAllowance).url, addMissingClaimFormSelector)
@@ -293,7 +284,6 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         textOnPageCheck("£100", summaryListRowValueSelector(1, 1))
         textOnPageCheck(expectedRow1Value2Text(taxYearEOY), summaryListRowValueSelector(1, 2))

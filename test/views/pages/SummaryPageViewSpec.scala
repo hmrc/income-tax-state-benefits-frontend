@@ -45,19 +45,14 @@ class SummaryPageViewSpec extends ViewUnitTest {
   trait CommonExpectedResults {
     val expectedTitle: String
     val expectedHeading: String
-    val expectedCaption: Int => String
-
     val jobSeekersAllowance: String
-
     val notStartedText: String
-
     val buttonText: String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedTitle: String = "State benefits"
     override val expectedHeading: String = "State benefits"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"State benefits for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val jobSeekersAllowance: String = "Jobseeker’s Allowance"
     override val notStartedText: String = "Not started"
     override val buttonText: String = "Return to overview"
@@ -66,7 +61,6 @@ class SummaryPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedTitle: String = "State benefits"
     override val expectedHeading: String = "State benefits"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"State benefits for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val jobSeekersAllowance: String = "Jobseeker’s Allowance"
     override val notStartedText: String = "Not started"
     override val buttonText: String = "Return to overview"
@@ -89,7 +83,6 @@ class SummaryPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYear))
         h1Check(expectedHeading)
         textOnPageCheck(jobSeekersAllowance, jobSeekersAllowanceSelector)
         linkCheck(jobSeekersAllowance, jobSeekersAllowanceLinkSelector, ClaimsController.show(taxYear, JobSeekersAllowance).url)

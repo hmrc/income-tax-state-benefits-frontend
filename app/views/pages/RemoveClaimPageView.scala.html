@@ -77,7 +77,7 @@
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
-    @heading(titleText, Some(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText)
 
     @govukSummaryList(SummaryList(summaryListOptionalRows.flatten))
 

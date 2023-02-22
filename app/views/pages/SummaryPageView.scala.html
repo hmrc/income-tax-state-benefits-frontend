@@ -65,7 +65,7 @@
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
-    @heading(titleText, Some(messages("common.stateBenefits.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString)))
+    @heading(titleText)
 
     @taskList(pageModel.taskListItems)
 
