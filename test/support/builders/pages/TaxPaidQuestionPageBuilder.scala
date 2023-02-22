@@ -33,6 +33,7 @@ object TaxPaidQuestionPageBuilder {
     titleFirstDate = LocalDate.parse(s"$taxYearEOY-01-01"),
     titleSecondDate = aClaimCYAModel.endDate.get,
     sessionDataId = UUID.randomUUID(),
+    hasEndDate = aClaimCYAModel.endDateQuestion.get,
     form = YesNoForm.yesNoForm("some.error.message.key")
   )
 }

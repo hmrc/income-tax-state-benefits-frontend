@@ -43,17 +43,13 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
   }
 
   trait SpecificExpectedResults {
-    val expectedHintText: String
-
-    def expectedTitle(firstDate: LocalDate, secondDate: LocalDate): String
-
-    def expectedErrorTitle(firstDate: LocalDate, secondDate: LocalDate): String
-
-    def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String
-
-    def expectedValueErrorText(firstDate: LocalDate, secondDate: LocalDate): String
-
-    def expectedErrorText(firstDate: LocalDate, secondDate: LocalDate): String
+    val expectedTitle: (LocalDate, LocalDate) => String
+    val expectedErrorTitle: (LocalDate, LocalDate) => String
+    val expectedHeading: (LocalDate, LocalDate) => String
+    val expectedHintP45Text: String
+    val expectedHintP60Text: String
+    val expectedValueErrorText: (LocalDate, LocalDate) => String
+    val expectedErrorText: (LocalDate, LocalDate) => String
   }
 
   trait CommonExpectedResults {
@@ -79,67 +75,56 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
-    override val expectedHintText: String = "This amount will be on the P45 you got after your claim ended."
-
-    override def expectedTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Did you have any tax taken off your Employment and Support Allowance between " +
-      s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
-
-    override def expectedErrorTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Error: ${expectedTitle(firstDate, secondDate)}"
-
-    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = expectedTitle(firstDate, secondDate)
-
-    override def expectedValueErrorText(firstDate: LocalDate, secondDate: LocalDate): String = s"Select yes if you had any tax taken off your Employment and Support Allowance between " +
-      s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
-
-    override def expectedErrorText(firstDate: LocalDate, secondDate: LocalDate): String = expectedValueErrorText(firstDate, secondDate)
+    override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
+      s"Did you have any tax taken off your Employment and Support Allowance between " +
+        s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
+    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
+      s"Select yes if you had any tax taken off your Employment and Support Allowance between " +
+        s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
+    override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    override val expectedHintText: String = "This amount will be on the P45 you got after your claim ended."
-
-    override def expectedTitle(firstDate: LocalDate, secondDate: LocalDate): String =
+    override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did you have any tax taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
-
-    override def expectedErrorTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Error: ${expectedTitle(firstDate, secondDate)}"
-
-    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = expectedTitle(firstDate, secondDate)
-
-    override def expectedValueErrorText(firstDate: LocalDate, secondDate: LocalDate): String = s"Select yes if you had any tax taken off your Employment and Support Allowance between " +
-      s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
-
-    override def expectedErrorText(firstDate: LocalDate, secondDate: LocalDate): String = expectedValueErrorText(firstDate, secondDate)
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
+    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
+      s"Select yes if you had any tax taken off your Employment and Support Allowance between " +
+        s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
+    override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
-    override val expectedHintText: String = "This amount will be on the P45 your client got after their claim ended."
-
-    override def expectedTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Did your client have any tax taken off their Employment and Support Allowance between " +
-      s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
-
-    override def expectedErrorTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Error: ${expectedTitle(firstDate, secondDate)}"
-
-    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = expectedTitle(firstDate, secondDate)
-
-    override def expectedValueErrorText(firstDate: LocalDate, secondDate: LocalDate): String = s"Select yes if your client had any tax taken off their Employment and Support Allowance " +
+    override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
+      s"Did your client have any tax taken off their Employment and Support Allowance between " +
+        s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
+    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) => expectedTitle(firstDate, secondDate)
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Employment and Support Allowance " +
       s"between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
-
-    override def expectedErrorText(firstDate: LocalDate, secondDate: LocalDate): String = expectedValueErrorText(firstDate, secondDate)
+    override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
-    override val expectedHintText: String = "This amount will be on the P45 your client got after their claim ended."
-
-    override def expectedTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Did your client have any tax taken off their Employment and Support Allowance between " +
-      s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
-
-    override def expectedErrorTitle(firstDate: LocalDate, secondDate: LocalDate): String = s"Error: ${expectedTitle(firstDate, secondDate)}"
-
-    override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = expectedTitle(firstDate, secondDate)
-
-    override def expectedValueErrorText(firstDate: LocalDate, secondDate: LocalDate): String = s"Select yes if your client had any tax taken off their Employment and Support Allowance " +
+    override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
+      s"Did your client have any tax taken off their Employment and Support Allowance between " +
+        s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
+    override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Employment and Support Allowance " +
       s"between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
-
-    override def expectedErrorText(firstDate: LocalDate, secondDate: LocalDate): String = expectedValueErrorText(firstDate, secondDate)
+    override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -165,7 +150,24 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedHeading(pageModel.titleFirstDate, pageModel.titleSecondDate), isFieldSetH1 = true)
-        hintTextCheck(get.expectedHintText)
+        hintTextCheck(get.expectedHintP45Text)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
+        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
+      }
+
+      "render page with empty form and the claim not ended in the tax year" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        implicit val document: Document = Jsoup.parse(underTest(pageModel.copy(hasEndDate = false)).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(get.expectedHeading(pageModel.titleFirstDate, pageModel.titleSecondDate), isFieldSetH1 = true)
+        hintTextCheck(get.expectedHintP60Text)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
         formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)

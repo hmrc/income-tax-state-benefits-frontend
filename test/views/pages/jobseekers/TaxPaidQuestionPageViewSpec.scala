@@ -46,7 +46,8 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     val expectedTitle: (LocalDate, LocalDate) => String
     val expectedErrorTitle: (LocalDate, LocalDate) => String
     val expectedHeading: (LocalDate, LocalDate) => String
-    val expectedHintText: String
+    val expectedHintP45Text: String
+    val expectedHintP60Text: String
     val expectedValueErrorText: (LocalDate, LocalDate) => String
     val expectedErrorText: (LocalDate, LocalDate) => String
   }
@@ -75,12 +76,15 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+      s"Did you have any tax taken off your Jobseeker’s Allowance between " +
+        s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
-    override val expectedHintText: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Select yes if you had any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
+      s"Select yes if you had any tax taken off your Jobseeker’s Allowance between " +
+        s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
@@ -89,18 +93,22 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
       s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
-    override val expectedHintText: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Select yes if you had any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
+      s"Select yes if you had any tax taken off your Jobseeker’s Allowance between " +
+        s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did your client have any tax taken off their Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+      s"Did your client have any tax taken off their Jobseeker’s Allowance between " +
+        s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) => expectedTitle(firstDate, secondDate)
-    override val expectedHintText: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Jobseeker’s Allowance " +
       s"between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
@@ -108,10 +116,12 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did your client have any tax taken off their Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"Did your client have any tax taken off their Jobseeker’s Allowance between " +
+        s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
-    override val expectedHintText: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Jobseeker’s Allowance " +
       s"between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
@@ -129,18 +139,35 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     import userScenario.commonExpectedResults._
     import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${userScenario.isAgent}" should {
+      val pageModel = aTaxPaidQuestionPage
       "render page with empty form" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aTaxPaidQuestionPage
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
-        h1Check(get.expectedHeading(aTaxPaidQuestionPage.titleFirstDate, aTaxPaidQuestionPage.titleSecondDate), isFieldSetH1 = true)
-        hintTextCheck(get.expectedHintText)
+        h1Check(get.expectedHeading(pageModel.titleFirstDate, pageModel.titleSecondDate), isFieldSetH1 = true)
+        hintTextCheck(get.expectedHintP45Text)
+        radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
+        radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
+        formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
+      }
+
+      "render page with empty form and the claim not ended in the tax year" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        implicit val document: Document = Jsoup.parse(underTest(pageModel.copy(hasEndDate = false)).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(get.expectedHeading(pageModel.titleFirstDate, pageModel.titleSecondDate), isFieldSetH1 = true)
+        hintTextCheck(get.expectedHintP60Text)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
         formPostLinkCheck(TaxPaidQuestionController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)
@@ -151,10 +178,10 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val pageModel = aTaxPaidQuestionPage.copy(form = aTaxPaidQuestionPage.form.fill(value = true))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = pageModel.copy(form = pageModel.form.fill(value = true))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = true)
       }
 
@@ -162,16 +189,16 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        val claimCYAModel = aClaimCYAModel.copy(startDate = aTaxPaidQuestionPage.titleFirstDate, endDate = Some(aTaxPaidQuestionPage.titleSecondDate))
-        val pageForm = new FormsProvider().taxTakenOffYesNoForm(aTaxPaidQuestionPage.taxYear, JobSeekersAllowance, userScenario.isAgent, claimCYAModel)
-        val pageModel = aTaxPaidQuestionPage.copy(form = pageForm.bind(Map(YesNoForm.yesNo -> "")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val claimCYAModel = aClaimCYAModel.copy(startDate = pageModel.titleFirstDate, endDate = Some(pageModel.titleSecondDate))
+        val pageForm = new FormsProvider().taxTakenOffYesNoForm(pageModel.taxYear, JobSeekersAllowance, userScenario.isAgent, claimCYAModel)
+        val page = pageModel.copy(form = pageForm.bind(Map(YesNoForm.yesNo -> "")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
-        errorSummaryCheck(get.expectedValueErrorText(pageModel.titleFirstDate, pageModel.titleSecondDate), errorHref)
-        errorAboveElementCheck(get.expectedErrorText(pageModel.titleFirstDate, pageModel.titleSecondDate))
+        errorSummaryCheck(get.expectedValueErrorText(page.titleFirstDate, page.titleSecondDate), errorHref)
+        errorAboveElementCheck(get.expectedErrorText(page.titleFirstDate, page.titleSecondDate))
       }
     }
   }

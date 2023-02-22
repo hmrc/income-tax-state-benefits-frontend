@@ -67,7 +67,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   trait SpecificExpectedResults {
     val expectedTitle: (LocalDate, LocalDate) => String
     val expectedErrorTitle: (LocalDate, LocalDate) => String
-    val expectedP1Text: String
+    val expectedP1P45Text: String
+    val expectedP1P60Text: String
     val expectedErrorText: String
 
     def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String
@@ -76,7 +77,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedErrorText: String = "Enter the amount of tax taken off your client’s Jobseeker’s Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between " +
@@ -86,7 +88,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedErrorText: String = "Enter the amount of tax taken off your client’s Jobseeker’s Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between " +
@@ -96,7 +99,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
     override val expectedErrorText: String = "Enter the amount of tax taken off your Jobseeker’s Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
@@ -106,7 +110,8 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
     override val expectedErrorText: String = "Enter the amount of tax taken off your Jobseeker’s Allowance"
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
@@ -136,7 +141,23 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
-        textOnPageCheck(get.expectedP1Text, paragraphTextSelector)
+        textOnPageCheck(get.expectedP1P45Text, paragraphTextSelector)
+        amountBoxLabelCheck(expectedLabelText)
+        amountBoxHintCheck(expectedHintText)
+        formPostLinkCheck(TaxPaidController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
+      }
+
+      "render page with empty form and the claim not ended in the tax year" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        implicit val document: Document = Jsoup.parse(underTest(pageModel.copy(hasEndDate = false)).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
+        textOnPageCheck(get.expectedP1P60Text, paragraphTextSelector)
         amountBoxLabelCheck(expectedLabelText)
         amountBoxHintCheck(expectedHintText)
         formPostLinkCheck(TaxPaidController.submit(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, continueButtonFormSelector)

@@ -51,6 +51,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     val expectedMaxAmountErrorText: String
     val expectedMoreThanZeroAmountErrorText: String
     val expectedIncorrectFormatAmountErrorText: String
+    val expectedEnterTaxText: String
 
     def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String
   }
@@ -64,6 +65,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedMaxAmountErrorText: String = "The amount of Jobseeker’s Allowance must be less than £100,000,000,000"
     override val expectedMoreThanZeroAmountErrorText: String = "The amount of Jobseeker’s Allowance must be more than £0"
     override val expectedIncorrectFormatAmountErrorText: String = "The amount of Jobseeker’s Allowance must be a number"
+    override val expectedEnterTaxText: String = "Enter the amount before tax."
 
     override def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String = s"The amount of Jobseeker’s Allowance must be more than £$amount"
   }
@@ -77,6 +79,7 @@ class AmountPageViewSpec extends ViewUnitTest {
     override val expectedMaxAmountErrorText: String = "The amount of Jobseeker’s Allowance must be less than £100,000,000,000"
     override val expectedMoreThanZeroAmountErrorText: String = "The amount of Jobseeker’s Allowance must be more than £0"
     override val expectedIncorrectFormatAmountErrorText: String = "The amount of Jobseeker’s Allowance must be a number"
+    override val expectedEnterTaxText: String = "Enter the amount before tax."
 
     override def expectedAmountMustBeMoreErrorText(amount: BigDecimal): String = s"The amount of Jobseeker’s Allowance must be more than £$amount"
   }
@@ -85,7 +88,8 @@ class AmountPageViewSpec extends ViewUnitTest {
     val expectedHeading: (LocalDate, LocalDate) => String
     val expectedTitle: (LocalDate, LocalDate) => String
     val expectedErrorTitle: (LocalDate, LocalDate) => String
-    val expectedP1Text: String
+    val expectedP1P45Text: String
+    val expectedP1P60Text: String
   }
 
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
@@ -93,7 +97,8 @@ class AmountPageViewSpec extends ViewUnitTest {
       s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
   }
 
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
@@ -101,7 +106,8 @@ class AmountPageViewSpec extends ViewUnitTest {
       s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 your client got after their claim ended. If they had tax taken off, enter the amount before tax."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
   }
 
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
@@ -109,7 +115,8 @@ class AmountPageViewSpec extends ViewUnitTest {
       s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
   }
 
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
@@ -117,7 +124,8 @@ class AmountPageViewSpec extends ViewUnitTest {
       s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
-    override val expectedP1Text: String = "This amount will be on the P45 you got after your claim ended. If you had tax taken off, enter the amount before tax."
+    override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedP1P60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -141,7 +149,39 @@ class AmountPageViewSpec extends ViewUnitTest {
         titleCheck(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
         captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate))
-        textOnPageCheck(get.expectedP1Text, paragraphTextSelector)
+        textOnPageCheck(s"${get.expectedP1P45Text} $expectedEnterTaxText", paragraphTextSelector)
+        amountBoxLabelCheck(expectedLabelText)
+        amountBoxHintCheck(expectedHintText)
+        formPostLinkCheck(AmountController.submit(taxYearEOY, JobSeekersAllowance, anAmountPage.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
+      }
+
+      "render page with empty form and no tax paid" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        implicit val document: Document = Jsoup.parse(underTest(anAmountPage.copy(hasPaidTax = false)).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate))
+        textOnPageCheck(s"${get.expectedP1P45Text}", paragraphTextSelector)
+        amountBoxLabelCheck(expectedLabelText)
+        amountBoxHintCheck(expectedHintText)
+        formPostLinkCheck(AmountController.submit(taxYearEOY, JobSeekersAllowance, anAmountPage.sessionDataId).url, continueButtonFormSelector)
+        buttonCheck(expectedButtonText, buttonSelector)
+      }
+
+      "render page with empty form and the claim not ended in the tax year" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        implicit val document: Document = Jsoup.parse(underTest(anAmountPage.copy(hasEndDate = false)).body)
+
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
+        captionCheck(expectedCaption(taxYearEOY))
+        h1Check(get.expectedTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate))
+        textOnPageCheck(s"${get.expectedP1P60Text} $expectedEnterTaxText", paragraphTextSelector)
         amountBoxLabelCheck(expectedLabelText)
         amountBoxHintCheck(expectedHintText)
         formPostLinkCheck(AmountController.submit(taxYearEOY, JobSeekersAllowance, anAmountPage.sessionDataId).url, continueButtonFormSelector)
@@ -151,8 +191,8 @@ class AmountPageViewSpec extends ViewUnitTest {
       "render page with empty selection error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
         titleCheck(get.expectedErrorTitle(anAmountPage.titleFirstDate, anAmountPage.titleSecondDate), userScenario.isWelsh)
 
@@ -163,10 +203,10 @@ class AmountPageViewSpec extends ViewUnitTest {
       "render page with max amount error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "100,000,000,000")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "100,000,000,000")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
         errorSummaryCheck(expectedMaxAmountErrorText, errorHref)
         errorAboveElementCheck(expectedMaxAmountErrorText)
@@ -175,10 +215,10 @@ class AmountPageViewSpec extends ViewUnitTest {
       "render page with must be more than zero amount error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "0")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "0")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
         errorSummaryCheck(expectedMoreThanZeroAmountErrorText, errorHref)
         errorAboveElementCheck(expectedMoreThanZeroAmountErrorText)
@@ -187,10 +227,10 @@ class AmountPageViewSpec extends ViewUnitTest {
       "render page with incorrect format amount error" which {
         implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
-        val pageModel = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "abc")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = anAmountPage.copy(form = anAmountPage.form.bind(Map(AmountForm.amount -> "abc")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
         errorSummaryCheck(expectedIncorrectFormatAmountErrorText, errorHref)
         errorAboveElementCheck(expectedIncorrectFormatAmountErrorText)
@@ -201,10 +241,10 @@ class AmountPageViewSpec extends ViewUnitTest {
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
         val form = new FormsProvider().amountForm(JobSeekersAllowance, Some(10))
-        val pageModel = anAmountPage.copy(form = form.bind(Map(AmountForm.amount -> "10")))
-        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+        val page = anAmountPage.copy(form = form.bind(Map(AmountForm.amount -> "10")))
+        implicit val document: Document = Jsoup.parse(underTest(page).body)
 
-        titleCheck(get.expectedErrorTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
+        titleCheck(get.expectedErrorTitle(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
 
         errorSummaryCheck(expectedAmountMustBeMoreErrorText(amount = 10), errorHref)
         errorAboveElementCheck(expectedAmountMustBeMoreErrorText(amount = 10))

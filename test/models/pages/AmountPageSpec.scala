@@ -41,6 +41,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
+        hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = stateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm.fill(value = 123.45)
       )
     }
@@ -55,6 +57,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
+        hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = stateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm
       )
     }
@@ -68,6 +72,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = aStateBenefitsUserData.claim.get.startDate,
         titleSecondDate = aStateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        hasEndDate = aStateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = aStateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm.bind(Map(AmountForm.amount -> "wrong-amount"))
       )
     }
@@ -82,6 +88,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
+        hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = stateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm
       )
     }
@@ -96,6 +104,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = LocalDate.of(taxYear - 1, 4, 6),
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
+        hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = stateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm
       )
     }
@@ -110,6 +120,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = stateBenefitsUserData.claim.get.endDate.get,
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
+        hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = stateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm
       )
     }
@@ -124,6 +136,8 @@ class AmountPageSpec extends UnitTest
         titleFirstDate = stateBenefitsUserData.claim.get.startDate,
         titleSecondDate = LocalDate.of(taxYearEOY, 4, 5),
         sessionDataId = stateBenefitsUserData.sessionDataId.get,
+        hasEndDate = stateBenefitsUserData.claim.get.endDateQuestion.get,
+        hasPaidTax = stateBenefitsUserData.claim.get.taxPaidQuestion.get,
         form = pageForm
       )
     }

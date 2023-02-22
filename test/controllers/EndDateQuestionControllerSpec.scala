@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.routes.{AmountController, EndDateController, ReviewClaimController}
+import controllers.routes.{EndDateController, ReviewClaimController, TaxPaidQuestionController}
 import forms.{FormsProvider, YesNoForm}
 import models.BenefitType.JobSeekersAllowance
 import org.jsoup.Jsoup
@@ -100,14 +100,14 @@ class EndDateQuestionControllerSpec extends ControllerUnitTest
         Redirect(EndDateController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
-    "redirect To Amount page when No is submitted and not finished" in {
+    "redirect To Tax Paid Question page when No is submitted and not finished" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockUpdateEndDateQuestion(aStateBenefitsUserData, question = false, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
 
       await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId)(request)) shouldBe
-        Redirect(AmountController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
+        Redirect(TaxPaidQuestionController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
     "handle internal server error when updating end date question fails" in {
