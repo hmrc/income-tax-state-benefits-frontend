@@ -80,13 +80,13 @@ class StartDatePageViewSpec extends ViewUnitTest {
 
   object CommonExpectedEN extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedHintText: String = "For example, 23 3 2007"
+    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedHintText: String = "For example, 23 3 2007"
+    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
   }
 

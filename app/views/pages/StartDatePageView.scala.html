@@ -63,7 +63,7 @@
             legendAsHeading = true,
             legendHeading = Some(Html(titleText)),
             isPageHeading = true,
-            hint = Some(messages("common.forExampleDate"))
+            hint = Some(messages("common.forExampleDate", pageModel.taxYear.toString))
         )
 
         @button()

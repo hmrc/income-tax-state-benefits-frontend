@@ -60,7 +60,7 @@
             form = pageModel.form,
             id = DateForm.formValuesPrefix,
             name = DateForm.formValuesPrefix,
-            hint = Some(messages("common.forExampleDate")),
+            hint = Some(messages("common.forExampleDate", pageModel.taxYear.toString)),
             legendAsHeading = true,
             legendHeading = Some(Html(titleText)),
             isPageHeading = true

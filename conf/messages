@@ -34,7 +34,7 @@ common.continue = Continue
 common.dateRange = {0} to {1}
 common.error.errorKey = Error:
 common.forExampleAmount = For example, £123.56
-common.forExampleDate = For example, 23 3 2007
+common.forExampleDate = For example, 23 1 {0}
 common.help.getHelpWithThisPage = Get help with this page
 common.inProgress = In progress
 
