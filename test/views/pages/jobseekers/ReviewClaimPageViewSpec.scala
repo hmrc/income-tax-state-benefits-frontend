@@ -32,7 +32,7 @@ import java.time.LocalDate
 
 class ReviewClaimPageViewSpec extends ViewUnitTest {
 
-  private val page: ReviewClaimPageView = inject[ReviewClaimPageView]
+  private val underTest: ReviewClaimPageView = inject[ReviewClaimPageView]
 
   object Selectors {
     val bannerParagraphSelector: String = ".govuk-notification-banner__heading"
@@ -59,13 +59,14 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   trait SpecificExpectedResults {
     val expectedStartDateText: String
     val expectedStartDateHiddenText: String
-    val expectedEndDateQuestionHiddenText: Int => String
     val expectedEndDateHiddenText: String
     val expectedAmountHiddenText: String
     val expectedTaxPaidQuestionHiddenText: String
     val expectedTaxPaidHiddenText: String
 
     def expectedAmountText(firstDate: String, secondDate: String): String
+
+    def expectedEndDateQuestionHiddenText(taxYear: Int): String
 
     def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String
 
@@ -132,13 +133,15 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   object ExpectedIndividualEN extends SpecificExpectedResults {
     override val expectedStartDateText: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedStartDateHiddenText: String = "Change the date you started getting Jobseeker’s Allowance"
-    override val expectedEndDateQuestionHiddenText: Int => String = (taxYear: Int) => s"Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
     override val expectedEndDateHiddenText: String = "Change the date your Jobseeker’s Allowance claim ended"
     override val expectedAmountHiddenText: String = "Change the amount of Jobseeker’s Allowance you got"
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether you had any tax taken off your Jobseeker’s Allowance claim"
     override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your Jobseeker’s Allowance claim"
 
-    override def expectedAmountText(firstDate: String, secondDate: String): String = s"How much Jobseeker’s Allowance did you get between $firstDate and $secondDate?"
+    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
+
+    override def expectedAmountText(firstDate: String, secondDate: String): String =
+      s"How much Jobseeker’s Allowance did you get between $firstDate and $secondDate?"
 
     override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String = s"Did you have any tax taken off your Jobseeker’s Allowance between $firstDate and $secondDate?"
 
@@ -148,15 +151,17 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   object ExpectedIndividualCY extends SpecificExpectedResults {
     override val expectedStartDateText: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedStartDateHiddenText: String = "Change the date you started getting Jobseeker’s Allowance"
-    override val expectedEndDateQuestionHiddenText: Int => String = (taxYear: Int) => s"Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
     override val expectedEndDateHiddenText: String = "Change the date your Jobseeker’s Allowance claim ended"
     override val expectedAmountHiddenText: String = "Change the amount of Jobseeker’s Allowance you got"
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether you had any tax taken off your Jobseeker’s Allowance claim"
     override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your Jobseeker’s Allowance claim"
 
+    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
+
     override def expectedAmountText(firstDate: String, secondDate: String): String = s"How much Jobseeker’s Allowance did you get between $firstDate and $secondDate?"
 
-    override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String = s"Did you have any tax taken off your Jobseeker’s Allowance between $firstDate and $secondDate?"
+    override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String =
+      s"Did you have any tax taken off your Jobseeker’s Allowance between $firstDate and $secondDate?"
 
     override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"How much tax was taken off your Jobseeker’s Allowance between $firstDate and $secondDate?"
   }
@@ -164,32 +169,35 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   object ExpectedAgentEN extends SpecificExpectedResults {
     override val expectedStartDateText: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedStartDateHiddenText: String = "Change the date your client started getting Jobseeker’s Allowance"
-    override val expectedEndDateQuestionHiddenText: Int => String = (taxYear: Int) => s"Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
     override val expectedEndDateHiddenText: String = "Change the date your client’s Jobseeker’s Allowance claim ended"
     override val expectedAmountHiddenText: String = "Change the amount of Jobseeker’s Allowance your client got"
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether your client had any tax taken off your Jobseeker’s Allowance claim"
+    override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your client’s Jobseeker’s Allowance claim"
+
+    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
 
     override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between $firstDate and $secondDate?"
 
-    override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your client’s Jobseeker’s Allowance claim"
-
     override def expectedAmountText(firstDate: String, secondDate: String): String = s"How much Jobseeker’s Allowance did your client get between $firstDate and $secondDate?"
 
-    override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String = s"Did your client have any tax taken off their Jobseeker’s Allowance between $firstDate and $secondDate?"
+    override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String =
+      s"Did your client have any tax taken off their Jobseeker’s Allowance between $firstDate and $secondDate?"
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     override val expectedStartDateText: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedStartDateHiddenText: String = "Change the date your client started getting Jobseeker’s Allowance"
-    override val expectedEndDateQuestionHiddenText: Int => String = (taxYear: Int) => s"Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
     override val expectedEndDateHiddenText: String = "Change the date your client’s Jobseeker’s Allowance claim ended"
     override val expectedAmountHiddenText: String = "Change the amount of Jobseeker’s Allowance your client got"
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether your client had any tax taken off your Jobseeker’s Allowance claim"
     override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your client’s Jobseeker’s Allowance claim"
 
+    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your client’s Jobseeker’s Allowance claim ended in the tax year ending 5 April $taxYear"
+
     override def expectedAmountText(firstDate: String, secondDate: String): String = s"How much Jobseeker’s Allowance did your client get between $firstDate and $secondDate?"
 
-    override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String = s"Did your client have any tax taken off their Jobseeker’s Allowance between $firstDate and $secondDate?"
+    override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String =
+      s"Did your client have any tax taken off their Jobseeker’s Allowance between $firstDate and $secondDate?"
 
     override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between $firstDate and $secondDate?"
   }
@@ -206,16 +214,16 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     import userScenario.commonExpectedResults._
     import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${agentTest(userScenario.isAgent)}" should {
+      val pageModel = aReviewClaimPage.copy(taxYear = taxYearEOY)
       "render end of year version of ReviewJobSeekersAllowanceClaim page" when {
         "customer added data" which {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val pageModel = aReviewClaimPage.copy(taxYear = taxYearEOY)
           val translatedStartDate = translatedDateFormatter(pageModel.startDate)
           val translatedEndDate = translatedDateFormatter(pageModel.endDate.get)
 
-          implicit val document: Document = Jsoup.parse(page(pageModel).body)
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
           welshToggleCheck(userScenario.isWelsh)
           titleCheck(expectedTitle, userScenario.isWelsh)
@@ -234,12 +242,12 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           textOnPageCheck(translatedEndDate, summaryListRowFieldValueSelector(3))
           linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3),
             EndDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
-          textOnPageCheck(get.expectedAmountText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
-          textOnPageCheck(bigDecimalCurrency(pageModel.amount.get.toString()), summaryListRowFieldValueSelector(4))
-          linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(4),
-            AmountController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
-          textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
-          textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(5), "for the tax paid question")
+          textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
+          textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(4), "for the tax paid question")
+          textOnPageCheck(get.expectedAmountText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
+          textOnPageCheck(bigDecimalCurrency(pageModel.amount.get.toString()), summaryListRowFieldValueSelector(5))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(5),
+            AmountController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(5)))
           checkElementsCount(6, rowsSelector)
           buttonCheck(expectedSaveButtonText, saveAndContinueButtonSelector)
           formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, pageFormSelector)
@@ -253,20 +261,20 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val pageModel = aReviewClaimPage.copy(isCustomerAdded = false)
+          val page = pageModel.copy(isCustomerAdded = false)
 
-          implicit val document: Document = Jsoup.parse(page(pageModel).body)
+          implicit val document: Document = Jsoup.parse(underTest(page).body)
           textOnPageCheck(expectedExternalDataText, p1)
-          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, pageFormSelector)
+          formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, JobSeekersAllowance, page.sessionDataId).url, pageFormSelector)
         }
 
         "the claim is ignored" which {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val pageModel = aReviewClaimPage.copy(isIgnored = true)
+          val page = pageModel.copy(isIgnored = true)
 
-          implicit val document: Document = Jsoup.parse(page(pageModel).body)
+          implicit val document: Document = Jsoup.parse(underTest(page).body)
           buttonCheck(expectedRestoreClaimButtonText, restoreClaimButtonSelector)
           linkCheck(expectedBackText, backLinkSelector, ClaimsController.show(taxYearEOY, JobSeekersAllowance).url)
           elementNotOnPageCheck(changeLink(1))
@@ -274,7 +282,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           elementNotOnPageCheck(changeLink(3))
           elementNotOnPageCheck(changeLink(4))
           elementNotOnPageCheck(changeLink(5))
-          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, pageFormSelector)
+          formPostLinkCheck(ReviewClaimController.restoreClaim(taxYearEOY, JobSeekersAllowance, page.sessionDataId).url, pageFormSelector)
         }
       }
 
@@ -283,10 +291,10 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val pageModel = aReviewClaimPage.copy(taxYear = taxYear, isInYear = true)
-          val translatedStartDate = translatedDateFormatter(pageModel.startDate)
+          val page = pageModel.copy(taxYear = taxYear, isInYear = true)
+          val translatedStartDate = translatedDateFormatter(page.startDate)
 
-          implicit val document: Document = Jsoup.parse(page(pageModel).body)
+          implicit val document: Document = Jsoup.parse(underTest(page).body)
 
           welshToggleCheck(userScenario.isWelsh)
           titleCheck(expectedTitle, userScenario.isWelsh)
