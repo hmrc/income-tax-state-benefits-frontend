@@ -74,7 +74,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val expectedTitle: String
     val expectedHeading: String
     val expectedErrorTitle: String
-    val expectedCaption: Int => String
     val expectedHintText: String
     val expectedInvalidDateErrorText: String
     val expectedButtonText: String
@@ -84,7 +83,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did this claim end?"
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
@@ -94,7 +92,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedTitle: String = "When did this claim end?"
     override val expectedHeading: String = expectedTitle
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
     override val expectedButtonText: String = "Continue"
@@ -188,7 +185,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading, isFieldSetH1 = true)
         textOnPageCheck(expectedHintText, hintSelector)
         inputFieldValueCheck(DateForm.day, inputDayField, value = "")

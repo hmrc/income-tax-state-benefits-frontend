@@ -76,8 +76,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val expectedErrorTitle: String
     val expectedHintText: String
     val expectedButtonText: String
-
-    def expectedCaption(taxYear: Int): String
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
@@ -86,8 +84,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
-
-    override def expectedCaption(taxYear: Int): String = s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -96,8 +92,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedErrorTitle: String = s"Error: $expectedTitle"
     override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
     override val expectedButtonText: String = "Continue"
-
-    override def expectedCaption(taxYear: Int): String = s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -187,7 +181,6 @@ class EndDatePageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading, isFieldSetH1 = true)
         textOnPageCheck(expectedHintText, hintSelector)
         inputFieldValueCheck(DateForm.day, inputDayField, value = "")

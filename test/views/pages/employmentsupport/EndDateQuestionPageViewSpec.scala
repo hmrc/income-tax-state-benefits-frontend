@@ -44,7 +44,6 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
   }
 
   trait CommonExpectedResults {
-    val expectedCaption: Int => String
     val expectedYesText: String
     val expectedNoText: String
     val expectedButtonText: String
@@ -59,7 +58,6 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
     override val expectedButtonText: String = "Continue"
@@ -74,7 +72,6 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
     override val expectedButtonText: String = "Continue"
@@ -106,7 +103,6 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle(taxYearEOY, pageModel.titleFirstDate), userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading(taxYearEOY, pageModel.titleFirstDate), isFieldSetH1 = true)
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)

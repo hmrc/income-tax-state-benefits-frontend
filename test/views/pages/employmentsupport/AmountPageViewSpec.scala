@@ -43,7 +43,6 @@ class AmountPageViewSpec extends ViewUnitTest {
   }
 
   trait CommonExpectedResults {
-    val expectedCaption: Int => String
     val expectedHintText: String
     val expectedLabelText: String
     val expectedButtonText: String
@@ -57,7 +56,6 @@ class AmountPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of Employment and Support Allowance"
     override val expectedButtonText: String = "Continue"
@@ -71,7 +69,6 @@ class AmountPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Employment and Support Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedHintText: String = "For example, £123.56"
     override val expectedLabelText: String = "Amount of Employment and Support Allowance"
     override val expectedButtonText: String = "Continue"
@@ -148,7 +145,6 @@ class AmountPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
         textOnPageCheck(s"${get.expectedP1P45Text} $expectedEnterTaxText", paragraphTextSelector)
         amountBoxLabelCheck(expectedLabelText)
@@ -164,7 +160,6 @@ class AmountPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
         textOnPageCheck(s"${get.expectedP1P45Text}", paragraphTextSelector)
         amountBoxLabelCheck(expectedLabelText)
@@ -180,7 +175,6 @@ class AmountPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate), userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(get.expectedTitle(pageModel.titleFirstDate, pageModel.titleSecondDate))
         textOnPageCheck(s"${get.expectedP1P60Text} $expectedEnterTaxText", paragraphTextSelector)
         amountBoxLabelCheck(expectedLabelText)

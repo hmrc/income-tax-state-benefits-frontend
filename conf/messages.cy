@@ -54,12 +54,12 @@ common.taxPaidPage.textBox.label = Amount of tax taken off
 common.taxPaidPage.wrongFormat.amount.error = The amount of tax paid must be a number
 common.taxPaidPage.zeroOrLess.amount.error = The amount of tax paid must be more than £0
 common.taxPaidPage.exceedsMax.amount.error = The amount of tax paid must be less than £{0}
+common.reviewClaimPage.caption = 6 April {0} to 5 April {1}
 common.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
 common.reviewClaimPage.restoreClaim = Restore claim
 common.removeClaimPage.link = Don’t remove claim
 
 common.employmentSupportAllowance = Employment and Support Allowance
-common.employmentSupportAllowance.caption = Employment and Support Allowance for 6 April {0} to 5 April {1}
 common.employmentSupportAllowance.startDate.agent = When did your client start getting Employment and Support Allowance?
 common.employmentSupportAllowance.startDate.individual = When did you start getting Employment and Support Allowance?
 common.employmentSupportAllowance.amount.agent = How much Employment and Support Allowance did your client get between {0} and {1}?
@@ -70,7 +70,6 @@ common.employmentSupportAllowance.taxTakenOff.agent = How much tax was taken off
 common.employmentSupportAllowance.taxTakenOff.individual = How much tax was taken off your Employment and Support Allowance between {0} and {1}?
 
 common.jobSeekersAllowance = Jobseeker’s Allowance
-common.jobSeekersAllowance.caption = Jobseeker’s Allowance for 6 April {0} to 5 April {1}
 common.jobSeekersAllowance.startDate.agent = When did your client start getting Jobseeker’s Allowance?
 common.jobSeekersAllowance.startDate.individual = When did you start getting Jobseeker’s Allowance?
 common.jobSeekersAllowance.amount.agent = How much Jobseeker’s Allowance did your client get between {0} and {1}?

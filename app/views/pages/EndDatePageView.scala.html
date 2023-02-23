@@ -53,8 +53,6 @@
         }
     })
 
-    @caption(messages(s"common.$benefitTypeKey.caption", (pageModel.taxYear - 1).toString, pageModel.taxYear.toString))
-
     @formWithCsrf(action = EndDateController.submit(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)) {
         @dateInput(
             form = pageModel.form,

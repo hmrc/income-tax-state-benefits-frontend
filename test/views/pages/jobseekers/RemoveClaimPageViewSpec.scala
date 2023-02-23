@@ -55,7 +55,6 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   private val underTest: RemoveClaimPageView = inject[RemoveClaimPageView]
 
   trait CommonExpectedResults {
-    val expectedCaption: Int => String
     val expectedTitle: String
     val expectedHeading: String
 
@@ -85,7 +84,6 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedEN extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedTitle: String = "Are you sure you want to remove this Jobseeker’s Allowance claim?"
     override val expectedHeading: String = "Are you sure you want to remove this Jobseeker’s Allowance claim?"
     override val expectedEndDateRowKey: String = "When did this claim end?"
@@ -104,7 +102,6 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedCaption: Int => String = (taxYear: Int) => s"Jobseeker’s Allowance for 6 April ${taxYear - 1} to 5 April $taxYear"
     override val expectedTitle: String = "Are you sure you want to remove this Jobseeker’s Allowance claim?"
     override val expectedHeading: String = "Are you sure you want to remove this Jobseeker’s Allowance claim?"
     override val expectedEndDateRowKey: String = "When did this claim end?"
@@ -180,7 +177,6 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(aRemoveClaimPage).body)
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
         textOnPageCheck(get.expectedStartDateRowKey, startDateRowKeySelector)
         textOnPageCheck(expectedStartDateRowValue, startDateRowValueSelector)
@@ -209,7 +205,6 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
-        captionCheck(expectedCaption(taxYearEOY))
         h1Check(expectedHeading)
 
         textOnPageCheck(userScenario.commonExpectedResults.no, endDateQuestionRowValueSelector)
