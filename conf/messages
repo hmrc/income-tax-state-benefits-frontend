@@ -53,7 +53,6 @@ common.amountPage.amountBeforeTax = Enter the amount before tax.
 common.taxPaidPage.textBox.label = Amount of tax taken off
 common.taxPaidPage.wrongFormat.amount.error = The amount of tax paid must be a number
 common.taxPaidPage.zeroOrLess.amount.error = The amount of tax paid must be more than £0
-common.taxPaidPage.exceedsMax.amount.error = The amount of tax paid must be less than £{0}
 common.reviewClaimPage.caption = 6 April {0} to 5 April {1}
 common.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
 common.reviewClaimPage.restoreClaim = Restore claim
@@ -116,8 +115,8 @@ employmentSupportAllowance.startDatePage.error.tooLongAgo.agent = The date your 
 employmentSupportAllowance.startDatePage.error.tooLongAgo.individual = The date you started getting Employment and Support Allowance must be after 1 January 1900
 employmentSupportAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent = The date your client started getting Employment and Support Allowance must be the same as or before 5 April {0}
 employmentSupportAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = The date you started getting Employment and Support Allowance must be the same as or before 5 April {0}
-employmentSupportAllowance.startDatePage.error.mustBeBefore.date.agent = The date your client started getting Employment and Support Allowance must be before {0}
-employmentSupportAllowance.startDatePage.error.mustBeBefore.date.individual = The date you started getting Employment and Support Allowance must be before {0}
+employmentSupportAllowance.startDatePage.error.mustBeBefore.date.agent = The date your client’s Employment and Support Allowance claim started must be before the date it ended, {0}
+employmentSupportAllowance.startDatePage.error.mustBeBefore.date.individual = The date your Employment and Support Allowance claim started must be before the date it ended, {0}
 
 #################       Employment and Support Allowance - End Date Page       ########################################
 employmentSupportAllowance.endDatePage.error.empty.day.agent = The date your client’s Employment and Support Allowance claim ended must include a day
@@ -138,14 +137,15 @@ employmentSupportAllowance.endDatePage.error.invalid.date.agent = The date your 
 employmentSupportAllowance.endDatePage.error.invalid.date.individual = The date your Employment and Support Allowance claim ended must be a real date
 employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Employment and Support Allowance claim ended must be the same as or before 5 April {0}
 employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Employment and Support Allowance claim ended must be the same as or before 5 April {0}
-employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Employment and Support Allowance claim ended must be after {0}
-employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Employment and Support Allowance claim ended must be after {0}
+employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Employment and Support Allowance claim ended must be after the date it started, {0}
+employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Employment and Support Allowance claim ended must be after the date it started, {0}
 
 #################       Employment and Support Allowance - Amount Page       ########################################
 employmentSupportAllowance.amountPage.textBox.label = Amount of Employment and Support Allowance
 employmentSupportAllowance.amountPage.empty.amount.error = Enter the amount of Employment and Support Allowance
 employmentSupportAllowance.amountPage.wrongFormat.amount.error = The amount of Employment and Support Allowance must be a number
-employmentSupportAllowance.amountPage.minimumOrLess.amount.error = The amount of Employment and Support Allowance must be more than £{0}
+employmentSupportAllowance.amountPage.mustBeMoreThanTax.amount.error.agent = The amount of Employment and Support Allowance your client got must be more than the amount of tax taken off it, £{0}
+employmentSupportAllowance.amountPage.mustBeMoreThanTax.amount.error.individual = The amount of Employment and Support Allowance you got must be more than the amount of tax taken off it, £{0}
 employmentSupportAllowance.amountPage.exceedsMax.amount.error = The amount of Employment and Support Allowance must be less than £100,000,000,000
 
 #################       Employment and Support Allowance - Tax Paid Question Page        ########################################
@@ -155,6 +155,8 @@ employmentSupportAllowance.taxPaidQuestionPage.error.individual = Select yes if 
 #################       Employment and Support Allowance - Tax Paid Page        ########################################
 employmentSupportAllowance.taxPaidPage.empty.amount.error.agent = Enter the amount of tax taken off your client’s Employment and Support Allowance
 employmentSupportAllowance.taxPaidPage.empty.amount.error.individual = Enter the amount of tax taken off your Employment and Support Allowance
+employmentSupportAllowance.taxPaidPage.exceedsAmount.amount.error.agent = The amount of tax taken off must be less than the amount of Employment and Support Allowance your client got, £{0}
+employmentSupportAllowance.taxPaidPage.exceedsAmount.amount.error.individual = The amount of tax taken off must be less than the amount of Employment and Support Allowance you got, £{0}
 
 #################       Employment and Support Allowance - Review claim page       ########################################
 employmentSupportAllowance.reviewClaimPage.title = Review Employment and Support Allowance claim
@@ -200,8 +202,8 @@ jobSeekersAllowance.startDatePage.error.tooLongAgo.agent = The date your client 
 jobSeekersAllowance.startDatePage.error.tooLongAgo.individual = The date you started getting Jobseeker’s Allowance must be after 1 January 1900
 jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent = The date your client started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
 jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = The date you started getting Jobseeker’s Allowance must be the same as or before 5 April {0}
-jobSeekersAllowance.startDatePage.error.mustBeBefore.date.agent = The date your client started getting Jobseeker’s Allowance must be before {0}
-jobSeekersAllowance.startDatePage.error.mustBeBefore.date.individual = The date you started getting Jobseeker’s Allowance must be before {0}
+jobSeekersAllowance.startDatePage.error.mustBeBefore.date.agent = The date your client’s Jobseeker’s Allowance claim started must be before the date it ended, {0}
+jobSeekersAllowance.startDatePage.error.mustBeBefore.date.individual = The date your Jobseeker’s Allowance claim started must be before the date it ended, {0}
 
 #################       Jobseeker’s Allowance - End Date Page       ########################################
 jobSeekersAllowance.endDatePage.error.empty.day.agent = The date your client’s Jobseeker’s Allowance claim ended must include a day
@@ -222,14 +224,15 @@ jobSeekersAllowance.endDatePage.error.invalid.date.agent = The date your client�
 jobSeekersAllowance.endDatePage.error.invalid.date.individual = The date your Jobseeker’s Allowance claim ended must be a real date
 jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.agent = The date your client’s Jobseeker’s Allowance claim ended must be the same as or before 5 April {0}
 jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.individual = The date your Jobseeker’s Allowance claim ended must be the same as or before 5 April {0}
-jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Jobseeker’s Allowance claim ended must be after {0}
-jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Jobseeker’s Allowance claim ended must be after {0}
+jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.agent = The date your client’s Jobseeker’s Allowance claim ended must be after the date it started, {0}
+jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.individual = The date your Jobseeker’s Allowance claim ended must be after the date it started, {0}
 
 #################       Jobseeker’s Allowance - Amount Page       ########################################
 jobSeekersAllowance.amountPage.textBox.label = Amount of Jobseeker’s Allowance
 jobSeekersAllowance.amountPage.empty.amount.error = Enter the amount of Jobseeker’s Allowance
 jobSeekersAllowance.amountPage.wrongFormat.amount.error = The amount of Jobseeker’s Allowance must be a number
-jobSeekersAllowance.amountPage.minimumOrLess.amount.error = The amount of Jobseeker’s Allowance must be more than £{0}
+jobSeekersAllowance.amountPage.mustBeMoreThanTax.amount.error.agent = The amount of Jobseeker’s Allowance your client got must be more than the amount of tax taken off it, £{0}
+jobSeekersAllowance.amountPage.mustBeMoreThanTax.amount.error.individual = The amount of Jobseeker’s Allowance you got must be more than the amount of tax taken off it, £{0}
 jobSeekersAllowance.amountPage.exceedsMax.amount.error = The amount of Jobseeker’s Allowance must be less than £100,000,000,000
 
 #################       Jobseeker’s Allowance - Tax Paid Question Page        ########################################
@@ -239,6 +242,8 @@ jobSeekersAllowance.taxPaidQuestionPage.error.individual = Select yes if you had
 #################       Jobseeker’s Allowance - Tax Paid Page        ########################################
 jobSeekersAllowance.taxPaidPage.empty.amount.error.agent = Enter the amount of tax taken off your client’s Jobseeker’s Allowance
 jobSeekersAllowance.taxPaidPage.empty.amount.error.individual = Enter the amount of tax taken off your Jobseeker’s Allowance
+jobSeekersAllowance.taxPaidPage.exceedsAmount.amount.error.agent = The amount of tax taken off must be less than the amount of Jobseeker’s Allowance your client got, £{0}
+jobSeekersAllowance.taxPaidPage.exceedsAmount.amount.error.individual = The amount of tax taken off must be less than the amount of Jobseeker’s Allowance you got, £{0}
 
 #################       Jobseeker’s Allowance - Review claim page       ########################################
 jobSeekersAllowance.reviewClaimPage.title = Review Jobseeker’s Allowance claim

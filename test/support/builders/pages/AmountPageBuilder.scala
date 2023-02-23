@@ -20,6 +20,7 @@ import forms.FormsProvider
 import models.BenefitType.JobSeekersAllowance
 import models.pages.AmountPage
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
+import support.builders.UserBuilder.aUser
 import support.utils.TaxYearUtils.taxYearEOY
 
 import java.time.LocalDate
@@ -35,6 +36,6 @@ object AmountPageBuilder {
     sessionDataId = UUID.randomUUID(),
     hasEndDate = aClaimCYAModel.endDateQuestion.get,
     hasPaidTax = aClaimCYAModel.taxPaidQuestion.get,
-    form = new FormsProvider().amountForm(JobSeekersAllowance)
+    form = new FormsProvider().amountForm(JobSeekersAllowance, isAgent = aUser.isAgent)
   )
 }

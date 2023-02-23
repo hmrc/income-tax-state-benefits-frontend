@@ -28,7 +28,7 @@ import java.time.LocalDate
 class AmountPageSpec extends UnitTest
   with TaxYearProvider {
 
-  private val pageForm = new FormsProvider().amountForm(JobSeekersAllowance, minAmount = None)
+  private val pageForm = new FormsProvider().amountForm(JobSeekersAllowance, isAgent = false, minAmount = None)
 
   "AmountPage.apply(...)" should {
     "return page with pre-filled form when amount is preset" in {
