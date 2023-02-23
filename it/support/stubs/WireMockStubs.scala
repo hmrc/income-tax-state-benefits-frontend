@@ -161,7 +161,7 @@ trait WireMockStubs {
                                      httpResponse: HttpResponse): StubMapping = {
     val nino = stateBenefitsUserData.nino
     val sessionDataId = stateBenefitsUserData.sessionDataId.get
-    val mappingBuilder = put(urlMatching(s"/income-tax-state-benefits/benefits/nino/$nino/session/$sessionDataId"))
+    val mappingBuilder = put(urlMatching(s"/income-tax-state-benefits/claim-data/nino/$nino/session/$sessionDataId"))
       .withRequestBody(equalToJson(Json.toJson(stateBenefitsUserData).toString()))
     stubMapping(httpResponse, mappingBuilder)
   }

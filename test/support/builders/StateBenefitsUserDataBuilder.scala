@@ -16,6 +16,7 @@
 
 package support.builders
 
+import models.BenefitDataType.HmrcData
 import models.{BenefitType, StateBenefitsUserData}
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.UserBuilder.aUser
@@ -32,7 +33,7 @@ object StateBenefitsUserDataBuilder {
     mtdItId = aUser.mtditid,
     nino = aUser.nino,
     taxYear = taxYearEOY,
-    isPriorSubmission = false,
+    benefitDataType = HmrcData.name,
     claim = Some(aClaimCYAModel)
   )
 }

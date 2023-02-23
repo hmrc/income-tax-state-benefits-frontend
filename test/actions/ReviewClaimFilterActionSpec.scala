@@ -17,6 +17,7 @@
 package actions
 
 import controllers.routes.ClaimsController
+import models.BenefitDataType.{CustomerAdded, CustomerOverride, HmrcData}
 import models.BenefitType.JobSeekersAllowance
 import play.api.mvc.Results.Redirect
 import support.UnitTest
@@ -44,13 +45,19 @@ class ReviewClaimFilterActionSpec extends UnitTest
   ".filter" should {
     "return None" when {
       "when HMRC data" in {
-        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = true))))
+        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(benefitDataType = HmrcData.name))
+
+        await(underTest.filter(sessionData)) shouldBe None
+      }
+
+      "when Customer override data" in {
+        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(benefitDataType = CustomerOverride.name))
 
         await(underTest.filter(sessionData)) shouldBe None
       }
 
       "when Customer added data and is finished" in {
-        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = false))))
+        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(benefitDataType = CustomerAdded.name))
 
         await(underTest.filter(sessionData)) shouldBe None
       }
@@ -58,7 +65,7 @@ class ReviewClaimFilterActionSpec extends UnitTest
 
     "return a Redirect to ClaimsController" when {
       "when customer added data and not finished" in {
-        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = false, taxPaid = None))))
+        val sessionData = aUserSessionDataRequest.copy(stateBenefitsUserData = aStateBenefitsUserData.copy(benefitDataType = CustomerAdded.name, claim = Some(aClaimCYAModel.copy(taxPaid = None))))
 
         await(underTest.filter(sessionData)) shouldBe Some(Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance)))
       }

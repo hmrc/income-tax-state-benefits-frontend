@@ -29,7 +29,7 @@ object ReviewClaimPageBuilder {
     benefitType = JobSeekersAllowance,
     sessionDataId = aStateBenefitsUserData.sessionDataId.get,
     isInYear = false,
-    isCustomerAdded = !aStateBenefitsUserData.isPriorSubmission,
+    isHmrcData = false,
     isIgnored = false,
     itemsFirstDate = aClaimCYAModel.startDate,
     itemsSecondDate = aClaimCYAModel.endDate.get,

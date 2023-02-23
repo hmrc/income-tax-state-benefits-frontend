@@ -33,7 +33,6 @@ object ClaimCYAModelBuilder {
     submittedOn = Some(Instant.parse(s"$taxYearEOY-03-13T19:23:00Z")),
     amount = Some(300.00),
     taxPaidQuestion = Some(true),
-    taxPaid = Some(50.00),
-    isHmrcData = true
+    taxPaid = Some(50.00)
   )
 }

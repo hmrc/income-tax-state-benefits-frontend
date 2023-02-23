@@ -16,6 +16,7 @@
 
 package models
 
+import models.BenefitDataType.{CustomerAdded, CustomerOverride, HmrcData}
 import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
@@ -33,48 +34,69 @@ import java.util.UUID
 class StateBenefitsUserDataSpec extends UnitTest {
 
   private val anyTaxYear = 2022
+  private val benefitId = UUID.randomUUID()
 
-  ".isHmrcData" should {
-    "return false" when {
-      "claim is None" in {
-        val underTest = aStateBenefitsUserData.copy(claim = None)
+  ".isPriorSubmission" should {
+    "return true when claim has benefitId" in {
+      val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = Some(benefitId))))
 
-        underTest.isHmrcData shouldBe false
-      }
-
-      "claim.isHmrcData is false" in {
-        val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = false)))
-
-        underTest.isHmrcData shouldBe false
-      }
+      underTest.isPriorSubmission shouldBe true
     }
 
-    "return true when claim.isHmrcData is true" in {
-      val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = true)))
+    "return false" when {
+      "claim has no benefitId" in {
+        val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = None)))
 
-      underTest.isHmrcData shouldBe true
+        underTest.isPriorSubmission shouldBe false
+      }
+
+      "claim is empty" in {
+        val underTest = aStateBenefitsUserData.copy(claim = None)
+
+        underTest.isPriorSubmission shouldBe false
+      }
     }
   }
 
-  ".isCustomerAddedData" should {
-    "return true" when {
-      "claim is None" in {
-        val underTest = aStateBenefitsUserData.copy(claim = None)
+  ".isHmrcData" should {
+    s"return true when benefitDataType is ${HmrcData.name}" in {
+      val underTest = aStateBenefitsUserData.copy(benefitDataType = HmrcData.name)
 
-        underTest.isCustomerAddedData shouldBe true
-      }
-
-      "claim.isHmrcData is false" in {
-        val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = false)))
-
-        underTest.isCustomerAddedData shouldBe true
-      }
+      underTest.isHmrcData shouldBe true
     }
 
-    "return false when claim.isHmrcData is true" in {
-      val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(isHmrcData = true)))
+    "return false when benefitDataType is any other string" in {
+      val underTest = aStateBenefitsUserData.copy(benefitDataType = "some-string")
 
-      underTest.isCustomerAddedData shouldBe false
+      underTest.isHmrcData shouldBe false
+    }
+  }
+
+  ".isCustomerAdded" should {
+    s"return true when benefitDataType is ${CustomerAdded.name}" in {
+      val underTest = aStateBenefitsUserData.copy(benefitDataType = CustomerAdded.name)
+
+      underTest.isCustomerAdded shouldBe true
+    }
+
+    "return false when benefitDataType is any other string" in {
+      val underTest = aStateBenefitsUserData.copy(benefitDataType = "some-string")
+
+      underTest.isCustomerAdded shouldBe false
+    }
+  }
+
+  ".isCustomerOverride" should {
+    s"return true when benefitDataType is ${CustomerOverride.name}" in {
+      val underTest = aStateBenefitsUserData.copy(benefitDataType = CustomerOverride.name)
+
+      underTest.isCustomerOverride shouldBe true
+    }
+
+    "return false when benefitDataType is any other string" in {
+      val underTest = aStateBenefitsUserData.copy(benefitDataType = "some-string")
+
+      underTest.isCustomerOverride shouldBe false
     }
   }
 
@@ -92,7 +114,7 @@ class StateBenefitsUserDataSpec extends UnitTest {
     }
   }
 
-  ".apply(taxYear: Int, user: User)" should {
+  ".apply(taxYear: Int, benefitType: BenefitType, user: User)" should {
     "create correct StateBenefitsUserData instance" in {
       StateBenefitsUserData.apply(anyTaxYear, EmploymentSupportAllowance, aUser) shouldBe StateBenefitsUserData(
         benefitType = EmploymentSupportAllowance.typeName,
@@ -101,20 +123,20 @@ class StateBenefitsUserDataSpec extends UnitTest {
         mtdItId = aUser.mtditid,
         nino = aUser.nino,
         taxYear = anyTaxYear,
-        isPriorSubmission = false,
+        benefitDataType = CustomerAdded.name,
         claim = None
       )
     }
   }
 
-  ".apply(taxYear: Int, user: User, benefitId: UUID, incomeTaxUserData: IncomeTaxUserData)" should {
+  ".apply(taxYear: Int, benefitType: BenefitType, user: User, benefitId: UUID, incomeTaxUserData: IncomeTaxUserData)" should {
     "create correct StateBenefitsUserData instance when benefitId not found" in {
       val unknownBenefitId = UUID.randomUUID()
 
       StateBenefitsUserData.apply(anyTaxYear, JobSeekersAllowance, aUser, unknownBenefitId, anIncomeTaxUserData) shouldBe None
     }
 
-    "create correct StateBenefitsUserData instance when benefitId found in HMRC added data" in {
+    "create hmrc data StateBenefitsUserData instance when benefitId found in HMRC added data only" in {
       val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit)))
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(stateBenefitsData = Some(stateBenefitsData))))
 
@@ -125,12 +147,12 @@ class StateBenefitsUserDataSpec extends UnitTest {
         mtdItId = aUser.mtditid,
         nino = aUser.nino,
         taxYear = anyTaxYear,
-        isPriorSubmission = true,
+        benefitDataType = HmrcData.name,
         claim = Some(ClaimCYAModel.mapFrom(aStateBenefit))
       ))
     }
 
-    "create correct StateBenefitsUserData instance when benefitId found in Customer added data" in {
+    "create customer added StateBenefitsUserData instance when benefitId found in Customer added data only" in {
       val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aCustomerAddedStateBenefit)))
       val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData))))
 
@@ -141,8 +163,28 @@ class StateBenefitsUserDataSpec extends UnitTest {
         mtdItId = aUser.mtditid,
         nino = aUser.nino,
         taxYear = anyTaxYear,
-        isPriorSubmission = true,
+        benefitDataType = CustomerAdded.name,
         claim = Some(ClaimCYAModel.mapFrom(aCustomerAddedStateBenefit))
+      ))
+    }
+
+    "create customer override StateBenefitsUserData instance when benefitId found in HMRC and customer added added data" in {
+      val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aStateBenefit.copy(benefitId = benefitId))))
+      val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(aCustomerAddedStateBenefit.copy(benefitId = benefitId))))
+      val incomeTaxUserData = anIncomeTaxUserData.copy(stateBenefits = Some(anAllStateBenefitsData.copy(
+        stateBenefitsData = Some(stateBenefitsData),
+        customerAddedStateBenefitsData = Some(customerAddedStateBenefitsData)
+      )))
+
+      StateBenefitsUserData.apply(anyTaxYear, JobSeekersAllowance, aUser, benefitId, incomeTaxUserData) shouldBe Some(StateBenefitsUserData(
+        benefitType = JobSeekersAllowance.typeName,
+        sessionDataId = None,
+        sessionId = aUser.sessionId,
+        mtdItId = aUser.mtditid,
+        nino = aUser.nino,
+        taxYear = anyTaxYear,
+        benefitDataType = CustomerOverride.name,
+        claim = Some(ClaimCYAModel.mapFrom(aCustomerAddedStateBenefit.copy(benefitId = benefitId)))
       ))
     }
   }
