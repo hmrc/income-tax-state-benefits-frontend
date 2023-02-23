@@ -93,17 +93,17 @@
             })
             case _ => None
         }
-        val amountSummaryListRow = if (pageModel.isInYear) None else Some(
-            viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.amount"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
-                pageModel.amount.fold("")(amount => bigDecimalCurrency(amount.toString)),
-                if (pageModel.isIgnored) None else Some(AmountController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)),
-                messages(appendUserTypeSuffix(s"$pageKeysPrefix.amount.hiddenText")))
-        )
         val taxPaidQuestionSummaryListRow = if (pageModel.isInYear) None else Some(
             viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.taxTakenOffQuestion"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
                 pageModel.taxPaidQuestion.fold("")(toYesOrNo(_)),
                 if (pageModel.isIgnored) None else Some(TaxPaidQuestionController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)),
                 messages(appendUserTypeSuffix(s"$pageKeysPrefix.taxPaidQuestion.hiddenText")))
+        )
+        val amountSummaryListRow = if (pageModel.isInYear) None else Some(
+            viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.amount"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
+                pageModel.amount.fold("")(amount => bigDecimalCurrency(amount.toString)),
+                if (pageModel.isIgnored) None else Some(AmountController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)),
+                messages(appendUserTypeSuffix(s"$pageKeysPrefix.amount.hiddenText")))
         )
         val taxPaidSummaryListRow = if (pageModel.isInYear) None else pageModel.taxPaidQuestion match {
             case Some(true) => Some(
@@ -118,8 +118,8 @@
             startDateSummaryListRow,
             endDateQuestionSummaryListRow,
             endDateSummaryListRow,
-            amountSummaryListRow,
             taxPaidQuestionSummaryListRow,
+            amountSummaryListRow,
             taxPaidSummaryListRow
         ).flatten))
     }
