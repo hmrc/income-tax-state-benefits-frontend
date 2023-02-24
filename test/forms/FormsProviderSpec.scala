@@ -30,7 +30,6 @@ class FormsProviderSpec extends UnitTest
   private val validAmount = maxAmount - 1
   private val correctAmountData = Map(AmountForm.amount -> validAmount.toString)
   private val spacesAmountData = Map(AmountForm.amount -> "1 1 1")
-  private val overMaximumAmount: Map[String, String] = Map(AmountForm.amount -> "100,000,000,000")
   private val belowMinimumAmount: Map[String, String] = Map(AmountForm.amount -> (minAmount - 1).toString)
   private val atMinimumAmount: Map[String, String] = Map(AmountForm.amount -> minAmount.toString)
   private val wrongKeyData = Map("wrongKey" -> validAmount.toString)

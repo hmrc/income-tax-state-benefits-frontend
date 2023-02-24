@@ -20,6 +20,7 @@
 @import models.requests.UserSessionDataRequest
 
 @import utils.ViewUtils.translatedDateFormatter
+@import utils.ViewUtils.translatedTaxYearEndDateFormatter
 
 @import views.html.templates.Layout
 @import views.html.templates.helpers.Caption
@@ -38,7 +39,7 @@
 
 @(pageModel: EndDateQuestionPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@titleText = @{messages("common.claim.endDateQuestion", translatedDateFormatter(pageModel.titleFirstDate), pageModel.taxYear.toString)}
+@titleText = @{messages("common.claim.endDateQuestion", translatedDateFormatter(pageModel.titleFirstDate), translatedTaxYearEndDateFormatter(pageModel.taxYear))}
 
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent, hasErrors = pageModel.form.hasErrors) {
 

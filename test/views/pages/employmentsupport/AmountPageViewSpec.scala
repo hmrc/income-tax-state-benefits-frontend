@@ -85,6 +85,7 @@ class AmountPageViewSpec extends ViewUnitTest {
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Employment and Support Allowance did your client get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
@@ -96,6 +97,7 @@ class AmountPageViewSpec extends ViewUnitTest {
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Employment and Support Allowance did your client get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
@@ -107,6 +109,7 @@ class AmountPageViewSpec extends ViewUnitTest {
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Employment and Support Allowance did you get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
@@ -118,6 +121,7 @@ class AmountPageViewSpec extends ViewUnitTest {
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Employment and Support Allowance did you get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTitle: (LocalDate, LocalDate) => String = expectedHeading
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (startDate: LocalDate, endDate: LocalDate) => "Error: " + expectedHeading(startDate, endDate)
     override val expectedP1P45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."

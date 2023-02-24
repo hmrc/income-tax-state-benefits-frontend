@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.pages.ReviewClaimPageBuilder.aReviewClaimPage
-import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter}
+import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter, translatedTaxYearEndDateFormatter}
 import views.html.pages.ReviewClaimPageView
 
 import java.time.LocalDate
@@ -108,7 +108,9 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
 
-    override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and 5 April $taxYear?"
+    override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String =
+      s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -127,7 +129,9 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
 
-    override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and 5 April $taxYear?"
+    override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String =
+      s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -220,8 +224,8 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-          val translatedStartDate = translatedDateFormatter(pageModel.startDate)
-          val translatedEndDate = translatedDateFormatter(pageModel.endDate.get)
+          val translatedStartDate = translatedDateFormatter(pageModel.startDate).replace("\u00A0", " ")
+          val translatedEndDate = translatedDateFormatter(pageModel.endDate.get).replace("\u00A0", " ")
 
           implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
@@ -292,7 +296,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
           val page = pageModel.copy(taxYear = taxYear, isHmrcData = false, isInYear = true)
-          val translatedStartDate = translatedDateFormatter(page.startDate)
+          val translatedStartDate = translatedDateFormatter(page.startDate).replace("\u00A0", " ")
 
           implicit val document: Document = Jsoup.parse(underTest(page).body)
 

@@ -26,11 +26,12 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.pages.StartDatePageBuilder.aStartDatePage
-import utils.ViewUtils.translatedDateFormatter
+import utils.ViewUtils.{translatedDateFormatter, translatedTaxYearEndDateFormatter}
 import views.html.pages.StartDatePageView
 
 import java.time.LocalDate
 
+// TODO: Add missing validation for message: employmentSupportAllowance.startDatePage.error.tooLongAgo
 class StartDatePageViewSpec extends ViewUnitTest {
 
   private val formsProvider = new FormsProvider()
@@ -100,7 +101,9 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date you started getting Employment and Support Allowance"
     override val expectedInvalidDateErrorText: String = "The date you started getting Employment and Support Allowance must be a real date"
 
-    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date you started getting Employment and Support Allowance must be the same as or before 5 April $taxYear"
+    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
+      s"The date you started getting Employment and Support Allowance must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}"
+        .replace("\u00A0", " ")
 
     override def expectedMustBeBeforeErrorText(date: String): String = s"The date your Employment and Support Allowance claim started must be before the date it ended, $date"
   }
@@ -118,7 +121,9 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date you started getting Employment and Support Allowance"
     override val expectedInvalidDateErrorText: String = "The date you started getting Employment and Support Allowance must be a real date"
 
-    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date you started getting Employment and Support Allowance must be the same as or before 5 April $taxYear"
+    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
+      s"The date you started getting Employment and Support Allowance must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
+        .replace("\u00A0", " ")
 
     override def expectedMustBeBeforeErrorText(date: String): String = s"The date your Employment and Support Allowance claim started must be before the date it ended, $date"
   }
@@ -136,7 +141,9 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client started getting Employment and Support Allowance"
     override val expectedInvalidDateErrorText: String = "The date your client started getting Employment and Support Allowance must be a real date"
 
-    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your client started getting Employment and Support Allowance must be the same as or before 5 April $taxYear"
+    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
+      s"The date your client started getting Employment and Support Allowance must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}"
+        .replace("\u00A0", " ")
 
     override def expectedMustBeBeforeErrorText(date: String): String = s"The date your client’s Employment and Support Allowance claim started must be before the date it ended, $date"
   }
@@ -154,7 +161,9 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client started getting Employment and Support Allowance"
     override val expectedInvalidDateErrorText: String = "The date your client started getting Employment and Support Allowance must be a real date"
 
-    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String = s"The date your client started getting Employment and Support Allowance must be the same as or before 5 April $taxYear"
+    override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
+      s"The date your client started getting Employment and Support Allowance must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
+        .replace("\u00A0", " ")
 
     override def expectedMustBeBeforeErrorText(date: String): String = s"The date your client’s Employment and Support Allowance claim started must be before the date it ended, $date"
   }
@@ -358,7 +367,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
         implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
 
         titleCheck(get.expectedErrorTitle, userScenario.isWelsh)
-        errorSummaryCheck(get.expectedMustBeBeforeErrorText(translatedDateFormatter(endDate)), mustBeSameAsOrBeforeErrorHref)
+        errorSummaryCheck(get.expectedMustBeBeforeErrorText(translatedDateFormatter(endDate).replace("\u00A0", " ")), mustBeSameAsOrBeforeErrorHref)
         inputFieldValueCheck(DateForm.day, inputDayField, value = "11")
         inputFieldValueCheck(DateForm.month, inputMonthField, value = "1")
         inputFieldValueCheck(DateForm.year, inputYearField, value = taxYear.toString)

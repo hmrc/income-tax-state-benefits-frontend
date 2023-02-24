@@ -18,14 +18,16 @@ package utils
 
 import play.api.mvc.Call
 import support.UnitTest
-import support.providers.MessagesProvider
+import support.providers.{MessagesProvider, TaxYearProvider}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import java.time.LocalDate
+import java.time.Month.APRIL
 
 class ViewUtilsSpec extends UnitTest
-  with MessagesProvider {
+  with MessagesProvider
+  with TaxYearProvider {
 
   ".toYesOrNo" should {
     "return translation of common.yes when given value is true" in {
@@ -47,7 +49,14 @@ class ViewUtilsSpec extends UnitTest
     "translate date" in {
       val date = LocalDate.parse("2002-01-01")
       ViewUtils.translatedDateFormatter(date) shouldBe
-        date.getDayOfMonth.toString + " " + messages("common." + date.getMonth.toString.toLowerCase) + " " + date.getYear.toString
+        date.getDayOfMonth.toString + "\u00A0" + messages("common." + date.getMonth.toString.toLowerCase) + "\u00A0" + date.getYear.toString
+    }
+  }
+
+  ".translatedTaxYearEndDateFormatter" should {
+    "translate 5 April [taxYear] date" in {
+      ViewUtils.translatedTaxYearEndDateFormatter(taxYearEOY) shouldBe
+        "5" + "\u00A0" + messages("common." + APRIL.toString.toLowerCase) + "\u00A0" + taxYearEOY.toString
     }
   }
 

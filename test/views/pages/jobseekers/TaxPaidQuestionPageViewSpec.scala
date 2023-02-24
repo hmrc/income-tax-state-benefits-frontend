@@ -70,11 +70,11 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     override val expectedButtonText: String = "Continue"
   }
 
-
   object ExpectedIndividualEN extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did you have any tax taken off your Jobseeker’s Allowance between " +
         s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+          .replace("\u00A0", " ")
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
     override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
@@ -82,12 +82,14 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Select yes if you had any tax taken off your Jobseeker’s Allowance between " +
         s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
+          .replace("\u00A0", " ")
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
     override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
@@ -95,6 +97,7 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Select yes if you had any tax taken off your Jobseeker’s Allowance between " +
         s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
+          .replace("\u00A0", " ")
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
@@ -102,12 +105,14 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did your client have any tax taken off their Jobseeker’s Allowance between " +
         s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+          .replace("\u00A0", " ")
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) => expectedTitle(firstDate, secondDate)
     override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Jobseeker’s Allowance " +
       s"between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}"
+        .replace("\u00A0", " ")
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 
@@ -115,12 +120,14 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did your client have any tax taken off their Jobseeker’s Allowance between " +
         s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+          .replace("\u00A0", " ")
     override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
     override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Jobseeker’s Allowance " +
       s"between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
+        .replace("\u00A0", " ")
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
 

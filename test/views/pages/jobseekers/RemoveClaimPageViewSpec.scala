@@ -26,7 +26,7 @@ import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.RemoveClaimPageBuilder.aRemoveClaimPage
-import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter}
+import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter, translatedTaxYearEndDateFormatter}
 import views.html.pages.RemoveClaimPageView
 
 import java.time.LocalDate
@@ -98,7 +98,9 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
     override val expectedTaxPaidRowValue: String = bigDecimalCurrency(aClaimCYAModel.taxPaid.get.toString())
     override val no = "No"
 
-    override def expectedEndDateQuestionRowKey(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and 5 April $taxYear?"
+    override def expectedEndDateQuestionRowKey(taxYear: Int, startDate: LocalDate): String =
+      s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -116,47 +118,61 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
     override val expectedTaxPaidRowValue: String = bigDecimalCurrency(aClaimCYAModel.taxPaid.get.toString())
     override val no = "Na"
 
-    override def expectedEndDateQuestionRowKey(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and 5 April $taxYear?"
+    override def expectedEndDateQuestionRowKey(taxYear: Int, startDate: LocalDate): String =
+      s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object AgentSpecificExpectedEN extends SpecificExpectedResults {
     override val expectedStartDateRowKey: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedAmountRowKey: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate: LocalDate) =>
       s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidQuestionRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did your client have any tax taken off their Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"How much tax was taken off your client’s Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
     override val expectedStartDateRowKey: String = "When did your client start getting Jobseeker’s Allowance?"
     override val expectedAmountRowKey: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidQuestionRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did your client have any tax taken off their Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"How much tax was taken off your client’s Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object IndividualSpecificExpectedEN extends SpecificExpectedResults {
     override val expectedStartDateRowKey: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedAmountRowKey: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidQuestionRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
     override val expectedStartDateRowKey: String = "When did you start getting Jobseeker’s Allowance?"
     override val expectedAmountRowKey: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
       s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidQuestionRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
     override val expectedTaxPaidRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
       s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(

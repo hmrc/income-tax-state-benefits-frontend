@@ -36,10 +36,16 @@ object ViewUtils {
       .getOrElse(value)
       .replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")
 
-  def translatedDateFormatter(date: LocalDate)(implicit messages: Messages): String = {
+  def translatedDateFormatter(date: LocalDate)
+                             (implicit messages: Messages): String = {
     val translatedMonth = messages("common." + date.getMonth.toString.toLowerCase)
-    date.getDayOfMonth.toString + " " + translatedMonth + " " + date.getYear.toString
+    date.getDayOfMonth.toString + "\u00A0" + translatedMonth + "\u00A0" + date.getYear.toString
   }
+
+  def translatedTaxYearEndDateFormatter(taxYear: Int)
+                                       (implicit messages: Messages): String =
+    translatedDateFormatter(LocalDate.parse(s"$taxYear-04-05"))
+
 
   def toSummaryListRow(key: HtmlContent,
                        value: HtmlContent,

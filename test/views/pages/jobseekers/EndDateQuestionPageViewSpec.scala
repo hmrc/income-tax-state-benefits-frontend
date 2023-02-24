@@ -27,7 +27,7 @@ import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.pages.EndDateQuestionPageBuilder.aEndDateQuestionPage
-import utils.ViewUtils.translatedDateFormatter
+import utils.ViewUtils.{translatedDateFormatter, translatedTaxYearEndDateFormatter}
 import views.html.pages.EndDateQuestionPageView
 
 import java.time.LocalDate
@@ -62,13 +62,17 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
     override val expectedNoText: String = "No"
     override val expectedButtonText: String = "Continue"
 
-    override def expectedHeading(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and 5 April $taxYear?"
+    override def expectedHeading(taxYear: Int, startDate: LocalDate): String =
+      s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}?"
+        .replace("\u00A0", " ")
 
     override def expectedTitle(taxYear: Int, startDate: LocalDate): String = expectedHeading(taxYear, startDate)
 
     override def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String = s"Error: ${expectedTitle(taxYear, startDate)}"
 
-    override def expectedErrorText(taxYear: Int, startDate: LocalDate): String = s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(defaultMessages)} and 5 April $taxYear"
+    override def expectedErrorText(taxYear: Int, startDate: LocalDate): String =
+      s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(defaultMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}"
+        .replace("\u00A0", " ")
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -76,13 +80,17 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
     override val expectedNoText: String = "Na"
     override val expectedButtonText: String = "Continue"
 
-    override def expectedHeading(taxYear: Int, startDate: LocalDate): String = s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and 5 April $taxYear?"
+    override def expectedHeading(taxYear: Int, startDate: LocalDate): String =
+      s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
+        .replace("\u00A0", " ")
 
     override def expectedTitle(taxYear: Int, startDate: LocalDate): String = expectedHeading(taxYear, startDate)
 
     override def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String = s"Error: ${expectedTitle(taxYear, startDate)}"
 
-    override def expectedErrorText(taxYear: Int, startDate: LocalDate): String = s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(welshMessages)} and 5 April $taxYear"
+    override def expectedErrorText(taxYear: Int, startDate: LocalDate): String =
+      s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
+        .replace("\u00A0", " ")
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, _]] = Seq(
