@@ -27,7 +27,7 @@ class InYearUtilSpec extends UnitTest
 
   private val year2022: Int = 2022
   private val month4: Int = 4
-  private val month5: Int = 4
+  private val month5: Int = 5
   private val day5: Int = 5
   private val day6: Int = 6
   private val hour23: Int = 23
@@ -59,6 +59,7 @@ class InYearUtilSpec extends UnitTest
     "return given date when date is after the beginning of given tax year" in {
       toDateWithinTaxYear(year2022, LocalDate.of(year2022, month5, day5)) shouldBe LocalDate.of(year2022, month5, day5)
     }
+
     "return date at start of taxYear when date is before the beginning of given tax year" in {
       toDateWithinTaxYear(year2022, LocalDate.of(year2022 - 1, month4, day5)) shouldBe LocalDate.of(year2022 - 1, month4, day6)
     }

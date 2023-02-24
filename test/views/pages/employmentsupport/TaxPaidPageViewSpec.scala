@@ -72,6 +72,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
     val expectedErrorText: String
 
     def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String
+
     def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String
   }
 
@@ -84,6 +85,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Employment and Support Allowance between " +
       s"${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
 
     override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String =
       s"The amount of tax taken off must be less than the amount of Employment and Support Allowance your client got, £$amount"
@@ -98,6 +100,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String = s"How much tax was taken off your client’s Employment and Support Allowance between " +
       s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
 
     override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String =
       s"The amount of tax taken off must be less than the amount of Employment and Support Allowance your client got, £$amount"
@@ -112,6 +115,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
       s"How much tax was taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(defaultMessages)} and ${translatedDateFormatter(secondDate)(defaultMessages)}?"
+        .replace("\u00A0", " ")
 
     override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String = s"The amount of tax taken off must be less than the amount of Employment and Support Allowance you got, £$amount"
   }
@@ -125,6 +129,7 @@ class TaxPaidPageViewSpec extends ViewUnitTest {
 
     override def expectedHeading(firstDate: LocalDate, secondDate: LocalDate): String =
       s"How much tax was taken off your Employment and Support Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+        .replace("\u00A0", " ")
 
     override def expectedTaxExceedsAmountErrorText(amount: BigDecimal): String = s"The amount of tax taken off must be less than the amount of Employment and Support Allowance you got, £$amount"
   }

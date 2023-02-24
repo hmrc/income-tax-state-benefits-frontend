@@ -21,7 +21,7 @@ import models.{BenefitType, ClaimCYAModel}
 import play.api.data.Form
 import play.api.i18n.Messages
 import utils.InYearUtil.toDateWithinTaxYear
-import utils.ViewUtils.translatedDateFormatter
+import utils.ViewUtils.{translatedDateFormatter, translatedTaxYearEndDateFormatter}
 
 import java.time.LocalDate
 import javax.inject.Singleton
@@ -40,7 +40,7 @@ class FormsProvider() {
 
   def endDateYesNoForm(taxYear: Int, startDate: LocalDate)(implicit messages: Messages): Form[Boolean] = YesNoForm.yesNoForm(
     missingInputError = "common.endDateQuestionPage.error",
-    Seq(translatedDateFormatter(toDateWithinTaxYear(taxYear, startDate)), taxYear.toString)
+    Seq(translatedDateFormatter(toDateWithinTaxYear(taxYear, startDate)), translatedTaxYearEndDateFormatter(taxYear))
   )
 
   def validatedEndDateForm(dateForm: Form[DateFormData],

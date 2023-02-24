@@ -22,7 +22,7 @@ import models.BenefitType
 import play.api.data.Forms.mapping
 import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
-import utils.ViewUtils.translatedDateFormatter
+import utils.ViewUtils.{translatedDateFormatter, translatedTaxYearEndDateFormatter}
 
 import java.time.LocalDate
 import java.time.Month.APRIL
@@ -31,6 +31,8 @@ import scala.util.Try
 object DateForm extends InputFilters {
 
   private val SIX = 6
+
+  private val tooLongAgoDate = LocalDate.parse("1900-01-01")
 
   val formValuesPrefix = "value-for"
 
@@ -84,7 +86,8 @@ object DateForm extends InputFilters {
                                           isAgent: Boolean,
                                           endDate: Option[LocalDate])
                                          (implicit messages: Messages): Seq[FormError] = {
-    val isAfterMinDate = startDate.isAfter(LocalDate.parse("1900-01-01"))
+
+    val isAfterMinDate = startDate.isAfter(tooLongAgoDate)
     val isBeforeEOY = startDate.isBefore(LocalDate.of(taxYear, APRIL, SIX))
     val isBeforeDate = startDate.isBefore(endDate.getOrElse(startDate.plusDays(1)))
 
@@ -93,8 +96,8 @@ object DateForm extends InputFilters {
     lazy val mustBeBeforeErrorMessage = s"${benefitType.typeName}.startDatePage.error.mustBeBefore.date.${userType(isAgent)}"
 
     (isAfterMinDate, isBeforeEOY, isBeforeDate) match {
-      case (false, _, _) => Seq(FormError("invalidOrNotAllowed", tooLongAgoErrorMessage))
-      case (true, false, _) => Seq(FormError("invalidOrNotAllowed", mustBeSameAsOrBeforeErrorMessage, Seq(taxYear.toString)))
+      case (false, _, _) => Seq(FormError("invalidOrNotAllowed", tooLongAgoErrorMessage, Seq(translatedDateFormatter(tooLongAgoDate))))
+      case (true, false, _) => Seq(FormError("invalidOrNotAllowed", mustBeSameAsOrBeforeErrorMessage, Seq(translatedTaxYearEndDateFormatter(taxYear))))
       case (true, _, false) => Seq(FormError("invalidOrNotAllowed", mustBeBeforeErrorMessage, Seq(translatedDateFormatter(endDate.get))))
       case _ => Seq.empty
     }
@@ -114,7 +117,7 @@ object DateForm extends InputFilters {
 
     (isAfterStartDate, isBeforeEOY) match {
       case (false, _) => Seq(FormError("invalidOrNotAllowed", mustBeAfterStartDateErrorMessage, Seq(translatedDateFormatter(startDate))))
-      case (true, false) => Seq(FormError("invalidOrNotAllowed", mustBeEndOfYearErrorMessage, Seq(taxYear.toString)))
+      case (true, false) => Seq(FormError("invalidOrNotAllowed", mustBeEndOfYearErrorMessage, Seq(translatedTaxYearEndDateFormatter(taxYear))))
       case _ => Seq.empty
     }
   }
