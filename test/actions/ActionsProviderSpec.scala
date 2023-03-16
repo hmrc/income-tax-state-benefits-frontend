@@ -21,6 +21,7 @@ import controllers.routes.ClaimsController
 import models.BenefitDataType.CustomerAdded
 import models.BenefitType.JobSeekersAllowance
 import models.IncomeTaxUserData
+import models.audit.ViewStateBenefitsAudit
 import models.authorisation.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
 import models.errors.HttpParserError
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
@@ -29,15 +30,17 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.status
 import support.ControllerUnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
-import support.mocks.{MockAuthorisedAction, MockErrorHandler, MockStateBenefitsService}
+import support.mocks.{MockAuditService, MockAuthorisedAction, MockErrorHandler, MockStateBenefitsService}
 
 import java.util.UUID
 
 class ActionsProviderSpec extends ControllerUnitTest
   with MockAuthorisedAction
   with MockStateBenefitsService
+  with MockAuditService
   with MockErrorHandler {
 
   private val anyBlock = (_: Request[AnyContent]) => Ok("any-result")
@@ -47,6 +50,7 @@ class ActionsProviderSpec extends ControllerUnitTest
   private val actionsProvider = new ActionsProvider(
     mockAuthorisedAction,
     mockStateBenefitsService,
+    mockAuditService,
     mockErrorHandler,
     appConfig
   )
@@ -84,6 +88,50 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetPriorData(aUser, taxYear, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
 
       val underTest = actionsProvider.priorDataFor(taxYear)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+  }
+
+  ".priorDataWithViewStateBenefitsAudit(taxYear)" should {
+    "redirect to UnauthorisedUserErrorController when authentication fails" in {
+      mockFailToAuthenticate()
+
+      val underTest = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYearEOY, JobSeekersAllowance)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+    }
+
+    "handle internal server error when getPriorData result in error" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYearEOY, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
+
+      val underTest = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYearEOY, JobSeekersAllowance)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+    }
+
+    "return successful response when end of year" in {
+      val auditModel = ViewStateBenefitsAudit(taxYearEOY, aUser, JobSeekersAllowance, anIncomeTaxUserData)
+
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYearEOY, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
+      mockSendAudit(auditModel.toAuditModel)
+
+      val underTest = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYearEOY, JobSeekersAllowance)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+
+    "return successful response when in year" in {
+      val auditModel = ViewStateBenefitsAudit(taxYear, aUser, JobSeekersAllowance, anIncomeTaxUserData)
+
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetPriorData(aUser, taxYear, Right(IncomeTaxUserData(stateBenefits = Some(anAllStateBenefitsData))))
+      mockSendAudit(auditModel.toAuditModel)
+
+      val underTest = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYear, JobSeekersAllowance)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }

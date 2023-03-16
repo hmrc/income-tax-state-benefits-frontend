@@ -19,7 +19,7 @@ package support.mocks
 import actions.ActionsProvider
 import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
 import models.{BenefitType, IncomeTaxUserData, StateBenefitsUserData}
-import org.scalamock.handlers.{CallHandler1, CallHandler3}
+import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler3}
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc._
 import support.builders.UserBuilder.aUser
@@ -37,6 +37,14 @@ trait MockActionsProvider extends MockFactory
                        result: IncomeTaxUserData): CallHandler1[Int, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
     (mockActionsProvider.priorDataFor(_: Int))
       .expects(taxYear)
+      .returns(value = userPriorDataRequestActionBuilder(result))
+  }
+
+  def mockPriorDataWithViewStateBenefitsAudit(taxYear: Int,
+                                          benefitType: BenefitType,
+                                          result: IncomeTaxUserData): CallHandler2[Int, BenefitType, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
+    (mockActionsProvider.priorDataWithViewStateBenefitsAudit(_: Int, _: BenefitType))
+      .expects(taxYear, benefitType)
       .returns(value = userPriorDataRequestActionBuilder(result))
   }
 

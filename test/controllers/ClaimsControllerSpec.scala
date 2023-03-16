@@ -36,7 +36,7 @@ class ClaimsControllerSpec extends ControllerUnitTest
 
   "show" should {
     "return a successful response" in {
-      mockPriorDataFor(taxYear, anIncomeTaxUserData)
+      mockPriorDataWithViewStateBenefitsAudit(taxYear, JobSeekersAllowance, anIncomeTaxUserData)
 
       val result = underTest.show(taxYear, JobSeekersAllowance).apply(fakeIndividualRequest)
 

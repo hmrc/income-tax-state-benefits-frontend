@@ -34,7 +34,8 @@ class ClaimsController @Inject()(actionsProvider: ActionsProvider,
                                 (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
-  def show(taxYear: Int, benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataFor(taxYear) { implicit request =>
+  def show(taxYear: Int,
+           benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYear, benefitType) { implicit request =>
     Ok(pageView(ClaimsPage(taxYear, benefitType, inYear(taxYear), request.incomeTaxUserData)))
   }
 }
