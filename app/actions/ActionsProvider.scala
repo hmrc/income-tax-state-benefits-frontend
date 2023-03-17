@@ -20,7 +20,7 @@ import config.{AppConfig, ErrorHandler}
 import models.BenefitType
 import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
-import services.StateBenefitsService
+import services.{AuditService, StateBenefitsService}
 
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
@@ -29,14 +29,20 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ActionsProvider @Inject()(authAction: AuthorisedAction,
                                 stateBenefitsService: StateBenefitsService,
+                                auditService: AuditService,
                                 errorHandler: ErrorHandler,
                                 appConfig: AppConfig)
                                (implicit ec: ExecutionContext) {
 
+  // TODO: Make this private after Claims and Summary pages auditing is complete.
   def priorDataFor(taxYear: Int): ActionBuilder[UserPriorDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(UserPriorDataRequestRefinerAction(taxYear, stateBenefitsService, errorHandler))
+
+  def priorDataWithViewStateBenefitsAudit(taxYear: Int, benefitType: BenefitType): ActionBuilder[UserPriorDataRequest, AnyContent] =
+    priorDataFor(taxYear)
+      .andThen(ViewStateBenefitsAuditAction(taxYear, benefitType, auditService))
 
   def endOfYearSessionDataFor(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
     authAction
