@@ -46,9 +46,16 @@ trait MockStateBenefitsConnector extends MockFactory {
       .returning(Future.successful(result))
   }
 
-  def mockCreateOrUpdate(stateBenefitsUserData: StateBenefitsUserData,
-                         result: Either[ApiError, UUID]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, UUID]]] = {
+  def mockCreateSessionData(stateBenefitsUserData: StateBenefitsUserData,
+                            result: Either[ApiError, UUID]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, UUID]]] = {
     (mockStateBenefitsConnector.createSessionData(_: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(stateBenefitsUserData, *)
+      .returning(Future.successful(result))
+  }
+
+  def mockUpdateSessionData(stateBenefitsUserData: StateBenefitsUserData,
+                            result: Either[ApiError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
+    (mockStateBenefitsConnector.updateSessionData(_: StateBenefitsUserData)(_: HeaderCarrier))
       .expects(stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }

@@ -37,7 +37,7 @@ class StateBenefitSpec extends UnitTest {
             |  "startDate": "2019-04-23",
             |  "endDate": "2020-08-13",
             |  "amount": 300.00,
-            |  "taxPaid": 400.00
+            |  "taxPaid": 50.00
             |}
             |""".stripMargin)
 

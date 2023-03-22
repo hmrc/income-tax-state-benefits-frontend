@@ -18,7 +18,7 @@ package support.builders
 
 import models.StateBenefitsData
 import play.api.libs.json.{JsValue, Json}
-import StateBenefitBuilder.aStateBenefit
+import support.builders.StateBenefitBuilder.aStateBenefit
 
 object StateBenefitsDataBuilder {
 
@@ -43,7 +43,7 @@ object StateBenefitsDataBuilder {
       |      "startDate": "2019-04-23",
       |      "endDate": "2020-08-13",
       |      "amount": 300.00,
-      |      "taxPaid": 400.00
+      |      "taxPaid": 50.00
       |    }
       |  ],
       |  "statePension": {
@@ -53,7 +53,7 @@ object StateBenefitsDataBuilder {
       |    "startDate": "2019-04-23",
       |    "endDate": "2020-08-13",
       |    "amount": 300.00,
-      |    "taxPaid": 400.00
+      |    "taxPaid": 50.00
       |  },
       |  "statePensionLumpSum": {
       |    "dateIgnored": "2019-07-08T05:23:00Z",
@@ -62,7 +62,7 @@ object StateBenefitsDataBuilder {
       |    "startDate": "2019-04-23",
       |    "endDate": "2020-08-13",
       |    "amount": 300.00,
-      |    "taxPaid": 400.00
+      |    "taxPaid": 50.00
       |  },
       |  "employmentSupportAllowance": [
       |    {
@@ -72,7 +72,7 @@ object StateBenefitsDataBuilder {
       |      "startDate": "2019-04-23",
       |      "endDate": "2020-08-13",
       |      "amount": 300.00,
-      |      "taxPaid": 400.00
+      |      "taxPaid": 50.00
       |    }
       |  ],
       |  "jobSeekersAllowance": [
@@ -83,7 +83,7 @@ object StateBenefitsDataBuilder {
       |      "startDate": "2019-04-23",
       |      "endDate": "2020-08-13",
       |      "amount": 300.00,
-      |      "taxPaid": 400.00
+      |      "taxPaid": 50.00
       |    }
       |  ],
       |  "bereavementAllowance": {
@@ -93,7 +93,7 @@ object StateBenefitsDataBuilder {
       |    "startDate": "2019-04-23",
       |    "endDate": "2020-08-13",
       |    "amount": 300.00,
-      |    "taxPaid": 400.00
+      |    "taxPaid": 50.00
       |  },
       |  "otherStateBenefits": {
       |    "dateIgnored": "2019-07-08T05:23:00Z",
@@ -102,7 +102,7 @@ object StateBenefitsDataBuilder {
       |    "startDate": "2019-04-23",
       |    "endDate": "2020-08-13",
       |    "amount": 300.00,
-      |    "taxPaid": 400.00
+      |    "taxPaid": 50.00
       |  }
       |}
       |""".stripMargin)

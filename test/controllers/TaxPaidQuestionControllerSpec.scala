@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.routes.{AmountController, ReviewClaimController}
+import controllers.routes.{AmountController, ReviewClaimController, TaxPaidController}
 import forms.{FormsProvider, YesNoForm}
 import models.BenefitType.JobSeekersAllowance
 import org.jsoup.Jsoup
@@ -70,7 +70,18 @@ class TaxPaidQuestionControllerSpec extends ControllerUnitTest
       document.select(".govuk-error-summary").isEmpty shouldBe false
     }
 
-    "redirect to ReviewClaim page when Yes is submitted and isFinished" in {
+    "handle internal server error when claimService.updateTaxPaidQuestion(...) fails" in {
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Left(()))
+      mockInternalServerError(InternalServerError)
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
+      val result = underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "redirect to ReviewClaim page when isFinished" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData))
 
@@ -80,7 +91,7 @@ class TaxPaidQuestionControllerSpec extends ControllerUnitTest
         Redirect(ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
-    "redirect to Amount page when Yes is submitted and not finished" in {
+    "redirect to Amount page when not finished and amount is empty" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = None)))))
 
@@ -90,25 +101,14 @@ class TaxPaidQuestionControllerSpec extends ControllerUnitTest
         Redirect(AmountController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
 
-    "redirect to ReviewClaim page when No is submitted" in {
+    "redirect to TaxPaid page when not finished and amount not Empty" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = false, Right(aStateBenefitsUserData))
-
-      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
-
-      await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId)(request)) shouldBe
-        Redirect(ReviewClaimController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
-    }
-
-    "handle internal server error when updating end date question fails" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
-      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Left(()))
-      mockInternalServerError(InternalServerError)
+      mockUpdateTaxPaidQuestion(aStateBenefitsUserData, question = true, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(taxPaid = None)))))
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "true")
-      val result = underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      await(underTest.submit(taxYearEOY, JobSeekersAllowance, sessionDataId)(request)) shouldBe
+        Redirect(TaxPaidController.show(taxYearEOY, JobSeekersAllowance, sessionDataId))
     }
   }
 }
