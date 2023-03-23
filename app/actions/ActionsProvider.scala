@@ -56,6 +56,11 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
       .andThen(UserSessionDataRequestRefinerAction(taxYear, benefitType, sessionDataId, stateBenefitsService, errorHandler))
       .andThen(ReviewClaimFilterAction(taxYear, benefitType))
 
+  def reviewClaimSaveAndContinue(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+    endOfYearSessionDataFor(taxYear, benefitType, sessionDataId)
+      .andThen(ReviewClaimFilterAction(taxYear, benefitType))
+      .andThen(SaveAndContinueFilterAction(taxYear, benefitType, stateBenefitsService, errorHandler))
+
   def endOfYear(taxYear: Int): ActionBuilder[AuthorisationRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))

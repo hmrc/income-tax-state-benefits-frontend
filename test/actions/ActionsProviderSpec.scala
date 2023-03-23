@@ -30,6 +30,7 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.status
 import support.ControllerUnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
@@ -209,6 +210,66 @@ class ActionsProviderSpec extends ControllerUnitTest
       mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
 
       val underTest = actionsProvider.reviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
+    }
+  }
+
+  ".reviewClaimSaveAndContinue(...)" should {
+    "redirect to UnauthorisedUserErrorController when authentication fails" in {
+      mockFailToAuthenticate()
+
+      val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+    }
+
+    "redirect to Income Tax Submission Overview when in year" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+
+      val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYear, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYear.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear))
+    }
+
+    "handle internal server error when getUserSessionData result in error" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockHandleError(INTERNAL_SERVER_ERROR, InternalServerError)
+
+      val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe InternalServerError
+    }
+
+    "redirect to ClaimsController when ReviewClaimFilterAction returns Redirect" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData.copy(benefitDataType = CustomerAdded.name, claim = None)))
+
+      val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
+    }
+
+    "redirect to ClaimsController when SaveAndContinueFilterAction returns Redirect" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData))
+      mockGetPriorData(aUser, taxYearEOY, Right(anIncomeTaxUserData))
+
+      val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
+
+      await(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe
+        Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
+    }
+
+    "return successful response when session data has been updated" in {
+      mockAuthAsIndividual(Some(aUser.nino))
+      mockGetUserSessionData(aUser, sessionDataId, Right(aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(amount = Some(BigDecimal(111)))))))
+      mockGetPriorData(aUser, taxYearEOY, Right(anIncomeTaxUserData))
+
+      val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
       status(underTest(fakeIndividualRequest.withSession(TAX_YEAR -> taxYearEOY.toString, VALID_TAX_YEARS -> validTaxYears))) shouldBe OK
     }

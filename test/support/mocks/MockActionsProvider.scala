@@ -41,8 +41,8 @@ trait MockActionsProvider extends MockFactory
   }
 
   def mockPriorDataWithViewStateBenefitsAudit(taxYear: Int,
-                                          benefitType: BenefitType,
-                                          result: IncomeTaxUserData): CallHandler2[Int, BenefitType, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
+                                              benefitType: BenefitType,
+                                              result: IncomeTaxUserData): CallHandler2[Int, BenefitType, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
     (mockActionsProvider.priorDataWithViewStateBenefitsAudit(_: Int, _: BenefitType))
       .expects(taxYear, benefitType)
       .returns(value = userPriorDataRequestActionBuilder(result))
@@ -57,11 +57,20 @@ trait MockActionsProvider extends MockFactory
       .returns(value = userSessionDataRequestActionBuilder(result))
   }
 
-  def mockSessionDataFor(taxYear: Int,
-                         benefitType: BenefitType,
-                         sessionDataId: UUID,
-                         result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+  def mockReviewClaimSessionDataFor(taxYear: Int,
+                                    benefitType: BenefitType,
+                                    sessionDataId: UUID,
+                                    result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
     (mockActionsProvider.reviewClaimSessionDataFor(_: Int, _: BenefitType, _: UUID))
+      .expects(taxYear, benefitType, sessionDataId)
+      .returns(value = userSessionDataRequestActionBuilder(result))
+  }
+
+  def mockReviewClaimSaveAndContinue(taxYear: Int,
+                                     benefitType: BenefitType,
+                                     sessionDataId: UUID,
+                                     result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+    (mockActionsProvider.reviewClaimSaveAndContinue(_: Int, _: BenefitType, _: UUID))
       .expects(taxYear, benefitType, sessionDataId)
       .returns(value = userSessionDataRequestActionBuilder(result))
   }

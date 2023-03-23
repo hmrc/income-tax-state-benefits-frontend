@@ -64,11 +64,11 @@ class TaxPaidQuestionController @Inject()(actionsProvider: ActionsProvider,
                               benefitType: BenefitType,
                               userData: StateBenefitsUserData): Call = {
     val sessionDataId = userData.sessionDataId.get
-    val noAmount = userData.claim.get.amount.isEmpty
+    val emptyAmount = userData.claim.get.amount.isEmpty
     if (userData.isFinished) {
       ReviewClaimController.show(taxYear, benefitType, sessionDataId)
     } else {
-      if (noAmount) AmountController.show(taxYear, benefitType, sessionDataId) else TaxPaidController.show(taxYear, benefitType, sessionDataId)
+      if (emptyAmount) AmountController.show(taxYear, benefitType, sessionDataId) else TaxPaidController.show(taxYear, benefitType, sessionDataId)
     }
   }
 }

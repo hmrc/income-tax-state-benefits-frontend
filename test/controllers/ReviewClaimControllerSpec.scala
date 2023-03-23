@@ -48,7 +48,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   "show" should {
     "return a successful response" in {
-      mockSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockReviewClaimSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
 
       val result = underTest.show(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest)
 
@@ -59,7 +59,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
   ".saveAndContinue" should {
     "handle internal server error when updating saveStateBenefit fails" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockReviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockSaveClaim(aStateBenefitsUserData, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
@@ -69,12 +69,10 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
     }
 
     "redirect to JobSeekersAllowance Page on successful save of StateBenefit" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockReviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
       mockSaveClaim(aStateBenefitsUserData, Right(()))
 
-      val request = fakeIndividualRequest.withMethod(POST.method)
-
-      await(underTest.saveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(request)) shouldBe
+      await(underTest.saveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))) shouldBe
         Redirect(ClaimsController.show(taxYearEOY, JobSeekersAllowance))
     }
   }
