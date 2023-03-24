@@ -24,7 +24,6 @@ import play.api.mvc.Results.{InternalServerError, Redirect}
 import play.api.test.Helpers.{contentType, status}
 import sttp.model.Method.POST
 import support.ControllerUnitTest
-import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
 import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
@@ -60,8 +59,8 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
 
   ".submit" should {
     "return error when stateBenefitsService.removeClaim(...) returns error" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
-      mockRemoveClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockRemoveClaim(sessionDataId, aUser, aStateBenefitsUserData, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
       val request = fakeIndividualRequest.withMethod(POST.method)
@@ -71,8 +70,8 @@ class RemoveClaimControllerSpec extends ControllerUnitTest
     }
 
     "redirect to ClaimsController when stateBenefitsService.removeClaim(...) succeeds" in {
-      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel)))
-      mockRemoveClaim(aUser, sessionDataId, Right(()))
+      mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
+      mockRemoveClaim(sessionDataId, aUser, aStateBenefitsUserData, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
 

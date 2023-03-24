@@ -80,7 +80,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
   ".restoreClaim" should {
     "handle internal server error when restoreClaim fails" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
-      mockRestoreClaim(aUser, sessionDataId, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
+      mockRestoreClaim(aUser, sessionDataId, aStateBenefitsUserData, Left(HttpParserError(INTERNAL_SERVER_ERROR)))
       mockInternalServerError(InternalServerError)
 
       val result = underTest.restoreClaim(taxYearEOY, JobSeekersAllowance, sessionDataId).apply(fakeIndividualRequest.withMethod(POST.method))
@@ -90,7 +90,7 @@ class ReviewClaimControllerSpec extends ControllerUnitTest
 
     "redirect to JobSeekersAllowance Page on successful claim restore" in {
       mockEndOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId, aStateBenefitsUserData)
-      mockRestoreClaim(aUser, sessionDataId, Right(()))
+      mockRestoreClaim(aUser, sessionDataId, aStateBenefitsUserData, Right(()))
 
       val request = fakeIndividualRequest.withMethod(POST.method)
 

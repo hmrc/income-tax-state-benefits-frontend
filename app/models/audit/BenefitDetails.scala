@@ -16,6 +16,7 @@
 
 package models.audit
 
+import models.ClaimCYAModel
 import play.api.libs.json.{Json, OWrites}
 
 import java.time.{Instant, LocalDate}
@@ -29,4 +30,13 @@ case class BenefitDetails(startDate: LocalDate,
 
 object BenefitDetails {
   implicit def writes: OWrites[BenefitDetails] = Json.writes[BenefitDetails]
+
+  def apply(claimCYAModel: ClaimCYAModel): BenefitDetails = BenefitDetails(
+    startDate = claimCYAModel.startDate,
+    endDate = claimCYAModel.endDate,
+    dateIgnored = claimCYAModel.dateIgnored,
+    submittedOn = claimCYAModel.submittedOn,
+    amount = claimCYAModel.amount,
+    taxPaid = claimCYAModel.taxPaid
+  )
 }

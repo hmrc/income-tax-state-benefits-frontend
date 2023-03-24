@@ -48,7 +48,7 @@ class RemoveClaimController @Inject()(actionsProvider: ActionsProvider,
   def submit(taxYear: Int,
              benefitType: BenefitType,
              sessionDataId: UUID): Action[AnyContent] = actionsProvider.endOfYearSessionDataFor(taxYear, benefitType, sessionDataId).async { implicit request =>
-    stateBenefitsService.removeClaim(request.user, sessionDataId).map {
+    stateBenefitsService.removeClaim(sessionDataId, request.user, request.stateBenefitsUserData).map {
       case Right(_) => Redirect(ClaimsController.show(taxYear, benefitType))
       case Left(_) => errorHandler.internalServerError()
     }
