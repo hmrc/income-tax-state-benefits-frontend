@@ -16,6 +16,7 @@
 
 package models.audit
 
+import models.StateBenefitsUserData
 import play.api.libs.json.{Json, OWrites}
 
 case class UnIgnoreStateBenefitAudit(taxYear: Int,
@@ -32,4 +33,14 @@ case class UnIgnoreStateBenefitAudit(taxYear: Int,
 
 object UnIgnoreStateBenefitAudit {
   implicit def writes: OWrites[UnIgnoreStateBenefitAudit] = Json.writes[UnIgnoreStateBenefitAudit]
+
+  def apply(userType: String,
+            stateBenefitsUserData: StateBenefitsUserData): UnIgnoreStateBenefitAudit = UnIgnoreStateBenefitAudit(
+    taxYear = stateBenefitsUserData.taxYear,
+    userType = userType,
+    nino = stateBenefitsUserData.nino,
+    mtdItId = stateBenefitsUserData.mtdItId,
+    benefitType = stateBenefitsUserData.benefitType,
+    benefitDetails = BenefitDetails(stateBenefitsUserData.claim.get)
+  )
 }

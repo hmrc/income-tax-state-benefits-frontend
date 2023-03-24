@@ -18,7 +18,7 @@ package support.mocks
 
 import models.errors.HttpParserError
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
-import org.scalamock.handlers.{CallHandler2, CallHandler3}
+import org.scalamock.handlers.{CallHandler2, CallHandler3, CallHandler4}
 import org.scalamock.scalatest.MockFactory
 import services.StateBenefitsService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -67,19 +67,21 @@ trait MockStateBenefitsService extends MockFactory {
       .returning(Future.successful(result))
   }
 
-  def mockRemoveClaim(user: User,
-                      sessionDataId: UUID,
-                      result: Either[HttpParserError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
-    (mockStateBenefitsService.removeClaim(_: User, _: UUID)(_: HeaderCarrier))
-      .expects(user, sessionDataId, *)
+  def mockRemoveClaim(sessionDataId: UUID,
+                      user: User,
+                      stateBenefitsUserData: StateBenefitsUserData,
+                      result: Either[HttpParserError, Unit]): CallHandler4[UUID, User, StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
+    (mockStateBenefitsService.removeClaim(_: UUID, _: User, _: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(sessionDataId, user, stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
 
   def mockRestoreClaim(user: User,
                        sessionDataId: UUID,
-                       result: Either[HttpParserError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
-    (mockStateBenefitsService.restoreClaim(_: User, _: UUID)(_: HeaderCarrier))
-      .expects(user, sessionDataId, *)
+                       stateBenefitsUserData: StateBenefitsUserData,
+                       result: Either[HttpParserError, Unit]): CallHandler4[UUID, User, StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
+    (mockStateBenefitsService.restoreClaim(_: UUID, _: User, _: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(sessionDataId, user, stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
 }

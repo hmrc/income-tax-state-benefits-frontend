@@ -17,13 +17,16 @@
 package services
 
 import connectors.errors.{ApiError, SingleErrorBody}
+import models.BenefitDataType.{CustomerOverride, HmrcData}
 import models.errors.HttpParserError
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import support.UnitTest
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
-import support.mocks.MockStateBenefitsConnector
+import support.builders.audit.IgnoreStateBenefitAuditBuilder.anIgnoreStateBenefitAudit
+import support.builders.audit.UnIgnoreStateBenefitAuditBuilder.anUnIgnoreStateBenefitAudit
+import support.mocks.{MockAuditService, MockStateBenefitsConnector}
 import support.providers.TaxYearProvider
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,13 +34,14 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class StateBenefitsServiceSpec extends UnitTest
+  with MockAuditService
   with MockStateBenefitsConnector
   with TaxYearProvider {
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
   private val sessionDataId = UUID.randomUUID()
 
-  private val underTest = new StateBenefitsService(mockStateBenefitsConnector)
+  private val underTest = new StateBenefitsService(mockAuditService, mockStateBenefitsConnector)
 
   ".getPriorData(...)" should {
     "return error when fails to get data" in {
@@ -113,13 +117,22 @@ class StateBenefitsServiceSpec extends UnitTest
     "return error when fails to remove data" in {
       mockRemoveClaim(aUser, sessionDataId, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      await(underTest.removeClaim(sessionDataId, aUser, aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
     }
 
-    "return correct result when remove successful" in {
+    "send IgnoreStateBenefitAudit event when HMRC data and return correct result when remove successful" in {
+      val stateBenefitsUserData = aStateBenefitsUserData.copy(benefitDataType = HmrcData.name)
+
+      mockRemoveClaim(aUser, sessionDataId, Right(()))
+      mockSendAudit(anIgnoreStateBenefitAudit.toAuditModel)
+
+      await(underTest.removeClaim(sessionDataId, aUser, stateBenefitsUserData)) shouldBe Right(())
+    }
+
+    "not send audit event when not HMRC data and return correct result when remove successful" in {
       mockRemoveClaim(aUser, sessionDataId, Right(()))
 
-      await(underTest.removeClaim(aUser, sessionDataId)) shouldBe Right(())
+      await(underTest.removeClaim(sessionDataId, aUser, aStateBenefitsUserData.copy(benefitDataType = CustomerOverride.name))) shouldBe Right(())
     }
   }
 
@@ -127,13 +140,14 @@ class StateBenefitsServiceSpec extends UnitTest
     "return error when fails to restore claim" in {
       mockRestoreClaim(aUser, sessionDataId, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      await(underTest.restoreClaim(aUser, sessionDataId)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      await(underTest.restoreClaim(sessionDataId, aUser, aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
     }
 
     "return correct result when restore claim is successful" in {
       mockRestoreClaim(aUser, sessionDataId, Right(()))
+      mockSendAudit(anUnIgnoreStateBenefitAudit.toAuditModel)
 
-      await(underTest.restoreClaim(aUser, sessionDataId)) shouldBe Right(())
+      await(underTest.restoreClaim(sessionDataId, aUser, aStateBenefitsUserData)) shouldBe Right(())
     }
   }
 }
