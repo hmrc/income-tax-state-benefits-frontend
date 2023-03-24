@@ -58,6 +58,28 @@ class StateBenefitsUserDataSpec extends UnitTest {
     }
   }
 
+  ".isNewClaim" should {
+    "return false when claim has benefitId" in {
+      val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = Some(benefitId))))
+
+      underTest.isNewClaim shouldBe false
+    }
+
+    "return true" when {
+      "claim has no benefitId" in {
+        val underTest = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = None)))
+
+        underTest.isNewClaim shouldBe true
+      }
+
+      "claim is empty" in {
+        val underTest = aStateBenefitsUserData.copy(claim = None)
+
+        underTest.isNewClaim shouldBe true
+      }
+    }
+  }
+
   ".isHmrcData" should {
     s"return true when benefitDataType is ${HmrcData.name}" in {
       val underTest = aStateBenefitsUserData.copy(benefitDataType = HmrcData.name)

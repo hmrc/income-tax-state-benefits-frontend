@@ -16,6 +16,7 @@
 
 package models.audit
 
+import models.StateBenefitsUserData
 import play.api.libs.json.{Json, OWrites}
 
 case class ViewStateBenefitAudit(taxYear: Int,
@@ -32,4 +33,14 @@ case class ViewStateBenefitAudit(taxYear: Int,
 
 object ViewStateBenefitAudit {
   implicit def writes: OWrites[ViewStateBenefitAudit] = Json.writes[ViewStateBenefitAudit]
+
+  def apply(userType: String,
+            stateBenefitsUserData: StateBenefitsUserData): ViewStateBenefitAudit = ViewStateBenefitAudit(
+    taxYear = stateBenefitsUserData.taxYear,
+    userType = userType,
+    nino = stateBenefitsUserData.nino,
+    mtdItId = stateBenefitsUserData.mtdItId,
+    benefitType = stateBenefitsUserData.benefitType,
+    benefitDetails = BenefitDetails(stateBenefitsUserData.claim.get)
+  )
 }

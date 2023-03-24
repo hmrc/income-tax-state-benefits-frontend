@@ -31,6 +31,7 @@ case class StateBenefitsUserData(benefitType: String,
                                  claim: Option[ClaimCYAModel]) {
 
   lazy val isPriorSubmission: Boolean = claim.exists(_.benefitId.isDefined)
+  lazy val isNewClaim: Boolean = !isPriorSubmission
   lazy val isHmrcData: Boolean = benefitDataType == HmrcData.name
   lazy val isCustomerAdded: Boolean = benefitDataType == CustomerAdded.name
   lazy val isCustomerOverride: Boolean = benefitDataType == CustomerOverride.name

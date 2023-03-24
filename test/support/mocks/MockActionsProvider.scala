@@ -57,11 +57,11 @@ trait MockActionsProvider extends MockFactory
       .returns(value = userSessionDataRequestActionBuilder(result))
   }
 
-  def mockReviewClaimSessionDataFor(taxYear: Int,
-                                    benefitType: BenefitType,
-                                    sessionDataId: UUID,
-                                    result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
-    (mockActionsProvider.reviewClaimSessionDataFor(_: Int, _: BenefitType, _: UUID))
+  def mockReviewClaimWithAuditing(taxYear: Int,
+                                  benefitType: BenefitType,
+                                  sessionDataId: UUID,
+                                  result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+    (mockActionsProvider.reviewClaimWithAuditing(_: Int, _: BenefitType, _: UUID))
       .expects(taxYear, benefitType, sessionDataId)
       .returns(value = userSessionDataRequestActionBuilder(result))
   }
