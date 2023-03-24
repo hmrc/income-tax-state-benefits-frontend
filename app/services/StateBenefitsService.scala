@@ -19,7 +19,7 @@ package services
 import connectors.StateBenefitsConnector
 import connectors.errors.ApiError
 import models._
-import models.audit.{CreateStateBenefitAudit, IgnoreStateBenefitAudit, UnIgnoreStateBenefitAudit}
+import models.audit._
 import models.errors.HttpParserError
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -64,12 +64,12 @@ class StateBenefitsService @Inject()(auditService: AuditService,
     }
   }
 
-  def saveClaim(user: User, stateBenefitsUserData: StateBenefitsUserData)
+  def saveClaim(user: User, benefitType: BenefitType, stateBenefitsUserData: StateBenefitsUserData)
                (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
     stateBenefitsConnector.saveClaim(stateBenefitsUserData).map {
       case Left(error) => Left(HttpParserError(error.status))
       case Right(_) =>
-        if (stateBenefitsUserData.isNewClaim) auditCreateStateBenefitEvent(user, stateBenefitsUserData)
+        auditCreateOrAmendStateBenefitEvent(user, benefitType, stateBenefitsUserData)
         Right(())
     }
   }
@@ -79,7 +79,7 @@ class StateBenefitsService @Inject()(auditService: AuditService,
     stateBenefitsConnector.removeClaim(user, sessionDataId).map {
       case Left(error) => Left(HttpParserError(error.status))
       case Right(_) =>
-        auditIgnoreStateBenefitEvent(user, stateBenefitsUserData)
+        auditIgnoreOrRemoveStateBenefitEvent(user, stateBenefitsUserData)
         Right(())
     }
   }
@@ -100,17 +100,27 @@ class StateBenefitsService @Inject()(auditService: AuditService,
     auditService.sendAudit(auditModel.toAuditModel)
   }
 
-  private def auditIgnoreStateBenefitEvent(user: User, stateBenefitsUserData: StateBenefitsUserData)
-                                          (implicit hc: HeaderCarrier): Unit = {
+  private def auditIgnoreOrRemoveStateBenefitEvent(user: User, stateBenefitsUserData: StateBenefitsUserData)
+                                                  (implicit hc: HeaderCarrier): Unit = {
     if (stateBenefitsUserData.isHmrcData) {
-      val auditModel = IgnoreStateBenefitAudit(user.affinityGroup, stateBenefitsUserData)
-      auditService.sendAudit(auditModel.toAuditModel)
+      auditService.sendAudit(IgnoreStateBenefitAudit(user.affinityGroup, stateBenefitsUserData).toAuditModel)
+    } else {
+      auditService.sendAudit(RemoveStateBenefitAudit(user.affinityGroup, stateBenefitsUserData).toAuditModel)
     }
   }
 
-  private def auditCreateStateBenefitEvent(user: User, stateBenefitsUserData: StateBenefitsUserData)
-                                          (implicit hc: HeaderCarrier): Unit = {
-    val auditModel = CreateStateBenefitAudit(user.affinityGroup, stateBenefitsUserData)
-    auditService.sendAudit(auditModel.toAuditModel)
+  private def auditCreateOrAmendStateBenefitEvent(user: User, benefitType: BenefitType, sessionData: StateBenefitsUserData)
+                                                 (implicit hc: HeaderCarrier): Unit = {
+    if (sessionData.isNewClaim) {
+      val auditModel = CreateStateBenefitAudit(user.affinityGroup, sessionData)
+      auditService.sendAudit(auditModel.toAuditModel)
+    } else {
+      stateBenefitsConnector.getIncomeTaxUserData(user, sessionData.taxYear).map {
+        case Left(_) => ()
+        case Right(priorData) =>
+          val auditModel = AmendStateBenefitAudit(user, benefitType, priorData, sessionData)
+          auditService.sendAudit(auditModel.toAuditModel)
+      }
+    }
   }
 }
