@@ -19,7 +19,7 @@ package services
 import connectors.StateBenefitsConnector
 import connectors.errors.ApiError
 import models._
-import models.audit.{IgnoreStateBenefitAudit, UnIgnoreStateBenefitAudit}
+import models.audit.{CreateStateBenefitAudit, IgnoreStateBenefitAudit, UnIgnoreStateBenefitAudit}
 import models.errors.HttpParserError
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -64,11 +64,13 @@ class StateBenefitsService @Inject()(auditService: AuditService,
     }
   }
 
-  def saveClaim(stateBenefitsUserData: StateBenefitsUserData)
+  def saveClaim(user: User, stateBenefitsUserData: StateBenefitsUserData)
                (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
     stateBenefitsConnector.saveClaim(stateBenefitsUserData).map {
       case Left(error) => Left(HttpParserError(error.status))
-      case Right(_) => Right(())
+      case Right(_) =>
+        if (stateBenefitsUserData.isNewClaim) auditCreateStateBenefitEvent(user, stateBenefitsUserData)
+        Right(())
     }
   }
 
@@ -104,5 +106,11 @@ class StateBenefitsService @Inject()(auditService: AuditService,
       val auditModel = IgnoreStateBenefitAudit(user.affinityGroup, stateBenefitsUserData)
       auditService.sendAudit(auditModel.toAuditModel)
     }
+  }
+
+  private def auditCreateStateBenefitEvent(user: User, stateBenefitsUserData: StateBenefitsUserData)
+                                          (implicit hc: HeaderCarrier): Unit = {
+    val auditModel = CreateStateBenefitAudit(user.affinityGroup, stateBenefitsUserData)
+    auditService.sendAudit(auditModel.toAuditModel)
   }
 }

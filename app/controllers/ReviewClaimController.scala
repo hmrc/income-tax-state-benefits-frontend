@@ -41,7 +41,7 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
 
   def show(taxYear: Int,
            benefitType: BenefitType,
-           sessionDataId: UUID): Action[AnyContent] = actionsProvider.reviewClaimSessionDataFor(taxYear, benefitType, sessionDataId) { implicit request =>
+           sessionDataId: UUID): Action[AnyContent] = actionsProvider.reviewClaimWithAuditing(taxYear, benefitType, sessionDataId) { implicit request =>
     Ok(pageView(ReviewClaimPage(taxYear, benefitType, isInYear = InYearUtil.inYear(taxYear), request.stateBenefitsUserData)))
   }
 
@@ -49,7 +49,7 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
                       benefitType: BenefitType,
                       sessionDataId: UUID): Action[AnyContent] =
     actionsProvider.reviewClaimSaveAndContinue(taxYear, benefitType, sessionDataId).async { implicit request =>
-      stateBenefitsService.saveClaim(request.stateBenefitsUserData).map {
+      stateBenefitsService.saveClaim(request.user, request.stateBenefitsUserData).map {
         case Right(_) => Redirect(ClaimsController.show(taxYear, benefitType))
         case Left(_) => errorHandler.internalServerError()
       }

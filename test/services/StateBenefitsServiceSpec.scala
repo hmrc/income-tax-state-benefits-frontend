@@ -18,9 +18,11 @@ package services
 
 import connectors.errors.{ApiError, SingleErrorBody}
 import models.BenefitDataType.{CustomerOverride, HmrcData}
+import models.audit.CreateStateBenefitAudit
 import models.errors.HttpParserError
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import support.UnitTest
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
@@ -103,13 +105,24 @@ class StateBenefitsServiceSpec extends UnitTest
     "return error when fails to save data" in {
       mockSaveClaim(aStateBenefitsUserData, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      await(underTest.saveClaim(aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      await(underTest.saveClaim(aUser, aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
     }
 
-    "return correct result" in {
-      mockSaveClaim(aStateBenefitsUserData, Right(()))
+    "audit and return correct result when isNewClaim" in {
+      val newStateBenefit = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = None)))
 
-      await(underTest.saveClaim(aStateBenefitsUserData)) shouldBe Right(())
+      mockSaveClaim(newStateBenefit, Right(()))
+      mockSendAudit(CreateStateBenefitAudit(aUser.affinityGroup, newStateBenefit).toAuditModel)
+
+      await(underTest.saveClaim(aUser, newStateBenefit)) shouldBe Right(())
+    }
+
+    "return correct result when isPriorSubmission" in {
+      val newStateBenefit = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = Some(UUID.randomUUID()))))
+
+      mockSaveClaim(newStateBenefit, Right(()))
+
+      await(underTest.saveClaim(aUser, newStateBenefit)) shouldBe Right(())
     }
   }
 
