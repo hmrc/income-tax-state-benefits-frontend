@@ -49,7 +49,7 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
                       benefitType: BenefitType,
                       sessionDataId: UUID): Action[AnyContent] =
     actionsProvider.reviewClaimSaveAndContinue(taxYear, benefitType, sessionDataId).async { implicit request =>
-      stateBenefitsService.saveClaim(request.user, request.stateBenefitsUserData).map {
+      stateBenefitsService.saveClaim(request.user, benefitType, request.stateBenefitsUserData).map {
         case Right(_) => Redirect(ClaimsController.show(taxYear, benefitType))
         case Left(_) => errorHandler.internalServerError()
       }

@@ -17,7 +17,7 @@
 package support.mocks
 
 import models.errors.HttpParserError
-import models.{IncomeTaxUserData, StateBenefitsUserData, User}
+import models.{BenefitType, IncomeTaxUserData, StateBenefitsUserData, User}
 import org.scalamock.handlers.{CallHandler2, CallHandler3, CallHandler4}
 import org.scalamock.scalatest.MockFactory
 import services.StateBenefitsService
@@ -61,10 +61,11 @@ trait MockStateBenefitsService extends MockFactory {
   }
 
   def mockSaveClaim(user: User,
+                    benefitType: BenefitType,
                     stateBenefitsUserData: StateBenefitsUserData,
-                    result: Either[HttpParserError, Unit]): CallHandler3[User, StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
-    (mockStateBenefitsService.saveClaim(_: User, _: StateBenefitsUserData)(_: HeaderCarrier))
-      .expects(user, stateBenefitsUserData, *)
+                    result: Either[HttpParserError, Unit]): CallHandler4[User, BenefitType, StateBenefitsUserData, HeaderCarrier, Future[Either[HttpParserError, Unit]]] = {
+    (mockStateBenefitsService.saveClaim(_: User, _: BenefitType, _: StateBenefitsUserData)(_: HeaderCarrier))
+      .expects(user, benefitType, stateBenefitsUserData, *)
       .returning(Future.successful(result))
   }
 

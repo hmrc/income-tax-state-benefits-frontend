@@ -16,6 +16,7 @@
 
 package models.audit
 
+import models.{BenefitType, IncomeTaxUserData, StateBenefitsUserData, User}
 import play.api.libs.json.{Json, OWrites}
 
 case class AmendStateBenefitAudit(taxYear: Int,
@@ -33,4 +34,21 @@ case class AmendStateBenefitAudit(taxYear: Int,
 
 object AmendStateBenefitAudit {
   implicit def writes: OWrites[AmendStateBenefitAudit] = Json.writes[AmendStateBenefitAudit]
+
+  def apply(user: User,
+            benefitType: BenefitType,
+            priorData: IncomeTaxUserData,
+            sessionData: StateBenefitsUserData): AmendStateBenefitAudit = {
+    val originalBenefitDetails = StateBenefitsUserData(sessionData.taxYear, benefitType, user, sessionData.claim.get.benefitId.get, priorData).get
+
+    AmendStateBenefitAudit(
+      taxYear = sessionData.taxYear,
+      userType = user.affinityGroup,
+      nino = sessionData.nino,
+      mtdItId = sessionData.mtdItId,
+      benefitType = sessionData.benefitType,
+      originalBenefitDetails = BenefitDetails(originalBenefitDetails.claim.get),
+      updatedBenefitDetails = BenefitDetails(sessionData.claim.get)
+    )
+  }
 }
