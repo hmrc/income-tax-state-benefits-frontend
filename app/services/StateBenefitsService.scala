@@ -66,11 +66,23 @@ class StateBenefitsService @Inject()(auditService: AuditService,
 
   def saveClaim(user: User, benefitType: BenefitType, stateBenefitsUserData: StateBenefitsUserData)
                (implicit hc: HeaderCarrier): Future[Either[HttpParserError, Unit]] = {
-    stateBenefitsConnector.saveClaim(stateBenefitsUserData).map {
-      case Left(error) => Left(HttpParserError(error.status))
-      case Right(_) =>
-        auditCreateOrAmendStateBenefitEvent(user, benefitType, stateBenefitsUserData)
-        Right(())
+    if (stateBenefitsUserData.isNewClaim) {
+      stateBenefitsConnector.saveClaim(stateBenefitsUserData).map {
+        case Left(error) => Left(HttpParserError(error.status))
+        case Right(_) =>
+          auditCreateStateBenefitEvent(user, stateBenefitsUserData)
+          Right(())
+      }
+    } else {
+      stateBenefitsConnector.getIncomeTaxUserData(user = user, taxYear = stateBenefitsUserData.taxYear).flatMap {
+        case Left(error: ApiError) => Future.successful(Left(HttpParserError(error.status)))
+        case Right(incomeTaxUserData) => stateBenefitsConnector.saveClaim(stateBenefitsUserData).map {
+          case Left(error) => Left(HttpParserError(error.status))
+          case Right(_) =>
+            auditAmendStateBenefitEvent(user, benefitType, incomeTaxUserData, stateBenefitsUserData)
+            Right(())
+        }
+      }
     }
   }
 
@@ -109,18 +121,15 @@ class StateBenefitsService @Inject()(auditService: AuditService,
     }
   }
 
-  private def auditCreateOrAmendStateBenefitEvent(user: User, benefitType: BenefitType, sessionData: StateBenefitsUserData)
-                                                 (implicit hc: HeaderCarrier): Unit = {
-    if (sessionData.isNewClaim) {
-      val auditModel = CreateStateBenefitAudit(user.affinityGroup, sessionData)
-      auditService.sendAudit(auditModel.toAuditModel)
-    } else {
-      stateBenefitsConnector.getIncomeTaxUserData(user, sessionData.taxYear).map {
-        case Left(_) => ()
-        case Right(priorData) =>
-          val auditModel = AmendStateBenefitAudit(user, benefitType, priorData, sessionData)
-          auditService.sendAudit(auditModel.toAuditModel)
-      }
-    }
+  private def auditCreateStateBenefitEvent(user: User, sessionData: StateBenefitsUserData)
+                                          (implicit hc: HeaderCarrier): Unit = {
+    val auditModel = CreateStateBenefitAudit(user.affinityGroup, sessionData)
+    auditService.sendAudit(auditModel.toAuditModel)
+  }
+
+  private def auditAmendStateBenefitEvent(user: User, benefitType: BenefitType, priorData: IncomeTaxUserData, sessionData: StateBenefitsUserData)
+                                         (implicit hc: HeaderCarrier): Unit = {
+    val auditModel = AmendStateBenefitAudit(user, benefitType, priorData, sessionData)
+    auditService.sendAudit(auditModel.toAuditModel)
   }
 }

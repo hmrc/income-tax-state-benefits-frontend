@@ -19,7 +19,7 @@ package services
 import connectors.errors.{ApiError, SingleErrorBody}
 import models.BenefitDataType.{CustomerOverride, HmrcData}
 import models.BenefitType.JobSeekersAllowance
-import models.audit.CreateStateBenefitAudit
+import models.audit.{AmendStateBenefitAudit, CreateStateBenefitAudit}
 import models.errors.HttpParserError
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import support.UnitTest
@@ -103,38 +103,45 @@ class StateBenefitsServiceSpec extends UnitTest
     }
   }
 
-  ".saveClaim(...)" should {
-    "return error when fails to save data" in {
-      mockSaveClaim(aStateBenefitsUserData, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
-
-      await(underTest.saveClaim(aUser, JobSeekersAllowance, aStateBenefitsUserData)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
-    }
-
-    "audit and return correct result when isNewClaim" in {
+  ".saveClaim(...)" when {
+    "isNewClaim, than should" should {
       val newStateBenefit = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = None)))
+      "return error when fails to save data" in {
+        mockSaveClaim(newStateBenefit, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      mockSaveClaim(newStateBenefit, Right(()))
-      mockSendAudit(CreateStateBenefitAudit(aUser.affinityGroup, newStateBenefit).toAuditModel)
+        await(underTest.saveClaim(aUser, JobSeekersAllowance, newStateBenefit)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      }
 
-      await(underTest.saveClaim(aUser, JobSeekersAllowance, newStateBenefit)) shouldBe Right(())
+      "audit and return correct result" in {
+        mockSaveClaim(newStateBenefit, Right(()))
+        mockSendAudit(CreateStateBenefitAudit(aUser.affinityGroup, newStateBenefit).toAuditModel)
+
+        await(underTest.saveClaim(aUser, JobSeekersAllowance, newStateBenefit)) shouldBe Right(())
+      }
     }
 
-    "not fail when getting prior data results in error" in {
-      val newStateBenefit = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = Some(UUID.randomUUID()))))
+    "isPriorSubmission, than should" should {
+      val priorSubmission = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = Some(UUID.randomUUID()))))
+      "return error when getting prior data results in error" in {
+        mockGetIncomeTaxUserData(aUser, aStateBenefitsUserData.taxYear, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-      mockSaveClaim(newStateBenefit, Right(()))
-      mockGetIncomeTaxUserData(aUser, aStateBenefitsUserData.taxYear, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
+        await(underTest.saveClaim(aUser, JobSeekersAllowance, priorSubmission)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      }
 
-      await(underTest.saveClaim(aUser, JobSeekersAllowance, newStateBenefit)) shouldBe Right(())
-    }
+      "return error and not audit when stateBenefitsConnector.saveClaim(...) results in error" in {
+        mockGetIncomeTaxUserData(aUser, aStateBenefitsUserData.taxYear, Right(anIncomeTaxUserData))
+        mockSaveClaim(priorSubmission, Left(ApiError(INTERNAL_SERVER_ERROR, SingleErrorBody.parsingError)))
 
-    "return correct result when isPriorSubmission" in {
-      val newStateBenefit = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = Some(UUID.randomUUID()))))
+        await(underTest.saveClaim(aUser, JobSeekersAllowance, priorSubmission)) shouldBe Left(HttpParserError(INTERNAL_SERVER_ERROR))
+      }
 
-      mockSaveClaim(newStateBenefit, Right(()))
-      mockGetIncomeTaxUserData(aUser, aStateBenefitsUserData.taxYear, Right(anIncomeTaxUserData))
+      "audit and return correct result" in {
+        mockGetIncomeTaxUserData(aUser, aStateBenefitsUserData.taxYear, Right(anIncomeTaxUserData))
+        mockSaveClaim(aStateBenefitsUserData, Right(()))
+        mockSendAudit(AmendStateBenefitAudit(aUser, JobSeekersAllowance, anIncomeTaxUserData, aStateBenefitsUserData).toAuditModel)
 
-      await(underTest.saveClaim(aUser, JobSeekersAllowance, newStateBenefit)) shouldBe Right(())
+        await(underTest.saveClaim(aUser, JobSeekersAllowance, aStateBenefitsUserData)) shouldBe Right(())
+      }
     }
   }
 

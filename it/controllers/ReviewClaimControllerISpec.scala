@@ -23,7 +23,7 @@ import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import support.IntegrationTest
-import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
+import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
 import uk.gov.hmrc.http.HttpResponse
@@ -76,10 +76,10 @@ class ReviewClaimControllerISpec extends IntegrationTest {
 
     "persist amount and redirect to ReviewClaim" in {
       lazy val result: WSResponse = {
+        val newClaim = aStateBenefitsUserData.copy(claim = Some(aClaimCYAModel.copy(benefitId = None)))
         authoriseAgentOrIndividual(isAgent = false)
-        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
-        userPriorDataStub(aUser.nino, taxYearEOY, HttpResponse(OK, Json.toJson(anIncomeTaxUserData).toString))
-        saveStateBenefitStub(aStateBenefitsUserData, HttpResponse(NO_CONTENT, ""))
+        userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(newClaim).toString))
+        saveStateBenefitStub(newClaim, HttpResponse(NO_CONTENT, ""))
         urlPost(saveAndContinueUrl(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
       }
 

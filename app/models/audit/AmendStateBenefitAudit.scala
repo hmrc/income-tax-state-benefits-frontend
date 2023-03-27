@@ -27,7 +27,7 @@ case class AmendStateBenefitAudit(taxYear: Int,
                                   originalBenefitDetails: BenefitDetails,
                                   updatedBenefitDetails: BenefitDetails) {
 
-  private val name = "AmendStateBenefitsClaim"
+  private val name = "AmendStateBenefits"
 
   def toAuditModel: AuditModel[AmendStateBenefitAudit] = AuditModel(name, name, this)
 }
