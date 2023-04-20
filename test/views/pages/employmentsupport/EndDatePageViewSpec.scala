@@ -64,6 +64,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     val expectedEmptyYearErrorText: String
     val expectedAllFieldsEmptyErrorText: String
     val expectedInvalidDateErrorText: String
+    val expectedMustHave4DigitYearErrorTest: String
 
     def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String
 
@@ -103,6 +104,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a year"
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date your Employment and Support Allowance claim ended"
     override val expectedInvalidDateErrorText: String = "The date your Employment and Support Allowance claim ended must be a real date"
+    override val expectedMustHave4DigitYearErrorTest: String = "The year your Employment and Support Allowance claim ended must include 4 digits"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"The date your Employment and Support Allowance claim ended must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}"
@@ -122,6 +124,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "The date your Employment and Support Allowance claim ended must include a year"
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date your Employment and Support Allowance claim ended"
     override val expectedInvalidDateErrorText: String = "The date your Employment and Support Allowance claim ended must be a real date"
+    override val expectedMustHave4DigitYearErrorTest: String = "The year your Employment and Support Allowance claim ended must include 4 digits"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"The date your Employment and Support Allowance claim ended must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
@@ -141,6 +144,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a year"
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client’s Employment and Support Allowance claim ended"
     override val expectedInvalidDateErrorText: String = "The date your client’s Employment and Support Allowance claim ended must be a real date"
+    override val expectedMustHave4DigitYearErrorTest: String = "The year your client’s Employment and Support Allowance claim ended must include 4 digits"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"The date your client’s Employment and Support Allowance claim ended must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}"
@@ -160,6 +164,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "The date your client’s Employment and Support Allowance claim ended must include a year"
     override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client’s Employment and Support Allowance claim ended"
     override val expectedInvalidDateErrorText: String = "The date your client’s Employment and Support Allowance claim ended must be a real date"
+    override val expectedMustHave4DigitYearErrorTest: String = "The year your client’s Employment and Support Allowance claim ended must include 4 digits"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"The date your client’s Employment and Support Allowance claim ended must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
@@ -376,6 +381,38 @@ class EndDatePageViewSpec extends ViewUnitTest {
         inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
         inputFieldValueCheck(DateForm.month, inputMonthField, value = "1")
         inputFieldValueCheck(DateForm.year, inputYearField, value = taxYearEOY.toString)
+      }
+
+      "render page with mustHave4DigitYear error when year has fewer than 4 digits" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val formData = DateFormData(day = "1", month = "2", year = "999")
+        val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(expectedErrorTitle, userScenario.isWelsh)
+        errorSummaryCheck(get.expectedMustHave4DigitYearErrorTest, invalidErrorHref(day))
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = "999")
+      }
+
+      "render page with mustHave4DigitYear error when year has more than 4 digits" which {
+        implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+        val formData = DateFormData(day = "1", month = "2", year = "10000")
+        val pageForm = formsProvider.validatedEndDateForm(dateForm.fill(formData), taxYearEOY, EmploymentSupportAllowance, userScenario.isAgent, aClaimCYAModel.startDate)
+        val pageModel = anEndDatePage.copy(taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance, form = pageForm)
+        implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+        titleCheck(expectedErrorTitle, userScenario.isWelsh)
+        errorSummaryCheck(get.expectedMustHave4DigitYearErrorTest, invalidErrorHref(day))
+        inputFieldValueCheck(DateForm.day, inputDayField, value = "1")
+        inputFieldValueCheck(DateForm.month, inputMonthField, value = "2")
+        inputFieldValueCheck(DateForm.year, inputYearField, value = "10000")
       }
     }
   }

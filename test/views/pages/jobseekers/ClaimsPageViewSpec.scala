@@ -79,7 +79,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
     override val expectedRemovedClaimsText: String = "Removed claims"
     override val expectedAddMissingClaimButtonText: String = "Add missing claim"
     override val expectedButtonText: String = "Continue"
-    override val expectedSummaryListRow1TextInYear: String = "1 January 2022"
+    override val expectedSummaryListRow1TextInYear: String = s"1 January $taxYearEOY"
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
@@ -92,7 +92,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
     override val expectedRemovedClaimsText: String = "Removed claims"
     override val expectedAddMissingClaimButtonText: String = "Add missing claim"
     override val expectedButtonText: String = "Continue"
-    override val expectedSummaryListRow1TextInYear: String = "1 Ionawr 2022"
+    override val expectedSummaryListRow1TextInYear: String = s"1 Ionawr $taxYearEOY"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
