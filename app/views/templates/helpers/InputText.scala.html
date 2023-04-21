@@ -34,20 +34,20 @@
 @govukInput(Input(
     id,
     name,
-    classes = if(currency) "govuk-input--width-10 " + classes.fold("")(x => x) else classes.fold("")(x => x),
+    classes = (if (currency) "govuk-input--width-10 " else "") + classes.getOrElse(""),
     label = Label(
         content = Text(messages(label)),
         isPageHeading = isPageHeading,
-        classes = if(isPageHeading) "govuk-label--l" else if (labelHidden) "govuk-visually-hidden" else "govuk-!-font-weight-bold"
+        classes = if (isPageHeading) "govuk-label--l" else if (labelHidden) "govuk-visually-hidden" else "govuk-!-font-weight-bold"
     ),
     hint = hint.map(hintKey => Hint(
         content = HtmlContent(messages(hintKey))
     )),
-    value = if(currency && form.errors(id).isEmpty) form(name).value.map(bigDecimalCurrency(_, "")) else form(name).value,
+    value = if (currency && form.errors(id).isEmpty) form(name).value.map(bigDecimalCurrency(_, "")) else form(name).value,
     autocomplete = autocomplete.map(value => value),
     inputType = inputType,
-    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-    prefix = if(currency) Some(PrefixOrSuffix(content = Text("£"))) else None,
+    errorMessage = form(name).error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args:_*)))),
+    prefix = if (currency) Some(PrefixOrSuffix(content = Text("£"))) else None,
     attributes = Map("maxlength" -> "500")
 ))
 

@@ -41,29 +41,31 @@
 }
 
 @errorMessage = @{
-    if(form.errors.isEmpty){
+    if (form.errors.isEmpty) {
         None
     } else {
-        if(id == "startAmount") {
-            if(!form.errors.filter(_.key.contains("startAmount")).isEmpty){
-                Some(ErrorMessage(content = HtmlContent(errorHtml(form.errors.filter(_.key.contains("startAmount"))))))
+        if (id == "startAmount") {
+            val startAmountErrors = form.errors.filter(_.key.contains("startAmount"))
+            if (startAmountErrors.nonEmpty){
+                Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(errorHtml(startAmountErrors))))
             } else {
                 None
             }
-        } else if(id == "endAmount") {
-            if(!form.errors.filter(_.key.contains("endAmount")).isEmpty){
-                Some(ErrorMessage(content = HtmlContent(errorHtml(form.errors.filter(_.key.contains("endAmount"))))))
+        } else if (id == "endAmount") {
+            val endAmountErrors = form.errors.filter(_.key.contains("endAmount"))
+            if (endAmountErrors.nonEmpty){
+                Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(errorHtml(endAmountErrors))))
             } else {
                 None
             }
         } else {
-            Some(ErrorMessage(content = HtmlContent(errorHtml(form.errors))))
+            Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(errorHtml(form.errors))))
         }
     }
 }
 
 @addErrorClass(error: Seq[Option[FormError]]) = @{
-    if(error.flatten.nonEmpty){
+    if (error.flatten.nonEmpty) {
         "govuk-input--error"
     } else {
         ""
@@ -85,7 +87,7 @@
             legend = Some(Legend(
                 content = HtmlContent(contentHtml),
                 isPageHeading = isPageHeading,
-                classes = if(legendAsHeading) "govuk-label--l" else if (legendHidden) "govuk-visually-hidden" else ""
+                classes = if (legendAsHeading) "govuk-label--l" else if (legendHidden) "govuk-visually-hidden" else ""
             ))
         )),
         items = Seq(

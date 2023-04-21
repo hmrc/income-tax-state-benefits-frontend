@@ -24,7 +24,7 @@ trait ViewHelper {
   self: AnyWordSpec with Matchers =>
 
   private val serviceName = "Update and submit an Income Tax Return"
-  private val serviceNameWelsh = "Update and submit an Income Tax Return"
+  private val serviceNameWelsh = "Diweddaru a chyflwyno Ffurflen Dreth Incwm"
   private val govUkExtension = "GOV.UK"
   private val ENGLISH = "English"
   private val WELSH = "Welsh"
@@ -231,11 +231,15 @@ trait ViewHelper {
     }
   }
 
-  def errorAboveElementCheck(text: String, id: Option[String] = None)(implicit document: Document): Unit = {
+  def errorAboveElementCheck(text: String, isWelsh: Boolean, maybeId: Option[String] = None)(implicit document: Document): Unit = {
     s"has a $text error above the element" which {
       s"has the text '$text'" in {
-        val selector = if (id.isDefined) s"#${id.get}-error" else ".govuk-error-message"
-        document.select(selector).text() shouldBe s"Error: $text"
+        val selector = maybeId match {
+          case Some(id) => s"#$id-error"
+          case None => ".govuk-error-message"
+        }
+        val errorKey = if (isWelsh) "Gwall" else "Error"
+        document.select(selector).text() shouldBe s"$errorKey: $text"
       }
     }
   }

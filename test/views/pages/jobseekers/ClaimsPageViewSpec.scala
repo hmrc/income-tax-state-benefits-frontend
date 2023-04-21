@@ -83,15 +83,15 @@ class ClaimsPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedTitle: String = "Jobseeker’s Allowance"
-    override val expectedHeading: String = "Jobseeker’s Allowance"
-    override val expectedViewLinkText: String = "View"
-    override val expectedViewLinkHiddenText: String = "View Jobseeker’s Allowance claim details"
-    override val expectedRow1Value2Text: Int => String = (taxYear: Int) => s"1 Ionawr $taxYear to 31 Ionawr $taxYear"
-    override val expectedRow2Value2Text: Int => String = (taxYear: Int) => s"1 Chwefror $taxYear to 5 Ebrill $taxYear"
-    override val expectedRemovedClaimsText: String = "Removed claims"
-    override val expectedAddMissingClaimButtonText: String = "Add missing claim"
-    override val expectedButtonText: String = "Continue"
+    override val expectedTitle: String = "Lwfans Ceisio Gwaith"
+    override val expectedHeading: String = "Lwfans Ceisio Gwaith"
+    override val expectedViewLinkText: String = "Bwrw golwg"
+    override val expectedViewLinkHiddenText: String = "Bwrw golwg dros fanylion yr hawliad Lwfans Ceisio Gwaith"
+    override val expectedRow1Value2Text: Int => String = (taxYear: Int) => s"1 Ionawr $taxYear i 31 Ionawr $taxYear"
+    override val expectedRow2Value2Text: Int => String = (taxYear: Int) => s"1 Chwefror $taxYear i 5 Ebrill $taxYear"
+    override val expectedRemovedClaimsText: String = "Hawliadau sydd wedi cael eu tynnu"
+    override val expectedAddMissingClaimButtonText: String = "Ychwanegu hawliad sydd ar goll"
+    override val expectedButtonText: String = "Yn eich blaen"
     override val expectedSummaryListRow1TextInYear: String = s"1 Ionawr $taxYearEOY"
   }
 
@@ -102,7 +102,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
     def expectedRemovedClaimsParagraphText(isPlural: Boolean): String =
-      if (isPlural) "These claims will not be included in your return." else "This claim will not be included in your return."
+      if (isPlural) "Ni fydd yr hawliadau hyn yn cael eu cynnwys yn eich Ffurflen Dreth." else "Ni fydd yr hawliad hwn yn cael ei gynnwys yn eich Ffurflen Dreth."
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -112,7 +112,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     def expectedRemovedClaimsParagraphText(isPlural: Boolean): String =
-      if (isPlural) "These claims will not be included in your client’s return." else "This claim will not be included in your client’s return."
+      if (isPlural) "Ni fydd yr hawliadau hyn yn cael eu cynnwys yn Ffurflen Dreth eich cleient." else "Ni fydd yr hawliad hwn yn cael ei gynnwys yn Ffurflen Dreth eich cleient."
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(

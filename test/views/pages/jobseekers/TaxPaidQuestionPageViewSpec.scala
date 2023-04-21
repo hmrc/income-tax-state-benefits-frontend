@@ -67,7 +67,7 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
-    override val expectedButtonText: String = "Continue"
+    override val expectedButtonText: String = "Yn eich blaen"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -88,15 +88,15 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"A ddidynnwyd unrhyw dreth o’ch Lwfans Ceisio Gwaith rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
-    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Gwall: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
-    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave you."
-    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave you."
+    override val expectedHintP45Text: String = "Defnyddiwch y ffurflen P45(IB) neu’r ffurflen P45(U) a roddwyd i chi gan yr Adran Gwaith a Phensiynau (DWP)."
+    override val expectedHintP60Text: String = "Defnyddiwch y ffurflen P60(IB) neu’r ffurflen P60(U) a roddwyd i chi gan yr Adran Gwaith a Phensiynau (DWP)."
     override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Select yes if you had any tax taken off your Jobseeker’s Allowance between " +
-        s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
+      s"Dewiswch ‘Iawn’ os didynnwyd unrhyw dreth o’ch Lwfans Ceisio Gwaith rhwng " +
+        s"${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}"
           .replace("\u00A0", " ")
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
@@ -118,15 +118,15 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
 
   object ExpectedAgentCY extends SpecificExpectedResults {
     override val expectedTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did your client have any tax taken off their Jobseeker’s Allowance between " +
-        s"${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"A ddidynnwyd unrhyw dreth o Lwfans Ceisio Gwaith eich cleient rhwng " +
+        s"${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
           .replace("\u00A0", " ")
-    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Error: ${expectedTitle(firstDate, secondDate)}"
+    override val expectedErrorTitle: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Gwall: ${expectedTitle(firstDate, secondDate)}"
     override val expectedHeading: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedTitle(firstDate, secondDate)
-    override val expectedHintP45Text: String = "Use the P45(IB) or P45(U) that the Department for Work and Pensions (DWP) gave your client."
-    override val expectedHintP60Text: String = "Use the P60(IB) or P60(U) that the Department for Work and Pensions (DWP) gave your client."
-    override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Select yes if your client had any tax taken off their Jobseeker’s Allowance " +
-      s"between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}"
+    override val expectedHintP45Text: String = "Defnyddiwch y ffurflen P45(IB) neu’r ffurflen P45(U) a roddwyd i’ch cleient gan yr Adran Gwaith a Phensiynau (DWP)."
+    override val expectedHintP60Text: String = "Defnyddiwch y ffurflen P60(IB) neu’r ffurflen P60(U) a roddwyd i’ch cleient gan yr Adran Gwaith a Phensiynau (DWP)."
+    override val expectedValueErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => s"Dewiswch ‘Iawn’ os didynnwyd unrhyw dreth o Lwfans Ceisio Gwaith eich cleient rhwng " +
+      s"${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}"
         .replace("\u00A0", " ")
     override val expectedErrorText: (LocalDate, LocalDate) => String = (firstDate, secondDate) => expectedValueErrorText(firstDate, secondDate)
   }
@@ -200,7 +200,7 @@ class TaxPaidQuestionPageViewSpec extends ViewUnitTest {
         radioButtonCheck(expectedYesText, radioNumber = 1, checked = false)
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
         errorSummaryCheck(get.expectedValueErrorText(page.titleFirstDate, page.titleSecondDate), errorHref)
-        errorAboveElementCheck(get.expectedErrorText(page.titleFirstDate, page.titleSecondDate))
+        errorAboveElementCheck(get.expectedErrorText(page.titleFirstDate, page.titleSecondDate), userScenario.isWelsh)
       }
     }
   }

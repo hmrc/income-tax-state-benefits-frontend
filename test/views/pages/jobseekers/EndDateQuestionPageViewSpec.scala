@@ -78,18 +78,18 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
   object CommonExpectedCY extends CommonExpectedResults {
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
-    override val expectedButtonText: String = "Continue"
+    override val expectedButtonText: String = "Yn eich blaen"
 
     override def expectedHeading(taxYear: Int, startDate: LocalDate): String =
-      s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
+      s"A wnaeth yr hawliad hwn ddod i ben rhwng ${translatedDateFormatter(startDate)(welshMessages)} a ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
         .replace("\u00A0", " ")
 
     override def expectedTitle(taxYear: Int, startDate: LocalDate): String = expectedHeading(taxYear, startDate)
 
-    override def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String = s"Error: ${expectedTitle(taxYear, startDate)}"
+    override def expectedErrorTitle(taxYear: Int, startDate: LocalDate): String = s"Gwall: ${expectedTitle(taxYear, startDate)}"
 
     override def expectedErrorText(taxYear: Int, startDate: LocalDate): String =
-      s"Select yes if this claim ended between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
+      s"Dewiswch ‘Iawn’ os daeth yr hawliad hwn i ben rhwng ${translatedDateFormatter(startDate)(welshMessages)} a ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
         .replace("\u00A0", " ")
   }
 
@@ -141,7 +141,7 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
 
         errorSummaryCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate), errorHref)
-        errorAboveElementCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate))
+        errorAboveElementCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate), userScenario.isWelsh)
       }
 
       "render page with wrong data error" which {
@@ -157,7 +157,7 @@ class EndDateQuestionPageViewSpec extends ViewUnitTest {
         radioButtonCheck(expectedNoText, radioNumber = 2, checked = false)
 
         errorSummaryCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate), errorHref)
-        errorAboveElementCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate))
+        errorAboveElementCheck(expectedErrorText(taxYearEOY, aEndDateQuestionPage.titleFirstDate), userScenario.isWelsh)
       }
     }
   }
