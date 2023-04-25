@@ -42,7 +42,9 @@ class MessagesSpec extends ViewUnitTest {
     "common.no",
     "global.error.fallbackClientError4xx.title",
     "language.day.plural",
-    "language.day.singular"
+    "language.day.singular",
+    "error.summary.title",
+    "error.agent.title",
   )
 
   private lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages

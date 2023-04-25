@@ -104,14 +104,14 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedTitle: String = "Are you sure you want to remove this Jobseeker’s Allowance claim?"
-    override val expectedHeading: String = "Are you sure you want to remove this Jobseeker’s Allowance claim?"
-    override val expectedEndDateRowKey: String = "When did this claim end?"
+    override val expectedTitle: String = "A ydych yn siŵr eich bod am dynnu’r hawliad Lwfans Ceisio Gwaith hwn?"
+    override val expectedHeading: String = "A ydych yn siŵr eich bod am dynnu’r hawliad Lwfans Ceisio Gwaith hwn?"
+    override val expectedEndDateRowKey: String = "Pryd y daeth yr hawliad hwn i ben?"
     override val expectedEndDateQuestionRowValue: String = "Iawn"
     override val expectedEndDateRowValue: String = s"13 Awst $taxYearEOY"
-    override val removeButton: String = "Remove claim"
-    override val doNotRemoveLink: String = "Don’t remove claim"
-    override val doNotRemoveLinkHiddenText: String = "Don’t remove this Jobseeker’s Allowance Claim"
+    override val removeButton: String = "Tynnu’r hawliad"
+    override val doNotRemoveLink: String = "Peidiwch â thynnu’r hawliad"
+    override val doNotRemoveLinkHiddenText: String = "Peidiwch â thynnu’r hawliad Lwfans Ceisio Gwaith hwn"
     override val expectedStartDateRowValue: String = s"23 Ebrill ${aClaimCYAModel.startDate.getYear}"
     override val expectedAmountRowValue: String = bigDecimalCurrency(aClaimCYAModel.amount.get.toString())
     override val expectedTaxPaidQuestionRowValue: String = "Iawn"
@@ -119,7 +119,7 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
     override val no = "Na"
 
     override def expectedEndDateQuestionRowKey(taxYear: Int, startDate: LocalDate): String =
-      s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
+      s"A wnaeth yr hawliad hwn ddod i ben rhwng ${translatedDateFormatter(startDate)(welshMessages)} a ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
         .replace("\u00A0", " ")
   }
 
@@ -137,15 +137,15 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   }
 
   object AgentSpecificExpectedCY extends SpecificExpectedResults {
-    override val expectedStartDateRowKey: String = "When did your client start getting Jobseeker’s Allowance?"
+    override val expectedStartDateRowKey: String = "Pryd y gwnaeth eich cleient ddechrau cael Lwfans Ceisio Gwaith?"
     override val expectedAmountRowKey: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
-      s"How much Jobseeker’s Allowance did your client get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"Faint o Lwfans Ceisio Gwaith a gafodd eich cleient rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
     override val expectedTaxPaidQuestionRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did your client have any tax taken off their Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"A ddidynnwyd unrhyw dreth o Lwfans Ceisio Gwaith eich cleient rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
     override val expectedTaxPaidRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"How much tax was taken off your client’s Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"Faint o dreth a gafodd ei didynnu o Lwfans Ceisio Gwaith eich cleient rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
   }
 
@@ -163,15 +163,15 @@ class RemoveClaimPageViewSpec extends ViewUnitTest {
   }
 
   object IndividualSpecificExpectedCY extends SpecificExpectedResults {
-    override val expectedStartDateRowKey: String = "When did you start getting Jobseeker’s Allowance?"
+    override val expectedStartDateRowKey: String = "Pryd y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith?"
     override val expectedAmountRowKey: (LocalDate, LocalDate) => String = (firstDate: LocalDate, secondDate) =>
-      s"How much Jobseeker’s Allowance did you get between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"Faint o Lwfans Ceisio Gwaith a gawsoch rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
     override val expectedTaxPaidQuestionRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"Did you have any tax taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"A ddidynnwyd unrhyw dreth o’ch Lwfans Ceisio Gwaith rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
     override val expectedTaxPaidRowKey: (LocalDate, LocalDate) => String = (firstDate, secondDate) =>
-      s"How much tax was taken off your Jobseeker’s Allowance between ${translatedDateFormatter(firstDate)(welshMessages)} and ${translatedDateFormatter(secondDate)(welshMessages)}?"
+      s"Faint o dreth a gafodd ei didynnu o’ch Lwfans Ceisio Gwaith rhwng ${translatedDateFormatter(firstDate)(welshMessages)} a ${translatedDateFormatter(secondDate)(welshMessages)}?"
         .replace("\u00A0", " ")
   }
 

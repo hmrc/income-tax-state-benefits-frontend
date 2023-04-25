@@ -90,12 +90,12 @@ class EndDatePageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedTitle: String = "When did this claim end?"
+    override val expectedTitle: String = "Pryd y daeth yr hawliad hwn i ben?"
     override val expectedHeading: String = expectedTitle
-    override val expectedErrorTitle: String = s"Error: $expectedTitle"
-    override val expectedHintText: String = s"For example, 23 1 $taxYearEOY"
+    override val expectedErrorTitle: String = s"Gwall: $expectedTitle"
+    override val expectedHintText: String = s"Er enghraifft, 23 1 $taxYearEOY"
     override val expectedInvalidDateErrorText: String = "Enter the date the Jobseeker’s Allowance ended must be a real date"
-    override val expectedButtonText: String = "Continue"
+    override val expectedButtonText: String = "Yn eich blaen"
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
@@ -119,22 +119,22 @@ class EndDatePageViewSpec extends ViewUnitTest {
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    override val expectedEmptyDayErrorText: String = "The date your Jobseeker’s Allowance claim ended must include a day"
-    override val expectedEmptyDayMonthErrorText: String = "The date your Jobseeker’s Allowance claim ended must include a day and month"
-    override val expectedEmptyDayYearErrorText: String = "The date your Jobseeker’s Allowance claim ended must include a day and year"
-    override val expectedEmptyMonthErrorText: String = "The date your Jobseeker’s Allowance claim ended must include a month"
-    override val expectedEmptyMonthYearErrorText: String = "The date your Jobseeker’s Allowance claim ended must include a month and year"
-    override val expectedEmptyYearErrorText: String = "The date your Jobseeker’s Allowance claim ended must include a year"
-    override val expectedAllFieldsEmptyErrorText: String = "Enter the date your Jobseeker’s Allowance claim ended"
-    override val expectedInvalidDateErrorText: String = "The date your Jobseeker’s Allowance claim ended must be a real date"
+    override val expectedEmptyDayErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys diwrnod"
+    override val expectedEmptyDayMonthErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys diwrnod a mis"
+    override val expectedEmptyDayYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys diwrnod a blwyddyn"
+    override val expectedEmptyMonthErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys mis"
+    override val expectedEmptyMonthYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys mis a blwyddyn"
+    override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys blwyddyn"
+    override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben"
+    override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben fod yn ddyddiad go iawn"
     override val expectedMustHave4DigitYearErrorTest: String = "The year your Jobseeker’s Allowance claim ended must include 4 digits"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
-      s"The date your Jobseeker’s Allowance claim ended must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
+      s"Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
         .replace("\u00A0", " ")
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
-      s"The date your Jobseeker’s Allowance claim ended must be after the date it started, ${translatedDateFormatter(startDate)}"
+      s"Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben fod ar ôl iddo ddechrau, sef ${translatedDateFormatter(startDate)}"
         .replace("\u00A0", " ")
   }
 
@@ -159,22 +159,22 @@ class EndDatePageViewSpec extends ViewUnitTest {
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
-    override val expectedEmptyDayErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must include a day"
-    override val expectedEmptyDayMonthErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must include a day and month"
-    override val expectedEmptyDayYearErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must include a day and year"
-    override val expectedEmptyMonthErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must include a month"
-    override val expectedEmptyMonthYearErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must include a month and year"
-    override val expectedEmptyYearErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must include a year"
-    override val expectedAllFieldsEmptyErrorText: String = "Enter the date your client’s Jobseeker’s Allowance claim ended"
-    override val expectedInvalidDateErrorText: String = "The date your client’s Jobseeker’s Allowance claim ended must be a real date"
+    override val expectedEmptyDayErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys diwrnod"
+    override val expectedEmptyDayMonthErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys diwrnod a mis"
+    override val expectedEmptyDayYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys diwrnod a blwyddyn"
+    override val expectedEmptyMonthErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys mis"
+    override val expectedEmptyMonthYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleien i ben gynnwys mis a blwyddyn"
+    override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys blwyddyn"
+    override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben"
+    override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben fod yn ddyddiad go iawn"
     override val expectedMustHave4DigitYearErrorTest: String = "The year your client’s Jobseeker’s Allowance claim ended must include 4 digits"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
-      s"The date your client’s Jobseeker’s Allowance claim ended must be the same as or before ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}"
+      s"Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
         .replace("\u00A0", " ")
 
     override def expectedMustBeAfterStartDateErrorText(startDate: LocalDate)(implicit messages: Messages): String =
-      s"The date your client’s Jobseeker’s Allowance claim ended must be after the date it started, ${translatedDateFormatter(startDate)}"
+      s"Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben fod ar ôl iddo ddechrau, sef ${translatedDateFormatter(startDate)}"
         .replace("\u00A0", " ")
   }
 

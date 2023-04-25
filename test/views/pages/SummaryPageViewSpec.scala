@@ -59,11 +59,11 @@ class SummaryPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedTitle: String = "State benefits"
-    override val expectedHeading: String = "State benefits"
-    override val jobSeekersAllowance: String = "Jobseeker’s Allowance"
-    override val notStartedText: String = "Not started"
-    override val buttonText: String = "Return to overview"
+    override val expectedTitle: String = "Budd-daliadau’r Wladwriaeth"
+    override val expectedHeading: String = "Budd-daliadau’r Wladwriaeth"
+    override val jobSeekersAllowance: String = "Lwfans Ceisio Gwaith"
+    override val notStartedText: String = "Heb ddechrau"
+    override val buttonText: String = "Yn ôl i’r trosolwg"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, Unit]] = Seq(

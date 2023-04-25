@@ -114,23 +114,23 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   }
 
   object CommonExpectedCY extends CommonExpectedResults {
-    override val expectedTitle: String = "Review Employment and Support Allowance claim"
-    override val expectedHeading: String = "Employment and Support Allowance"
-    override val expectedCaption: Int => String = (taxYear: Int) => s"6 April ${taxYear - 1} to 5 April $taxYear"
-    override val expectedExternalDataText: String = "This data is from the Department of Work and Pensions (DWP)"
-    override val expectedEndDateText = "When did this claim end?"
-    override val expectedChangeLinkText: String = "Change"
+    override val expectedTitle: String = "Adolygu’r hawliad Lwfans Cyflogaeth a Chymorth"
+    override val expectedHeading: String = "Lwfans Cyflogaeth a Chymorth"
+    override val expectedCaption: Int => String = (taxYear: Int) => s"6 Ebrill ${taxYear - 1} i 5 Ebrill $taxYear"
+    override val expectedExternalDataText: String = "Mae’r data hyn yn dod o’r Adran Gwaith a Phensiynau (DWP)"
+    override val expectedEndDateText = "Pryd y daeth yr hawliad hwn i ben?"
+    override val expectedChangeLinkText: String = "Newid"
     override val expectedSaveButtonText: String = "Cadw ac yn eich blaen"
-    override val expectedContinueButtonText: String = "Continue"
-    override val expectedRemoveLinkText: String = "Remove claim"
-    override val expectedRemoveLinkHiddenText: String = "Remove this Employment and Support Allowance claim"
-    override val expectedRestoreClaimButtonText: String = "Restore claim"
-    override val expectedBackText: String = "Back"
+    override val expectedContinueButtonText: String = "Yn eich blaen"
+    override val expectedRemoveLinkText: String = "Tynnu’r hawliad"
+    override val expectedRemoveLinkHiddenText: String = "Tynnu’r hawliad Lwfans Cyflogaeth a Chymorth hwn"
+    override val expectedRestoreClaimButtonText: String = "Hawliad i’w adfer"
+    override val expectedBackText: String = "Yn ôl"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
 
     override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String =
-      s"Did this claim end between ${translatedDateFormatter(startDate)(welshMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
+      s"A wnaeth yr hawliad hwn ddod i ben rhwng ${translatedDateFormatter(startDate)(welshMessages)} a ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
         .replace("\u00A0", " ")
   }
 
@@ -153,21 +153,22 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    override val expectedStartDateText: String = "When did you start getting Employment and Support Allowance?"
-    override val expectedStartDateHiddenText: String = "Change the date you started getting Employment and Support Allowance"
-    override val expectedEndDateHiddenText: String = "Change the date your Employment and Support Allowance claim ended"
-    override val expectedAmountHiddenText: String = "Change the amount of Employment and Support Allowance you got"
-    override val expectedTaxPaidQuestionHiddenText: String = "Change whether you had any tax taken off your Employment and Support Allowance claim"
-    override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your Employment and Support Allowance claim"
+    override val expectedStartDateText: String = "Pryd y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth?"
+    override val expectedStartDateHiddenText: String = "Newid y dyddiad y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth"
+    override val expectedEndDateHiddenText: String = "Newid y dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben"
+    override val expectedAmountHiddenText: String = "Newid swm y Lwfans Cyflogaeth a Chymorth a gawsoch"
+    override val expectedTaxPaidQuestionHiddenText: String = "Newid p’un a ddidynnwyd unrhyw dreth o’ch hawliad Lwfans Cyflogaeth a Chymorth"
+    override val expectedTaxPaidHiddenText: String = "Newid swm y dreth a ddidynnwyd o’ch hawliad Lwfans Cyflogaeth a Chymorth"
 
-    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your Employment and Support Allowance claim ended in the tax year ending 5 April $taxYear"
+    override def expectedEndDateQuestionHiddenText(taxYear: Int): String =
+      s"Newid p’un a wnaeth eich hawliad Lwfans Cyflogaeth a Chymorth dod i ben yn ystod y flwyddyn dreth a ddaeth i ben ar 5 Ebrill $taxYear"
 
-    override def expectedAmountText(firstDate: String, secondDate: String): String = s"How much Employment and Support Allowance did you get between $firstDate and $secondDate?"
+    override def expectedAmountText(firstDate: String, secondDate: String): String = s"Faint o Lwfans Cyflogaeth a Chymorth a gawsoch rhwng $firstDate a $secondDate?"
 
     override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String =
-      s"Did you have any tax taken off your Employment and Support Allowance between $firstDate and $secondDate?"
+      s"A ddidynnwyd unrhyw dreth o’ch Lwfans Cyflogaeth a Chymorth rhwng $firstDate a $secondDate?"
 
-    override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"How much tax was taken off your Employment and Support Allowance between $firstDate and $secondDate?"
+    override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"Faint o dreth a gafodd ei didynnu o’ch Lwfans Cyflogaeth a Chymorth rhwng $firstDate a $secondDate?"
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
@@ -189,21 +190,22 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
-    override val expectedStartDateText: String = "When did your client start getting Employment and Support Allowance?"
-    override val expectedStartDateHiddenText: String = "Change the date your client started getting Employment and Support Allowance"
-    override val expectedEndDateHiddenText: String = "Change the date your client’s Employment and Support Allowance claim ended"
-    override val expectedAmountHiddenText: String = "Change the amount of Employment and Support Allowance your client got"
-    override val expectedTaxPaidQuestionHiddenText: String = "Change whether your client had any tax taken off your Employment and Support Allowance claim"
-    override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your client’s Employment and Support Allowance claim"
+    override val expectedStartDateText: String = "Pryd y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth?"
+    override val expectedStartDateHiddenText: String = "Newid y dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth"
+    override val expectedEndDateHiddenText: String = "Newid y dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben"
+    override val expectedAmountHiddenText: String = "Newid swm y Lwfans Cyflogaeth a Chymorth a gafodd eich cleient"
+    override val expectedTaxPaidQuestionHiddenText: String = "Newid p’un a ddidynnwyd unrhyw dreth o hawliad Lwfans Cyflogaeth a Chymorth eich cleient"
+    override val expectedTaxPaidHiddenText: String = "Newid swm y dreth a ddidynnwyd o hawliad Lwfans Cyflogaeth a Chymorth eich cleient"
 
-    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your client’s Employment and Support Allowance claim ended in the tax year ending 5 April $taxYear"
+    override def expectedEndDateQuestionHiddenText(taxYear: Int): String =
+      s"Newid p’un a wnaeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient ddod i ben yn ystod y flwyddyn dreth a ddaeth i ben ar 5 Ebrill $taxYear"
 
-    override def expectedAmountText(firstDate: String, secondDate: String): String = s"How much Employment and Support Allowance did your client get between $firstDate and $secondDate?"
+    override def expectedAmountText(firstDate: String, secondDate: String): String = s"Faint o Lwfans Cyflogaeth a Chymorth a gafodd eich cleient rhwng $firstDate a $secondDate?"
 
     override def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String =
-      s"Did your client have any tax taken off their Employment and Support Allowance between $firstDate and $secondDate?"
+      s"A ddidynnwyd unrhyw dreth o Lwfans Cyflogaeth a Chymorth eich cleient rhwng $firstDate a $secondDate?"
 
-    override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"How much tax was taken off your client’s Employment and Support Allowance between $firstDate and $secondDate?"
+    override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"Faint o dreth a gafodd ei didynnu o Lwfans Cyflogaeth a Chymorth eich cleient rhwng $firstDate a $secondDate?"
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
@@ -248,10 +250,16 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
             EndDateController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(4), "for the tax paid question")
+          linkCheck(s"$expectedChangeLinkText ${get.expectedTaxPaidQuestionHiddenText}", changeLink(4),
+            TaxPaidQuestionController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
           textOnPageCheck(get.expectedAmountText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
           textOnPageCheck(bigDecimalCurrency(pageModel.amount.get.toString()), summaryListRowFieldValueSelector(5))
           linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(5),
             AmountController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(5)))
+          textOnPageCheck(get.expectedTaxPaidText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(6))
+          textOnPageCheck(bigDecimalCurrency(pageModel.taxPaid.get.toString()), summaryListRowFieldValueSelector(6))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedTaxPaidHiddenText}", changeLink(6),
+            TaxPaidController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(6)))
           checkElementsCount(6, rowsSelector)
           buttonCheck(expectedSaveButtonText, saveAndContinueButtonSelector)
           formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, pageFormSelector)
