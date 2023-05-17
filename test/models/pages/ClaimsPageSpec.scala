@@ -28,6 +28,7 @@ import support.builders.StateBenefitsDataBuilder.aStateBenefitsData
 import support.providers.TaxYearProvider
 
 import java.time.LocalDate
+import java.util.UUID
 
 class ClaimsPageSpec extends UnitTest
   with TaxYearProvider {
@@ -56,6 +57,32 @@ class ClaimsPageSpec extends UnitTest
         isInYear = false,
         benefitDataRows = benefitDataRows,
         ignoredBenefitDataRows = Seq(BenefitDataRow.mapFrom(taxYear, stateBenefit_1))
+      )
+    }
+
+    "create correct ClaimsPage object filtering overridden benefit ids" in {
+      val now = LocalDate.now()
+      val stateBenefit_1 = aStateBenefit.copy(benefitId = UUID.randomUUID(), startDate = now.minusDays(2), dateIgnored = None)
+      val stateBenefit_2 = aStateBenefit.copy(startDate = now.minusDays(0), dateIgnored = None)
+      val stateBenefit_3 = aCustomerAddedStateBenefit.copy(benefitId = stateBenefit_2.benefitId, startDate = now.minusDays(1))
+      val stateBenefit_4 = aCustomerAddedStateBenefit.copy(startDate = now.minusDays(3))
+
+      val stateBenefitsData = aStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_1, stateBenefit_2)))
+      val customerAddedStateBenefitsData = aCustomerAddedStateBenefitsData.copy(jobSeekersAllowances = Some(Set(stateBenefit_3, stateBenefit_4)))
+      val incomeTaxUserData = anIncomeTaxUserData.copy(Some(anAllStateBenefitsData.copy(Some(stateBenefitsData), Some(customerAddedStateBenefitsData))))
+
+      val benefitDataRows = Seq(
+        BenefitDataRow.mapFrom(taxYear, stateBenefit_4),
+        BenefitDataRow.mapFrom(taxYear, stateBenefit_1),
+        BenefitDataRow.mapFrom(taxYear, stateBenefit_3)
+      )
+
+      ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe ClaimsPage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        isInYear = false,
+        benefitDataRows = benefitDataRows,
+        ignoredBenefitDataRows = Seq()
       )
     }
   }

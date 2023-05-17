@@ -31,11 +31,12 @@ object ClaimsPage {
             benefitType: BenefitType,
             isInYear: Boolean,
             incomeTaxUserData: IncomeTaxUserData): ClaimsPage = {
-    val hmrcData = incomeTaxUserData.hmrcAllowancesFor(benefitType)
-      .map(BenefitDataRow.mapFrom(taxYear, _)).toSeq
-
     val customerData = incomeTaxUserData.customerAllowancesFor(benefitType)
       .map(BenefitDataRow.mapFrom(taxYear, _)).toSeq
+
+    val hmrcData = incomeTaxUserData.hmrcAllowancesFor(benefitType)
+      .map(BenefitDataRow.mapFrom(taxYear, _))
+      .filter(hmrcBenefit => !customerData.exists(_.benefitId == hmrcBenefit.benefitId)).toSeq
 
     val (ignoredBenefitDataRows, benefitDataRows) = (hmrcData ++ customerData)
       .sortWith((it1, it2) => it1.startDate.isBefore(it2.startDate))
