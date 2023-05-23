@@ -17,13 +17,14 @@
 package support
 
 import config.AppConfig
-import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
+import models.requests.{AuthorisationRequest, UserPriorAndSessionDataRequest, UserPriorDataRequest, UserSessionDataRequest}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContent
 import play.api.test.Injecting
 import support.builders.UserBuilder.anAgentUser
 import support.builders.requests.AuthorisationRequestBuilder.anAuthorisationRequest
+import support.builders.requests.UserPriorAndSessionDataRequestBuilder.aUserPriorAndSessionDataRequest
 import support.builders.requests.UserPriorDataRequestBuilder.aUserPriorDataRequest
 import support.builders.requests.UserSessionDataRequestBuilder.aUserSessionDataRequest
 import support.helpers.{UserScenarios, ViewHelper}
@@ -56,4 +57,7 @@ trait ViewUnitTest extends UnitTest
 
   protected def getUserSessionDataRequest(isAgent: Boolean): UserSessionDataRequest[AnyContent] =
     if (isAgent) aUserSessionDataRequest.copy(user = anAgentUser, request = agentUserRequest.request) else aUserSessionDataRequest
+
+  protected def getUserPriorAndSessionDataRequest(isAgent: Boolean): UserPriorAndSessionDataRequest[AnyContent] =
+    if (isAgent) aUserPriorAndSessionDataRequest.copy(user = anAgentUser, request = agentUserRequest.request) else aUserPriorAndSessionDataRequest
 }

@@ -53,6 +53,7 @@ common.taxPaidPage.zeroOrLess.amount.error = Mae’n rhaid i swm y dreth a dalwy
 common.reviewClaimPage.caption = 6 Ebrill {0} i 5 Ebrill {1}
 common.reviewClaimPage.p1 = Mae’r data hyn yn dod o’r Adran Gwaith a Phensiynau (DWP)
 common.reviewClaimPage.restoreClaim = Hawliad i’w adfer
+common.reviewClaimPage.was = was:
 common.removeClaimPage.link = Peidiwch â thynnu’r hawliad
 
 common.employmentSupportAllowance = Lwfans Cyflogaeth a Chymorth

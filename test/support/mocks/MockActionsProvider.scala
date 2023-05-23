@@ -17,8 +17,8 @@
 package support.mocks
 
 import actions.ActionsProvider
-import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
-import models.{BenefitType, IncomeTaxUserData, StateBenefitsUserData}
+import models.requests.{AuthorisationRequest, UserPriorAndSessionDataRequest, UserPriorDataRequest, UserSessionDataRequest}
+import models.{BenefitType, IncomeTaxUserData, StateBenefit, StateBenefitsUserData}
 import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler3}
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc._
@@ -60,10 +60,11 @@ trait MockActionsProvider extends MockFactory
   def mockReviewClaimWithAuditing(taxYear: Int,
                                   benefitType: BenefitType,
                                   sessionDataId: UUID,
-                                  result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
+                                  result: StateBenefitsUserData,
+                                  priorData: Option[StateBenefit] = None): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserPriorAndSessionDataRequest, AnyContent]] = {
     (mockActionsProvider.reviewClaimWithAuditing(_: Int, _: BenefitType, _: UUID))
       .expects(taxYear, benefitType, sessionDataId)
-      .returns(value = userSessionDataRequestActionBuilder(result))
+      .returns(value = userPriorAndSessionDataRequestActionBuilder(result, priorData))
   }
 
   def mockReviewClaimSaveAndContinue(taxYear: Int,
@@ -109,6 +110,16 @@ trait MockActionsProvider extends MockFactory
 
       override def invokeBlock[A](request: Request[A], block: UserPriorDataRequest[A] => Future[Result]): Future[Result] =
         block(UserPriorDataRequest(result, aUser, request))
+
+      override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
+    }
+
+  private def userPriorAndSessionDataRequestActionBuilder(result: StateBenefitsUserData, priorData: Option[StateBenefit]): ActionBuilder[UserPriorAndSessionDataRequest, AnyContent] =
+    new ActionBuilder[UserPriorAndSessionDataRequest, AnyContent] {
+      override def parser: BodyParser[AnyContent] = BodyParser("anyContent")(_ => throw new NotImplementedError)
+
+      override def invokeBlock[A](request: Request[A], block: UserPriorAndSessionDataRequest[A] => Future[Result]): Future[Result] =
+        block(UserPriorAndSessionDataRequest(result, priorData, aUser, request))
 
       override protected def executionContext: ExecutionContext = ExecutionContext.Implicits.global
     }

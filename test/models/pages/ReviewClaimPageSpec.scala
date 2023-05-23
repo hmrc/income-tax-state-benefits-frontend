@@ -19,6 +19,7 @@ package models.pages
 import models.BenefitType.JobSeekersAllowance
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
+import support.builders.StateBenefitBuilder.aStateBenefit
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.providers.TaxYearProvider
 
@@ -31,7 +32,7 @@ class ReviewClaimPageSpec extends UnitTest
 
   ".apply" should {
     "create correct page object" in {
-      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, aStateBenefitsUserData) shouldBe ReviewClaimPage(
+      ReviewClaimPage.apply(aStateBenefitsUserData.taxYear, JobSeekersAllowance, isInYear, aStateBenefitsUserData, Some(aStateBenefit)) shouldBe ReviewClaimPage(
         taxYear = aStateBenefitsUserData.taxYear,
         benefitType = JobSeekersAllowance,
         sessionDataId = aStateBenefitsUserData.sessionDataId.get,
@@ -45,7 +46,11 @@ class ReviewClaimPageSpec extends UnitTest
         endDate = aClaimCYAModel.endDate,
         amount = aClaimCYAModel.amount,
         taxPaidQuestion = aClaimCYAModel.taxPaidQuestion,
-        taxPaid = aClaimCYAModel.taxPaid
+        taxPaid = aClaimCYAModel.taxPaid,
+        priorStartDate = Some(aStateBenefit.startDate),
+        priorEndDate = aStateBenefit.endDate,
+        priorAmount = aStateBenefit.amount,
+        priorTaxPaid = aStateBenefit.taxPaid
       )
     }
 
@@ -67,7 +72,11 @@ class ReviewClaimPageSpec extends UnitTest
         endDate = claim.endDate,
         amount = claim.amount,
         taxPaidQuestion = claim.taxPaidQuestion,
-        taxPaid = claim.taxPaid
+        taxPaid = claim.taxPaid,
+        priorStartDate = None,
+        priorEndDate = None,
+        priorAmount = None,
+        priorTaxPaid = None
       )
     }
 
@@ -89,7 +98,11 @@ class ReviewClaimPageSpec extends UnitTest
         endDate = claim.endDate,
         amount = claim.amount,
         taxPaidQuestion = claim.taxPaidQuestion,
-        taxPaid = claim.taxPaid
+        taxPaid = claim.taxPaid,
+        priorStartDate = None,
+        priorEndDate = None,
+        priorAmount = None,
+        priorTaxPaid = None
       )
     }
 
@@ -111,7 +124,11 @@ class ReviewClaimPageSpec extends UnitTest
         endDate = claimCYAModel.endDate,
         amount = claimCYAModel.amount,
         taxPaidQuestion = claimCYAModel.taxPaidQuestion,
-        taxPaid = claimCYAModel.taxPaid
+        taxPaid = claimCYAModel.taxPaid,
+        priorStartDate = None,
+        priorEndDate = None,
+        priorAmount = None,
+        priorTaxPaid = None
       )
     }
 
@@ -133,7 +150,11 @@ class ReviewClaimPageSpec extends UnitTest
         endDate = claimCYAModel.endDate,
         amount = claimCYAModel.amount,
         taxPaidQuestion = claimCYAModel.taxPaidQuestion,
-        taxPaid = claimCYAModel.taxPaid
+        taxPaid = claimCYAModel.taxPaid,
+        priorStartDate = None,
+        priorEndDate = None,
+        priorAmount = None,
+        priorTaxPaid = None
       )
     }
   }

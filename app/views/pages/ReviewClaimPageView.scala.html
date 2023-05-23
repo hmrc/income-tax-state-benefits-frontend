@@ -16,7 +16,7 @@
 
 @import controllers.routes._
 @import models.pages.ReviewClaimPage
-@import models.requests.UserSessionDataRequest
+@import models.requests.UserPriorAndSessionDataRequest
 
 @import views.html.templates.Layout
 @import views.html.templates.helpers.Button
@@ -40,7 +40,7 @@
     button: Button
 )
 
-@(pageModel: ReviewClaimPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
+@(pageModel: ReviewClaimPage)(implicit request: UserPriorAndSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
 
 @benefitTypeKey = @{ pageModel.benefitType.typeName }
 @pageKeysPrefix = @{ s"$benefitTypeKey.reviewClaimPage" }
@@ -81,7 +81,7 @@
 
         val startDateSummaryListRow = Some({
             val optRoute = if (pageModel.isInYear || pageModel.isIgnored) None else Some(StartDateController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
-            viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.startDate")), translatedDateFormatter(pageModel.startDate), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.startDate.hiddenText")))
+            viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.startDate")), translatedDateFormatter(pageModel.startDate) + pageModel.priorStartDate.fold("")(date => if(pageModel.startDate == date) "" else s"<br>was: ${translatedDateFormatter(date)}"), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.startDate.hiddenText")))
         })
         val endDateQuestionSummaryListRow = if (pageModel.isInYear) None else Some({
             val optRoute = if (pageModel.isIgnored) None else Some(EndDateQuestionController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
@@ -90,7 +90,7 @@
         val endDateSummaryListRow = if (pageModel.isInYear) None else pageModel.endDateQuestion match {
             case Some(true) => Some({
                 val optRoute = if (pageModel.isIgnored) None else Some(EndDateController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
-                viewToSummaryListRow(messages("common.claim.endDate"), pageModel.endDate.fold("")(translatedDateFormatter(_)), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.endDate.hiddenText")))
+                viewToSummaryListRow(messages("common.claim.endDate"), pageModel.endDate.fold("")(endDate => translatedDateFormatter(endDate) + pageModel.priorEndDate.fold("")(priorEndDate => if(endDate == priorEndDate) "" else s"<br>was: ${translatedDateFormatter(priorEndDate)}")), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.endDate.hiddenText")))
             })
             case _ => None
         }
@@ -102,14 +102,14 @@
         )
         val amountSummaryListRow = if (pageModel.isInYear) None else Some(
             viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.amount"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
-                pageModel.amount.fold("")(amount => bigDecimalCurrency(amount.toString)),
+                pageModel.amount.fold("")(amount => bigDecimalCurrency(amount.toString) + pageModel.priorAmount.fold("")(priorAmount => if(priorAmount == amount) "" else s"<br> ${messages("common.reviewClaimPage.was")} ${bigDecimalCurrency(priorAmount.toString)}")),
                 if (pageModel.isIgnored) None else Some(AmountController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)),
                 messages(appendUserTypeSuffix(s"$pageKeysPrefix.amount.hiddenText")))
         )
         val taxPaidSummaryListRow = if (pageModel.isInYear) None else pageModel.taxPaidQuestion match {
             case Some(true) => Some(
                 viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.taxTakenOff"), translatedDateFormatter(pageModel.itemsFirstDate), translatedDateFormatter(pageModel.itemsSecondDate)),
-                    pageModel.taxPaid.fold("")(amount => bigDecimalCurrency(amount.toString)),
+                    pageModel.taxPaid.fold("")(amount => bigDecimalCurrency(amount.toString) + pageModel.priorTaxPaid.fold("")(priorAmount => if(priorAmount == amount) "" else s"<br> ${messages("common.reviewClaimPage.was")} ${bigDecimalCurrency(priorAmount.toString)}")),
                     if (pageModel.isIgnored) None else Some(TaxPaidController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)),
                     messages(appendUserTypeSuffix(s"$pageKeysPrefix.taxPaid.hiddenText"))))
             case _ => None

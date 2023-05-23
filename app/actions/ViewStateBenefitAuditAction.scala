@@ -17,7 +17,7 @@
 package actions
 
 import models.audit.ViewStateBenefitAudit
-import models.requests.UserSessionDataRequest
+import models.requests.UserPriorAndSessionDataRequest
 import play.api.mvc._
 import services.AuditService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -27,12 +27,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 case class ViewStateBenefitAuditAction @Inject()(auditService: AuditService)
                                                 (implicit ec: ExecutionContext)
-  extends ActionFilter[UserSessionDataRequest] with FrontendHeaderCarrierProvider {
+  extends ActionFilter[UserPriorAndSessionDataRequest] with FrontendHeaderCarrierProvider {
   override protected[actions] def executionContext: ExecutionContext = ec
 
-  override protected[actions] def filter[A](userSessionDataRequest: UserSessionDataRequest[A]): Future[Option[Result]] = Future.successful {
-    val auditModel = ViewStateBenefitAudit(userSessionDataRequest.user.affinityGroup, userSessionDataRequest.stateBenefitsUserData)
-    auditService.sendAudit(auditModel.toAuditModel)(hc(userSessionDataRequest.request), ViewStateBenefitAudit.writes)
+  override protected[actions] def filter[A](userPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[A]): Future[Option[Result]] = Future.successful {
+    val auditModel = ViewStateBenefitAudit(userPriorAndSessionDataRequest.user.affinityGroup, userPriorAndSessionDataRequest.stateBenefitsUserData)
+    auditService.sendAudit(auditModel.toAuditModel)(hc(userPriorAndSessionDataRequest.request), ViewStateBenefitAudit.writes)
     None
   }
 }
