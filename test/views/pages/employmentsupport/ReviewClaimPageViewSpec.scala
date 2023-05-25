@@ -18,12 +18,13 @@ package views.pages.employmentsupport
 
 import controllers.routes._
 import models.BenefitType.EmploymentSupportAllowance
-import models.requests.UserSessionDataRequest
+import models.requests.UserPriorAndSessionDataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
+import support.builders.StateBenefitBuilder.aStateBenefit
 import support.builders.pages.ReviewClaimPageBuilder.aReviewClaimPage
 import utils.ViewUtils.{bigDecimalCurrency, translatedDateFormatter, translatedTaxYearEndDateFormatter}
 import views.html.pages.ReviewClaimPageView
@@ -88,6 +89,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     val expectedBackText: String
     val expectedYesText: String
     val expectedNoText: String
+    val expectedWasText: String
 
     def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String
   }
@@ -107,6 +109,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedBackText: String = "Back"
     override val expectedYesText: String = "Yes"
     override val expectedNoText: String = "No"
+    override val expectedWasText: String = "was:"
 
     override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String =
       s"Did this claim end between ${translatedDateFormatter(startDate)(defaultMessages)} and ${translatedTaxYearEndDateFormatter(taxYear)(defaultMessages)}?"
@@ -128,6 +131,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedBackText: String = "Yn ôl"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
+    override val expectedWasText: String = "was:"
 
     override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String =
       s"A wnaeth yr hawliad hwn ddod i ben rhwng ${translatedDateFormatter(startDate)(welshMessages)} a ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
@@ -223,7 +227,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
       val pageModel = aReviewClaimPage.copy(taxYear = taxYearEOY, isHmrcData = false, benefitType = EmploymentSupportAllowance)
       "render end of year version of ReviewEmploymentAndSupportAllowanceClaim page" when {
         "customer added data" which {
-          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val UserPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[AnyContent] = getUserPriorAndSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
           val translatedStartDate = translatedDateFormatter(pageModel.startDate).replace("\u00A0", " ")
@@ -270,7 +274,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
         }
 
         "HMRC added data" which {
-          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val UserPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[AnyContent] = getUserPriorAndSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
           val page = pageModel.copy(isHmrcData = true)
@@ -280,8 +284,99 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
           formPostLinkCheck(ReviewClaimController.saveAndContinue(taxYearEOY, EmploymentSupportAllowance, page.sessionDataId).url, pageFormSelector)
         }
 
+        "customer override data" which {
+          val priorData = aStateBenefit.copy(
+            startDate = aStateBenefit.startDate.plusDays(1),
+            endDate = aStateBenefit.endDate.map(_.plusDays(1)),
+            amount = aStateBenefit.amount.map(_ + 1),
+            taxPaid = aStateBenefit.taxPaid.map(_ + 1))
+          val pageModel = aReviewClaimPage.copy(isHmrcData = false, taxYear = taxYearEOY, benefitType = EmploymentSupportAllowance,
+            priorStartDate = Some(priorData.startDate), priorEndDate = priorData.endDate, priorAmount = priorData.amount, priorTaxPaid = priorData.taxPaid)
+          implicit val UserPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[AnyContent] = getUserPriorAndSessionDataRequest(userScenario.isAgent).copy(priorData = Some(priorData))
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val translatedStartDate = translatedDateFormatter(pageModel.startDate).replace("\u00A0", " ")
+          val translatedEndDate = translatedDateFormatter(pageModel.endDate.get).replace("\u00A0", " ")
+          val translatedPriorStartDate = translatedDateFormatter(priorData.startDate).replace("\u00A0", " ")
+          val translatedPriorEndDate = translatedDateFormatter(priorData.endDate.get).replace("\u00A0", " ")
+
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          welshToggleCheck(userScenario.isWelsh)
+          titleCheck(expectedTitle, userScenario.isWelsh)
+          captionCheck(expectedCaption(taxYearEOY))
+          elementNotOnPageCheck(p1)
+
+          textOnPageCheck(get.expectedStartDateText, summaryListRowFieldNameSelector(1))
+          textOnPageCheck(s"$translatedStartDate $expectedWasText $translatedPriorStartDate", summaryListRowFieldValueSelector(1))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedStartDateHiddenText}", changeLink(1),
+            StartDateController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
+          textOnPageCheck(expectedEndDateQuestionText(taxYearEOY, pageModel.startDate), summaryListRowFieldNameSelector(2))
+          textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
+            EndDateQuestionController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
+          textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
+          textOnPageCheck(s"$translatedEndDate $expectedWasText $translatedPriorEndDate" , summaryListRowFieldValueSelector(3))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3),
+            EndDateController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
+          textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
+          textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(4), "for the tax paid question")
+          linkCheck(s"$expectedChangeLinkText ${get.expectedTaxPaidQuestionHiddenText}", changeLink(4),
+            TaxPaidQuestionController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
+          textOnPageCheck(get.expectedAmountText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
+          textOnPageCheck(s"${bigDecimalCurrency(pageModel.amount.get.toString())} $expectedWasText ${bigDecimalCurrency(priorData.amount.get.toString())}", summaryListRowFieldValueSelector(5))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(5),
+            AmountController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(5)))
+          textOnPageCheck(get.expectedTaxPaidText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(6))
+          textOnPageCheck(s"${bigDecimalCurrency(pageModel.taxPaid.get.toString())} $expectedWasText ${bigDecimalCurrency(priorData.taxPaid.get.toString())}", summaryListRowFieldValueSelector(6))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedTaxPaidHiddenText}", changeLink(6),
+            TaxPaidController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(6)))
+          checkElementsCount(6, rowsSelector)
+        }
+
+        "customer added data with the same values" which {
+          implicit val UserPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[AnyContent] = getUserPriorAndSessionDataRequest(userScenario.isAgent).copy(priorData = Some(aStateBenefit))
+          implicit val messages: Messages = getMessages(userScenario.isWelsh)
+
+          val translatedStartDate = translatedDateFormatter(pageModel.startDate).replace("\u00A0", " ")
+          val translatedEndDate = translatedDateFormatter(pageModel.endDate.get).replace("\u00A0", " ")
+
+          implicit val document: Document = Jsoup.parse(underTest(pageModel).body)
+
+          welshToggleCheck(userScenario.isWelsh)
+          titleCheck(expectedTitle, userScenario.isWelsh)
+          captionCheck(expectedCaption(taxYearEOY))
+          elementNotOnPageCheck(p1)
+
+          textOnPageCheck(get.expectedStartDateText, summaryListRowFieldNameSelector(1))
+          textOnPageCheck(translatedStartDate, summaryListRowFieldValueSelector(1))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedStartDateHiddenText}", changeLink(1),
+            StartDateController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
+          textOnPageCheck(expectedEndDateQuestionText(taxYearEOY, pageModel.startDate), summaryListRowFieldNameSelector(2))
+          textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
+            EndDateQuestionController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
+          textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
+          textOnPageCheck(translatedEndDate, summaryListRowFieldValueSelector(3))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3),
+            EndDateController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
+          textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
+          textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(4), "for the tax paid question")
+          linkCheck(s"$expectedChangeLinkText ${get.expectedTaxPaidQuestionHiddenText}", changeLink(4),
+            TaxPaidQuestionController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(4)))
+          textOnPageCheck(get.expectedAmountText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(5))
+          textOnPageCheck(bigDecimalCurrency(pageModel.amount.get.toString()), summaryListRowFieldValueSelector(5))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedAmountHiddenText}", changeLink(5),
+            AmountController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(5)))
+          textOnPageCheck(get.expectedTaxPaidText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(6))
+          textOnPageCheck(bigDecimalCurrency(pageModel.taxPaid.get.toString()), summaryListRowFieldValueSelector(6))
+          linkCheck(s"$expectedChangeLinkText ${get.expectedTaxPaidHiddenText}", changeLink(6),
+            TaxPaidController.show(taxYearEOY, EmploymentSupportAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(6)))
+          checkElementsCount(6, rowsSelector)
+        }
+
         "the claim is ignored" which {
-          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val UserPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[AnyContent] = getUserPriorAndSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
           val page = pageModel.copy(isIgnored = true)
@@ -300,7 +395,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
       "render in year version of ReviewEmploymentAndSupportAllowanceClaim page" when {
         "HMRC added data" which {
-          implicit val userSessionDataRequest: UserSessionDataRequest[AnyContent] = getUserSessionDataRequest(userScenario.isAgent)
+          implicit val UserPriorAndSessionDataRequest: UserPriorAndSessionDataRequest[AnyContent] = getUserPriorAndSessionDataRequest(userScenario.isAgent)
           implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
           val page = pageModel.copy(taxYear = taxYear, isHmrcData = false, isInYear = true)

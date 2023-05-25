@@ -38,6 +38,10 @@ object ReviewClaimPageBuilder {
     endDate = aClaimCYAModel.endDate,
     amount = aClaimCYAModel.amount,
     taxPaidQuestion = aClaimCYAModel.taxPaidQuestion,
-    taxPaid = aClaimCYAModel.taxPaid
+    taxPaid = aClaimCYAModel.taxPaid,
+    priorStartDate = None,
+    priorEndDate = None,
+    priorAmount = None,
+    priorTaxPaid = None
   )
 }

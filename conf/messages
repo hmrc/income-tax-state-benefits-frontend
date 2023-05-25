@@ -53,6 +53,7 @@ common.taxPaidPage.zeroOrLess.amount.error = The amount of tax paid must be more
 common.reviewClaimPage.caption = 6 April {0} to 5 April {1}
 common.reviewClaimPage.p1 = This data is from the Department of Work and Pensions (DWP)
 common.reviewClaimPage.restoreClaim = Restore claim
+common.reviewClaimPage.was = was:
 common.removeClaimPage.link = Don’t remove claim
 
 common.employmentSupportAllowance = Employment and Support Allowance

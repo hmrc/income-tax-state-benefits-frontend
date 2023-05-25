@@ -18,7 +18,7 @@ package actions
 
 import config.{AppConfig, ErrorHandler}
 import models.BenefitType
-import models.requests.{AuthorisationRequest, UserPriorDataRequest, UserSessionDataRequest}
+import models.requests.{AuthorisationRequest, UserPriorAndSessionDataRequest, UserPriorDataRequest, UserSessionDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 import services.{AuditService, StateBenefitsService}
 
@@ -50,11 +50,12 @@ class ActionsProvider @Inject()(authAction: AuthorisedAction,
       .andThen(EndOfYearFilterAction(taxYear, appConfig))
       .andThen(UserSessionDataRequestRefinerAction(taxYear, benefitType, sessionDataId, stateBenefitsService, errorHandler))
 
-  def reviewClaimWithAuditing(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =
+  def reviewClaimWithAuditing(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserPriorAndSessionDataRequest, AnyContent] =
     authAction
       .andThen(TaxYearAction(taxYear, appConfig, ec))
       .andThen(UserSessionDataRequestRefinerAction(taxYear, benefitType, sessionDataId, stateBenefitsService, errorHandler))
       .andThen(ReviewClaimFilterAction(taxYear, benefitType))
+      .andThen(UserPriorAndSessionDataRequestRefinerAction(taxYear, stateBenefitsService, benefitType, errorHandler))
       .andThen(ViewStateBenefitAuditAction(auditService))
 
   def reviewClaimSaveAndContinue(taxYear: Int, benefitType: BenefitType, sessionDataId: UUID): ActionBuilder[UserSessionDataRequest, AnyContent] =

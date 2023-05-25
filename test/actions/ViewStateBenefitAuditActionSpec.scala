@@ -20,7 +20,7 @@ import models.audit.ViewStateBenefitAudit
 import support.UnitTest
 import support.builders.StateBenefitsUserDataBuilder.aStateBenefitsUserData
 import support.builders.UserBuilder.aUser
-import support.builders.requests.UserSessionDataRequestBuilder.aUserSessionDataRequest
+import support.builders.requests.UserPriorAndSessionDataRequestBuilder.aUserPriorAndSessionDataRequest
 import support.mocks.MockAuditService
 import support.providers.TaxYearProvider
 
@@ -46,7 +46,7 @@ class ViewStateBenefitAuditActionSpec extends UnitTest
 
       mockSendAudit(auditEvent.toAuditModel)
 
-      await(underTest.filter(aUserSessionDataRequest)) shouldBe None
+      await(underTest.filter(aUserPriorAndSessionDataRequest)) shouldBe None
     }
   }
 }
