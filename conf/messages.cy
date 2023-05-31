@@ -115,8 +115,8 @@ employmentSupportAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent =
 employmentSupportAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth fod yr un fath â {0}, neu cyn hynny
 employmentSupportAllowance.startDatePage.error.mustBeBefore.date.agent = Mae’n rhaid i’r dyddiad y dechreuodd hawliad Lwfans Cyflogaeth a Chymorth eich cleient fod cyn iddo ddod i ben, sef {0}
 employmentSupportAllowance.startDatePage.error.mustBeBefore.date.individual = Mae’n rhaid i’r dyddiad y dechreuodd eich hawliad Lwfans Cyflogaeth a Chymorth fod cyn iddo ddod i ben, sef {0}
-employmentSupportAllowance.startDatePage.error.mustHave4DigitYear.agent = The year your client’s Employment and Support Allowance claim started must include 4 digits
-employmentSupportAllowance.startDatePage.error.mustHave4DigitYear.individual = The year your Employment and Support Allowance claim started must include 4 digits
+employmentSupportAllowance.startDatePage.error.mustHave4DigitYear.agent = Mae’n rhaid i’r flwyddyn y dechreuodd hawliad Lwfans Cyflogaeth a Chymorth eich cleient gynnwys 4 digid
+employmentSupportAllowance.startDatePage.error.mustHave4DigitYear.individual = Mae’n rhaid i’r flwyddyn y dechreuodd eich hawliad Lwfans Cyflogaeth a Chymorth gynnwys 4 digid
 
 #################       Employment and Support Allowance - End Date Page       ########################################
 employmentSupportAllowance.endDatePage.error.empty.day.agent = Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben gynnwys diwrnod
@@ -139,8 +139,8 @@ employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.agent = Mae’n rha
 employmentSupportAllowance.endDatePage.error.mustBeEndOfYear.individual = Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben fod yr un fath â {0}, neu cyn hynny
 employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.agent = Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben fod ar ôl iddo ddechrau, sef {0}
 employmentSupportAllowance.endDatePage.error.mustBeAfterStartDate.individual = Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben fod ar ôl iddo ddechrau, sef {0}
-employmentSupportAllowance.endDatePage.error.mustHave4DigitYear.agent = The year your client’s Employment and Support Allowance claim ended must include 4 digits
-employmentSupportAllowance.endDatePage.error.mustHave4DigitYear.individual = The year your Employment and Support Allowance claim ended must include 4 digits
+employmentSupportAllowance.endDatePage.error.mustHave4DigitYear.agent = Mae’n rhaid i’r flwyddyn y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben gynnwys 4 digid
+employmentSupportAllowance.endDatePage.error.mustHave4DigitYear.individual = Mae’n rhaid i’r flwyddyn y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben gynnwys 4 digid
 
 #################       Employment and Support Allowance - Amount Page       ########################################
 employmentSupportAllowance.amountPage.textBox.label = Swm y Lwfans Cyflogaeth a Chymorth
@@ -206,8 +206,8 @@ jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.agent = Mae’
 jobSeekersAllowance.startDatePage.error.mustBeSameAsOrBefore.date.individual = Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith fod yr un fath â {0}, neu cyn hynny
 jobSeekersAllowance.startDatePage.error.mustBeBefore.date.agent = Mae’n rhaid i’r dyddiad y dechreuodd hawliad Lwfans Ceisio Gwaith eich cleient fod cyn iddo ddod i ben, sef {0}
 jobSeekersAllowance.startDatePage.error.mustBeBefore.date.individual = Mae’n rhaid i’r dyddiad y dechreuodd eich hawliad Lwfans Ceisio Gwaith fod cyn iddo ddod i ben, sef {0}
-jobSeekersAllowance.startDatePage.error.mustHave4DigitYear.agent = The year your client’s Jobseeker’s Allowance claim started must include 4 digits
-jobSeekersAllowance.startDatePage.error.mustHave4DigitYear.individual = The year your Jobseeker’s Allowance claim started must include 4 digits
+jobSeekersAllowance.startDatePage.error.mustHave4DigitYear.agent = Mae’n rhaid i’r flwyddyn y dechreuodd hawliad Lwfans Ceisio Gwaith eich cleient gynnwys 4 digid
+jobSeekersAllowance.startDatePage.error.mustHave4DigitYear.individual = Mae’n rhaid i’r flwyddyn y dechreuodd eich hawliad Lwfans Ceisio Gwaith gynnwys 4 digid
 
 #################       Jobseeker’s Allowance - End Date Page       ########################################
 jobSeekersAllowance.endDatePage.error.empty.day.agent = Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys diwrnod
@@ -230,8 +230,8 @@ jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.agent = Mae’n rhaid i’
 jobSeekersAllowance.endDatePage.error.mustBeEndOfYear.individual = Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben fod yr un fath â {0}, neu cyn hynny
 jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.agent = Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben fod ar ôl iddo ddechrau, sef {0}
 jobSeekersAllowance.endDatePage.error.mustBeAfterStartDate.individual = Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Ceisio Gwaith i ben fod ar ôl iddo ddechrau, sef {0}
-jobSeekersAllowance.endDatePage.error.mustHave4DigitYear.agent = The year your client’s Jobseeker’s Allowance claim ended must include 4 digits
-jobSeekersAllowance.endDatePage.error.mustHave4DigitYear.individual = The year your Jobseeker’s Allowance claim ended must include 4 digits
+jobSeekersAllowance.endDatePage.error.mustHave4DigitYear.agent = Mae’n rhaid i’r flwyddyn y daeth hawliad Lwfans Ceisio Gwaith eich cleient i ben gynnwys 4 digid
+jobSeekersAllowance.endDatePage.error.mustHave4DigitYear.individual = Mae’n rhaid i’r flwyddyn y daeth eich hawliad Lwfans Ceisio Gwaith i ben gynnwys 4 digid
 
 #################       Jobseeker’s Allowance - Amount Page       ########################################
 jobSeekersAllowance.amountPage.textBox.label = Swm y Lwfans Ceisio Gwaith

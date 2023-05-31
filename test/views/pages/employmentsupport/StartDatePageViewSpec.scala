@@ -122,7 +122,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth gynnwys blwyddyn"
     override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth"
     override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth fod yn ddyddiad go iawn"
-    override val expectedMustHave4DigitYearErrorTest: String = "The year your Employment and Support Allowance claim started must include 4 digits"
+    override val expectedMustHave4DigitYearErrorTest: String = "Mae’n rhaid i’r flwyddyn y dechreuodd eich hawliad Lwfans Cyflogaeth a Chymorth gynnwys 4 digid"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
@@ -164,7 +164,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth gynnwys blwyddyn"
     override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth"
     override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth fod yn ddyddiad go iawn"
-    override val expectedMustHave4DigitYearErrorTest: String = "The year your client’s Employment and Support Allowance claim started must include 4 digits"
+    override val expectedMustHave4DigitYearErrorTest: String = "Mae’n rhaid i’r flwyddyn y dechreuodd hawliad Lwfans Cyflogaeth a Chymorth eich cleient gynnwys 4 digid"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"Mae’n rhaid i’r dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
