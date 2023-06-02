@@ -124,7 +124,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben gynnwys blwyddyn"
     override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben"
     override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben fod yn ddyddiad go iawn"
-    override val expectedMustHave4DigitYearErrorTest: String = "The year your Employment and Support Allowance claim ended must include 4 digits"
+    override val expectedMustHave4DigitYearErrorTest: String = "Mae’n rhaid i’r flwyddyn y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben gynnwys 4 digid"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"Mae’n rhaid i’r dyddiad y daeth eich hawliad Lwfans Cyflogaeth a Chymorth i ben fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
@@ -164,7 +164,7 @@ class EndDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben gynnwys blwyddyn"
     override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben"
     override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben fod yn ddyddiad go iawn"
-    override val expectedMustHave4DigitYearErrorTest: String = "The year your client’s Employment and Support Allowance claim ended must include 4 digits"
+    override val expectedMustHave4DigitYearErrorTest: String = "Mae’n rhaid i’r flwyddyn y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben gynnwys 4 digid"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"Mae’n rhaid i’r dyddiad y daeth hawliad Lwfans Cyflogaeth a Chymorth eich cleient i ben fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"

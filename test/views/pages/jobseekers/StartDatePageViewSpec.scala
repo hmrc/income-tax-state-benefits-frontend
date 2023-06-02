@@ -122,7 +122,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith gynnwys blwyddyn"
     override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith"
     override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith fod yn ddyddiad go iawn"
-    override val expectedMustHave4DigitYearErrorTest: String = "The year your Jobseeker’s Allowance claim started must include 4 digits"
+    override val expectedMustHave4DigitYearErrorTest: String = "Mae’n rhaid i’r flwyddyn y dechreuodd eich hawliad Lwfans Ceisio Gwaith gynnwys 4 digid"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"Mae’n rhaid i’r dyddiad y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
@@ -164,7 +164,7 @@ class StartDatePageViewSpec extends ViewUnitTest {
     override val expectedEmptyYearErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Ceisio Gwaith gynnwys blwyddyn"
     override val expectedAllFieldsEmptyErrorText: String = "Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Ceisio Gwaith"
     override val expectedInvalidDateErrorText: String = "Mae’n rhaid i’r dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Ceisio Gwaith fod yn ddyddiad go iawn"
-    override val expectedMustHave4DigitYearErrorTest: String = "The year your client’s Jobseeker’s Allowance claim started must include 4 digits"
+    override val expectedMustHave4DigitYearErrorTest: String = "Mae’n rhaid i’r flwyddyn y dechreuodd hawliad Lwfans Ceisio Gwaith eich cleient gynnwys 4 digid"
 
     override def expectedMustBeSameAsOrBeforeErrorText(taxYear: Int): String =
       s"Mae’n rhaid i’r dyddiad y gwnaeth eich cleient ddechrau cael Lwfans Ceisio Gwaith fod yr un fath â ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}, neu cyn hynny"
