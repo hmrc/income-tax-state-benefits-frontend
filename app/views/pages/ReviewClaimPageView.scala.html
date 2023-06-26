@@ -90,7 +90,7 @@
         val endDateSummaryListRow = if (pageModel.isInYear) None else pageModel.endDateQuestion match {
             case Some(true) => Some({
                 val optRoute = if (pageModel.isIgnored) None else Some(EndDateController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
-                viewToSummaryListRow(messages("common.claim.endDate"), pageModel.endDate.fold("")(endDate => translatedDateFormatter(endDate) + pageModel.priorEndDate.fold("")(priorEndDate => if(endDate == priorEndDate) "" else s"<br>was: ${translatedDateFormatter(priorEndDate)}")), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.endDate.hiddenText")))
+                viewToSummaryListRow(messages("common.claim.endDate"), pageModel.endDate.fold("")(endDate => translatedDateFormatter(endDate) + pageModel.priorEndDate.fold("")(priorEndDate => if(endDate == priorEndDate) "" else s"<br> ${messages("common.reviewClaimPage.was")} ${translatedDateFormatter(priorEndDate)}")), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.endDate.hiddenText")))
             })
             case _ => None
         }
