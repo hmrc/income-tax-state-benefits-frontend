@@ -81,7 +81,7 @@
 
         val startDateSummaryListRow = Some({
             val optRoute = if (pageModel.isInYear || pageModel.isIgnored) None else Some(StartDateController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
-            viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.startDate")), translatedDateFormatter(pageModel.startDate) + pageModel.priorStartDate.fold("")(date => if(pageModel.startDate == date) "" else s"<br>was: ${translatedDateFormatter(date)}"), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.startDate.hiddenText")))
+            viewToSummaryListRow(messages(appendUserTypeSuffix(s"common.$benefitTypeKey.startDate")), translatedDateFormatter(pageModel.startDate) + pageModel.priorStartDate.fold("")(date => if(pageModel.startDate == date) "" else s"<br>${messages("common.reviewClaimPage.was")} ${translatedDateFormatter(date)}"), optRoute, messages(appendUserTypeSuffix(s"$pageKeysPrefix.startDate.hiddenText")))
         })
         val endDateQuestionSummaryListRow = if (pageModel.isInYear) None else Some({
             val optRoute = if (pageModel.isIgnored) None else Some(EndDateQuestionController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId))
