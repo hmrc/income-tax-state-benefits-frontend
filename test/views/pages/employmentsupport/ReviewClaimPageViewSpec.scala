@@ -131,7 +131,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedBackText: String = "Yn ôl"
     override val expectedYesText: String = "Iawn"
     override val expectedNoText: String = "Na"
-    override val expectedWasText: String = "was:"
+    override val expectedWasText: String = "Yn flaenorol:"
 
     override def expectedEndDateQuestionText(taxYear: Int, startDate: LocalDate): String =
       s"A wnaeth yr hawliad hwn ddod i ben rhwng ${translatedDateFormatter(startDate)(welshMessages)} a ${translatedTaxYearEndDateFormatter(taxYear)(welshMessages)}?"
