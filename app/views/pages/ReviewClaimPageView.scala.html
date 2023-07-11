@@ -76,6 +76,7 @@
             HtmlContent(value),
             keyClasses = "govuk-!-width-two-thirds",
             valueClasses = if (pageModel.isInYear) "govuk-!-width-one-third right-align" else "govuk-!-width-one-third",
+            actionClasses = "",
             actions = Some(optRoute.map(route => Seq((route, messages("common.change"), Some(hiddenMessage)))).getOrElse(Seq()))
         )
 
