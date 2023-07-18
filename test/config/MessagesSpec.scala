@@ -45,6 +45,28 @@ class MessagesSpec extends ViewUnitTest {
     "language.day.singular",
     "error.summary.title",
     "error.agent.title",
+    "employmentSupportAllowance.reviewClaimPage.endDateQuestion.hiddenText.agent",
+    "employmentSupportAllowance.reviewClaimPage.endDateQuestion.hiddenText.individual",
+    "employmentSupportAllowance.reviewClaimPage.endDate.hiddenText.agent",
+    "employmentSupportAllowance.reviewClaimPage.endDate.hiddenText.individual",
+    "employmentSupportAllowance.reviewClaimPage.amount.hiddenText.agent",
+    "employmentSupportAllowance.reviewClaimPage.amount.hiddenText.individual",
+    "employmentSupportAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.agent",
+    "employmentSupportAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.individual",
+    "employmentSupportAllowance.reviewClaimPage.taxPaid.hiddenText.agent",
+    "employmentSupportAllowance.reviewClaimPage.taxPaid.hiddenText.individual",
+    "employmentSupportAllowance.reviewClaimPage.removeClaim.hiddenText",
+    "jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText.agent",
+    "jobSeekersAllowance.reviewClaimPage.endDateQuestion.hiddenText.individual",
+    "jobSeekersAllowance.reviewClaimPage.endDate.hiddenText.agent",
+    "jobSeekersAllowance.reviewClaimPage.endDate.hiddenText.individual",
+    "jobSeekersAllowance.reviewClaimPage.amount.hiddenText.agent",
+    "jobSeekersAllowance.reviewClaimPage.amount.hiddenText.individual",
+    "jobSeekersAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.agent",
+    "jobSeekersAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.individual",
+    "jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText.agent",
+    "jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText.individual",
+    "jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText"
   )
 
   private lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages
