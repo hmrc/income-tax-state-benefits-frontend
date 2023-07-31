@@ -25,7 +25,11 @@ case class DateFormData(day: String,
                         month: String,
                         year: String) {
 
-  lazy val toLocalDate: Option[LocalDate] = Try(LocalDate.of(year.toInt, month.toInt, day.toInt)).toOption
+  lazy val toLocalDate: Option[LocalDate] = Try(LocalDate.of(
+    year.filterNot(_.isWhitespace).toInt,
+    month.filterNot(_.isWhitespace).toInt,
+    day.filterNot(_.isWhitespace).toInt)
+  ).toOption
 
   lazy val isValidLocalDate: Boolean = toLocalDate.isDefined
 }

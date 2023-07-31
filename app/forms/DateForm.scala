@@ -157,7 +157,11 @@ object DateForm extends InputFilters {
                                                 benefitType: BenefitType,
                                                 datePageName: String,
                                                 isAgent: Boolean): Either[FormError, LocalDate] = {
-    Try(LocalDate.of(formData.year.toInt, formData.month.toInt, formData.day.toInt)).toOption match {
+    Try(LocalDate.of(
+      formData.year.filterNot(_.isWhitespace).toInt,
+      formData.month.filterNot(_.isWhitespace).toInt,
+      formData.day.filterNot(_.isWhitespace).toInt)
+    ).toOption match {
       case None => Left(FormError("invalidOrNotAllowed", s"${benefitType.typeName}.$datePageName.error.invalid.date.${userType(isAgent)}"))
       case Some(date) => Right(date)
     }
