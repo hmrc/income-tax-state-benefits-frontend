@@ -26,5 +26,9 @@ class DateFormSpec extends UnitTest {
       DateForm.dateForm().bind(Map(day -> "1", month -> "2", year -> "2022")).get shouldBe
         DateFormData(day = "1", month = "2", year = "2022")
     }
+    "return a form that can bind day, month, year to DateFormData even with spaces" in {
+      DateForm.dateForm().bind(Map(day -> "0 8", month -> "1 2", year -> "20 22")).get shouldBe
+        DateFormData(day = "0 8", month = "1 2", year = "20 22")
+    }
   }
 }

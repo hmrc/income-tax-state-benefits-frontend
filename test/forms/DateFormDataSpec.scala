@@ -38,6 +38,10 @@ class DateFormDataSpec extends UnitTest {
       aDateFormData.copy(day = "1", month = "1", year = "2022").isValidLocalDate shouldBe true
     }
 
+    "return true when data correct even with spaces" in {
+      aDateFormData.copy(day = "2 1", month = "0 1", year = "20 22").isValidLocalDate shouldBe true
+    }
+
     "return false when data incorrect" in {
       aDateFormData.copy(day = "xxx", month = "1", year = "2022").isValidLocalDate shouldBe false
     }
