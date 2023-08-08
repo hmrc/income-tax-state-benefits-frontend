@@ -76,7 +76,8 @@ object DateForm extends InputFilters {
                                         isAgent: Boolean): Either[FormError, LocalDate] =
     for {
       _ <- emptyDateFieldsValidation(formData, benefitType, datePageName, isAgent).toLeft(())
-      date <- dateOrInvalidDateFormatValidation(formData, benefitType, datePageName, isAgent)
+      _ <- invalidDateFieldsValidation(formData, benefitType, datePageName, isAgent).toLeft(())
+       date <- dateOrInvalidDateFormatValidation(formData, benefitType, datePageName, isAgent)
       _ <- commonDateValidation(date, benefitType, datePageName, isAgent).toLeft(())
     } yield date
 
@@ -153,6 +154,26 @@ object DateForm extends InputFilters {
     }
   }
 
+
+  private def invalidDateFieldsValidation(formData: DateFormData,
+                                        benefitType: BenefitType,
+                                        datePageName: String,
+                                        isAgent: Boolean): Option[FormError] = {
+    lazy val userTypeValue = userType(isAgent)
+
+    (Try(formData.day.filterNot(_.isWhitespace).toInt).isFailure,
+      Try(formData.month.filterNot(_.isWhitespace).toInt).isFailure,
+      Try(formData.year.filterNot(_.isWhitespace).toInt).isFailure ) match {
+      case (true, true, true) => Some(FormError(s"emptyAll", s"${benefitType.typeName}.$datePageName.error.empty.all.$userTypeValue"))
+      case (true, true, false) => Some(FormError("emptyDayMonth", s"${benefitType.typeName}.$datePageName.error.empty.dayMonth.$userTypeValue"))
+      case (true, false, true) => Some(FormError("emptyDayYear", s"${benefitType.typeName}.$datePageName.error.empty.dayYear.$userTypeValue"))
+      case (false, true, true) => Some(FormError("emptyMonthYear", s"${benefitType.typeName}.$datePageName.error.empty.monthYear.$userTypeValue"))
+      case (false, false, true) => Some(FormError("emptyYear", s"${benefitType.typeName}.$datePageName.error.empty.year.$userTypeValue"))
+      case (false, true, false) => Some(FormError("emptyMonth", s"${benefitType.typeName}.$datePageName.error.empty.month.$userTypeValue"))
+      case (true, false, false) => Some(FormError("emptyDay", s"${benefitType.typeName}.$datePageName.error.empty.day.$userTypeValue"))
+      case (false, false, false) => None
+    }
+  }
   private def dateOrInvalidDateFormatValidation(formData: DateFormData,
                                                 benefitType: BenefitType,
                                                 datePageName: String,
