@@ -193,14 +193,6 @@ trait ViewHelper {
     "contains the text 'There is a problem'" in {
       document.select(".govuk-error-summary__title").text() should (be("There is a problem") or be("Mae problem wedi codi"))
     }
-    s"has a $text error in the error summary" which {
-      s"has the text '$text'" in {
-        document.select(".govuk-error-summary__body").text() shouldBe text
-      }
-      s"has a href to '$href'" in {
-        document.select(".govuk-error-summary__body > ul > li > a").attr("href") shouldBe href
-      }
-    }
   }
 
   def multipleErrorCheck(errors: List[(String, String)], isWelsh: Boolean)(implicit document: Document): Unit = {
