@@ -61,5 +61,143 @@ class EndDatePageSpec extends ControllerUnitTest
         form = formWithErrors
       )
     }
+
+    "return page with error when invalid day, month and year" in {
+
+      val dayInput = "a"
+      val monthInput = "b"
+      val yearInput = "c"
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyAll")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+
+    "return page with error when invalid day and month" in {
+
+      val dayInput = "a"
+      val monthInput = "b"
+      val yearInput = taxYear.toString
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyDayMonth")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+
+    "return page with error when invalid day and year" in {
+
+      val dayInput = "a"
+      val monthInput = "5"
+      val yearInput = "c"
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyDayYear")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+    "return page with error when invalid month and year" in {
+
+      val dayInput = "2"
+      val monthInput = "b"
+      val yearInput = "c"
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyMonthYear")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+
+    "return page with error when invalid year" in {
+
+      val dayInput = "2"
+      val monthInput = "3"
+      val yearInput = "c"
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyYear")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+    "return page with error when invalid month" in {
+
+      val dayInput = "2"
+      val monthInput = "b"
+      val yearInput = taxYear.toString
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyMonth")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+    "return page with error when invalid day" in {
+
+      val dayInput = ""
+      val monthInput = "4"
+      val yearInput = taxYear.toString
+      val form = pageForm.bind(Map(DateForm.day -> dayInput, DateForm.month -> monthInput, DateForm.year -> yearInput))
+      val formData = DateFormData(day = dayInput, month = monthInput, year = yearInput)
+      val formWithErrors = form.copy(errors = DateForm.validateStartDate(formData, taxYear, JobSeekersAllowance, isAgent = true, None))
+      formWithErrors.errors.map { error =>
+        error.key shouldBe ("emptyDay")
+      }
+
+      StartDatePage.apply(taxYear, JobSeekersAllowance, aStateBenefitsUserData, formWithErrors) shouldBe StartDatePage(
+        taxYear = taxYear,
+        benefitType = JobSeekersAllowance,
+        sessionDataId = aStateBenefitsUserData.sessionDataId.get,
+        form = formWithErrors
+      )
+    }
+
   }
 }
