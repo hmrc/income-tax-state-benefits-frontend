@@ -57,6 +57,11 @@ common.reviewClaimPage.was = was:
 common.removeClaimPage.link = Peidiwch â thynnu’r hawliad
 
 common.employmentSupportAllowance = Lwfans Cyflogaeth a Chymorth
+common.employmentSupportAllowance.claims.p1 = Gallwch wneud cais am Lwfans Cyflogaeth a Chymorth (ESA) os oes gennych anabledd neu gyflwr iechyd sy’n effeithio ar faint y gallwch weithio.
+common.employmentSupportAllowance.claims.p2 = Mae ESA yn rhoi i chi:
+common.employmentSupportAllowance.claims.l1 = arian i helpu â chostau byw os nad ydych yn gallu gweithio
+common.employmentSupportAllowance.claims.l2 = cymorth i fynd yn ôl i’r gwaith os ydych yn gallu
+common.employmentSupportAllowance.claims.p3 = Gallwch wneud cais os ydych yn gyflogedig, yn hunangyflogedig neu’n ddi-waith.
 common.employmentSupportAllowance.startDate.agent = Pryd y gwnaeth eich cleient ddechrau cael Lwfans Cyflogaeth a Chymorth?
 common.employmentSupportAllowance.startDate.individual = Pryd y gwnaethoch ddechrau cael Lwfans Cyflogaeth a Chymorth?
 common.employmentSupportAllowance.amount.agent = Faint o Lwfans Cyflogaeth a Chymorth a gafodd eich cleient rhwng {0} a {1}?
@@ -67,6 +72,11 @@ common.employmentSupportAllowance.taxTakenOff.agent = Faint o dreth a gafodd ei 
 common.employmentSupportAllowance.taxTakenOff.individual = Faint o dreth a gafodd ei didynnu o’ch Lwfans Cyflogaeth a Chymorth rhwng {0} a {1}?
 
 common.jobSeekersAllowance = Lwfans Ceisio Gwaith
+common.jobSeekersAllowance.claims.p1 = Gallwch wneud cais am Lwfans Ceisio Gwaith Dull Newydd (JSA) i’ch helpu pan fyddwch chi’n chwilio am waith.
+common.jobSeekersAllowance.claims.p2 = Gellir cymhwyso Lwfans Ceisio Gwaith os oes gennych anabledd neu gyflwr iechyd sy’n effeithio ar faint y gallwch weithio.
+common.jobSeekersAllowance.claims.l1 = Ni allwch wneud cais am JSA yn seiliedig ar incwm mwyach.
+common.jobSeekersAllowance.claims.l2 = Os ydych yn cael JSA yn seiliedig ar incwm ar hyn o bryd, byddwch yn dal i gael taliadau tra’ch bod yn gymwys nes i’ch cais ddod i ben.
+common.jobSeekersAllowance.claims.p3 = Os ydych, gallech gael Credyd Cynhwysol ar yr un pryd neu’n lle JSA Dull Newydd.
 common.jobSeekersAllowance.startDate.agent = Pryd y gwnaeth eich cleient ddechrau cael Lwfans Ceisio Gwaith?
 common.jobSeekersAllowance.startDate.individual = Pryd y gwnaethoch ddechrau cael Lwfans Ceisio Gwaith?
 common.jobSeekersAllowance.amount.agent = Faint o Lwfans Ceisio Gwaith a gafodd eich cleient rhwng {0} a {1}?
