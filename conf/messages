@@ -57,6 +57,11 @@ common.reviewClaimPage.was = was:
 common.removeClaimPage.link = Don’t remove claim
 
 common.employmentSupportAllowance = Employment and Support Allowance
+common.employmentSupportAllowance.claims.p1 = You can apply for Employment and Support Allowance if you have a disability or health condition that affects how much you can work.
+common.employmentSupportAllowance.claims.p2 = ESA gives you:
+common.employmentSupportAllowance.claims.l1 = money to help with living costs if you’re unable to work
+common.employmentSupportAllowance.claims.l2 = support to get back into work if you’re able to
+common.employmentSupportAllowance.claims.p3 = You can apply if you’re employed, self-employed or unemployed.
 common.employmentSupportAllowance.startDate.agent = When did your client start getting Employment and Support Allowance?
 common.employmentSupportAllowance.startDate.individual = When did you start getting Employment and Support Allowance?
 common.employmentSupportAllowance.amount.agent = How much Employment and Support Allowance did your client get between {0} and {1}?
@@ -67,6 +72,11 @@ common.employmentSupportAllowance.taxTakenOff.agent = How much tax was taken off
 common.employmentSupportAllowance.taxTakenOff.individual = How much tax was taken off your Employment and Support Allowance between {0} and {1}?
 
 common.jobSeekersAllowance = Jobseeker’s Allowance
+common.jobSeekersAllowance.claims.p1 = You can apply for New Style Jobseeker’s Allowance (JSA) to help you when you’re looking for work.
+common.jobSeekersAllowance.claims.p2 = Jobseeker’s Allowance can be applied if you have a disability or health condition that affects how much you can work.
+common.jobSeekersAllowance.claims.l1 = You cannot apply for income-based JSA any more.
+common.jobSeekersAllowance.claims.l2 = If you’re currently getting income-based JSA, you’ll keep getting payments while you’re eligible until your claim ends.
+common.jobSeekersAllowance.claims.p3 = You could get Universal Credit at the same time or instead of New Style JSA.
 common.jobSeekersAllowance.startDate.agent = When did your client start getting Jobseeker’s Allowance?
 common.jobSeekersAllowance.startDate.individual = When did you start getting Jobseeker’s Allowance?
 common.jobSeekersAllowance.amount.agent = How much Jobseeker’s Allowance did your client get between {0} and {1}?

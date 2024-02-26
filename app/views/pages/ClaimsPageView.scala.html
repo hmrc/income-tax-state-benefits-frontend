@@ -82,7 +82,8 @@
         }
     }
 
-    @if(pageModel.ignoredBenefitDataRows.nonEmpty){
+    @if(pageModel.ignoredBenefitDataRows.nonEmpty) {
+
         <h2 class="govuk-heading-m">@messages("common.claimsPage.h2")</h2>
 
         <p class="govuk-body govuk-!-margin-bottom-2">
@@ -90,6 +91,19 @@
         </p>
 
         @summaryList(pageModel.ignoredBenefitDataRows.map(mapToSummaryListRow), Map("id" -> "ignored-benefits-summary-list-id"))
+
+    } else {
+        <p class="govuk-body">@{ messages(s"common.$benefitTypeKey.claims.p1") }</p>
+
+        <p class="govuk-body">@{ messages(s"common.$benefitTypeKey.claims.p2") }</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@{ messages(s"common.$benefitTypeKey.claims.l1") }</li>
+            <li>@{ messages(s"common.$benefitTypeKey.claims.l2") }</li>
+        </ul>
+
+        <p class="govuk-body">@{ messages(s"common.$benefitTypeKey.claims.p3") }</p>
+
     }
 
     <div class="govuk-button-group govuk-!-margin-top-7">
