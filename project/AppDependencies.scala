@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-import play.core.PlayVersion.current
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlay28Version = "8.4.0"
+  private val bootstrapPlay30Version = "8.5.0"
 
   val compile: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"                   %% "bootstrap-frontend-play-28" % bootstrapPlay28Version,
-    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-28" % "8.5.0",
+    "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30" % bootstrapPlay30Version,
+    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30" % bootstrapPlay30Version,
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"       % "2.16.1"
   )
 
   val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % bootstrapPlay28Version  % "test, it",
+    "uk.gov.hmrc"             %% "bootstrap-test-play-30"     % bootstrapPlay30Version  % Test,
     "org.scalatest"           %% "scalatest"                  % "3.2.17"                % Test,
     "org.jsoup"               %  "jsoup"                      % "1.16.2"                % Test,
-    "com.typesafe.play"       %% "play-test"                  % current                 % Test,
-    "org.scalatestplus.play"  %% "scalatestplus-play"         % "5.1.0"                 % "test, it",
-    "com.github.tomakehurst"  %  "wiremock-jre8"              % "2.35.1"                % "test, it",
+    "org.scalatestplus.play"  %% "scalatestplus-play"         % "5.1.0"                 % Test,
+    "com.github.tomakehurst"  % "wiremock-jre8-standalone"    % "3.0.1"                % Test,
     "org.scalamock"           %% "scalamock"                  % "5.2.0"                 % Test,
-    "com.vladsch.flexmark"     %  "flexmark-all"                % "0.64.8"                % "test, it"
+    "com.vladsch.flexmark"    %  "flexmark-all"               % "0.64.8"                % Test
   )
 }
