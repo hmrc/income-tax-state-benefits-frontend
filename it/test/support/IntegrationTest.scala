@@ -16,7 +16,7 @@
 
 package support
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import config.AppConfig
 import models.authorisation.SessionValues
 import org.scalatest.BeforeAndAfterAll
