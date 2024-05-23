@@ -86,6 +86,10 @@
 
         <h2 class="govuk-heading-m">@messages("common.claimsPage.h2")</h2>
 
+        <div class="govuk-inset-text">
+            @messages("common.claimsPage.inset")
+        </div>
+
         <p class="govuk-body govuk-!-margin-bottom-2">
             @messages(s"common.claimsPage.p1.${if(pageModel.ignoredBenefitDataRows.size == 1) "singular" else "plural"}.${if(request.user.isAgent) "agent" else "individual"}")
         </p>

@@ -41,6 +41,7 @@ common.claim.endDateQuestion = Did this claim end between {0} and {1}?
 common.claim.endDate = When did this claim end?
 
 common.claimsPage.h2 = Removed claims
+common.claimsPage.inset = HMRC will keep the details of these claims but they will not be included in your return.
 common.claimsPage.p1.singular.agent = This claim will not be included in your client’s return.
 common.claimsPage.p1.plural.agent = These claims will not be included in your client’s return.
 common.claimsPage.p1.singular.individual = This claim will not be included in your return.

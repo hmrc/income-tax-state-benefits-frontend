@@ -41,6 +41,7 @@ common.claim.endDateQuestion = A wnaeth yr hawliad hwn ddod i ben rhwng {0} a {1
 common.claim.endDate = Pryd y daeth yr hawliad hwn i ben?
 
 common.claimsPage.h2 = Hawliadau sydd wedi cael eu tynnu
+common.claimsPage.inset = Bydd HMRC yn cadw manylion yr hawliadau hyn ond ni fyddant yn cael eu cynnwys yn eich Ffurflen Dreth.
 common.claimsPage.p1.singular.agent = Ni fydd yr hawliad hwn yn cael ei gynnwys yn Ffurflen Dreth eich cleient.
 common.claimsPage.p1.plural.agent = Ni fydd yr hawliadau hyn yn cael eu cynnwys yn Ffurflen Dreth eich cleient.
 common.claimsPage.p1.singular.individual = Ni fydd yr hawliad hwn yn cael ei gynnwys yn eich Ffurflen Dreth.
