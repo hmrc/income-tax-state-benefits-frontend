@@ -35,7 +35,9 @@
     govukSummaryList: GovukSummaryList,
     link: Link,
     button : Button,
-    formWithCSRF: FormWithCSRF
+    formWithCSRF: FormWithCSRF,
+    govukWarningText: GovukWarningText,
+    govUkButton: GovukButton
 )
 
 @(pageModel: RemoveClaimPage)(implicit request: UserSessionDataRequest[_], messages: Messages, appConfig: AppConfig)
@@ -82,9 +84,19 @@
 
     @govukSummaryList(SummaryList(summaryListOptionalRows.flatten))
 
+    @govukWarningText(WarningText(
+        content = Text(messages(s"common.$benefitTypeKey.removeClaim.warningText")),
+        classes = "govuk-!-margin-bottom-2"
+    ))
+
     @formWithCSRF(action = RemoveClaimController.submit(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId)) {
         <div class="govuk-button-group">
-            @button(alternativeText = "common.removeClaim", classes = Some("govuk-!-margin-top-6 govuk-button--warning"), attributes = Map("id" -> "remove-claim-button-id"))
+            @govUkButton(Button(
+                attributes = Map("data-module" -> "govuk-button", "id" -> "remove-claim-button-id"),
+                preventDoubleClick = Some(true),
+                content = Text(messages("common.removeClaim")),
+                classes = "govuk-button--warning"
+            ))
             @link(link = ReviewClaimController.show(pageModel.taxYear, pageModel.benefitType, pageModel.sessionDataId).url, messageKeyOrValue = "common.removeClaimPage.link", hiddenText = Some(s"$pageKeysPrefix.link.hidden"), id = Some("do-not-remove-claim-link-id"))
         </div>
     }

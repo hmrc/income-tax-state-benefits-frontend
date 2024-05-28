@@ -71,6 +71,7 @@ common.employmentSupportAllowance.taxTakenOffQuestion.agent = A ddidynnwyd unrhy
 common.employmentSupportAllowance.taxTakenOffQuestion.individual = A ddidynnwyd unrhyw dreth o’ch Lwfans Cyflogaeth a Chymorth rhwng {0} a {1}?
 common.employmentSupportAllowance.taxTakenOff.agent = Faint o dreth a gafodd ei didynnu o Lwfans Cyflogaeth a Chymorth eich cleient rhwng {0} a {1}?
 common.employmentSupportAllowance.taxTakenOff.individual = Faint o dreth a gafodd ei didynnu o’ch Lwfans Cyflogaeth a Chymorth rhwng {0} a {1}?
+common.employmentSupportAllowance.removeClaim.warningText = Bydd dileu’r hawliad Lwfans Cyflogaeth a Chymorth hwn yn dileu’r holl fanylion hyn
 
 common.jobSeekersAllowance = Lwfans Ceisio Gwaith
 common.jobSeekersAllowance.claims.p1 = Gallwch wneud cais am Lwfans Ceisio Gwaith Dull Newydd (JSA) i’ch helpu pan fyddwch chi’n chwilio am waith.
@@ -86,6 +87,7 @@ common.jobSeekersAllowance.taxTakenOffQuestion.agent = A ddidynnwyd unrhyw dreth
 common.jobSeekersAllowance.taxTakenOffQuestion.individual = A ddidynnwyd unrhyw dreth o’ch Lwfans Ceisio Gwaith rhwng {0} a {1}?
 common.jobSeekersAllowance.taxTakenOff.agent = Faint o dreth a gafodd ei didynnu o Lwfans Ceisio Gwaith eich cleient rhwng {0} a {1}?
 common.jobSeekersAllowance.taxTakenOff.individual = Faint o dreth a gafodd ei didynnu o’ch Lwfans Ceisio Gwaith rhwng {0} a {1}?
+common.jobSeekersAllowance.removeClaim.warningText = Bydd dileu’r cais hwn am Lwfans Ceisio Gwaith yn dileu’r holl fanylion hyn
 
 common.no = Na
 common.notStarted = Heb ddechrau
