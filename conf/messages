@@ -42,10 +42,7 @@ common.claim.endDate = When did this claim end?
 
 common.claimsPage.h2 = Removed claims
 common.claimsPage.inset = HMRC will keep the details of these claims but they will not be included in your return.
-common.claimsPage.p1.singular.agent = This claim will not be included in your client’s return.
-common.claimsPage.p1.plural.agent = These claims will not be included in your client’s return.
-common.claimsPage.p1.singular.individual = This claim will not be included in your return.
-common.claimsPage.p1.plural.individual = These claims will not be included in your return.
+
 common.endDateQuestionPage.error = Select yes if this claim ended between {0} and {1}
 common.amountPage.amountBeforeTax = Enter the amount before tax.
 common.taxPaidPage.textBox.label = Amount of tax taken off
