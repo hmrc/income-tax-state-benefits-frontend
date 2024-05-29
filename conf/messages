@@ -41,10 +41,8 @@ common.claim.endDateQuestion = Did this claim end between {0} and {1}?
 common.claim.endDate = When did this claim end?
 
 common.claimsPage.h2 = Removed claims
-common.claimsPage.p1.singular.agent = This claim will not be included in your client’s return.
-common.claimsPage.p1.plural.agent = These claims will not be included in your client’s return.
-common.claimsPage.p1.singular.individual = This claim will not be included in your return.
-common.claimsPage.p1.plural.individual = These claims will not be included in your return.
+common.claimsPage.inset = HMRC will keep the details of these claims but they will not be included in your return.
+
 common.endDateQuestionPage.error = Select yes if this claim ended between {0} and {1}
 common.amountPage.amountBeforeTax = Enter the amount before tax.
 common.taxPaidPage.textBox.label = Amount of tax taken off
@@ -70,6 +68,7 @@ common.employmentSupportAllowance.taxTakenOffQuestion.agent = Did your client ha
 common.employmentSupportAllowance.taxTakenOffQuestion.individual = Did you have any tax taken off your Employment and Support Allowance between {0} and {1}?
 common.employmentSupportAllowance.taxTakenOff.agent = How much tax was taken off your client’s Employment and Support Allowance between {0} and {1}?
 common.employmentSupportAllowance.taxTakenOff.individual = How much tax was taken off your Employment and Support Allowance between {0} and {1}?
+common.employmentSupportAllowance.removeClaim.warningText = Removing this Employment and Support Allowance claim will delete all of these details
 
 common.jobSeekersAllowance = Jobseeker’s Allowance
 common.jobSeekersAllowance.claims.p1 = You can apply for New Style Jobseeker’s Allowance (JSA) to help you when you’re looking for work.
@@ -85,6 +84,7 @@ common.jobSeekersAllowance.taxTakenOffQuestion.agent = Did your client have any 
 common.jobSeekersAllowance.taxTakenOffQuestion.individual = Did you have any tax taken off your Jobseeker’s Allowance between {0} and {1}?
 common.jobSeekersAllowance.taxTakenOff.agent = How much tax was taken off your client’s Jobseeker’s Allowance between {0} and {1}?
 common.jobSeekersAllowance.taxTakenOff.individual = How much tax was taken off your Jobseeker’s Allowance between {0} and {1}?
+common.jobSeekersAllowance.removeClaim.warningText = Removing this Jobseeker’s Allowance claim will delete all of these details
 
 common.no = No
 common.notStarted = Not started

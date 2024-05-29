@@ -96,23 +96,19 @@ class ClaimsPageViewSpec extends ViewUnitTest {
   }
 
   object ExpectedIndividualEN extends SpecificExpectedResults {
-    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String =
-      if (isPlural) "These claims will not be included in your return." else "This claim will not be included in your return."
+    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String = ""
   }
 
   object ExpectedIndividualCY extends SpecificExpectedResults {
-    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String =
-      if (isPlural) "Ni fydd yr hawliadau hyn yn cael eu cynnwys yn eich Ffurflen Dreth." else "Ni fydd yr hawliad hwn yn cael ei gynnwys yn eich Ffurflen Dreth."
+    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String = ""
   }
 
   object ExpectedAgentEN extends SpecificExpectedResults {
-    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String =
-      if (isPlural) "These claims will not be included in your client’s return." else "This claim will not be included in your client’s return."
+    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String = ""
   }
 
   object ExpectedAgentCY extends SpecificExpectedResults {
-    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String =
-      if (isPlural) "Ni fydd yr hawliadau hyn yn cael eu cynnwys yn Ffurflen Dreth eich cleient." else "Ni fydd yr hawliad hwn yn cael ei gynnwys yn Ffurflen Dreth eich cleient."
+    def expectedRemovedClaimsParagraphText(isPlural: Boolean): String = ""
   }
 
   override protected val userScenarios: Seq[UserScenario[CommonExpectedResults, SpecificExpectedResults]] = Seq(
