@@ -69,6 +69,11 @@ class FormsProvider() {
     YesNoForm.yesNoForm(s"${benefitType.typeName}.taxPaidQuestionPage.error.${userType(isAgent)}", Seq(titleFirstDate, titleSecondDate))
   }
 
+  def addAnotherClaimYesNoForm(isAgent: Boolean)
+                              (implicit messages: Messages): Form[Boolean] = {
+    YesNoForm.yesNoForm(s"common.claimsPage.error.anotherClaim.${userType(isAgent)}")
+  }
+
   def taxPaidAmountForm(benefitType: BenefitType, isAgent: Boolean, maxAmount: BigDecimal): Form[BigDecimal] = AmountForm.amountForm(
     emptyFieldKey = s"${benefitType.typeName}.taxPaidPage.empty.amount.error.${userType(isAgent)}",
     minOrLessKey = "common.taxPaidPage.zeroOrLess.amount.error",

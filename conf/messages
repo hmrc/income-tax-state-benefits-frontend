@@ -42,6 +42,12 @@ common.claim.endDate = When did this claim end?
 
 common.claimsPage.h2 = Removed claims
 common.claimsPage.inset = HMRC will keep the details of these claims but they will not be included in your return.
+common.claimsPage.addMissingClaim.individual = Do you want to add another missing claim?
+common.claimsPage.addMissingClaim.agent = Does your client want to add another missing claim?
+common.claimsPage.addAnotherClaim.individual = Do you want to add a missing claim for {0}?
+common.claimsPage.addAnotherClaim.agent = Does your client want to add a missing claim for {0}?
+common.claimsPage.error.anotherClaim.individual = Select yes if you want to add a new claim
+common.claimsPage.error.anotherClaim.agent = Select yes if your client want to add a new claim
 
 common.endDateQuestionPage.error = Select yes if this claim ended between {0} and {1}
 common.amountPage.amountBeforeTax = Enter the amount before tax.

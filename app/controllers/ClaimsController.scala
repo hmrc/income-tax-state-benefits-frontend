@@ -17,25 +17,50 @@
 package controllers
 
 import actions.ActionsProvider
-import config.AppConfig
-import models.BenefitType
+import config.{AppConfig, ErrorHandler}
+import forms.FormsProvider
 import models.pages.ClaimsPage
+import models.{BenefitType, StateBenefitsUserData}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.InYearUtil.inYear
 import utils.SessionHelper
 import views.html.pages.ClaimsPageView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimsController @Inject()(actionsProvider: ActionsProvider,
-                                 pageView: ClaimsPageView)
-                                (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
+                                 pageView: ClaimsPageView,
+                                 stateBenefitsService: StateBenefitsService,
+                                 formsProvider: FormsProvider,
+                                 errorHandler: ErrorHandler)
+                                (implicit ec: ExecutionContext, mcc: MessagesControllerComponents, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def show(taxYear: Int,
            benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYear, benefitType) { implicit request =>
-    Ok(pageView(ClaimsPage(taxYear, benefitType, inYear(taxYear), request.incomeTaxUserData)))
+    val form = formsProvider.addAnotherClaimYesNoForm(request.user.isAgent)
+    Ok(pageView(ClaimsPage(taxYear, benefitType, inYear(taxYear), request.incomeTaxUserData, form)))
   }
+
+  def submit(taxYear: Int,
+             benefitType: BenefitType): Action[AnyContent] = actionsProvider
+    .priorDataWithViewStateBenefitsAudit(taxYear, benefitType).async { implicit request =>
+
+      formsProvider.addAnotherClaimYesNoForm(request.user.isAgent).bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(pageView(ClaimsPage(taxYear, benefitType, inYear(taxYear), request.incomeTaxUserData, formWithErrors)))),
+        yesNoValue => if (yesNoValue) {
+          stateBenefitsService.createSessionData(StateBenefitsUserData(taxYear, benefitType, request.user)).map {
+            case Left(_) => errorHandler.internalServerError()
+            case Right(uuid) => Redirect(routes.StartDateController.show(taxYear, benefitType, uuid))
+          }
+        }
+        else {
+          Future.successful(Redirect(routes.SummaryController.show(taxYear)))
+        }
+      )
+    }
 }

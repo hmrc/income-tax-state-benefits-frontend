@@ -18,19 +18,22 @@ package models.pages
 
 import models.pages.elements.BenefitDataRow
 import models.{BenefitType, IncomeTaxUserData}
+import play.api.data.Form
 
 case class ClaimsPage(taxYear: Int,
                       benefitType: BenefitType,
                       isInYear: Boolean,
                       benefitDataRows: Seq[BenefitDataRow],
-                      ignoredBenefitDataRows: Seq[BenefitDataRow])
+                      ignoredBenefitDataRows: Seq[BenefitDataRow],
+                      form: Form[Boolean])
 
 object ClaimsPage {
 
   def apply(taxYear: Int,
             benefitType: BenefitType,
             isInYear: Boolean,
-            incomeTaxUserData: IncomeTaxUserData): ClaimsPage = {
+            incomeTaxUserData: IncomeTaxUserData,
+            form: Form[Boolean]): ClaimsPage = {
     val customerData = incomeTaxUserData.customerAllowancesFor(benefitType)
       .map(BenefitDataRow.mapFrom(taxYear, _)).toSeq
 
@@ -42,6 +45,6 @@ object ClaimsPage {
       .sortWith((it1, it2) => it1.startDate.isBefore(it2.startDate))
       .partition(_.isIgnored)
 
-    ClaimsPage(taxYear, benefitType, isInYear, benefitDataRows, ignoredBenefitDataRows)
+    ClaimsPage(taxYear, benefitType, isInYear, benefitDataRows, ignoredBenefitDataRows, form)
   }
 }

@@ -66,7 +66,13 @@ class MessagesSpec extends ViewUnitTest {
     "jobSeekersAllowance.reviewClaimPage.taxPaidQuestion.hiddenText.individual",
     "jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText.agent",
     "jobSeekersAllowance.reviewClaimPage.taxPaid.hiddenText.individual",
-    "jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText"
+    "jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText",
+    "common.claimsPage.addMissingClaim.individual",
+    "common.claimsPage.addMissingClaim.agent",
+    "common.claimsPage.addAnotherClaim.individual",
+    "common.claimsPage.addAnotherClaim.agent",
+    "common.claimsPage.error.anotherClaim.individual",
+    "common.claimsPage.error.anotherClaim.agent"
   )
 
   private lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages
