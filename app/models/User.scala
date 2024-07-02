@@ -23,4 +23,6 @@ case class User(mtditid: String,
                 affinityGroup: String) {
 
   def isAgent: Boolean = arn.nonEmpty
+
+  def userType: String = if (isAgent) "agent" else "individual"
 }

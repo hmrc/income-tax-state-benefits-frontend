@@ -19,6 +19,7 @@ GET         /:taxYear/summary           controllers.SummaryController.show(taxYe
 
 ###########################     Claims Endpoints     ###########################
 GET         /:taxYear/:benefitType/claims                                               controllers.ClaimsController.show(taxYear: Int, benefitType: models.BenefitType)
+POST        /:taxYear/:benefitType/claims                                               controllers.ClaimsController.submit(taxYear: Int, benefitType: models.BenefitType)
 
 GET         /:taxYear/:benefitType/:sessionDataId/start-date                            controllers.StartDateController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 POST        /:taxYear/:benefitType/:sessionDataId/start-date                            controllers.StartDateController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)

@@ -16,8 +16,10 @@
 
 package models.pages
 
+import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.pages.elements.BenefitDataRow
+import play.api.data.Form
 import support.UnitTest
 import support.builders.AllStateBenefitsDataBuilder.anAllStateBenefitsData
 import support.builders.CustomerAddedStateBenefitBuilder.aCustomerAddedStateBenefit
@@ -32,6 +34,8 @@ import java.util.UUID
 
 class ClaimsPageSpec extends UnitTest
   with TaxYearProvider {
+
+  val form: Form[Boolean] = YesNoForm.yesNoForm("some.error.message.key")
 
   ".apply" should {
     "create correct ClaimsPage object" in {
@@ -51,12 +55,14 @@ class ClaimsPageSpec extends UnitTest
         BenefitDataRow.mapFrom(taxYear, stateBenefit_3)
       )
 
-      ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe ClaimsPage(
+
+      ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData, form = form) shouldBe ClaimsPage(
         taxYear = taxYear,
         benefitType = JobSeekersAllowance,
         isInYear = false,
         benefitDataRows = benefitDataRows,
-        ignoredBenefitDataRows = Seq(BenefitDataRow.mapFrom(taxYear, stateBenefit_1))
+        ignoredBenefitDataRows = Seq(BenefitDataRow.mapFrom(taxYear, stateBenefit_1)),
+        form = form
       )
     }
 
@@ -77,12 +83,13 @@ class ClaimsPageSpec extends UnitTest
         BenefitDataRow.mapFrom(taxYear, stateBenefit_3)
       )
 
-      ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData) shouldBe ClaimsPage(
+      ClaimsPage.apply(taxYear = taxYear, JobSeekersAllowance, isInYear = false, incomeTaxUserData = incomeTaxUserData, form) shouldBe ClaimsPage(
         taxYear = taxYear,
         benefitType = JobSeekersAllowance,
         isInYear = false,
         benefitDataRows = benefitDataRows,
-        ignoredBenefitDataRows = Seq()
+        ignoredBenefitDataRows = Seq(),
+        form
       )
     }
   }

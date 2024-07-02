@@ -16,6 +16,7 @@
 
 package support.builders.pages
 
+import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.pages.ClaimsPage
 import support.builders.pages.elements.BenefitDataRowBuilder.aBenefitDataRow
@@ -28,6 +29,7 @@ object ClaimsPageBuilder {
     benefitType = JobSeekersAllowance,
     isInYear = false,
     benefitDataRows = Seq(aBenefitDataRow),
-    ignoredBenefitDataRows = Seq(aBenefitDataRow.copy(isIgnored = true))
+    ignoredBenefitDataRows = Seq(aBenefitDataRow.copy(isIgnored = true)),
+    form = YesNoForm.yesNoForm("some.error.message.key")
   )
 }

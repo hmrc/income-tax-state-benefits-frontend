@@ -16,22 +16,26 @@
 
 package controllers
 
+import forms.FormsProvider
 import models.BenefitType.JobSeekersAllowance
 import play.api.http.Status.OK
 import play.api.test.Helpers.{contentType, status}
 import support.ControllerUnitTest
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
-import support.mocks.MockActionsProvider
+import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
 import views.html.pages.ClaimsPageView
 
 class ClaimsControllerSpec extends ControllerUnitTest
-  with MockActionsProvider {
+  with MockActionsProvider with MockStateBenefitsService with MockErrorHandler {
 
   private val pageView = inject[ClaimsPageView]
 
   private val underTest = new ClaimsController(
     mockActionsProvider,
-    pageView
+    pageView,
+    stateBenefitsService = mockStateBenefitsService,
+    formsProvider = new FormsProvider(),
+    errorHandler = mockErrorHandler
   )
 
   "show" should {
