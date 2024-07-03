@@ -16,6 +16,7 @@
 
 @import controllers.routes.SummaryController
 @import controllers.session.routes.UserSessionDataController
+@import controllers.routes.ClaimsController
 
 @import models.pages.elements.BenefitDataRow
 @import models.pages.ClaimsPage
@@ -30,24 +31,41 @@
 @import views.html.templates.helpers.Heading
 @import views.html.templates.helpers.Link
 @import views.html.templates.helpers.SummaryList
+@import views.html.templates.helpers.ErrorSummary
+@import views.html.templates.helpers.InputRadio
 
 @this(
-    layout: Layout,
-    heading: Heading,
-    summaryList: SummaryList,
-    link: Link,
-    formWithCSRF: FormWithCSRF,
-    button: Button
+        layout: Layout,
+        heading: Heading,
+        summaryList: SummaryList,
+        link: Link,
+        formWithCSRF: FormWithCSRF,
+        button: Button,
+        errorSummary: ErrorSummary,
+        inputRadio: InputRadio,
 )
+
 
 @(pageModel: ClaimsPage)(implicit request: UserPriorDataRequest[_], messages: Messages, appConfig: AppConfig)
 
-@benefitTypeKey = @{ pageModel.benefitType.typeName }
-@pageKeysPrefix = @{ s"$benefitTypeKey.claimsPage" }
+@benefitTypeKey = @{
+    pageModel.benefitType.typeName
+}
+@pageKeysPrefix = @{
+    s"$benefitTypeKey.claimsPage"
+}
 
-@titleText = @{ messages(s"common.$benefitTypeKey") }
+@titleText = @{
+    messages(s"common.$benefitTypeKey")
+}
 
-@hasBenefits = @{ pageModel.benefitDataRows.nonEmpty || pageModel.ignoredBenefitDataRows.nonEmpty }
+@hasBenefits = @{
+    pageModel.benefitDataRows.nonEmpty || pageModel.ignoredBenefitDataRows.nonEmpty
+}
+
+@headingText = @{
+    if(pageModel.ignoredBenefitDataRows.nonEmpty) messages(s"common.claimsPage.addMissingClaim.${request.user.userType}") else messages(s"common.claimsPage.addAnotherClaim.${request.user.userType}", titleText)
+}
 
 @mapToSummaryListRow(rowData: BenefitDataRow) = @{
     val keyContent = if(pageModel.isInYear) translatedDateFormatter(rowData.startDate) else rowData.amount.map(amount => bigDecimalCurrency(amount.toString)).getOrElse("")
@@ -72,49 +90,69 @@
         summaryList(pageModel.benefitDataRows.map(mapToSummaryListRow), Map("id" -> "benefits-summary-list-id"))
     }
 
-    @if(!pageModel.isInYear) {
-        @formWithCSRF(action = UserSessionDataController.create(pageModel.taxYear, pageModel.benefitType)) {
-            @button(
-                alternativeText = "common.addMissingClaim",
-                classes = if (hasBenefits) Some("govuk-button--secondary") else None,
-                attributes = Map("id" -> "add-missing-claim-button-id")
-            )
-        }
-    }
-
     @if(pageModel.ignoredBenefitDataRows.nonEmpty) {
 
         <h2 class="govuk-heading-m">@messages("common.claimsPage.h2")</h2>
 
         <div class="govuk-inset-text">
-            @messages("common.claimsPage.inset")
+        @messages("common.claimsPage.inset")
         </div>
 
         @summaryList(pageModel.ignoredBenefitDataRows.map(mapToSummaryListRow), Map("id" -> "ignored-benefits-summary-list-id"))
 
     } else {
-        <p class="govuk-body">@{ messages(s"common.$benefitTypeKey.claims.p1") }</p>
+        <p class="govuk-body">@{
+            messages(s"common.$benefitTypeKey.claims.p1")
+        }</p>
 
-        <p class="govuk-body">@{ messages(s"common.$benefitTypeKey.claims.p2") }</p>
+        <p class="govuk-body">@{
+            messages(s"common.$benefitTypeKey.claims.p2")
+        }</p>
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>@{ messages(s"common.$benefitTypeKey.claims.l1") }</li>
-            <li>@{ messages(s"common.$benefitTypeKey.claims.l2") }</li>
+            <li>@{
+                messages(s"common.$benefitTypeKey.claims.l1")
+            }</li>
+            <li>@{
+                messages(s"common.$benefitTypeKey.claims.l2")
+            }</li>
         </ul>
 
-        <p class="govuk-body">@{ messages(s"common.$benefitTypeKey.claims.p3") }</p>
+        <p class="govuk-body">@{
+            messages(s"common.$benefitTypeKey.claims.p3")
+        }</p>
 
     }
 
-    <div class="govuk-button-group govuk-!-margin-top-7">
+    @if(!pageModel.isInYear) {
+
+        @errorSummary(pageModel.form.errors)
+
+        @formWithCSRF(action = ClaimsController.submit(pageModel.taxYear, pageModel.benefitType)) {
+            @inputRadio(
+                legendHeading = Some(Html(headingText)),
+                legendHidden = false,
+                legendAsHeading = true,
+                form = pageModel.form,
+                inline = true,
+                legendSize = "govuk-label--m"
+            )
+            @button(
+                alternativeText = "common.continue",
+                attributes = Map("id" -> "add-missing-claim-button-id")
+            )
+        }
+    } else {
+        <div class="govuk-button-group govuk-!-margin-top-7">
         @button(
             href = Some(SummaryController.show(pageModel.taxYear).url),
             alternativeText = "common.continue",
-            classes = if (pageModel.isInYear || hasBenefits) None else Some("govuk-button--secondary")
+            classes = if(pageModel.isInYear || hasBenefits) None else Some("govuk-button--secondary")
         )
-    </div>
+        </div>
+    }
 }
 
 @{
-// $COVERAGE-OFF$
+    // $COVERAGE-OFF$
 }

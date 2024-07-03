@@ -42,6 +42,12 @@ common.claim.endDate = Pryd y daeth yr hawliad hwn i ben?
 
 common.claimsPage.h2 = Hawliadau sydd wedi cael eu tynnu
 common.claimsPage.inset = Bydd HMRC yn cadw manylion yr hawliadau hyn ond ni fyddant yn cael eu cynnwys yn eich Ffurflen Dreth.
+common.claimsPage.addMissingClaim.individual = *Missing Welsh*
+common.claimsPage.addMissingClaim.agent = *Missing Welsh*
+common.claimsPage.addAnotherClaim.individual = *Missing Welsh*
+common.claimsPage.addAnotherClaim.agent = *Missing Welsh*
+common.claimsPage.error.anotherClaim.individual = *Missing Welsh*
+common.claimsPage.error.anotherClaim.agent = *Missing Welsh*
 
 common.endDateQuestionPage.error = Dewiswch ‘Iawn’ os daeth yr hawliad hwn i ben rhwng {0} a {1}
 common.amountPage.amountBeforeTax = Nodwch y swm cyn treth.

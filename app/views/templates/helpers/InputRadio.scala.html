@@ -28,7 +28,8 @@
     classes: Option[String] = None,
     inline: Boolean = false,
     name: String = "value",
-    legendHeading: Option[Html] = None
+    legendHeading: Option[Html] = None,
+    legendSize: String = "govuk-label--l"
 )(implicit messages: Messages)
 
 
@@ -43,7 +44,7 @@
         legend = Some(Legend(
             content = HtmlContent(contentHtml),
             isPageHeading = legendAsHeading,
-            classes = if(legendAsHeading) "govuk-label--l" else if (legendHidden) "govuk-visually-hidden" else ""
+            classes = if(legendAsHeading) legendSize else if (legendHidden) "govuk-visually-hidden" else ""
         ))
     )),
     hint = hint.map(hintHtml => Hint(
