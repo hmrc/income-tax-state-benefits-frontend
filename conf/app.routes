@@ -1,21 +1,13 @@
 #################       Service pages       ########################################
-
-->    /hmrc-frontend                    hmrcfrontend.Routes
-
-GET   /assets/*file                     controllers.Assets.versioned(path = "/public", file: Asset)
-
-GET   /language/:lang                   controllers.LanguageSwitchController.switchToLanguage(lang: String)
-
-GET   /sign-out                         controllers.SignOutController.signOut(isAgent: Boolean)
-
-GET   /keep-alive                       controllers.SessionExpiredController.keepAlive
-
-GET   /timeout                          controllers.SessionExpiredController.timeout
-
+->          /hmrc-frontend                                                              hmrcfrontend.Routes
+GET         /assets/*file                                                               controllers.Assets.versioned(path = "/public", file: Asset)
+GET         /language/:lang                                                             controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /sign-out                                                                   controllers.SignOutController.signOut(isAgent: Boolean)
+GET         /keep-alive                                                                 controllers.SessionExpiredController.keepAlive
+GET         /timeout                                                                    controllers.SessionExpiredController.timeout
 
 ###########################     Summary Endpoints     ###########################
-GET         /:taxYear/summary           controllers.SummaryController.show(taxYear: Int)
-
+GET         /:taxYear/summary                                                           controllers.SummaryController.show(taxYear: Int)
 
 ###########################     Claims Endpoints     ###########################
 GET         /:taxYear/:benefitType/claims                                               controllers.ClaimsController.show(taxYear: Int, benefitType: models.BenefitType)
@@ -46,17 +38,16 @@ POST        /:taxYear/:benefitType/:sessionDataId/review-claim/restore          
 GET         /:taxYear/:benefitType/:sessionDataId/remove                                controllers.RemoveClaimController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 POST        /:taxYear/:benefitType/:sessionDataId/remove                                controllers.RemoveClaimController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
+GET         /:taxYear/:journey/section-completed                                        controllers.SectionCompletedStateController.show(taxYear: Int, journey:String)
+POST        /:taxYear/:journey/section-completed                                        controllers.SectionCompletedStateController.submit(taxYear: Int,journey:String)
+
 ###########################     UserSessionData Controller Endpoints     ###########################
-POST         /:taxYear/session-data         controllers.session.UserSessionDataController.create(taxYear: Int, benefitType: models.BenefitType)
-GET          /:taxYear/session-data         controllers.session.UserSessionDataController.loadToSession(taxYear: Int, benefitType: models.BenefitType, benefitId: java.util.UUID)
+POST        /:taxYear/session-data                                                      controllers.session.UserSessionDataController.create(taxYear: Int, benefitType: models.BenefitType)
+GET         /:taxYear/session-data                                                      controllers.session.UserSessionDataController.loadToSession(taxYear: Int, benefitType: models.BenefitType, benefitId: java.util.UUID)
 
 ###########################     Error pages     ####################################
-GET        /error/you-need-to-sign-up                       controllers.errors.IndividualAuthErrorController.show
-
-GET        /error/wrong-tax-year                            controllers.errors.TaxYearErrorController.show
-
-GET        /error/you-need-client-authorisation             controllers.errors.AgentAuthErrorController.show
-
-GET        /error/not-authorised-to-use-service             controllers.errors.UnauthorisedUserErrorController.show
-
-GET        /error/you-need-agent-services-account           controllers.errors.YouNeedAgentServicesController.show
+GET         /error/you-need-to-sign-up                                                  controllers.errors.IndividualAuthErrorController.show
+GET         /error/wrong-tax-year                                                       controllers.errors.TaxYearErrorController.show
+GET         /error/you-need-client-authorisation                                        controllers.errors.AgentAuthErrorController.show
+GET         /error/not-authorised-to-use-service                                        controllers.errors.UnauthorisedUserErrorController.show
+GET         /error/you-need-agent-services-account                                      controllers.errors.YouNeedAgentServicesController.show

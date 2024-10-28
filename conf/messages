@@ -287,6 +287,11 @@ jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText = Remove this claim
 jobSeekersAllowance.removeClaimPage.title = Are you sure you want to remove this Jobseeker’s Allowance claim?
 jobSeekersAllowance.removeClaimPage.link.hidden = Don’t remove this Jobseeker’s Allowance Claim
 
+#################       Section completed       ########################################
+sectionCompletedState.title = Have you finished this section?
+sectionCompletedState.hint = You’ll still be able to go back and review the information that you’ve given us.
+sectionCompletedState.error.required = Select if you’ve completed this section
+
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = If the web address is correct or you selected a link or button, you can use
 common.error.self-assessment.paragraph.1.2 = Self Assessment: general enquiries
