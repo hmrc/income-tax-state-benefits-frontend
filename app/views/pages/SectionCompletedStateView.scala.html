@@ -17,7 +17,6 @@
 @import views.html.templates.Layout
 @import views.html.templates.helpers.{Heading, Button, InputRadio, ErrorSummary}
 
-@*// To Do - I need to refactor the layout*@
 @this(layout: Layout, heading: Heading, formWithCSRF: FormWithCSRF, button: Button, radio: InputRadio, errorSummary: ErrorSummary)
 @(form: Form[Boolean], taxYear: Int, journey: String)(implicit appConfig: AppConfig, messages: Messages, requestHeader: Request[_])
 

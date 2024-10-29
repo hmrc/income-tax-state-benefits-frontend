@@ -38,8 +38,9 @@ POST        /:taxYear/:benefitType/:sessionDataId/review-claim/restore          
 GET         /:taxYear/:benefitType/:sessionDataId/remove                                controllers.RemoveClaimController.show(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 POST        /:taxYear/:benefitType/:sessionDataId/remove                                controllers.RemoveClaimController.submit(taxYear: Int, benefitType: models.BenefitType, sessionDataId: java.util.UUID)
 
-GET         /:taxYear/:journey/section-completed                                        controllers.SectionCompletedStateController.show(taxYear: Int, journey:String)
-POST        /:taxYear/:journey/section-completed                                        controllers.SectionCompletedStateController.submit(taxYear: Int,journey:String)
+###########################     Section Completed     ###########################
+GET         /:taxYear/:journey/section-completed                                        controllers.SectionCompletedStateController.show(taxYear: Int, journey: String)
+POST        /:taxYear/:journey/section-completed                                        controllers.SectionCompletedStateController.submit(taxYear: Int, journey: String)
 
 ###########################     UserSessionData Controller Endpoints     ###########################
 POST        /:taxYear/session-data                                                      controllers.session.UserSessionDataController.create(taxYear: Int, benefitType: models.BenefitType)

@@ -44,8 +44,9 @@ object AppDependencies {
     "org.scalatest"           %% "scalatest"                  % "3.2.18"                % Test,
     "org.jsoup"               %  "jsoup"                      % "1.17.2"                % Test,
     "org.scalatestplus.play"  %% "scalatestplus-play"         % "7.0.1"                 % Test,
-    "com.github.tomakehurst"  % "wiremock-jre8-standalone"    % "3.0.1"                 % Test,
+    "com.github.tomakehurst"  %  "wiremock-jre8-standalone"   % "3.0.1"                 % Test,
     "org.scalamock"           %% "scalamock"                  % "5.2.0"                 % Test,
-    "com.vladsch.flexmark"    %  "flexmark-all"               % "0.64.8"                % Test
+    "com.vladsch.flexmark"    %  "flexmark-all"               % "0.64.8"                % Test,
+    "org.mockito"             %% "mockito-scala"              % "1.17.37"               % Test
   )
 }

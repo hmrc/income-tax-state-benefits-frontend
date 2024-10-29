@@ -50,6 +50,7 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
   def show(taxYear: Int, journey: String): Action[AnyContent] =
     (authAction andThen TaxYearAction(taxYear, appConfig, ec)).async { implicit user =>
       implicit val userRequest = user.request
+      println("I'm here for the world to see")
       Journey.pathBindable.bind("journey", journey) match {
         case (Right(journeyType)) =>
           val journeyName = journeyType.toString

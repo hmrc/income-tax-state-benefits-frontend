@@ -72,7 +72,10 @@ class MessagesSpec extends ViewUnitTest {
     "common.claimsPage.addAnotherClaim.individual",
     "common.claimsPage.addAnotherClaim.agent",
     "common.claimsPage.error.anotherClaim.individual",
-    "common.claimsPage.error.anotherClaim.agent"
+    "common.claimsPage.error.anotherClaim.agent",
+    "sectionCompletedState.title",
+    "sectionCompletedState.hint",
+    "sectionCompletedState.error.required"
   )
 
   private lazy val allLanguages: Map[String, Map[String, String]] = app.injector.instanceOf[MessagesApi].messages

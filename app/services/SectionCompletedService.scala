@@ -18,7 +18,7 @@ package services
 
 import connectors.SectionCompletedConnector
 import models.mongo.JourneyAnswers
-import org.apache.pekko.Done
+import models.Done
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -31,7 +31,6 @@ class SectionCompletedService @Inject()(connector: SectionCompletedConnector)
     connector.get(mtdItId, taxYear,subJourney)
   }
 
-  //TODO revisit Done
   def set(answers: JourneyAnswers)(implicit hc: HeaderCarrier): Future[Done] = {
     connector.set(answers)
   }

@@ -48,7 +48,7 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
 
   override def invokeBlock[A](request: Request[A], block: AuthorisationRequest[A] => Future[Result]): Future[Result] = {
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
+    println("I'm htting this one first!!!!!!!!!")
     authService.authorised().retrieve(affinityGroup) {
       case Some(AffinityGroup.Agent) => agentAuthentication(block)(request, headerCarrier)
       case Some(affinityGroup) => individualAuthentication(block, affinityGroup)(request, headerCarrier)
@@ -61,6 +61,7 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
 
   private[actions] def individualAuthentication[A](block: AuthorisationRequest[A] => Future[Result], affinityGroup: AffinityGroup)
                                                   (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
+    println("I'm htting this!!!!!!!!!")
     authService.authorised().retrieve(allEnrolments and confidenceLevel) {
       case enrolments ~ userConfidence if userConfidence.level >= minimumConfidenceLevel =>
         val optionalMtdItId: Option[String] = enrolmentGetIdentifierValue(Individual.key, Individual.value, enrolments)
