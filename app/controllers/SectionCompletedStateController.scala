@@ -21,7 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import forms.YesNoForm
 import models.mongo.{JourneyAnswers, JourneyStatus}
 import models.mongo.JourneyStatus.{Completed, InProgress}
-import models.Journey
+import models.{BenefitType}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -47,53 +47,38 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
 
   def form(): Form[Boolean] = YesNoForm.yesNoForm("sectionCompletedState.error.required")
 
-  def show(taxYear: Int, journey: String): Action[AnyContent] =
+  def show(taxYear: Int, benefitType: BenefitType): Action[AnyContent] =
     (authAction andThen TaxYearAction(taxYear, appConfig, ec)).async { implicit user =>
-      implicit val userRequest = user.request
-      println("I'm here for the world to see")
-      Journey.pathBindable.bind("journey", journey) match {
-        case (Right(journeyType)) =>
-          val journeyName = journeyType.toString
-          sectionCompletedService.get(user.user.mtditid, taxYear, journeyName).flatMap {
+          sectionCompletedService.get(user.user.mtditid, taxYear, benefitType.typeName).flatMap {
             case Some(value) =>
               value.data("status").validateOpt[JourneyStatus].get match {
                 case Some(JourneyStatus.Completed) =>
-                  Future.successful(Ok(view(form().fill(true), taxYear, journeyName)))
+                  Future.successful(Ok(view(form().fill(true), taxYear, benefitType)))
 
                 case Some(JourneyStatus.InProgress) =>
-                  Future.successful(Ok(view(form().fill(false), taxYear, journeyName)))
+                  Future.successful(Ok(view(form().fill(false), taxYear, benefitType)))
 
-                case _ => Future.successful(Ok(view(form(), taxYear, journeyName)))
+                case _ => Future.successful(Ok(view(form(), taxYear, benefitType)))
               }
-            case None => Future.successful(Ok(view(form(), taxYear, journeyName)))
+            case None => Future.successful(Ok(view(form(), taxYear, benefitType)))
           }
-        case _ => Future.successful(errorHandler.handleError(BAD_REQUEST))
       }
-    }
 
-  def submit(taxYear: Int, journey: String): Action[AnyContent] = (authAction andThen TaxYearAction(taxYear, appConfig, ec)).async { implicit user =>
-    implicit val userRequest = user.request
 
+  def submit(taxYear: Int, benefitType: BenefitType): Action[AnyContent] = (authAction andThen TaxYearAction(taxYear, appConfig, ec)).async { implicit user =>
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, journey))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, benefitType))),
         answer => {
-          val maybeJourney: Either[String, Journey] = Journey.pathBindable.bind("journey", journey)
-
-          maybeJourney match {
-            case (Right(journey)) => saveAndRedirect(answer, taxYear, journey, user.user.mtditid)
-            case _ =>
-              Future.successful(errorHandler.handleError(BAD_REQUEST))
-          }
-
+         saveAndRedirect(answer, taxYear, benefitType, user.user.mtditid)
         }
       )
   }
 
-  private def saveAndRedirect(answer: Boolean, taxYear: Int, journey: Journey, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def saveAndRedirect(answer: Boolean, taxYear: Int, benefitType: BenefitType, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
     val status: JourneyStatus = if (answer) Completed else InProgress
-    val model = JourneyAnswers(mtditid, taxYear, journey.toString, Json.obj({
+    val model = JourneyAnswers(mtditid, taxYear, benefitType.toString, Json.obj({
       "status" -> status
     }), Instant.now)
     sectionCompletedService.set(model)

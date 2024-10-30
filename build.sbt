@@ -63,6 +63,7 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(PlayKeys.playDefaultPort := 9376)
+  .settings(inConfig(Test)(testSettings) *)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     TwirlKeys.templateImports ++= twirlImports,
@@ -97,3 +98,8 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
   .settings(DefaultBuildSettings.itSettings())
+
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
+  fork := true,
+  javaOptions ++= Seq("-Dconfig.resource=test.application.conf")
+)
