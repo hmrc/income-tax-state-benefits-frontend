@@ -15,6 +15,7 @@
  *@
 
 @import controllers.routes.SummaryController
+@import controllers.routes.SectionCompletedStateController
 @import controllers.session.routes.UserSessionDataController
 @import controllers.routes.ClaimsController
 
@@ -61,6 +62,14 @@
 
 @hasBenefits = @{
     pageModel.benefitDataRows.nonEmpty || pageModel.ignoredBenefitDataRows.nonEmpty
+}
+
+@continueButtonUrl = @{
+    if (appConfig.sectionCompletedQuestionEnabled) {
+        SectionCompletedStateController.show(pageModel.taxYear, pageModel.benefitType).url
+    } else {
+        SummaryController.show(pageModel.taxYear).url
+    }
 }
 
 @headingText = @{
@@ -145,7 +154,7 @@
     } else {
         <div class="govuk-button-group govuk-!-margin-top-7">
         @button(
-            href = Some(SummaryController.show(pageModel.taxYear).url),
+            href = Some(continueButtonUrl),
             alternativeText = "common.continue",
             classes = if(pageModel.isInYear || hasBenefits) None else Some("govuk-button--secondary")
         )

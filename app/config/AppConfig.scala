@@ -50,6 +50,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   lazy val signOutUrl: String = s"$basGatewayUrl/bas-gateway/sign-out-without-state"
   lazy val welshLanguageEnabled: Boolean = servicesConfig.getBoolean(key = "feature-switch.welshLanguageEnabled")
+  def sectionCompletedQuestionEnabled: Boolean = servicesConfig.getBoolean(key = "feature-switch.sectionCompletedQuestionEnabled")
   lazy val defaultTaxYear: Int = servicesConfig.getInt(key = "defaultTaxYear")
   lazy val languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")

@@ -59,7 +59,11 @@ class ClaimsController @Inject()(actionsProvider: ActionsProvider,
           }
         }
         else {
-          Future.successful(Redirect(routes.SummaryController.show(taxYear)))
+          if (appConfig.sectionCompletedQuestionEnabled) {
+            Future.successful(Redirect(routes.SectionCompletedStateController.show(taxYear, benefitType)))
+          } else {
+            Future.successful(Redirect(routes.SummaryController.show(taxYear)))
+          }
         }
       )
     }
