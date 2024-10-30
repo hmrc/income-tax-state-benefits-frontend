@@ -51,7 +51,7 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
     (authAction andThen TaxYearAction(taxYear, appConfig, ec)).async { implicit user =>
           sectionCompletedService.get(user.user.mtditid, taxYear, benefitType.typeName).flatMap {
             case Some(value) =>
-              value.data("status").validateOpt[JourneyStatus].get match {
+              value.data("status").validate[JourneyStatus].asOpt match {
                 case Some(JourneyStatus.Completed) =>
                   Future.successful(Ok(view(form().fill(true), taxYear, benefitType)))
 
