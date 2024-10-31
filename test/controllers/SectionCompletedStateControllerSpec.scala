@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
+import models.Done
 import models.authorisation.SessionValues.TAX_YEAR
 import models.mongo.{JourneyAnswers, JourneyStatus}
 import org.mockito.ArgumentMatchers.any
@@ -27,7 +28,6 @@ import org.scalatest.OptionValues.convertOptionToValuable
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.mockito.ArgumentMatchersSugar.eqTo
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
@@ -40,7 +40,6 @@ import services.SectionCompletedService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, confidenceLevel}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
-import uk.gov.hmrc.http.HeaderCarrier
 import play.api.inject.bind
 import play.api.libs.json.Json
 import views.html.pages.SectionCompletedStateView
@@ -49,6 +48,9 @@ import java.time.Instant
 import scala.concurrent.Future
 
 class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar with Matchers {
+
+  private val taxYear: Int = 2025
+  private val sectionCompletedStateControllerRoute: String = controllers.routes.SectionCompletedStateController.show(taxYear, JobSeekersAllowance ).url
 
   private val mtdItId: String = "1234567890"
   private val activated: String = "Activated"
@@ -72,15 +74,8 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
       ConfidenceLevel.L250
     )
 
-  private val sectionCompletedStateControllerRoute: String = "/update-and-submit-income-tax-return/state-benefits" + controllers.routes.SectionCompletedStateController.show(taxYear, JobSeekersAllowance).url
-  //    private val sectionCompletedStateControllerRoute: String = controllers.routes.SectionCompletedStateController.show(taxYear, JobSeekersAllowance ).url
-
-  def form(): Form[Boolean] = YesNoForm.yesNoForm("sectionCompletedState.error.required")
-
-  val mockAppConfig = mock[AppConfig]
-  val mockAuthConnector = mock[AuthConnector]
-
-  implicit val hc = new HeaderCarrier()
+  private val mockAppConfig = mock[AppConfig]
+  private val mockAuthConnector = mock[AuthConnector]
 
   when(mockAuthConnector.authorise[Option[AffinityGroup]](any(), eqTo(affinityGroup))(any(), any()))
     .thenReturn(Future.successful(Some(AffinityGroup.Individual)))
@@ -88,23 +83,15 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
   when(mockAuthConnector.authorise[Enrolments ~ ConfidenceLevel](any(), eqTo(allEnrolments and confidenceLevel))(any(), any()))
     .thenReturn(Future.successful(authResponse))
 
-  val mockService: SectionCompletedService = mock[SectionCompletedService]
-
-  val endOfTaxYearRange: Int = taxYear
-  val startOfTaxYearRange: Int = endOfTaxYearRange - 5
-  val taxYear: Int = taxYear
-  val taxYears: Seq[Int] = (startOfTaxYearRange to endOfTaxYearRange).toList
-  val validTaxYears: (String, String) = "validTaxYears" -> taxYears.mkString(",")
+  private val mockService: SectionCompletedService = mock[SectionCompletedService]
+  private val endOfTaxYearRange: Int = taxYear
+  private val startOfTaxYearRange: Int = endOfTaxYearRange - 5
+  private val taxYears: Seq[Int] = (startOfTaxYearRange to endOfTaxYearRange).toList
+  private val validTaxYears: (String, String) = "validTaxYears" -> taxYears.mkString(",")
 
   def messages(application: Application): Messages = application.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  val application = new GuiceApplicationBuilder()
-    .overrides(
-      bind[AppConfig].toInstance(mockAppConfig),
-      bind[AuthConnector].toInstance(mockAuthConnector),
-      bind[SectionCompletedService].toInstance(mockService)
-    )
-    .build()
+  def form(): Form[Boolean] = YesNoForm.yesNoForm("sectionCompletedState.error.required")
 
   "SectionCompletedStateController Controller" - {
 
@@ -273,32 +260,23 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       val application = new GuiceApplicationBuilder()
         .overrides(
-          bind[AppConfig].toInstance(mockAppConfig),
           bind[AuthConnector].toInstance(mockAuthConnector),
           bind[SectionCompletedService].toInstance(mockService),
         )
         .build()
 
-      val journeyAnswers = JourneyAnswers(
-        mtdItId = mtdItId,
-        taxYear = taxYear,
-        JobSeekersAllowance.typeName,
-        data = Json.obj("status" -> JourneyStatus.Completed.toString),
-        lastUpdated = Instant.now()
-      )
-
       running(application) {
 
         val request = FakeRequest(POST, sectionCompletedStateControllerRoute).withSession(validTaxYears)
-          .withSession(validTaxYears)
           .withSession(TAX_YEAR -> taxYear.toString)
+          .withFormUrlEncodedBody("value" -> "true")
+
+        when(mockService.set(any())(any())).thenReturn(Future.successful(Done))
 
         val result = route(application, request).value
 
-        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
-
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual mockAppConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+        redirectLocation(result) mustEqual Some(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view")
       }
     }
 
@@ -306,32 +284,24 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       val application = new GuiceApplicationBuilder()
         .overrides(
-          bind[AppConfig].toInstance(mockAppConfig),
           bind[AuthConnector].toInstance(mockAuthConnector),
           bind[SectionCompletedService].toInstance(mockService),
         )
         .build()
 
-      val journeyAnswers = JourneyAnswers(
-        mtdItId = mtdItId,
-        taxYear = taxYear,
-        JobSeekersAllowance.typeName,
-        data = Json.obj("status" -> JourneyStatus.InProgress.toString),
-        lastUpdated = Instant.now()
-      )
-
       running(application) {
 
-        val request = FakeRequest(GET, sectionCompletedStateControllerRoute).withSession(validTaxYears)
+        when(mockService.set(any())(any())).thenReturn(Future.successful(Done))
+
+        val request = FakeRequest(POST, sectionCompletedStateControllerRoute)
           .withSession(validTaxYears)
           .withSession(TAX_YEAR -> taxYear.toString)
+          .withFormUrlEncodedBody("value" -> "false")
 
         val result = route(application, request).value
 
-        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
-
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual mockAppConfig.incomeTaxSubmissionOverviewUrl(taxYear)
+        redirectLocation(result) mustEqual Some(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view")
       }
 
     }

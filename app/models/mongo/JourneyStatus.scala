@@ -33,7 +33,6 @@ object JourneyStatus {
     override def writes(js: JourneyStatus): JsValue = JsString(js.toString)
 
     override def reads(json: JsValue): JsResult[JourneyStatus] = json match {
-      case JsString("notStarted") => JsSuccess(NotStarted)
       case JsString("inProgress") => JsSuccess(InProgress)
       case JsString("completed") => JsSuccess(Completed)
       case error => JsError(s"Unable to read JourneyStatus: $error")
