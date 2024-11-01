@@ -49,10 +49,6 @@ class SectionCompletedConnectorISpec extends IntegrationTest {
   private lazy val connector: SectionCompletedConnector = app.injector.instanceOf[SectionCompletedConnector]
   lazy val httpClient: HttpClientV2 = app.injector.instanceOf[HttpClientV2]
 
-  //  def appConfig(host: String): AppConfig = new AppConfig(app.injector.instanceOf[ServicesConfig]) {
-  //    override lazy val stateBenefitsServiceBaseUrl: String = s"http://$host:$wiremockPort/"
-  //  }
-
   private def keepAliveUrl(journey: String, taxYear: Int) =
     s"/income-tax-state-benefits/journey-answers/keep-alive/$journey/$taxYear"
 
@@ -151,6 +147,5 @@ class SectionCompletedConnectorISpec extends IntegrationTest {
       connector.keepAlive(mtditId, taxYear, journeyName).failed.futureValue
     }
   }
-
 
 }
