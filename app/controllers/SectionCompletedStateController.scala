@@ -82,7 +82,7 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
       "status" -> status
     }), Instant.now)
     sectionCompletedService.set(model)
-    Future.successful(Redirect(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
+    Future.successful(Redirect(appConfig.commonTaskListUrl(taxYear)))
   }
 
 }

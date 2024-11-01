@@ -276,7 +276,7 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustEqual Some(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view")
+        redirectLocation(result) mustEqual Some(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/tasklist")
       }
     }
 
@@ -301,7 +301,7 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustEqual Some(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/view")
+        redirectLocation(result) mustEqual Some(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/tasklist")
       }
 
     }
