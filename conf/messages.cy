@@ -287,6 +287,11 @@ jobSeekersAllowance.reviewClaimPage.removeClaim.hiddenText = *Missing Welsh*
 jobSeekersAllowance.removeClaimPage.title = A ydych yn siŵr eich bod am dynnu’r hawliad Lwfans Ceisio Gwaith hwn?
 jobSeekersAllowance.removeClaimPage.link.hidden = Peidiwch â thynnu’r hawliad Lwfans Ceisio Gwaith hwn
 
+#################       Section completed       ########################################
+sectionCompletedState.title = A ydych wedi gorffen yr adran hon?
+sectionCompletedState.hint = Byddwch yn dal i allu mynd yn ôl ac adolygu’r wybodaeth rydych wedi’i rhoi i ni.
+sectionCompletedState.error.required = Dewiswch a ydych wedi llenwi’r adran hon
+
 #################       Error messages        ########################################
 common.error.self-assessment.paragraph.1.1 = Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, gallwch ddefnyddio
 common.error.self-assessment.paragraph.1.2 = Hunanasesiad: ymholiadau cyffredinol

@@ -36,4 +36,5 @@ trait ControllerUnitTest extends UnitTest
   protected implicit val mcc: MessagesControllerComponents = stubMessagesControllerComponents()
   protected implicit val appConfig: AppConfig = new AppConfigStub().config()
   protected implicit lazy val ec: ExecutionContext = ExecutionContext.Implicits.global
+
 }
