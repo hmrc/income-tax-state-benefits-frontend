@@ -21,7 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import forms.YesNoForm
 import models.mongo.{JourneyAnswers, JourneyStatus}
 import models.mongo.JourneyStatus.{Completed, InProgress}
-import models.{BenefitType}
+import models.BenefitType
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -31,6 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.pages.SectionCompletedStateView
 import actions.TaxYearAction
+import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
 
 import java.time.Instant
 import javax.inject.Inject
@@ -76,9 +77,13 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
       )
   }
 
-  private def saveAndRedirect(answer: Boolean, taxYear: Int, storedBenefitTypeName: BenefitType, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def saveAndRedirect(answer: Boolean, taxYear: Int, benefitType: BenefitType, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
     val status: JourneyStatus = if (answer) Completed else InProgress
-    val model = JourneyAnswers(mtditid, taxYear, storedBenefitTypeName.toString, Json.obj({
+    val journeyName = benefitType match {
+      case EmploymentSupportAllowance => "employment-support-allowance"
+      case JobSeekersAllowance => "jobseekers-allowance"
+    }
+    val model = JourneyAnswers(mtditid, taxYear, journeyName, Json.obj({
       "status" -> status
     }), Instant.now)
     sectionCompletedService.set(model)

@@ -16,12 +16,12 @@
 
 package models
 
-sealed abstract class BenefitType(val typeName: String, val storedBenefitTypeName: String  )
+sealed abstract class BenefitType(val typeName: String)
 
 object BenefitType {
 //  case object StatePension extends BenefitType(typeName = "statePension")
 //  case object StatePensionLumpSum extends BenefitType(typeName = "statePensionLumpSum")
-  case object EmploymentSupportAllowance extends BenefitType(typeName = "employmentSupportAllowance", storedBenefitTypeName = "employment-support-allowance")
-  case object JobSeekersAllowance extends BenefitType(typeName = "jobSeekersAllowance", storedBenefitTypeName = "job-seekers-allowance")
+  case object EmploymentSupportAllowance extends BenefitType(typeName = "employmentSupportAllowance")
+  case object JobSeekersAllowance extends BenefitType(typeName = "jobSeekersAllowance")
 //  case object OtherStateBenefits extends BenefitType(typeName = "otherStateBenefits")
 }
