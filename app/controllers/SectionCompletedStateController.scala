@@ -76,9 +76,9 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
       )
   }
 
-  private def saveAndRedirect(answer: Boolean, taxYear: Int, benefitType: BenefitType, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def saveAndRedirect(answer: Boolean, taxYear: Int, storedBenefitTypeName: BenefitType, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
     val status: JourneyStatus = if (answer) Completed else InProgress
-    val model = JourneyAnswers(mtditid, taxYear, benefitType.toString, Json.obj({
+    val model = JourneyAnswers(mtditid, taxYear, storedBenefitTypeName.toString, Json.obj({
       "status" -> status
     }), Instant.now)
     sectionCompletedService.set(model)
