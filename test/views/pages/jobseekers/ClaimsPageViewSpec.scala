@@ -16,6 +16,7 @@
 
 package views.pages.jobseekers
 
+import config.AppConfig
 import controllers.routes
 import controllers.session.routes._
 import models.BenefitType.JobSeekersAllowance
@@ -27,6 +28,7 @@ import play.api.mvc.AnyContent
 import support.ViewUnitTest
 import support.builders.pages.ClaimsPageBuilder.aClaimsPage
 import support.builders.pages.elements.BenefitDataRowBuilder.aBenefitDataRow
+import support.stubs.AppConfigStub
 import views.html.pages.ClaimsPageView
 
 import java.time.LocalDate
@@ -124,7 +126,7 @@ class ClaimsPageViewSpec extends ViewUnitTest {
     import userScenario.commonExpectedResults._
     import userScenario.specificExpectedResults._
     s"language is ${welshTest(userScenario.isWelsh)} and request is from an ${agentTest(userScenario.isAgent)}" should {
-      "render the page for an inYear tax claim" which {
+      "render the page for an inYear tax claim when 'sectionCompletedQuestionEnabled' is false" which {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
         val pageModel = aClaimsPage.copy(benefitType = JobSeekersAllowance, taxYear = taxYear, isInYear = true, ignoredBenefitDataRows = Seq.empty)
@@ -142,7 +144,18 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         buttonCheck(expectedButtonText, buttonSelector, Some(routes.SummaryController.show(taxYear).url))
       }
 
-      "render the page for an inYear tax claim when there are no benefits" which {
+      "render the page for an inYear tax claim when 'sectionCompletedQuestionEnabled' is true" which {
+        implicit val appConfig: AppConfig = new AppConfigStub().config(sectionCompletedQuestion = true)
+        implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = aClaimsPage.copy(benefitType = JobSeekersAllowance, taxYear = taxYear, isInYear = true, ignoredBenefitDataRows = Seq.empty)
+
+        implicit val document: Document = Jsoup.parse(page(pageModel).body)
+
+        buttonCheck(expectedButtonText, buttonSelector, Some(routes.SectionCompletedStateController.show(pageModel.taxYear, pageModel.benefitType).url))
+      }
+
+      "render the page for an inYear tax claim when there are no benefits when 'sectionCompletedQuestionEnabled' is false" which {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
         val pageModel = aClaimsPage.copy(benefitType = JobSeekersAllowance, taxYear = taxYear, isInYear = true, ignoredBenefitDataRows = Seq.empty)
@@ -156,6 +169,17 @@ class ClaimsPageViewSpec extends ViewUnitTest {
         elementNotOnPageCheck(removedClaimH2Selector)
         buttonCheck(expectedButtonText, buttonSelector, Some(routes.SummaryController.show(taxYear).url))
         elementNotOnPageCheck(secondaryButton)
+      }
+
+      "render the page for an inYear tax claim when there are no benefits when 'sectionCompletedQuestionEnabled' is true" which {
+        implicit val appConfig: AppConfig = new AppConfigStub().config(sectionCompletedQuestion = true)
+        implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
+        implicit val messages: Messages = getMessages(userScenario.isWelsh)
+        val pageModel = aClaimsPage.copy(benefitType = JobSeekersAllowance, taxYear = taxYear, isInYear = true, ignoredBenefitDataRows = Seq.empty)
+
+        implicit val document: Document = Jsoup.parse(page(pageModel).body)
+
+        buttonCheck(expectedButtonText, buttonSelector, Some(routes.SectionCompletedStateController.show(pageModel.taxYear, pageModel.benefitType).url))
       }
 
       "render page without any claims" which {

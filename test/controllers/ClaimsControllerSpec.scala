@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import forms.{FormsProvider, YesNoForm}
 import models.BenefitType.JobSeekersAllowance
 import models.StateBenefitsUserData
@@ -29,6 +30,7 @@ import support.ControllerUnitTest
 import support.builders.IncomeTaxUserDataBuilder.anIncomeTaxUserData
 import support.builders.UserBuilder.aUser
 import support.mocks.{MockActionsProvider, MockErrorHandler, MockStateBenefitsService}
+import support.stubs.AppConfigStub
 import views.html.pages.ClaimsPageView
 
 import java.util.UUID
@@ -70,13 +72,30 @@ class ClaimsControllerSpec extends ControllerUnitTest
       document.select(".govuk-error-summary").isEmpty shouldBe false
     }
 
-    "redirect to summary page if claim is false" in {
+    "redirect to summary page if claim is false and 'sectionCompletedQuestionEnabled' is false" in {
       mockPriorDataWithViewStateBenefitsAudit(taxYearEOY, JobSeekersAllowance, anIncomeTaxUserData)
 
       val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
 
       await(underTest.submit(taxYearEOY, JobSeekersAllowance)(request)) shouldBe
         Redirect(routes.SummaryController.show(taxYearEOY))
+    }
+
+    "redirect to summary page if claim is false and 'sectionCompletedQuestionEnabled' is true" in {
+      implicit val appConfig: AppConfig = new AppConfigStub().config(sectionCompletedQuestion = true)
+      val controllerTestFlagged = new ClaimsController(
+        mockActionsProvider,
+        pageView,
+        stateBenefitsService = mockStateBenefitsService,
+        formsProvider = new FormsProvider(),
+        errorHandler = mockErrorHandler
+      )
+      mockPriorDataWithViewStateBenefitsAudit(taxYearEOY, JobSeekersAllowance, anIncomeTaxUserData)
+
+      val request = fakeIndividualRequest.withMethod(POST.method).withFormUrlEncodedBody(YesNoForm.yesNo -> "false")
+
+      await(controllerTestFlagged.submit(taxYearEOY, JobSeekersAllowance)(request)) shouldBe
+        Redirect(routes.SectionCompletedStateController.show(taxYearEOY, JobSeekersAllowance))
     }
 
     "return error when stateBenefitsService.createSessionData(...) returns Left" in {

@@ -24,11 +24,12 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class AppConfigStub extends MockFactory {
 
-  def config(): AppConfig = new AppConfig(mock[ServicesConfig]) {
+  def config(sectionCompletedQuestion: Boolean = false): AppConfig = new AppConfig(mock[ServicesConfig]) {
     override lazy val timeoutDialogCountdown: Int = 120
     override lazy val timeoutDialogTimeout: Int = 900
     override lazy val defaultTaxYear: Int = taxYearEOY
     override lazy val welshLanguageEnabled: Boolean = true
+    override lazy val sectionCompletedQuestionEnabled: Boolean = sectionCompletedQuestion
 
     override lazy val signInUrl: String = "/sign-in-url"
     override lazy val incomeTaxSubmissionIvRedirect: String = "/update-and-submit-income-tax-return/iv-uplift"
