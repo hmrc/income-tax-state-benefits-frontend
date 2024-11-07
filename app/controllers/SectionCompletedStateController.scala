@@ -48,9 +48,16 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
 
   def form(): Form[Boolean] = YesNoForm.yesNoForm("sectionCompletedState.error.required")
 
+  def journeyName(benefitType: BenefitType): String = {
+    benefitType match {
+      case EmploymentSupportAllowance => "employment-support-allowance"
+      case JobSeekersAllowance => "jobseekers-allowance"
+    }
+  }
+
   def show(taxYear: Int, benefitType: BenefitType): Action[AnyContent] =
     (authAction andThen TaxYearAction(taxYear, appConfig, ec)).async { implicit user =>
-          sectionCompletedService.get(user.user.mtditid, taxYear, benefitType.typeName).flatMap {
+          sectionCompletedService.get(user.user.mtditid, taxYear, journeyName(benefitType)).flatMap {
             case Some(value) =>
               value.data("status").validate[JourneyStatus].asOpt match {
                 case Some(JourneyStatus.Completed) =>
@@ -79,11 +86,7 @@ class SectionCompletedStateController @Inject()(implicit val cc: MessagesControl
 
   private def saveAndRedirect(answer: Boolean, taxYear: Int, benefitType: BenefitType, mtditid: String)(implicit hc: HeaderCarrier): Future[Result] = {
     val status: JourneyStatus = if (answer) Completed else InProgress
-    val journeyName = benefitType match {
-      case EmploymentSupportAllowance => "employment-support-allowance"
-      case JobSeekersAllowance => "jobseekers-allowance"
-    }
-    val model = JourneyAnswers(mtditid, taxYear, journeyName, Json.obj({
+    val model = JourneyAnswers(mtditid, taxYear, journeyName(benefitType), Json.obj({
       "status" -> status
     }), Instant.now)
     sectionCompletedService.set(model)
