@@ -74,8 +74,10 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
       ConfidenceLevel.L250
     )
 
-  private val mockAppConfig = mock[AppConfigImpl]
+  private val mockAppConfig = mock[AppConfig]
   private val mockAuthConnector = mock[AuthConnector]
+
+  when(mockAppConfig.signInUrl).thenReturn("/signIn")
 
   when(mockAuthConnector.authorise[Option[AffinityGroup]](any(), eqTo(affinityGroup))(any(), any()))
     .thenReturn(Future.successful(Some(AffinityGroup.Individual)))
@@ -99,7 +101,8 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = new GuiceApplicationBuilder()
         .overrides(
           bind[AuthConnector].toInstance(mockAuthConnector),
-          bind[SectionCompletedService].toInstance(mockService)
+          bind[SectionCompletedService].toInstance(mockService),
+          bind[AppConfig].toInstance(mockAppConfig)
         )
         .build()
 
