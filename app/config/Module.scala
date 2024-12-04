@@ -16,11 +16,11 @@
 
 package config
 
-import com.google.inject.AbstractModule
+import play.api.{Configuration, Environment}
+import play.api.inject.{Binding, Module => PlayModule}
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+class Module extends PlayModule {
+  override def bindings(environment: Environment, configuration: Configuration): collection.Seq[Binding[_]] = Seq(
+    bind[AppConfig].to(classOf[AppConfigImpl])
+  )
 }

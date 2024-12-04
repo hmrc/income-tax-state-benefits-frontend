@@ -16,7 +16,7 @@
 
 package support.stubs
 
-import config.AppConfig
+import config.{AppConfig, AppConfigImpl}
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.RequestHeader
 import support.utils.TaxYearUtils.taxYearEOY
@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class AppConfigStub extends MockFactory {
 
-  def config(sectionCompletedQuestion: Boolean = false): AppConfig = new AppConfig(mock[ServicesConfig]) {
+  def config(sectionCompletedQuestion: Boolean = false): AppConfig = new AppConfigImpl(mock[ServicesConfig]) {
     override lazy val timeoutDialogCountdown: Int = 120
     override lazy val timeoutDialogTimeout: Int = 900
     override lazy val defaultTaxYear: Int = taxYearEOY

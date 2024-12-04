@@ -16,6 +16,7 @@
 
 package config
 
+import com.google.inject.ImplementedBy
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
@@ -23,8 +24,35 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 
+@ImplementedBy(classOf[AppConfigImpl])
+trait AppConfig {
+  def signOutUrl: String
+  def welshLanguageEnabled: Boolean
+  def sectionCompletedQuestionEnabled: Boolean
+  def defaultTaxYear: Int
+  def languageMap: Map[String, Lang]
+  def timeoutDialogTimeout: Int
+  def timeoutDialogCountdown: Int
+  def signInUrl: String
+  def incomeTaxSubmissionStartUrl(taxYear: Int): String
+  def incomeTaxSubmissionIvRedirect: String
+  def incomeTaxSubmissionOverviewUrl(taxYear: Int): String
+  def commonTaskListUrl(taxYear: Int): String
+  def contactUrl(isAgent: Boolean): String
+  def feedbackSurveyUrl(isAgent: Boolean): String
+  def viewAndChangeEnterUtrUrl: String
+  def betaFeedbackUrl(request: RequestHeader, isAgent: Boolean): String
+  def stateBenefitsServiceBaseUrl: String
+  def taxYearErrorFeature: Boolean
+
+  // TODO: Get rid of this
+  def routeToSwitchLanguage: String => Call
+
+  def emaSupportingAgentsEnabled: Boolean
+}
+
 @Singleton
-class AppConfig @Inject()(servicesConfig: ServicesConfig) {
+class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig {
 
   private lazy val stateBenefitsUrlKey = "microservice.services.income-tax-state-benefits.url"
 
@@ -91,4 +119,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   // TODO: Get rid of this
   def routeToSwitchLanguage: String => Call =
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
+
+  lazy val emaSupportingAgentsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.ema-supporting-agents-enabled")
 }
