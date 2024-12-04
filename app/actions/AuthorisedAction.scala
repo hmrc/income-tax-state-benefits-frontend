@@ -17,15 +17,16 @@
 package actions
 
 import config.AppConfig
-import controllers.errors.routes.{AgentAuthErrorController, IndividualAuthErrorController, UnauthorisedUserErrorController, YouNeedAgentServicesController}
-import models.authorisation.Enrolment.{Agent, Individual, Nino}
-import models.authorisation.SessionValues
+import controllers.errors.routes.{AgentAuthErrorController, IndividualAuthErrorController, UnauthorisedUserErrorController}
+import models.authorisation.Enrolment.{Agent, Individual, Nino, SupportingAgent}
+import models.authorisation.{DelegatedAuthRules, SessionValues}
 import models.requests.AuthorisationRequest
 import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
 import services.AuthorisationService
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, confidenceLevel}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
@@ -46,6 +47,9 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
 
   override def parser: BodyParser[AnyContent] = cc.parsers.default
 
+  private lazy val signInRedirectFutureResult = Future.successful(Redirect(appConfig.signInUrl))
+  private lazy val agentErrorRedirectResult: Result = Redirect(AgentAuthErrorController.show)
+
   override def invokeBlock[A](request: Request[A], block: AuthorisationRequest[A] => Future[Result]): Future[Result] = {
     implicit lazy val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     authService.authorised().retrieve(affinityGroup) {
@@ -58,6 +62,19 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
     }
   }
 
+  private def sessionIdBlock(errorLogString: String, errorAction: Future[Result])
+                            (block: String => Future[Result])
+                            (implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+    hc.sessionId match {
+      case Some(sessionId) => block(sessionId.value)
+      case _ => request.headers.get(SessionKeys.sessionId) match {
+        case Some(sessionId) => block(sessionId)
+        case _ =>
+          logger.info(errorLogString)
+          errorAction
+      }
+    }
+
   private[actions] def individualAuthentication[A](block: AuthorisationRequest[A] => Future[Result], affinityGroup: AffinityGroup)
                                                   (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     authService.authorised().retrieve(allEnrolments and confidenceLevel) {
@@ -67,14 +84,13 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
 
         (optionalMtdItId, optionalNino) match {
           case (Some(mtdItId), Some(nino)) =>
-            sessionIdFrom(request, hc).fold {
-              val logMessage = s"[AuthorisedAction][individualAuthentication] - No session id in request"
-              logger.info(logMessage)
-              Future.successful(Redirect(appConfig.signInUrl))
-            } { sessionId =>
-              block(AuthorisationRequest(models.User(mtdItId, None, nino, sessionId, affinityGroup.toString), request))
-            }
-
+            sessionIdBlock(
+              errorLogString = "[AuthorisedAction][individualAuthentication] - No session id in request",
+              errorAction = signInRedirectFutureResult
+            )(sessionId => block(AuthorisationRequest(
+              models.User(mtdItId, None, nino, sessionId, affinityGroup.toString),
+              request
+            )))
           case (_, None) =>
             val logMessage = s"[AuthorisedAction][individualAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}"
             logger.info(logMessage)
@@ -91,13 +107,62 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
     }
   }
 
+  private def agentAuthPredicate(mtdId: String): Predicate =
+    Enrolment(Individual.key)
+      .withIdentifier(Individual.value, mtdId)
+      .withDelegatedAuthRule(DelegatedAuthRules.agentDelegatedAuthRule)
+
+  private def secondaryAgentPredicate(mtdId: String): Predicate =
+    Enrolment(SupportingAgent.key)
+      .withIdentifier(SupportingAgent.value, mtdId)
+      .withDelegatedAuthRule(DelegatedAuthRules.supportingAgentDelegatedAuthRule)
+
+  private val agentAuthLogString: String = "[AuthorisedAction][agentAuthentication]"
+
+  private def agentRecovery[A](block: AuthorisationRequest[A] => Future[Result], mtdItId: String, nino: String)
+                              (implicit request: Request[A], hc: HeaderCarrier): PartialFunction[Throwable, Future[Result]] = {
+    case _: NoActiveSession =>
+      logger.info(s"$agentAuthLogString - No active session. Redirecting to ${appConfig.signInUrl}")
+      signInRedirectFutureResult
+    case _: AuthorisationException if appConfig.emaSupportingAgentsEnabled =>
+      authService.authorised(secondaryAgentPredicate(mtdItId))
+        .retrieve(allEnrolments)(
+          enrolments => handleForValidAgent(block, mtdItId, nino, enrolments, isSupportingAgent = true)
+        )
+        .recover {
+          case _: AuthorisationException =>
+            logger.info(s"$agentAuthLogString - Agent does not have delegated primary or secondary authority for Client.")
+            agentErrorRedirectResult
+        }
+    case _: AuthorisationException =>
+      logger.info(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
+      Future.successful(agentErrorRedirectResult)
+  }
+
+  private def handleForValidAgent[A](block: AuthorisationRequest[A] => Future[Result],
+                                     mtdItId: String,
+                                     nino: String,
+                                     enrolments: Enrolments,
+                                     isSupportingAgent: Boolean)
+                                    (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
+    enrolmentGetIdentifierValue(Agent.key, Agent.value, enrolments) match {
+      case Some(arn) => sessionIdBlock(
+        errorLogString = s"$agentAuthLogString - No session id in request",
+        errorAction = signInRedirectFutureResult
+      )(sessionId =>
+        block(AuthorisationRequest(
+          user = models.User(mtdItId, Some(arn), nino, sessionId, AffinityGroup.Agent.toString, isSupportingAgent),
+          request = request
+        ))
+      )
+      case None =>
+        logger.info(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+        Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show))
+    }
+  }
+
   private[actions] def agentAuthentication[A](block: AuthorisationRequest[A] => Future[Result])
                                              (implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
-    lazy val agentDelegatedAuthRuleKey = "mtd-it-auth"
-    lazy val agentAuthPredicate: String => Enrolment = identifierId =>
-      Enrolment(Individual.key)
-        .withIdentifier(Individual.value, identifierId)
-        .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
     val optionalNino = request.session.get(SessionValues.CLIENT_NINO)
     val optionalMtdItId = request.session.get(SessionValues.CLIENT_MTDITID)
 
@@ -105,37 +170,13 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
       case (Some(mtdItId), Some(nino)) =>
         authService
           .authorised(agentAuthPredicate(mtdItId))
-          .retrieve(allEnrolments) { enrolments =>
-
-            enrolmentGetIdentifierValue(Agent.key, Agent.value, enrolments) match {
-              case Some(arn) =>
-                sessionIdFrom(request, hc).fold {
-                  val logMessage = s"[AuthorisedAction][agentAuthentication] - No session id in request"
-                  logger.info(logMessage)
-                  Future(Redirect(appConfig.signInUrl))
-                } { sessionId =>
-                  block(AuthorisationRequest(models.User(mtdItId, Some(arn), nino, sessionId, AffinityGroup.Agent.toString), request))
-                }
-
-              case None =>
-                val logMessage = "[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view."
-                logger.info(logMessage)
-                Future.successful(Redirect(YouNeedAgentServicesController.show))
-            }
-          } recover {
-          case _: NoActiveSession =>
-            val logMessage = s"[AuthorisedAction][agentAuthentication] - No active session. Redirecting to ${appConfig.signInUrl}"
-            logger.info(logMessage)
-            Redirect(appConfig.signInUrl)
-          case _: AuthorisationException =>
-            val logMessage = s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client."
-            logger.info(logMessage)
-            Redirect(AgentAuthErrorController.show)
-        }
-      case (mtditid, nino) =>
-        val logMessage = s"[AuthorisedAction][agentAuthentication] - Agent does not have session key values. " +
-          s"Redirecting to view & change. MTDITID missing:${mtditid.isEmpty}, NINO missing:${nino.isEmpty}"
-        logger.info(logMessage)
+          .retrieve(allEnrolments)(
+            enrollments => handleForValidAgent(block, mtdItId, nino, enrollments, isSupportingAgent = false)
+          )
+          .recoverWith(agentRecovery(block, mtdItId, nino))
+      case (mtdItId, nino) =>
+        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have session key values. " +
+          s"Redirecting to view & change. MTDITID missing:${mtdItId.isEmpty}, NINO missing:${nino.isEmpty}")
         Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
     }
   }
@@ -159,10 +200,5 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
     val logMessage = s"[AuthorisedAction][invokeBlock] - No active session. Redirecting to ${appConfig.signInUrl}"
     logger.info(logMessage)
     Redirect(appConfig.signInUrl)
-  }
-
-  private def sessionIdFrom(request: Request[_], hc: HeaderCarrier): Option[String] = hc.sessionId match {
-    case Some(sessionId) => Some(sessionId.value)
-    case _ => request.headers.get(SessionKeys.sessionId)
   }
 }
