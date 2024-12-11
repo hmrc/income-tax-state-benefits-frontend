@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, AppConfigImpl}
 import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.Done
@@ -77,6 +77,8 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
   private val mockAppConfig = mock[AppConfig]
   private val mockAuthConnector = mock[AuthConnector]
 
+  when(mockAppConfig.signInUrl).thenReturn("/signIn")
+
   when(mockAuthConnector.authorise[Option[AffinityGroup]](any(), eqTo(affinityGroup))(any(), any()))
     .thenReturn(Future.successful(Some(AffinityGroup.Individual)))
 
@@ -96,12 +98,11 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
   "SectionCompletedStateController Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
       val application = new GuiceApplicationBuilder()
         .overrides(
-          bind[AppConfig].toInstance(mockAppConfig),
           bind[AuthConnector].toInstance(mockAuthConnector),
-          bind[SectionCompletedService].toInstance(mockService)
+          bind[SectionCompletedService].toInstance(mockService),
+          bind[AppConfig].toInstance(mockAppConfig)
         )
         .build()
 
