@@ -108,14 +108,14 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
 
+        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(None))
+
         val request = FakeRequest(GET, sectionCompletedStateControllerRoute).withSession(validTaxYears)
           .withSession(TAX_YEAR -> taxYear.toString)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SectionCompletedStateView]
-
-        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(None))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
@@ -142,14 +142,14 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
           lastUpdated = Instant.now()
         )
 
+        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
+
         val request = FakeRequest(GET, sectionCompletedStateControllerRoute).withSession(validTaxYears)
           .withSession(TAX_YEAR -> taxYear.toString)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SectionCompletedStateView]
-
-        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form().fill(true), taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
@@ -177,14 +177,14 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
           lastUpdated = Instant.now()
         )
 
+        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
+
         val request = FakeRequest(GET, sectionCompletedStateControllerRoute).withSession(validTaxYears)
           .withSession(TAX_YEAR -> taxYear.toString)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SectionCompletedStateView]
-
-        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form().fill(false), taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
@@ -212,14 +212,14 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
           lastUpdated = Instant.now()
         )
 
+        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
+
         val request = FakeRequest(GET, sectionCompletedStateControllerRoute).withSession(validTaxYears)
           .withSession(TAX_YEAR -> taxYear.toString)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SectionCompletedStateView]
-
-        when(mockService.get(any(), any(), any())(any())).thenReturn(Future.successful(Some(journeyAnswers)))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form(), taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
