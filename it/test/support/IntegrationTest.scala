@@ -17,7 +17,7 @@
 package support
 
 import org.apache.pekko.actor.ActorSystem
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import models.authorisation.SessionValues
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
@@ -50,6 +50,7 @@ trait IntegrationTest extends AnyWordSpec
   protected implicit val actorSystem: ActorSystem = ActorSystem()
   protected implicit lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
   protected implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
 
   protected lazy val appUrl = s"http://localhost:$port/update-and-submit-income-tax-return/state-benefits"
 
