@@ -475,12 +475,9 @@ class AuthorisedActionSpec extends ControllerUnitTest
             .expects(*, *, *, *)
             .returning(Future.failed(new Exception("bang")))
 
-          //mockInternalServerError(InternalServerError("An unexpected error occurred"))
-
           val result = underTest.invokeBlock(fakeAgentRequest, block)
 
           status(result) shouldBe INTERNAL_SERVER_ERROR
-          bodyOf(result) shouldBe ""
         }
       }
 

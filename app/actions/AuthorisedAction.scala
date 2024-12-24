@@ -135,14 +135,14 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
         )
         .recover {
           case _: AuthorisationException =>
-            logger.info(s"$agentAuthLogString - Agent does not have delegated primary or secondary authority for Client.")
+            logger.warn(s"$agentAuthLogString - Agent does not have delegated primary or secondary authority for Client.")
             agentErrorRedirectResult
           case e =>
             logger.error(s"[AuthorisedAction][agentAuthentication] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
             errorHandler.internalServerError()
         }
     case _: AuthorisationException =>
-      logger.info(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
+      logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
       Future.successful(agentErrorRedirectResult)
 
     case e =>
