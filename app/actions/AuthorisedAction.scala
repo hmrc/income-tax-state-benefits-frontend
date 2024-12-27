@@ -61,7 +61,7 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
       case _: NoActiveSession => redirectToSignInPage()
       case _: AuthorisationException => redirectToUnauthorisedUserErrorPage()
       case e =>
-        logger.error(s"[AuthorisedAction][agentAuthentication] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+        logger.error(s"[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
         InternalServerError
     }
   }
