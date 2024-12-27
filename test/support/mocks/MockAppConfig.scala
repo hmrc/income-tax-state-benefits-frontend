@@ -28,13 +28,13 @@ trait MockAppConfig extends MockFactory {
   val signInUrl: String = s"$baseUrl/signIn"
 
   def mockSignInUrl(): CallHandler0[String] =
-    (mockAppConfig.signInUrl _: () => String)
+    (() => mockAppConfig.signInUrl)
       .expects()
       .returning(signInUrl)
       .anyNumberOfTimes()
 
   def mockViewAndChangeUrl(): CallHandler0[String] =
-    (mockAppConfig.viewAndChangeEnterUtrUrl _: () => String)
+    (() => mockAppConfig.viewAndChangeEnterUtrUrl)
       .expects()
       .returning(viewAndChangeUrl)
       .anyNumberOfTimes()

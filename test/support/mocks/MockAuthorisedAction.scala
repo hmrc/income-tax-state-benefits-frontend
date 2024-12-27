@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAuthorisedAction extends AppConfigStubProvider
-  with MockFactory {
+  with MockFactory with MockErrorHandler {
 
   private val mockAuthConnector = mock[AuthConnector]
   private val mockAuthService = new AuthorisationService(mockAuthConnector)
@@ -43,7 +43,8 @@ trait MockAuthorisedAction extends AppConfigStubProvider
   protected val mockAuthorisedAction: AuthorisedAction = new AuthorisedAction(
     mockAuthService,
     appConfigStub,
-    stubMessagesControllerComponents()
+    stubMessagesControllerComponents(),
+    mockErrorHandler
   )
 
   protected def mockAuthAsAgent(): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
