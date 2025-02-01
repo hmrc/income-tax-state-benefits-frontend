@@ -67,7 +67,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
     def expectedAmountText(firstDate: String, secondDate: String): String
 
-    def expectedEndDateQuestionHiddenText(taxYear: Int): String
+    def expectedEndDateQuestionHiddenText(firstDate: String, secondDate: String): String
 
     def expectedTaxPaidQuestionText(firstDate: String, secondDate: String): String
 
@@ -118,13 +118,13 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
   object ExpectedIndividual extends SpecificExpectedResults {
     override val expectedStartDateText: String = "When did you start getting Jobseeker’s Allowance?"
-    override val expectedStartDateHiddenText: String = "Change the date you started getting Jobseeker’s Allowance"
-    override val expectedEndDateHiddenText: String = "Change the date your claim ended"
-    override val expectedAmountHiddenText: String = "Change the amount you got"
+    override val expectedStartDateHiddenText: String = "when did you start getting jobseeker’s allowance?"
+    override val expectedEndDateHiddenText: String = "when did this claim end?"
+    override val expectedAmountHiddenText: String = "how much jobseeker’s allowance did you get between 23 april 2023 and 13 august 2024?"
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether you had any tax taken off your claim"
     override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your claim"
 
-    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your claim ended in the tax year ending 5 April $taxYear"
+    override def expectedEndDateQuestionHiddenText(firstDate: String, secondDate: String): String = s"did this claim end between $firstDate and $secondDate?"
 
     override def expectedAmountText(firstDate: String, secondDate: String): String =
       s"How much Jobseeker’s Allowance did you get between $firstDate and $secondDate?"
@@ -142,7 +142,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether your client had any tax taken off your client’s claim"
     override val expectedTaxPaidHiddenText: String = "Change the amount of tax taken off your client’s claim"
 
-    override def expectedEndDateQuestionHiddenText(taxYear: Int): String = s"Change whether your client’s claim ended in the tax year ending 5 April $taxYear"
+    override def expectedEndDateQuestionHiddenText(firstDate: String, secondDate: String): String = s"Change whether your client’s claim ended in the tax year ending 5 April $taxYear"
 
     override def expectedTaxPaidText(firstDate: String, secondDate: String): String = s"How much tax was taken off your client’s Jobseeker’s Allowance between $firstDate and $secondDate?"
 
@@ -184,7 +184,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
             StartDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
           textOnPageCheck(expectedEndDateQuestionText(taxYearEOY, pageModel.startDate), summaryListRowFieldNameSelector(2))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
-          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(translatedStartDate, translatedEndDate)}", changeLink(2),
             EndDateQuestionController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
           textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
           textOnPageCheck(translatedEndDate, summaryListRowFieldValueSelector(3))
@@ -251,10 +251,10 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
             StartDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
           textOnPageCheck(expectedEndDateQuestionText(taxYearEOY, pageModel.startDate), summaryListRowFieldNameSelector(2))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
-          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(translatedStartDate, translatedEndDate)}", changeLink(2),
             EndDateQuestionController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
           textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
-          textOnPageCheck(s"$translatedEndDate $expectedWasText $translatedPriorEndDate" , summaryListRowFieldValueSelector(3))
+          textOnPageCheck(s"$translatedEndDate $expectedWasText $translatedPriorEndDate", summaryListRowFieldValueSelector(3))
           linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateHiddenText}", changeLink(3),
             EndDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(3)))
           textOnPageCheck(get.expectedTaxPaidQuestionText(translatedStartDate, translatedEndDate), summaryListRowFieldNameSelector(4))
@@ -292,7 +292,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
             StartDateController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(1)))
           textOnPageCheck(expectedEndDateQuestionText(taxYearEOY, pageModel.startDate), summaryListRowFieldNameSelector(2))
           textOnPageCheck(expectedYesText, summaryListRowFieldValueSelector(2), "for the end date question")
-          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(taxYearEOY)}", changeLink(2),
+          linkCheck(s"$expectedChangeLinkText ${get.expectedEndDateQuestionHiddenText(translatedStartDate, translatedEndDate)}", changeLink(2),
             EndDateQuestionController.show(taxYearEOY, JobSeekersAllowance, pageModel.sessionDataId).url, Some(hiddenChangeLink(2)))
           textOnPageCheck(expectedEndDateText, summaryListRowFieldNameSelector(3))
           textOnPageCheck(translatedEndDate, summaryListRowFieldValueSelector(3))
