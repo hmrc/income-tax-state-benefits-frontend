@@ -16,23 +16,38 @@
 
 package models.pages
 
-import controllers.routes.ClaimsController
 import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
-import models.pages.elements.TaskListItem
+import models.pages.elements.TaskListTag
 import models.pages.elements.TaskListTag.Completed
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import support.UnitTest
 import support.providers.TaxYearProvider
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tasklist.{TaskListItem, TaskListItemTitle}
 
 class SummaryPageSpec extends UnitTest
   with TaxYearProvider {
+
+  implicit private val messages: Messages = stubMessages()
 
   ".apply" should {
     "create SummaryPage with relevant task list items" in {
       SummaryPage.apply(taxYear = taxYear) shouldBe SummaryPage(
         taxYear = taxYear,
-        taskListItems = Seq(
-          TaskListItem(EmploymentSupportAllowance, ClaimsController.show(taxYear, EmploymentSupportAllowance), Completed),
-          TaskListItem(JobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance), Completed)
+        taskListItems = List(
+          TaskListItem(
+            title = TaskListItemTitle(HtmlContent(messages(s"common.${EmploymentSupportAllowance.typeName}"))),
+            status = TaskListTag.itemStatus(Completed),
+            href = Some(controllers.routes.ClaimsController.show(taxYear, EmploymentSupportAllowance).url),
+            classes = EmploymentSupportAllowance.typeName
+          ),
+          TaskListItem(
+            title = TaskListItemTitle(HtmlContent(messages(s"common.${JobSeekersAllowance.typeName}"))),
+            status = TaskListTag.itemStatus(Completed),
+            href = Some(controllers.routes.ClaimsController.show(taxYear, JobSeekersAllowance).url),
+            classes = JobSeekersAllowance.typeName
+          )
         )
       )
     }

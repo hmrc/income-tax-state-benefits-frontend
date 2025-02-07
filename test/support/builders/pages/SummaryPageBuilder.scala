@@ -16,23 +16,25 @@
 
 package support.builders.pages
 
-import controllers.routes.ClaimsController
 import models.BenefitType._
 import models.pages.SummaryPage
-import models.pages.elements.TaskListItem
+import models.pages.elements.TaskListTag
 import models.pages.elements.TaskListTag._
+import play.api.i18n.Messages
 import support.utils.TaxYearUtils.taxYear
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tasklist.{TaskListItem, TaskListItemTitle}
 
 object SummaryPageBuilder {
 
-  val aSummaryPage: SummaryPage = SummaryPage(
+  def summaryPage()(implicit messages: Messages): SummaryPage = SummaryPage(
     taxYear = taxYear,
-    taskListItems = Seq(
-      //      TaskListItem(StatePension, controllers.routes.SummaryController.show(taxYear), CustomerOrHmrcAdded),
-      //      TaskListItem(StatePensionLumpSum, controllers.routes.SummaryController.show(taxYear), HmrcAdded),
-      //      TaskListItem(EmploymentSupportAllowance, controllers.routes.SummaryController.show(taxYear), InProgress),
-      TaskListItem(JobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance), NotStarted)
-      //      TaskListItem(OtherStateBenefits, controllers.routes.SummaryController.show(taxYear), Completed)
+    taskListItems = List(
+      TaskListItem(
+        title = TaskListItemTitle(HtmlContent(messages(s"common.${JobSeekersAllowance.typeName}"))),
+        status = TaskListTag.itemStatus(NotStarted),
+        href = Some(controllers.routes.ClaimsController.show(taxYear, JobSeekersAllowance).url)
+      )
     )
   )
 }

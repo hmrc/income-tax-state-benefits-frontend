@@ -177,6 +177,20 @@ trait ViewHelper {
     }
   }
 
+  def listCheck(key: String, text: String, href: String, status: String, index: Int)(implicit document: Document): Unit = {
+    s"contains an list for $key" which {
+      s"has the text '$text' and a href to '$href'" in {
+        val selector = ".govuk-task-list__link"
+        document.select(selector).get(index).attr("href") shouldBe href
+        document.select(selector).get(index).text() shouldBe text
+      }
+      s"has a status of '$status'" in {
+        val selector = ".govuk-task-list__status"
+        document.select(selector).get(index).text() shouldBe status
+      }
+    }
+  }
+
   def inputFieldValueCheck(name: String, selector: String, value: String)(implicit document: Document): Unit = {
     s"'$selector' has a name of '$name'" in {
       document.select(selector).attr("name") shouldBe name
