@@ -35,22 +35,24 @@
 @titleText = @{ messages("common.stateBenefits") }
 
 @taskList(taskListItems: Seq[TaskListItem]) = {
-    <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
+    <ul class="govuk-task-list">
         @for(item <- taskListItems){
             @taskListItem(item)
         }
-    </ol>
+    </ul>
 }
 
 @taskListItem(taskListItem: TaskListItem) = {
-    <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-            <a class="govuk-link" id="@{taskListItem.benefitType.typeName}_link" href="@taskListItem.call">@messages(s"common.${taskListItem.benefitType.typeName}")</a>
-        </span>
-        <span class="hmrc-status-tag">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-task-list__link" id="@{taskListItem.benefitType.typeName}_link" href="@taskListItem.call">
+                @messages(s"common.${taskListItem.benefitType.typeName}")
+            </a>
+        </div>
+        <div class="govuk-task-list__status">
         @{
             val tag = taskListItem.taskListTag match {
-                case Completed => Tag(content = Text(messages("common.completed")), classes = "govuk-tag--turquoise")
+                case Completed => Tag(content = Text(messages("common.completed")))
                 case CustomerOrHmrcAdded => Tag(content = Text(messages("common.addedByHmrc")), classes = "govuk-tag--red")
                 case HmrcAdded => Tag(content = Text(messages("common.addedByHmrc")), classes = "govuk-tag--red")
                 case InProgress => Tag(content = Text(messages("common.inProgress")), classes = "govuk-tag--blue")
@@ -59,7 +61,7 @@
 
             govukTag(tag)
         }
-        </span>
+        </div>
     </li>
 }
 
