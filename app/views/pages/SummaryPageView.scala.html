@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.pages.elements.TaskListItem
-@import models.pages.elements.TaskListTag._
 @import models.pages.SummaryPage
 @import models.requests.UserPriorDataRequest
 
@@ -27,6 +25,7 @@
     layout: Layout,
     heading: Heading,
     govukTag: GovukTag,
+    govukTaskList : GovukTaskList,
     button: Button
 )
 
@@ -34,40 +33,11 @@
 
 @titleText = @{ messages("common.stateBenefits") }
 
-@taskList(taskListItems: Seq[TaskListItem]) = {
-    <ol class="app-task-list__items govuk-!-padding-bottom-1 govuk-!-padding-left-0">
-        @for(item <- taskListItems){
-            @taskListItem(item)
-        }
-    </ol>
-}
-
-@taskListItem(taskListItem: TaskListItem) = {
-    <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-            <a class="govuk-link" id="@{taskListItem.benefitType.typeName}_link" href="@taskListItem.call">@messages(s"common.${taskListItem.benefitType.typeName}")</a>
-        </span>
-        <span class="hmrc-status-tag">
-        @{
-            val tag = taskListItem.taskListTag match {
-                case Completed => Tag(content = Text(messages("common.completed")), classes = "govuk-tag--turquoise")
-                case CustomerOrHmrcAdded => Tag(content = Text(messages("common.addedByHmrc")), classes = "govuk-tag--red")
-                case HmrcAdded => Tag(content = Text(messages("common.addedByHmrc")), classes = "govuk-tag--red")
-                case InProgress => Tag(content = Text(messages("common.inProgress")), classes = "govuk-tag--blue")
-                case NotStarted => Tag(content = Text(messages("common.notStarted")), classes = "govuk-tag--grey")
-            }
-
-            govukTag(tag)
-        }
-        </span>
-    </li>
-}
-
 @layout(pageTitle = titleText, taxYear = Some(pageModel.taxYear), isAgent = request.user.isAgent) {
 
     @heading(titleText)
 
-    @taskList(pageModel.taskListItems)
+    @govukTaskList(TaskList(pageModel.taskListItems))
 
     @button(
         href = Some(appConfig.incomeTaxSubmissionOverviewUrl(pageModel.taxYear)),

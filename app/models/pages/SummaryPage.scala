@@ -16,20 +16,33 @@
 
 package models.pages
 
-import controllers.routes.ClaimsController
 import models.BenefitType.{EmploymentSupportAllowance, JobSeekersAllowance}
-import models.pages.elements.TaskListItem
+import models.pages.elements.TaskListTag
 import models.pages.elements.TaskListTag.Completed
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tasklist.{TaskListItem, TaskListItemTitle}
 
 case class SummaryPage(taxYear: Int,
                        taskListItems: Seq[TaskListItem])
 
 object SummaryPage {
 
-  def apply(taxYear: Int): SummaryPage = {
-    val taskListItems: Seq[TaskListItem] = Seq(
-      TaskListItem(EmploymentSupportAllowance, ClaimsController.show(taxYear, EmploymentSupportAllowance), Completed),
-      TaskListItem(JobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance), Completed)
+  def apply(taxYear: Int)(implicit messages: Messages): SummaryPage = {
+
+    val taskListItems: Seq[TaskListItem] = List(
+      TaskListItem(
+        title = TaskListItemTitle(HtmlContent(messages(s"common.${EmploymentSupportAllowance.typeName}"))),
+        status = TaskListTag.itemStatus(Completed),
+        href = Some(controllers.routes.ClaimsController.show(taxYear, EmploymentSupportAllowance).url),
+        classes = EmploymentSupportAllowance.typeName
+      ),
+      TaskListItem(
+        title = TaskListItemTitle(HtmlContent(messages(s"common.${JobSeekersAllowance.typeName}"))),
+        status = TaskListTag.itemStatus(Completed),
+        href = Some(controllers.routes.ClaimsController.show(taxYear, JobSeekersAllowance).url),
+        classes = JobSeekersAllowance.typeName
+      )
     )
 
     SummaryPage(taxYear, taskListItems)

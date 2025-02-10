@@ -24,7 +24,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import support.ViewUnitTest
-import support.builders.pages.SummaryPageBuilder.aSummaryPage
+import support.builders.pages.SummaryPageBuilder.summaryPage
 import views.html.pages.SummaryPageView
 
 class SummaryPageViewSpec extends ViewUnitTest {
@@ -79,14 +79,12 @@ class SummaryPageViewSpec extends ViewUnitTest {
         implicit val userPriorDataRequest: UserPriorDataRequest[AnyContent] = getUserPriorDataRequest(userScenario.isAgent)
         implicit val messages: Messages = getMessages(userScenario.isWelsh)
 
-        implicit val document: Document = Jsoup.parse(page(aSummaryPage).body)
+        implicit val document: Document = Jsoup.parse(page(summaryPage()).body)
 
         welshToggleCheck(userScenario.isWelsh)
         titleCheck(expectedTitle, userScenario.isWelsh)
         h1Check(expectedHeading)
-        textOnPageCheck(jobSeekersAllowance, jobSeekersAllowanceSelector)
-        linkCheck(jobSeekersAllowance, jobSeekersAllowanceLinkSelector, ClaimsController.show(taxYear, JobSeekersAllowance).url)
-        textOnPageCheck(notStartedText, jobSeekersAllowanceStatusSelector)
+        listCheck("jobSeekersAllowance", jobSeekersAllowance, ClaimsController.show(taxYear, JobSeekersAllowance).url, notStartedText,0)
         buttonCheck(buttonText, buttonSelector, Some(appConfig.incomeTaxSubmissionOverviewUrl(taxYear)))
       }
     }

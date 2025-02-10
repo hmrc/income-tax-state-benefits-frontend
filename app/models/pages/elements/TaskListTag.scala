@@ -16,6 +16,11 @@
 
 package models.pages.elements
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tasklist.TaskListItemStatus
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
+
 sealed abstract class TaskListTag(comment: String)
 
 object TaskListTag {
@@ -24,4 +29,19 @@ object TaskListTag {
   case object HmrcAdded extends TaskListTag(comment = "Pre-populated data only")
   case object InProgress extends TaskListTag(comment = "Section started from scratch by user but not completed")
   case object NotStarted extends TaskListTag(comment = "No user entered data saved and no pre-populated data")
+
+  def itemStatus(tagStatus: TaskListTag)(implicit messages: Messages) : TaskListItemStatus = {
+    tagStatus match {
+      case TaskListTag.Completed =>
+        TaskListItemStatus(content = HtmlContent(messages(s"common.completed")))
+      case TaskListTag.CustomerOrHmrcAdded =>
+        TaskListItemStatus(Some(Tag(content = HtmlContent(messages(s"common.addedByHmrc")), classes = "govuk-tag--red")))
+      case TaskListTag.HmrcAdded =>
+        TaskListItemStatus(Some(Tag(content = HtmlContent(messages(s"common.addedByHmrc")), classes = "govuk-tag--red")))
+      case TaskListTag.InProgress =>
+        TaskListItemStatus(Some(Tag(content = HtmlContent(messages(s"common.inProgress")), classes = "govuk-tag--light-blue")))
+      case TaskListTag.NotStarted =>
+        TaskListItemStatus(Some(Tag(content = HtmlContent(messages(s"common.notStarted")), classes = "govuk-tag--blue")))
+    }
+  }
 }
