@@ -325,6 +325,9 @@ taxYear-error-template.paragraph.1 = Gallwch nodi gwybodaeth ar gyfer blynyddoed
 taxYear-error-template.paragraph.1.single = Gallwch nodi gwybodaeth ar gyfer blwyddyn dreth ddilys yn unig.
 taxYear-error-template.paragraph.2 = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
 
+error.supp.agent.unauthorised.paragraph = Rydych yn asiant ategol ar gyfer y cleient hwn. Dim ond eich cleient neu ei brif asiant, os oes ganddo un, sy’n gallu cael at a chyflwyno ei Ffurflen Dreth.
+error.supp.agent.unauthorised.link = Yn ôl i hafan y cyfrif
+
 #################       Timeout messages        ########################################
 timeout.button = Mewngofnodi
 timeout.heading = Er eich diogelwch, gwnaethom eich allgofnodi

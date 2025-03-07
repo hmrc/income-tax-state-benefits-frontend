@@ -41,14 +41,13 @@ trait AppConfig {
   def contactUrl(isAgent: Boolean): String
   def feedbackSurveyUrl(isAgent: Boolean): String
   def viewAndChangeEnterUtrUrl: String
+  def viewAndChangeViewUrlAgent: String
   def betaFeedbackUrl(request: RequestHeader, isAgent: Boolean): String
   def stateBenefitsServiceBaseUrl: String
   def taxYearErrorFeature: Boolean
 
   // TODO: Get rid of this
   def routeToSwitchLanguage: String => Call
-
-  def emaSupportingAgentsEnabled: Boolean
 }
 
 @Singleton
@@ -105,6 +104,7 @@ class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig 
   def feedbackSurveyUrl(isAgent: Boolean): String = s"$feedbackFrontendUrl/feedback/${contactFormServiceIdentifier(isAgent)}"
 
   def viewAndChangeEnterUtrUrl: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
+  def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents"
 
   def betaFeedbackUrl(request: RequestHeader, isAgent: Boolean): String = {
     val requestUri = SafeRedirectUrl(applicationUrl + request.uri).encodedUrl
@@ -119,6 +119,4 @@ class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig 
   // TODO: Get rid of this
   def routeToSwitchLanguage: String => Call =
     (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
-
-  lazy val emaSupportingAgentsEnabled: Boolean = servicesConfig.getBoolean("feature-switch.ema-supporting-agents-enabled")
 }
