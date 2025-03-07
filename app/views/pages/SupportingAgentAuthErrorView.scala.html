@@ -20,9 +20,9 @@
 @this(layout: Layout, heading: Heading)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(messages("error.unauthorised-user.title"), true) {
+@layout(messages("error.unauthorised-user.heading"), true) {
 
-    @heading(messages("error.unauthorised-user.title"), "", "xl")
+    @heading(messages("error.unauthorised-user.heading"), "", "xl")
 
     <p class="govuk-body">@messages("error.supp.agent.unauthorised.paragraph")</p>
 

@@ -71,11 +71,11 @@ class SupportingAgentAuthErrorViewSpec extends ViewUnitTest {
 
         implicit val document: Document = Jsoup.parse(htmlFormat.body)
 
-        titleCheck(h1Expected, isWelsh = userScenario.isWelsh)
+        welshToggleCheck(userScenario.isWelsh)
+        titleCheck(h1Expected, userScenario.isWelsh)
         h1Check(h1Expected, size = "xl")
         textOnPageCheck(s"$accessServiceText", p1Selector)
         linkCheck(linkText, authoriseAsAnAgentLinkSelector, tryAnotherClientExpectedHref)
-        welshToggleCheck(userScenario.isWelsh)
       }
     }
   }
