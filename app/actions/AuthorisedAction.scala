@@ -135,7 +135,7 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
         )
         .recover {
           case _: AuthorisationException =>
-            logger.warn(s"$agentAuthLogString - Agent does not have delegated primary or secondary authority for Client.")
+            logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
             agentErrorRedirectResult
           case e =>
             logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
@@ -146,7 +146,7 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
       Future.successful(agentErrorRedirectResult)
 
     case e =>
-      logger.error(s"[AuthorisedAction][agentAuthentication] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+      logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
       Future.successful(errorHandler.internalServerError())
   }
 
@@ -191,7 +191,7 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
           )
           .recoverWith(agentRecovery(block, mtdItId, nino))
       case (mtdItId, nino) =>
-        logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have session key values. " +
+        logger.info(s"$agentAuthLogString - Agent does not have session key values. " +
           s"Redirecting to view & change. MTDITID missing:${mtdItId.isEmpty}, NINO missing:${nino.isEmpty}")
         Future.successful(Redirect(appConfig.viewAndChangeEnterUtrUrl))
     }
