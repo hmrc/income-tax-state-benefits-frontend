@@ -325,6 +325,9 @@ taxYear-error-template.paragraph.1 = You can only enter information for the tax 
 taxYear-error-template.paragraph.1.single = You can only enter information for a valid tax year.
 taxYear-error-template.paragraph.2 = Check that you’ve entered the correct web address.
 
+error.supp.agent.unauthorised.paragraph = You’re a supporting agent for this client. Only your client or their main agent, if they have one, can access and submit their tax return.
+error.supp.agent.unauthorised.link = Go back to account home
+
 #################       Timeout messages        ########################################
 timeout.button = Sign in
 timeout.heading = For your security, we signed you out
