@@ -141,10 +141,6 @@ class AuthorisedAction @Inject()(authService: AuthorisationService,
             logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
             errorHandler.internalServerError()
         }
-    case _: AuthorisationException =>
-      logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
-      Future.successful(agentErrorRedirectResult)
-
     case e =>
       logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
       Future.successful(errorHandler.internalServerError())
