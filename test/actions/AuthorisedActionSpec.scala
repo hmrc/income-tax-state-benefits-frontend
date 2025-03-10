@@ -21,14 +21,14 @@ import models.authorisation.SessionValues
 import models.authorisation.SessionValues.{CLIENT_MTDITID, CLIENT_NINO}
 import models.requests.AuthorisationRequest
 import org.apache.pekko.actor.ActorSystem
-import org.scalamock.handlers.{CallHandler0, CallHandler4}
+import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import play.api.http.{HeaderNames, Status => TestStatus}
 import play.api.mvc.Results.{InternalServerError, Ok}
 import play.api.mvc._
 import play.api.test.{FakeRequest, ResultExtractors}
 import support.ControllerUnitTest
-import support.builders.UserBuilder.{aUser, anAgentUser}
+import support.builders.UserBuilder.aUser
 import support.mocks.{MockAppConfig, MockAuthorisationService, MockErrorHandler}
 import support.providers.FakeRequestProvider
 import uk.gov.hmrc.auth.core._
@@ -65,11 +65,6 @@ class AuthorisedActionSpec extends ControllerUnitTest
   private val enrolments = Enrolments(Set(
     Enrolment(Individual.key, Seq(EnrolmentIdentifier(Individual.value, aUser.mtditid)), "Activated"),
     Enrolment(Nino.key, Seq(EnrolmentIdentifier(Nino.value, aUser.nino)), "Activated")
-  ))
-
-  private val agentEnrolment = Enrolments(Set(
-    Enrolment(Individual.key, Seq(EnrolmentIdentifier(Individual.value, aUser.mtditid)), "Activated"),
-    Enrolment(Agent.key, Seq(EnrolmentIdentifier(Agent.value, anAgentUser.arn.get)), "Activated")
   ))
 
   private val underTest = new AuthorisedAction(authorisationService, appConfig, mcc: ControllerComponents,mockErrorHandler)(executionContext)
@@ -322,6 +317,19 @@ class AuthorisedActionSpec extends ControllerUnitTest
 
           status(result) shouldBe INTERNAL_SERVER_ERROR
           bodyOf(result) shouldBe "An unexpected error occurred"
+        }
+
+        "return a redirect to the agent error page when secondary agent auth call also fails due to insufficient enrolments" in new AgentTest {
+
+          mockAuthReturnException(InsufficientEnrolments(), primaryAgentPredicate(mtdItId))
+          mockAuthReturnException(InsufficientEnrolments(), secondaryAgentPredicate(mtdItId))
+
+          lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock)(
+            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
+            hc = emptyHeaderCarrier
+          )
+          status(result) shouldBe SEE_OTHER
+          redirectUrl(result) shouldBe s"$baseUrl/error/you-need-client-authorisation"
         }
 
         "return a redirect to the agent error page when secondary agent auth call also fails" in new AgentTest {
