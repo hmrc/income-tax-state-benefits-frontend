@@ -118,7 +118,7 @@ class ReviewClaimPageViewSpec extends ViewUnitTest {
 
   object ExpectedIndividual extends SpecificExpectedResults {
     override val expectedStartDateText: String = "When did you start getting Employment and Support Allowance?"
-    override val expectedStartDateHiddenText: String = "Change the date you started getting Employment and Support Allowance"
+    override val expectedStartDateHiddenText: String = "when did you start getting Employment and Support Allowance?"
     override val expectedEndDateHiddenText: String = "Change the date your claim ended"
     override val expectedAmountHiddenText: String = "Change the amount you got"
     override val expectedTaxPaidQuestionHiddenText: String = "Change whether you had any tax taken off your claim"
