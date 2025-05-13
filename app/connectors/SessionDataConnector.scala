@@ -17,7 +17,6 @@
 package connectors
 
 import config.AppConfig
-import connectors.ConnectorFailureLogger.FromResultToConnectorFailureLogger
 import connectors.responses.SessionDataHttpResponse.{SessionDataResponse, SessionDataResponseReads}
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -32,5 +31,4 @@ class SessionDataConnector @Inject()(config: AppConfig,
     httpClient
       .get(url"${config.vcSessionServiceBaseUrl}/income-tax-session-data")
       .execute[SessionDataResponse]
-      .logFailureReason(connectorName = "SessionDataConnector")
 }
