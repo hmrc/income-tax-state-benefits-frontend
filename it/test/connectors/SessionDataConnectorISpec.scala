@@ -18,7 +18,7 @@ package connectors
 
 import connectors.errors.{ApiError, SingleErrorBody}
 import connectors.responses.SessionDataHttpResponse.SessionDataResponse
-import models.session.SessionData
+import models.session.UserSessionData
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.Application
 import play.api.http.Status._
@@ -37,7 +37,7 @@ class SessionDataConnectorISpec extends IntegrationTest {
   lazy val connector: SessionDataConnector = app.injector.instanceOf[SessionDataConnector]
 
   val stubGetUrl = s"/income-tax-session-data"
-  val sessionDataResponse: SessionData = SessionData(mtditid = aUser.mtditid, nino = aUser.nino, sessionId = sessionId)
+  val sessionDataResponse: UserSessionData = UserSessionData(mtditid = aUser.mtditid, nino = aUser.nino, sessionId = sessionId)
 
   override lazy val app: Application =
     new GuiceApplicationBuilder()

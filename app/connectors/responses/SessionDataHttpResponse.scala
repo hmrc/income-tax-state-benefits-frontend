@@ -18,14 +18,14 @@ package connectors.responses
 
 import connectors.Parser
 import connectors.errors.ApiError
-import models.session.SessionData
+import models.session.UserSessionData
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess
 import services.PagerDutyLoggerService
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SessionDataHttpResponse extends PagerDutyLoggerService with Parser {
-  type SessionDataResponse = Either[ApiError, Option[SessionData]]
+  type SessionDataResponse = Either[ApiError, Option[UserSessionData]]
 
   override val parserName: String = "SessionDataHttpParser"
 
@@ -33,7 +33,7 @@ object SessionDataHttpResponse extends PagerDutyLoggerService with Parser {
     override def read(method: String, url: String, response: HttpResponse): SessionDataResponse = {
       response.status match {
         case OK =>
-          response.json.validate[SessionData] match {
+          response.json.validate[UserSessionData] match {
             case JsSuccess(parsedModel, _) => Right(Some(parsedModel))
             case _ => badSuccessJsonResponse
           }
