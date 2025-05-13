@@ -29,6 +29,7 @@ trait AppConfig {
   def signOutUrl: String
   def welshLanguageEnabled: Boolean
   def sectionCompletedQuestionEnabled: Boolean
+  def sessionCookieServiceEnabled: Boolean
   def defaultTaxYear: Int
   def languageMap: Map[String, Lang]
   def timeoutDialogTimeout: Int
@@ -79,6 +80,7 @@ class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig 
   lazy val signOutUrl: String = s"$basGatewayUrl/bas-gateway/sign-out-without-state"
   lazy val welshLanguageEnabled: Boolean = servicesConfig.getBoolean(key = "feature-switch.welshLanguageEnabled")
   def sectionCompletedQuestionEnabled: Boolean = servicesConfig.getBoolean(key = "feature-switch.sectionCompletedQuestionEnabled")
+  lazy val sessionCookieServiceEnabled: Boolean = servicesConfig.getBoolean("feature-switch.journeys.sessionCookieServiceEnabled")
   lazy val defaultTaxYear: Int = servicesConfig.getInt(key = "defaultTaxYear")
   lazy val languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
