@@ -20,6 +20,8 @@ import connectors.errors.{ApiError, MultiErrorsBody, SingleErrorBody}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.HttpResponse
 
+import scala.util.control.NonFatal
+
 trait Parser {
 
   protected val parserName: String
@@ -40,7 +42,7 @@ trait Parser {
         case _ => Left(ApiError(status, SingleErrorBody.parsingError))
       }
     } catch {
-      case _: Exception => Left(ApiError(status, SingleErrorBody.parsingError))
+      case NonFatal(_) => Left(ApiError(status, SingleErrorBody.parsingError))
     }
   }
 }

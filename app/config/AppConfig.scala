@@ -34,6 +34,7 @@ trait AppConfig {
   def timeoutDialogTimeout: Int
   def timeoutDialogCountdown: Int
   def signInUrl: String
+  def vcSessionServiceBaseUrl: String
   def incomeTaxSubmissionStartUrl(taxYear: Int): String
   def incomeTaxSubmissionIvRedirect: String
   def incomeTaxSubmissionOverviewUrl(taxYear: Int): String
@@ -83,7 +84,7 @@ class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig 
   lazy val timeoutDialogTimeout: Int = servicesConfig.getInt("timeoutDialogTimeout")
   lazy val timeoutDialogCountdown: Int = servicesConfig.getInt("timeoutDialogCountdown")
   lazy val signInUrl: String = s"$signInBaseUrl?continue=$signInContinueUrlRedirect&origin=$signInOrigin"
-
+  lazy val vcSessionServiceBaseUrl: String = servicesConfig.baseUrl("income-tax-session-data")
   def incomeTaxSubmissionBaseUrl: String = servicesConfig.getString(incomeTaxSubmissionFrontendUrlKey) +
     servicesConfig.getString(key = "microservice.services.income-tax-submission-frontend.context")
 

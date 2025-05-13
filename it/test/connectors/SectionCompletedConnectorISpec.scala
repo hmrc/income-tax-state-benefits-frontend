@@ -16,9 +16,6 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import config.AppConfig
 import models.mongo.JourneyAnswers
 import models.mongo.JourneyStatus.Completed
 import org.scalatest.OptionValues.convertOptionToValuable
@@ -29,21 +26,10 @@ import play.api.libs.json.Json
 import support.IntegrationTest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpResponse
 
 import java.time.Instant
 
 class SectionCompletedConnectorISpec extends IntegrationTest {
-
-  def stubGet(url: String, status: Integer, body: String): StubMapping =
-    stubFor(get(urlMatching(url))
-      .willReturn(
-        aResponse().
-          withStatus(status).
-          withBody(body)
-      )
-    )
 
   implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector: SectionCompletedConnector = app.injector.instanceOf[SectionCompletedConnector]

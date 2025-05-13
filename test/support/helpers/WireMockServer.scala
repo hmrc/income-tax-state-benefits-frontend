@@ -18,12 +18,14 @@ package support.helpers
 
 import com.github.tomakehurst.wiremock
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 trait WireMockServer {
 
-  private val wiremockPort = 11111
-  private val wiremockHost = "localhost"
+  val wiremockPort = 11111
+  val wiremockHost = "localhost"
 
   private lazy val wireMockServer = new wiremock.WireMockServer(wireMockConfig().port(wiremockPort))
 
@@ -33,4 +35,13 @@ trait WireMockServer {
   }
 
   def stopWiremock(): Unit = wireMockServer.stop()
+
+  def stubGet(url: String, status: Integer, body: String): StubMapping =
+    stubFor(get(urlMatching(url))
+      .willReturn(
+        aResponse().
+          withStatus(status).
+          withBody(body)
+      )
+    )
 }
