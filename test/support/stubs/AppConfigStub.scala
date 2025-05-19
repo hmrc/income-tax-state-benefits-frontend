@@ -31,7 +31,7 @@ class AppConfigStub extends MockFactory {
     override lazy val welshLanguageEnabled: Boolean = true
     override lazy val sectionCompletedQuestionEnabled: Boolean = sectionCompletedQuestion
 
-    override lazy val signInUrl: String = "/sign-in-url"
+    override lazy val signInUrl: String = "/signIn"
     override lazy val incomeTaxSubmissionIvRedirect: String = "/update-and-submit-income-tax-return/iv-uplift"
     override lazy val viewAndChangeEnterUtrUrl: String = "/report-quarterly/income-and-expenses/view/agents/client-utr"
     override lazy val viewAndChangeViewUrlAgent: String = "/report-quarterly/income-and-expenses/view/agents"

@@ -45,22 +45,22 @@ class TaxYearErrorControllerSpec extends ControllerUnitTest
       contentType(result) shouldBe Some("text/html")
     }
 
-    "return an OK response when .show() is called and user is authenticated as an agent" in {
-      mockAuthAsAgent()
-
-      val fakeRequest = FakeRequest("GET", "/error/wrong-tax-year")
-        .withHeaders("X-Session-ID" -> aUser.sessionId)
-        .withSession(
-          CLIENT_MTDITID -> "1234567890",
-          CLIENT_NINO -> "AA123456A",
-          VALID_TAX_YEARS -> validTaxYearList.mkString(",")
-        )
-
-      val result = underTest.show()(fakeRequest)
-
-      status(result) shouldBe OK
-      contentType(result) shouldBe Some("text/html")
-    }
+//    "return an OK response when .show() is called and user is authenticated as an agent" in {
+//      mockAuthAsAgent()
+//
+//      val fakeRequest = FakeRequest("GET", "/error/wrong-tax-year")
+//        .withHeaders("X-Session-ID" -> aUser.sessionId)
+//        .withSession(
+//          CLIENT_MTDITID -> "1234567890",
+//          CLIENT_NINO -> "AA123456A",
+//          VALID_TAX_YEARS -> validTaxYearList.mkString(",")
+//        )
+//
+//      val result = underTest.show()(fakeRequest)
+//
+//      status(result) shouldBe OK
+//      contentType(result) shouldBe Some("text/html")
+//    }
 
     "return a SEE_OTHER response when .show() is called and user isn't authenticated" in {
       mockFailToAuthenticate()

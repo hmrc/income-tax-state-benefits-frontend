@@ -19,6 +19,7 @@ package support.mocks
 import config.ErrorHandler
 import models.requests.AuthorisationRequest
 import org.scalamock.scalatest.MockFactory
+import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Request, Result}
 
 trait MockErrorHandler extends MockFactory {
@@ -35,5 +36,10 @@ trait MockErrorHandler extends MockFactory {
     (mockErrorHandler.internalServerError()(_: AuthorisationRequest[_]))
       .expects(*)
       .returns(result)
+  }
+  def mockInternalServerError(): Unit = {
+    (mockErrorHandler.internalServerError()(_: Request[_]))
+      .expects(*)
+      .returns(InternalServerError("There is a problem."))
   }
 }
