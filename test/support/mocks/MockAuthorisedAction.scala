@@ -40,8 +40,6 @@ trait MockAuthorisedAction extends AppConfigStubProvider
   private val mockAuthService = new AuthorisationService(mockAuthConnector)
 
   protected val mockAuthorisedAction: AuthorisedAction = new AuthorisedAction(
-//    mockAuthService,
-//    stubMessagesControllerComponents(),
     mockErrorHandler,
     mockSessionDataService
   )(mockAuthService, appConfigStub, stubMessagesControllerComponents())

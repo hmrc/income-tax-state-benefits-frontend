@@ -55,4 +55,10 @@ trait MockAuthorisationService extends MockAuthConnector {
     mockAuthorise(Retrievals.affinityGroup, Some(AffinityGroup.Individual))
     mockAuthorise(Retrievals.allEnrolments and Retrievals.confidenceLevel, enrolments and ConfidenceLevel.L250)
   }
+
+  protected def mockFailToAuthenticate(): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
+    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, *, *, *)
+      .returning(Future.failed(InsufficientConfidenceLevel()))
+  }
 }
