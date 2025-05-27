@@ -125,12 +125,10 @@ class AuthorisedActionSpec extends ControllerUnitTest
       mockSignInUrl()
 
       new AuthorisedAction(
-//        authService = authorisationService,
-//        cc = stubMessagesControllerComponents(),
         mockErrorHandler,
         mockSessionDataService
       )(authService = authorisationService,
-        appConfig,
+        mockAppConfig,
         cc = stubMessagesControllerComponents())
     }
 
@@ -202,17 +200,6 @@ class AuthorisedActionSpec extends ControllerUnitTest
     }
 
     "return a redirect" when {
-//      "the session id does not exist in the headers" which {
-//        val block: AuthorisationRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
-//
-//        mockAuthorise(allEnrolments and confidenceLevel, enrolments and ConfidenceLevel.L250)
-//
-//        val result = await(underTest.individualAuthentication[AnyContent](block, AffinityGroup.Individual, aUser.sessionId)(fakeIndividualRequest.withHeaders(), HeaderCarrier()))
-//
-//        "returns an SEE_OTHER status" in {
-//          result.header.status shouldBe SEE_OTHER
-//        }
-//      }
 
       "the nino enrolment is missing" which {
         val block: AuthorisationRequest[AnyContent] => Future[Result] = request => Future.successful(Ok(request.user.mtditid))
@@ -293,7 +280,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           )
 
           status(result) shouldBe SEE_OTHER
-          redirectUrl(result) shouldBe "/signIn"
+          redirectUrl(result) shouldBe s"$baseUrl/signIn"
         }
       }
 
@@ -398,18 +385,6 @@ class AuthorisedActionSpec extends ControllerUnitTest
           status(result) shouldBe SEE_OTHER
           redirectUrl(result) shouldBe s"$baseUrl/error/you-need-agent-services-account"
         }
-
-//        "return a redirect to Sign In page when a session ID cannot be found" in new AgentTest {
-//          mockAuthReturn(primaryAgentEnrolment, primaryAgentPredicate(mtdItId))
-//
-//          lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-//            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
-//            hc = emptyHeaderCarrier
-//          )
-//
-//          status(result) shouldBe SEE_OTHER
-//          redirectUrl(result) shouldBe s"$baseUrl/signIn"
-//        }
 
         "invoke block when the user is properly authenticated" in new AgentTest {
           mockGetSessionData(aUser.sessionId)(sessionData)

@@ -63,7 +63,7 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
         case _: NoActiveSession => redirectToSignInPage()
         case _: AuthorisationException => redirectToUnauthorisedUserErrorPage()
         case e =>
-          logger.error(s"[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+          logger.error(s"-------------------[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
           errorHandler.internalServerError()(request)
       }
     }
@@ -113,11 +113,11 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
             logger.warn(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
             agentErrorRedirectResult
           case e =>
-            logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+            logger.error(s"???????????$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
             errorHandler.internalServerError()
         }
     case e =>
-      logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
+      logger.error(s"111111111111$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught.")
       Future.successful(errorHandler.internalServerError())
   }
 
