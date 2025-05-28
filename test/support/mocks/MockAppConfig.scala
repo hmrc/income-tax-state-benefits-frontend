@@ -26,6 +26,7 @@ trait MockAppConfig extends MockFactory {
   val baseUrl = "/update-and-submit-income-tax-return/state-benefits"
   val viewAndChangeUrl: String = "/report-quarterly/income-and-expenses/view/agents/client-utr"
   val signInUrl: String = s"$baseUrl/signIn"
+  val sessionCookieServiceEnabled: Boolean = false
 
   def mockSignInUrl(): CallHandler0[String] =
     (() => mockAppConfig.signInUrl)
@@ -39,4 +40,8 @@ trait MockAppConfig extends MockFactory {
       .returning(viewAndChangeUrl)
       .anyNumberOfTimes()
 
+  def mockSessionServiceEnabled(response: Boolean): CallHandler0[Boolean] =
+    (() => mockAppConfig.sessionCookieServiceEnabled)
+      .expects()
+      .returning(response)
 }

@@ -31,21 +31,18 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAuthorisedAction extends AppConfigStubProvider
-  with MockFactory with MockErrorHandler {
+  with MockFactory with MockErrorHandler with MockSessionDataService {
 
   private val mockAuthConnector = mock[AuthConnector]
   private val mockAuthService = new AuthorisationService(mockAuthConnector)
 
   protected val mockAuthorisedAction: AuthorisedAction = new AuthorisedAction(
-    mockAuthService,
-    appConfigStub,
-    stubMessagesControllerComponents(),
-    mockErrorHandler
-  )
+    mockErrorHandler,
+    mockSessionDataService
+  )(mockAuthService, appConfigStub, stubMessagesControllerComponents())
 
   protected def mockAuthAsAgent(): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
     val enrolments: Enrolments = Enrolments(Set(

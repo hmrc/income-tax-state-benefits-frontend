@@ -51,6 +51,7 @@ trait IntegrationTest extends AnyWordSpec
   protected implicit lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
   protected implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+//  protected lazy val sessionDataService: SessionDataService = app.injector.instanceOf[SessionDataService]
 
   protected lazy val appUrl = s"http://localhost:$port/update-and-submit-income-tax-return/state-benefits"
 

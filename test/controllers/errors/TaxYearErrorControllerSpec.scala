@@ -17,6 +17,7 @@
 package controllers.errors
 
 import models.authorisation.SessionValues._
+import models.session.UserSessionData
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentType, status}
@@ -46,13 +47,18 @@ class TaxYearErrorControllerSpec extends ControllerUnitTest
     }
 
     "return an OK response when .show() is called and user is authenticated as an agent" in {
+      val nino = "AA123456A"
+      val mtdItId = "1234567890"
+      val sessionData: UserSessionData = UserSessionData(aUser.sessionId, mtdItId, nino)
+
+      mockGetSessionData(aUser.sessionId)(sessionData)
       mockAuthAsAgent()
 
       val fakeRequest = FakeRequest("GET", "/error/wrong-tax-year")
         .withHeaders("X-Session-ID" -> aUser.sessionId)
         .withSession(
-          CLIENT_MTDITID -> "1234567890",
-          CLIENT_NINO -> "AA123456A",
+          CLIENT_MTDITID -> mtdItId,
+          CLIENT_NINO -> nino,
           VALID_TAX_YEARS -> validTaxYearList.mkString(",")
         )
 

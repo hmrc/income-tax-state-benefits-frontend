@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.{InYearUtil, SessionHelper}
+import utils.InYearUtil
 import views.html.pages.ReviewClaimPageView
 
 import java.util.UUID
@@ -37,7 +37,7 @@ class ReviewClaimController @Inject()(actionsProvider: ActionsProvider,
                                       stateBenefitsService: StateBenefitsService,
                                       errorHandler: ErrorHandler)
                                      (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with SessionHelper {
+  extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int,
            benefitType: BenefitType,

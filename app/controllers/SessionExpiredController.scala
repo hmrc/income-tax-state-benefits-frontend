@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 
 class SessionExpiredController @Inject()(pageView: TimeoutPage)
-                                        (implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
+                                        (implicit mcc: MessagesControllerComponents, val appConfig: AppConfig)
   extends FrontendController(mcc) with SessionHelper {
 
   def keepAlive(): Action[AnyContent] = Action(NoContent)

@@ -16,6 +16,11 @@
 
 package models.errors
 
+import scala.util.control.NoStackTrace
+
 trait ServiceError
 
 case class HttpParserError(status: Int) extends ServiceError
+
+case class MissingAgentClientDetails(message: String) extends Exception(message) with NoStackTrace with ServiceError
+

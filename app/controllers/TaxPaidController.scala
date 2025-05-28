@@ -26,7 +26,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ClaimService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.SessionHelper
 import views.html.pages.TaxPaidPageView
 
 import java.util.UUID
@@ -39,7 +38,7 @@ class TaxPaidController @Inject()(actionsProvider: ActionsProvider,
                                   claimService: ClaimService,
                                   errorHandler: ErrorHandler)
                                  (implicit mcc: MessagesControllerComponents, appConfig: AppConfig, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with SessionHelper {
+  extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int,
            benefitType: BenefitType,
