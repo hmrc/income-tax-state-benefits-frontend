@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.InYearUtil.inYear
-import utils.SessionHelper
 import views.html.pages.ClaimsPageView
 
 import javax.inject.Inject
@@ -38,7 +37,7 @@ class ClaimsController @Inject()(actionsProvider: ActionsProvider,
                                  formsProvider: FormsProvider,
                                  errorHandler: ErrorHandler)
                                 (implicit ec: ExecutionContext, mcc: MessagesControllerComponents, appConfig: AppConfig)
-  extends FrontendController(mcc) with I18nSupport with SessionHelper {
+  extends FrontendController(mcc) with I18nSupport {
 
   def show(taxYear: Int,
            benefitType: BenefitType): Action[AnyContent] = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYear, benefitType) { implicit request =>

@@ -24,7 +24,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateBenefitsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.SessionHelper
 
 import java.util.UUID
 import javax.inject.Inject
@@ -34,7 +33,7 @@ class UserSessionDataController @Inject()(actionsProvider: ActionsProvider,
                                           stateBenefitsService: StateBenefitsService,
                                           errorHandler: ErrorHandler)
                                          (implicit ec: ExecutionContext, mcc: MessagesControllerComponents)
-  extends FrontendController(mcc) with I18nSupport with SessionHelper {
+  extends FrontendController(mcc) with I18nSupport {
 
   def create(taxYear: Int,
              benefitType: BenefitType): Action[AnyContent] = actionsProvider.endOfYear(taxYear).async { implicit request =>

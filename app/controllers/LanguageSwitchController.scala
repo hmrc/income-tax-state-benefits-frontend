@@ -24,7 +24,7 @@ import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{SessionHelper, UrlUtils}
 
-class LanguageSwitchController @Inject()(implicit mcc: MessagesControllerComponents, appConfig: AppConfig)
+class LanguageSwitchController @Inject()(implicit mcc: MessagesControllerComponents, val appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with SessionHelper {
 
   def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
