@@ -21,12 +21,13 @@ import connectors.errors.ApiError
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
 import org.scalamock.handlers.{CallHandler2, CallHandler3}
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
 import scala.concurrent.Future
 
-trait MockStateBenefitsConnector extends MockFactory {
+trait MockStateBenefitsConnector extends MockFactory { _: TestSuite =>
 
   protected val mockStateBenefitsConnector: StateBenefitsConnector = mock[StateBenefitsConnector]
 

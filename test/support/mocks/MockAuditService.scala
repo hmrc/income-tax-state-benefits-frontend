@@ -19,6 +19,7 @@ package support.mocks
 import models.audit.AuditModel
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.libs.json.Writes
 import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,7 +27,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.Future
 
-trait MockAuditService extends MockFactory {
+trait MockAuditService extends MockFactory { _: TestSuite =>
 
   val mockAuditService: AuditService = mock[AuditService]
 

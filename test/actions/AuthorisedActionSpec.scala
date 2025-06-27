@@ -19,12 +19,13 @@ package actions
 import models.authorisation.Enrolment.{Agent, Individual, Nino, SupportingAgent}
 import models.authorisation.SessionValues
 import models.authorisation.SessionValues.{CLIENT_MTDITID, CLIENT_NINO}
-import models.requests.AuthorisationRequest
 import models.errors.MissingAgentClientDetails
+import models.requests.AuthorisationRequest
 import models.session.UserSessionData
 import org.apache.pekko.actor.ActorSystem
 import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.http.{HeaderNames, Status => TestStatus}
 import play.api.mvc.Results.{InternalServerError, Ok}
 import play.api.mvc._
@@ -79,7 +80,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
     val awaited = await(awaitable)
     await(awaited.body.consumeData.map(_.utf8String))
   }
-  trait AgentTest extends MockAppConfig {
+  trait AgentTest extends MockAppConfig { _: TestSuite =>
     val validHeaderCarrier: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionId")))
 
     val testBlock: AuthorisationRequest[AnyContent] => Future[Result] = user => Future.successful(Ok(s"${user.user.mtditid} ${user.user.arn.get}"))

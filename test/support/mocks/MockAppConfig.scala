@@ -19,8 +19,9 @@ package support.mocks
 import config.AppConfig
 import org.scalamock.handlers.CallHandler0
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 
-trait MockAppConfig extends MockFactory {
+trait MockAppConfig extends MockFactory { _: TestSuite =>
   val mockAppConfig: AppConfig = mock[AppConfig]
 
   val baseUrl = "/update-and-submit-income-tax-return/state-benefits"

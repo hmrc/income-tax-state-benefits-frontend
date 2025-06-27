@@ -118,7 +118,7 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
         val view = application.injector.instanceOf[SectionCompletedStateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
+        contentAsString(result) mustEqual view(form(), taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
       }
     }
 
@@ -245,7 +245,7 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
             .withSession(validTaxYears)
             .withSession(TAX_YEAR -> taxYear.toString)
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form().bind(Map("value" -> ""))
 
         val view = application.injector.instanceOf[SectionCompletedStateView]
 

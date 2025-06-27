@@ -18,9 +18,10 @@ package support.mocks
 
 import org.scalamock.handlers.CallHandler2
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.{ConfigLoader, Configuration}
 
-trait MockConfiguration extends MockFactory {
+trait MockConfiguration extends MockFactory { _: TestSuite =>
 
   protected val mockConfiguration: Configuration = mock[Configuration]
 

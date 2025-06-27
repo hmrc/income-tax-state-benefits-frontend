@@ -20,6 +20,7 @@ import actions.AuthorisedAction
 import models.authorisation.Enrolment.{Agent, Individual, Nino}
 import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.test.Helpers.stubMessagesControllerComponents
 import services.AuthorisationService
 import support.builders.UserBuilder.aUser
@@ -34,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAuthorisedAction extends AppConfigStubProvider
-  with MockFactory with MockErrorHandler with MockSessionDataService {
+  with MockFactory with MockErrorHandler with MockSessionDataService { _: TestSuite =>
 
   private val mockAuthConnector = mock[AuthConnector]
   private val mockAuthService = new AuthorisationService(mockAuthConnector)
