@@ -25,7 +25,6 @@ import models.session.UserSessionData
 import org.apache.pekko.actor.ActorSystem
 import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
 import play.api.http.{HeaderNames, Status => TestStatus}
 import play.api.mvc.Results.{InternalServerError, Ok}
 import play.api.mvc._
@@ -51,6 +50,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
   with MockFactory
   with MockSessionDataService
   with MockErrorHandler
+  with MockAppConfig
   with TestStatus with HeaderNames with ResultExtractors {
 
   private implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(aUser.sessionId)))
@@ -80,7 +80,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
     val awaited = await(awaitable)
     await(awaited.body.consumeData.map(_.utf8String))
   }
-  trait AgentTest extends MockAppConfig { _: TestSuite =>
+  trait AgentTest {
     val validHeaderCarrier: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionId")))
 
     val testBlock: AuthorisationRequest[AnyContent] => Future[Result] = user => Future.successful(Ok(s"${user.user.mtditid} ${user.user.arn.get}"))
