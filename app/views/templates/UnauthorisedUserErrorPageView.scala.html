@@ -19,7 +19,7 @@
 
 @this(layout: Layout, heading: Heading, link: Link)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 @layout(pageTitle = messages("error.unauthorised-user.heading"), backLink = false) {
 
 @heading(messages("error.unauthorised-user.heading"), extraClasses = "govuk-!-margin-bottom-5", size = "xl")

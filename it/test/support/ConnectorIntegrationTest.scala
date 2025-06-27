@@ -23,11 +23,11 @@ import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import support.helpers.WireMockServer
 import support.providers.AppConfigStubProvider
 import support.stubs.WireMockStubs
-import uk.gov.hmrc.http.test.HttpClientSupport
+import uk.gov.hmrc.http.test.HttpClientV2Support
 
 trait ConnectorIntegrationTest extends AnyWordSpec with Matchers
   with FutureAwaits with DefaultAwaitTimeout
-  with HttpClientSupport
+  with HttpClientV2Support
   with AppConfigStubProvider
   with WireMockServer with WireMockStubs
   with BeforeAndAfterAll {

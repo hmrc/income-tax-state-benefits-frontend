@@ -8,7 +8,8 @@ This is where we make API calls from users viewing and making changes to the Sta
 You will need to have the following:
 - Installed [MongoDB](https://docs.mongodb.com/manual/installation/)
 - Installed/configured [service manager](https://github.com/hmrc/service-manager)
-- This can be found in the [developer handbook](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/)
+
+This can be found in the [developer handbook](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/)
 
 The service manager profile for this service is:
 
@@ -80,7 +81,7 @@ Examples of the prior user data can be found here in the [income-tax-submission-
 
 ### Agent
 * Login via: [http://localhost:9949/auth-login-stub/gg-sign-in](http://localhost:9949/auth-login-stub/gg-sign-in)
-* Entry page : [http://localhost:9302/update-and-submit-income-tax-return/test-only/2024/additional-parameters?ClientNino=AA123459A&ClientMTDID=1234567890](http://localhost:9302/update-and-submit-income-tax-return/test-only/2024/additional-parameters?ClientNino=AA123459A&ClientMTDID=1234567890)
+* Entry page : [http://localhost:9302/update-and-submit-income-tax-return/test-only/2024/additional-parameters?ClientNino=AC160000B&ClientMTDID=1234567890](http://localhost:9302/update-and-submit-income-tax-return/test-only/2024/additional-parameters?ClientNino=AC160000B&ClientMTDID=1234567890)
 
 | Enrolment Key  | Identifier Name      | Identifier Value	 |
 |----------------|----------------------|-------------------|
@@ -101,7 +102,7 @@ Examples of the prior user data can be found here in the [income-tax-submission-
 
 ### Agent
 * Login via: [https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in](https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in)
-* Entry page : [https://www.staging.tax.service.gov.uk/update-and-submit-income-tax-return/test-only/2026/additional-parameters?ClientNino=AA123459A&ClientMTDID=1234567890](https://www.staging.tax.service.gov.uk/update-and-submit-income-tax-return/test-only/2026/additional-parameters?ClientNino=AA123459A&ClientMTDID=1234567890)
+* Entry page : [https://www.staging.tax.service.gov.uk/update-and-submit-income-tax-return/test-only/2026/additional-parameters?ClientNino=AC160000B&ClientMTDID=1234567890](https://www.staging.tax.service.gov.uk/update-and-submit-income-tax-return/test-only/2026/additional-parameters?ClientNino=AC160000B&ClientMTDID=1234567890)
 
 | Enrolment Key  | Identifier Name      | Identifier Value	 |
 |----------------|----------------------|-------------------|
