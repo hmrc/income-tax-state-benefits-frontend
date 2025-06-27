@@ -18,6 +18,7 @@ package support.mocks
 
 import org.scalamock.handlers.CallHandler3
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -25,7 +26,7 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuditConnector extends MockFactory {
+trait MockAuditConnector extends MockFactory { _: TestSuite =>
 
   protected val mockAuditConnector: AuditConnector = mock[AuditConnector]
 

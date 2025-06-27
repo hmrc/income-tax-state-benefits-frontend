@@ -21,6 +21,7 @@ import models.requests.{AuthorisationRequest, UserPriorAndSessionDataRequest, Us
 import models.{BenefitType, IncomeTaxUserData, StateBenefit, StateBenefitsUserData}
 import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler3}
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.mvc._
 import support.builders.UserBuilder.aUser
 
@@ -29,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait MockActionsProvider extends MockFactory
   with MockAuthorisedAction
-  with MockErrorHandler {
+  with MockErrorHandler { _: TestSuite =>
 
   protected val mockActionsProvider: ActionsProvider = mock[ActionsProvider]
 

@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.templates.{InternalServerErrorTemplate, NotFoundTemplate, ServiceUnavailableTemplate}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 // TODO: Test me
 @Singleton
@@ -33,12 +33,12 @@ class ErrorHandler @Inject()(internalServerErrorTemplate: InternalServerErrorTem
                              serviceUnavailableTemplate: ServiceUnavailableTemplate,
                              notFoundTemplate: NotFoundTemplate,
                              override val messagesApi: MessagesApi)
-                            (implicit appConfig: AppConfig) extends FrontendErrorHandler with I18nSupport {
+                            (implicit appConfig: AppConfig, val ec: ExecutionContext) extends FrontendErrorHandler with I18nSupport {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    internalServerErrorTemplate()
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =
+    Future.successful(internalServerErrorTemplate())
 
-  override def notFoundTemplate(implicit request: Request[_]): Html = notFoundTemplate()
+  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] = Future.successful(notFoundTemplate())
 
   def internalServerError()(implicit request: Request[_]): Result = InternalServerError(internalServerErrorTemplate())
 
@@ -48,7 +48,7 @@ class ErrorHandler @Inject()(internalServerErrorTemplate: InternalServerErrorTem
   }
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = statusCode match {
-    case NOT_FOUND => Future.successful(NotFound(notFoundTemplate(request.withBody(body = ""))))
+    case NOT_FOUND => notFoundTemplate(request.withBody(body = "")).map(NotFound(_))
     case _ => Future.successful(InternalServerError(internalServerErrorTemplate()(request.withBody(body = ""), request2Messages(request), appConfig)))
   }
 }

@@ -19,13 +19,14 @@ package support.mocks
 import models.StateBenefitsUserData
 import org.scalamock.handlers.CallHandler3
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import services.ClaimService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-trait MockClaimService extends MockFactory {
+trait MockClaimService extends MockFactory { _: TestSuite =>
 
   protected val mockClaimService: ClaimService = mock[ClaimService]
 

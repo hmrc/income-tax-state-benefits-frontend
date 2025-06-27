@@ -17,12 +17,12 @@
 package support.stubs
 
 import config.{AppConfig, AppConfigImpl}
-import org.scalamock.scalatest.MockFactory
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.mvc.RequestHeader
 import support.utils.TaxYearUtils.taxYearEOY
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class AppConfigStub extends MockFactory {
+class AppConfigStub {
 
   def config(sectionCompletedQuestion: Boolean = false): AppConfig = new AppConfigImpl(mock[ServicesConfig]) {
     override lazy val timeoutDialogCountdown: Int = 120
