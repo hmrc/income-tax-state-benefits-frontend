@@ -19,8 +19,8 @@ package actions
 import models.authorisation.Enrolment.{Agent, Individual, Nino, SupportingAgent}
 import models.authorisation.SessionValues
 import models.authorisation.SessionValues.{CLIENT_MTDITID, CLIENT_NINO}
-import models.requests.AuthorisationRequest
 import models.errors.MissingAgentClientDetails
+import models.requests.AuthorisationRequest
 import models.session.UserSessionData
 import org.apache.pekko.actor.ActorSystem
 import org.scalamock.handlers.CallHandler4
@@ -50,6 +50,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
   with MockFactory
   with MockSessionDataService
   with MockErrorHandler
+  with MockAppConfig
   with TestStatus with HeaderNames with ResultExtractors {
 
   private implicit val headerCarrierWithSession: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(aUser.sessionId)))
@@ -79,7 +80,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
     val awaited = await(awaitable)
     await(awaited.body.consumeData.map(_.utf8String))
   }
-  trait AgentTest extends MockAppConfig {
+  trait AgentTest {
     val validHeaderCarrier: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("sessionId")))
 
     val testBlock: AuthorisationRequest[AnyContent] => Future[Result] = user => Future.successful(Ok(s"${user.user.mtditid} ${user.user.arn.get}"))

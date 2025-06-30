@@ -16,32 +16,32 @@
 
 package controllers
 
-import config.{AppConfig, AppConfigImpl}
+import config.AppConfig
 import forms.YesNoForm
 import models.BenefitType.JobSeekersAllowance
 import models.Done
 import models.authorisation.SessionValues.TAX_YEAR
 import models.mongo.{JourneyAnswers, JourneyStatus}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchersSugar.eqTo
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues.convertOptionToValuable
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.mockito.ArgumentMatchersSugar.eqTo
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, POST, contentAsString, defaultAwaitTimeout, redirectLocation, route, running, status, writeableOf_AnyContentAsEmpty, writeableOf_AnyContentAsFormUrlEncoded}
 import services.SectionCompletedService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, confidenceLevel}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
-import play.api.inject.bind
-import play.api.libs.json.Json
+import uk.gov.hmrc.auth.core._
 import views.html.pages.SectionCompletedStateView
 
 import java.time.Instant
@@ -118,7 +118,7 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
         val view = application.injector.instanceOf[SectionCompletedStateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
+        contentAsString(result) mustEqual view(form(), taxYear, JobSeekersAllowance)(mockAppConfig, messages(application), request).toString
       }
     }
 
@@ -245,7 +245,7 @@ class SectionCompletedStateControllerSpec extends AnyFreeSpec with MockitoSugar 
             .withSession(validTaxYears)
             .withSession(TAX_YEAR -> taxYear.toString)
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form().bind(Map("value" -> ""))
 
         val view = application.injector.instanceOf[SectionCompletedStateView]
 

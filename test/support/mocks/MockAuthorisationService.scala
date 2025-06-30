@@ -18,6 +18,7 @@ package support.mocks
 
 import models.authorisation.Enrolment.{Agent, Individual, Nino}
 import org.scalamock.handlers.CallHandler4
+import org.scalatest.TestSuite
 import services.AuthorisationService
 import support.builders.UserBuilder.{aUser, anAgentUser}
 import uk.gov.hmrc.auth.core._
@@ -29,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuthorisationService extends MockAuthConnector {
+trait MockAuthorisationService extends MockAuthConnector { _: TestSuite =>
 
   protected val authorisationService: AuthorisationService = new AuthorisationService(mockAuthConnector)
 

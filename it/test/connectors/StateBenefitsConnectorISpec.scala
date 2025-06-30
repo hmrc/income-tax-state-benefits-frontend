@@ -42,7 +42,7 @@ class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
     .withExtraHeaders("mtditid" -> aUser.mtditid, "X-Session-ID" -> aUser.sessionId)
 
-  private val underTest = new StateBenefitsConnector(httpClient, mockPagerDutyLoggerService, appConfigStub)
+  private val underTest = new StateBenefitsConnector(httpClientV2, mockPagerDutyLoggerService, appConfigStub)
 
   ".getIncomeTaxUserData(...)" should {
     "Return a success result" when {
