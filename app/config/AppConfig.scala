@@ -19,9 +19,9 @@ package config
 import com.google.inject.ImplementedBy
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 @ImplementedBy(classOf[AppConfigImpl])
@@ -74,7 +74,7 @@ class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig 
   private lazy val vcBaseUrl: String = servicesConfig.getString(viewAndChangeUrlKey)
   private lazy val signInBaseUrl: String = servicesConfig.getString("microservice.services.sign-in.url")
   private lazy val signInContinueBaseUrl: String = servicesConfig.getString(signInContinueUrlKey)
-  private lazy val signInContinueUrlRedirect: String = SafeRedirectUrl(signInContinueBaseUrl).encodedUrl
+  private lazy val signInContinueUrlRedirect: String = URLEncoder.encode(signInContinueBaseUrl, "UTF-8")
   private lazy val signInOrigin = servicesConfig.getString("appName")
 
   lazy val signOutUrl: String = s"$basGatewayUrl/bas-gateway/sign-out-without-state"
@@ -110,7 +110,7 @@ class AppConfigImpl @Inject()(servicesConfig: ServicesConfig) extends AppConfig 
   def viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents"
 
   def betaFeedbackUrl(request: RequestHeader, isAgent: Boolean): String = {
-    val requestUri = SafeRedirectUrl(applicationUrl + request.uri).encodedUrl
+    val requestUri = URLEncoder.encode(applicationUrl + request.uri, "UTF-8")
     val contactFormService = contactFormServiceIdentifier(isAgent)
     s"$contactFrontEndUrl/contact/beta-feedback?service=$contactFormService&backUrl=$requestUri"
   }
