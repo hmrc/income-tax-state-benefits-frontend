@@ -276,7 +276,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockAuthReturnException(AuthException, primaryAgentPredicate(mtdItId))
 
           val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
             hc = emptyHeaderCarrier
           )
 
@@ -293,7 +293,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockInternalServerError(InternalServerError("An unexpected error occurred"))
 
           val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
             hc = emptyHeaderCarrier
           )
 
@@ -312,7 +312,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockInternalServerError(InternalServerError("An unexpected error occurred"))
 
           lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
             hc = emptyHeaderCarrier
           )
 
@@ -327,7 +327,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockAuthReturnException(InsufficientEnrolments(), secondaryAgentPredicate(mtdItId))
 
           lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq: _*),
             hc = emptyHeaderCarrier
           )
           status(result) shouldBe SEE_OTHER
@@ -342,7 +342,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockAuthReturnException(AuthException, secondaryAgentPredicate(mtdItId))
 
           lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
             hc = emptyHeaderCarrier
           )
 
@@ -358,7 +358,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockAuthReturn(supportingAgentEnrolment, secondaryAgentPredicate(mtdItId))
 
           lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
             hc = validHeaderCarrier
           )
 
@@ -379,7 +379,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockAuthReturn(primaryAgentEnrolmentNoArn, primaryAgentPredicate(mtdItId))
 
           lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
             hc = validHeaderCarrier
           )
 
@@ -392,7 +392,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
           mockAuthReturn(primaryAgentEnrolment, primaryAgentPredicate(mtdItId))
 
           lazy val result: Future[Result] = testAuth.agentAuthentication(testBlock, aUser.sessionId)(
-            request = FakeRequest().withSession(fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
+            request = FakeRequest().withSession(this.fakeRequestWithMtditidAndNino.session.data.toSeq :_*),
             hc = validHeaderCarrier
           )
 
