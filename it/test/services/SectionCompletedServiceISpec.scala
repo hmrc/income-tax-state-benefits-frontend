@@ -31,7 +31,7 @@ class SectionCompletedServiceISpec extends IntegrationTest {
 
   val mockConnector: SectionCompletedConnector = app.injector.instanceOf[SectionCompletedConnector]
 
-  implicit val uuid = "1234567"
+  implicit val uuid : String = "1234567"
 
   val mtdItId = "1234567890"
   override val taxYear = 2023
