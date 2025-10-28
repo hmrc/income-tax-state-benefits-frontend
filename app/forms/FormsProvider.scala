@@ -69,8 +69,7 @@ class FormsProvider() {
     YesNoForm.yesNoForm(s"${benefitType.typeName}.taxPaidQuestionPage.error.${userType(isAgent)}", Seq(titleFirstDate, titleSecondDate))
   }
 
-  def addAnotherClaimYesNoForm(isAgent: Boolean)
-                              (implicit messages: Messages): Form[Boolean] = {
+  def addAnotherClaimYesNoForm(isAgent: Boolean) : Form[Boolean] = {
     YesNoForm.yesNoForm(s"common.claimsPage.error.anotherClaim.${userType(isAgent)}")
   }
 

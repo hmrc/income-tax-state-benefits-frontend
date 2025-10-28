@@ -22,10 +22,9 @@ import models.Done
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SectionCompletedService @Inject()(connector: SectionCompletedConnector)
-                                       (implicit correlationId: String, executionContext: ExecutionContext)
 {
   def get(mtdItId: String, taxYear: Int, subJourney: String)(implicit hc: HeaderCarrier): Future[Option[JourneyAnswers]] = {
     connector.get(mtdItId, taxYear,subJourney)

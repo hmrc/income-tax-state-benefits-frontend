@@ -17,7 +17,7 @@
 package controllers
 
 import actions.AuthorisedAction
-import config.{AppConfig, ErrorHandler}
+import config.AppConfig
 import forms.YesNoForm
 import models.mongo.{JourneyAnswers, JourneyStatus}
 import models.mongo.JourneyStatus.{Completed, InProgress}
@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class SectionCompletedStateController @Inject()(implicit val cc: MessagesControllerComponents,
                                                 authAction: AuthorisedAction,
                                                 view: SectionCompletedStateView,
-                                                errorHandler: ErrorHandler,
                                                 implicit val appConfig: AppConfig,
                                                 sectionCompletedService: SectionCompletedService,
                                                 ec: ExecutionContext
