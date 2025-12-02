@@ -35,9 +35,6 @@ class SectionCompletedConnectorISpec extends IntegrationTest {
   private lazy val connector: SectionCompletedConnector = app.injector.instanceOf[SectionCompletedConnector]
   lazy val httpClient: HttpClientV2 = app.injector.instanceOf[HttpClientV2]
 
-  private def keepAliveUrl(journey: String, taxYear: Int) =
-    s"/income-tax-state-benefits/journey-answers/keep-alive/$journey/$taxYear"
-
   private def completedSectionUrl(journey: String, taxYear: Int) =
     s"/income-tax-state-benefits/journey-answers/$journey/$taxYear"
 
