@@ -18,7 +18,7 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlay30Version = "10.4.0"
+  private val bootstrapPlay30Version = "10.5.0"
   private val hmrcMongoPlay30Version = "2.11.0"
 
   val jacksonAndPlayExclusions: Seq[InclusionRule] = Seq(
@@ -31,7 +31,7 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30" % bootstrapPlay30Version,
-    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30" % "12.22.0",
+    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30" % "12.25.0",
     "uk.gov.hmrc.mongo"             %% "hmrc-mongo-play-30"         % hmrcMongoPlay30Version,
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"       % "2.20.1",
     "com.beachape"                  %% "enumeratum"                 % "1.9.0",
@@ -41,7 +41,7 @@ object AppDependencies {
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"             %% "bootstrap-test-play-30"     % bootstrapPlay30Version,
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-30"    % hmrcMongoPlay30Version,
-    "org.jsoup"               %  "jsoup"                      % "1.21.2",
+    "org.jsoup"               %  "jsoup"                      % "1.22.1",
     "com.github.tomakehurst"  %  "wiremock-jre8-standalone"   % "3.0.1",
     "org.scalamock"           %% "scalamock"                  % "7.5.2",
     "com.vladsch.flexmark"    %  "flexmark-all"               % "0.64.8",
