@@ -16,18 +16,16 @@
 
 package support.mocks
 
-import org.scalamock.handlers.CallHandler2
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.{ConfigLoader, Configuration}
 
-trait MockConfiguration extends MockFactory { _: TestSuite =>
+trait MockConfiguration extends MockitoSugar {
 
   protected val mockConfiguration: Configuration = mock[Configuration]
 
-  def mockGet(result: String): CallHandler2[String, ConfigLoader[String], String] = {
-    (mockConfiguration.get[String](_: String)(_: play.api.ConfigLoader[String]))
-      .expects(*, *)
-      .returns(result)
-  }
+  def mockGet(result: String): Unit =
+    when(mockConfiguration.get[String](any[String]())(any[ConfigLoader[String]]()))
+      .thenReturn(result)
 }

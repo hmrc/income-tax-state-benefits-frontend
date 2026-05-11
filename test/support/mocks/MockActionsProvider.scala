@@ -19,69 +19,57 @@ package support.mocks
 import actions.ActionsProvider
 import models.requests.{AuthorisationRequest, UserPriorAndSessionDataRequest, UserPriorDataRequest, UserSessionDataRequest}
 import models.{BenefitType, IncomeTaxUserData, StateBenefit, StateBenefitsUserData}
-import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler3}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc._
 import support.builders.UserBuilder.aUser
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockActionsProvider extends MockFactory
+trait MockActionsProvider extends MockitoSugar
   with MockAuthorisedAction
-  with MockErrorHandler { _: TestSuite =>
+  with MockErrorHandler {
 
   protected val mockActionsProvider: ActionsProvider = mock[ActionsProvider]
 
   def mockPriorDataFor(taxYear: Int,
-                       result: IncomeTaxUserData): CallHandler1[Int, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
-    (mockActionsProvider.priorDataFor(_: Int))
-      .expects(taxYear)
-      .returns(value = userPriorDataRequestActionBuilder(result))
-  }
+                       result: IncomeTaxUserData): Unit =
+    when(mockActionsProvider.priorDataFor(eqTo(taxYear)))
+      .thenReturn(userPriorDataRequestActionBuilder(result))
 
   def mockPriorDataWithViewStateBenefitsAudit(taxYear: Int,
                                               benefitType: BenefitType,
-                                              result: IncomeTaxUserData): CallHandler2[Int, BenefitType, ActionBuilder[UserPriorDataRequest, AnyContent]] = {
-    (mockActionsProvider.priorDataWithViewStateBenefitsAudit(_: Int, _: BenefitType))
-      .expects(taxYear, benefitType)
-      .returns(value = userPriorDataRequestActionBuilder(result))
-  }
+                                              result: IncomeTaxUserData): Unit =
+    when(mockActionsProvider.priorDataWithViewStateBenefitsAudit(eqTo(taxYear), eqTo(benefitType)))
+      .thenReturn(userPriorDataRequestActionBuilder(result))
 
   def mockEndOfYearSessionDataFor(taxYear: Int,
                                   benefitType: BenefitType,
                                   sessionDataId: UUID,
-                                  result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
-    (mockActionsProvider.endOfYearSessionDataFor(_: Int, _: BenefitType, _: UUID))
-      .expects(taxYear, benefitType, sessionDataId)
-      .returns(value = userSessionDataRequestActionBuilder(result))
-  }
+                                  result: StateBenefitsUserData): Unit =
+    when(mockActionsProvider.endOfYearSessionDataFor(eqTo(taxYear), eqTo(benefitType), eqTo(sessionDataId)))
+      .thenReturn(userSessionDataRequestActionBuilder(result))
 
   def mockReviewClaimWithAuditing(taxYear: Int,
                                   benefitType: BenefitType,
                                   sessionDataId: UUID,
                                   result: StateBenefitsUserData,
-                                  priorData: Option[StateBenefit] = None): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserPriorAndSessionDataRequest, AnyContent]] = {
-    (mockActionsProvider.reviewClaimWithAuditing(_: Int, _: BenefitType, _: UUID))
-      .expects(taxYear, benefitType, sessionDataId)
-      .returns(value = userPriorAndSessionDataRequestActionBuilder(result, priorData))
-  }
+                                  priorData: Option[StateBenefit] = None): Unit =
+    when(mockActionsProvider.reviewClaimWithAuditing(eqTo(taxYear), eqTo(benefitType), eqTo(sessionDataId)))
+      .thenReturn(userPriorAndSessionDataRequestActionBuilder(result, priorData))
 
   def mockReviewClaimSaveAndContinue(taxYear: Int,
                                      benefitType: BenefitType,
                                      sessionDataId: UUID,
-                                     result: StateBenefitsUserData): CallHandler3[Int, BenefitType, UUID, ActionBuilder[UserSessionDataRequest, AnyContent]] = {
-    (mockActionsProvider.reviewClaimSaveAndContinue(_: Int, _: BenefitType, _: UUID))
-      .expects(taxYear, benefitType, sessionDataId)
-      .returns(value = userSessionDataRequestActionBuilder(result))
-  }
+                                     result: StateBenefitsUserData): Unit =
+    when(mockActionsProvider.reviewClaimSaveAndContinue(eqTo(taxYear), eqTo(benefitType), eqTo(sessionDataId)))
+      .thenReturn(userSessionDataRequestActionBuilder(result))
 
-  def mockEndOfYear(taxYear: Int): CallHandler1[Int, ActionBuilder[AuthorisationRequest, AnyContent]] = {
-    (mockActionsProvider.endOfYear(_: Int))
-      .expects(taxYear)
-      .returns(value = authorisationRequestActionBuilder)
-  }
+  def mockEndOfYear(taxYear: Int): Unit =
+    when(mockActionsProvider.endOfYear(eqTo(taxYear)))
+      .thenReturn(authorisationRequestActionBuilder)
 
   private def authorisationRequestActionBuilder: ActionBuilder[AuthorisationRequest, AnyContent] =
     new ActionBuilder[AuthorisationRequest, AnyContent] {

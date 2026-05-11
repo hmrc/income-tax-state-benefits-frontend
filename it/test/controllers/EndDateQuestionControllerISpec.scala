@@ -66,7 +66,7 @@ class EndDateQuestionControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
-        val formData = Map(YesNoForm.yesNo -> "true")
+        val formData = Map[String, Seq[String]](YesNoForm.yesNo -> Seq("true"))
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
 
@@ -80,7 +80,7 @@ class EndDateQuestionControllerISpec extends IntegrationTest {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         updateSessionDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedData)), HttpResponse(NO_CONTENT, ""))
-        val formData = Map(YesNoForm.yesNo -> "true")
+        val formData = Map[String, Seq[String]](YesNoForm.yesNo -> Seq("true"))
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
 

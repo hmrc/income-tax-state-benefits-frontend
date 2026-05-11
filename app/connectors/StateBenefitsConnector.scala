@@ -21,6 +21,7 @@ import connectors.errors.ApiError
 import connectors.responses._
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import services.PagerDutyLoggerService
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
@@ -37,7 +38,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
                           (implicit hc: HeaderCarrier): Future[Either[ApiError, IncomeTaxUserData]] = {
     val response = getIncomeTaxUserData(taxYear, user.nino)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
 
-    response.map { response: GetIncomeTaxUserDataResponse =>
+    response.map { (response: GetIncomeTaxUserDataResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -47,7 +48,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
                         (implicit hc: HeaderCarrier): Future[Either[ApiError, StateBenefitsUserData]] = {
     val response = getUserSessionData(user.nino, sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
 
-    response.map { response: GetUserSessionDataResponse =>
+    response.map { (response: GetUserSessionDataResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -57,7 +58,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
                        (implicit hc: HeaderCarrier): Future[Either[ApiError, UUID]] = {
     val response = createUserSessionData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
 
-    response.map { response: CreateSessionDataResponse =>
+    response.map { (response: CreateSessionDataResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -67,7 +68,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
                        (implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
     val response = updateUserSessionData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
 
-    response.map { response: UpdateSessionDataResponse =>
+    response.map { (response: UpdateSessionDataResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -77,7 +78,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
                (implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
     val response = saveClaimData(stateBenefitsUserData)(hc.withExtraHeaders(headers = "mtditid" -> stateBenefitsUserData.mtdItId))
 
-    response.map { response: SaveClaimResponse =>
+    response.map { (response: SaveClaimResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -86,7 +87,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
   def removeClaim(user: User, sessionDataId: UUID)(implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
     val response = removeClaimData(user.nino, sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
 
-    response.map { response: RemoveClaimResponse =>
+    response.map { (response: RemoveClaimResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }
@@ -95,7 +96,7 @@ class StateBenefitsConnector @Inject()(httpClient: HttpClientV2,
   def restoreClaim(user: User, sessionDataId: UUID)(implicit hc: HeaderCarrier): Future[Either[ApiError, Unit]] = {
     val response = restoreClaimData(user.nino, sessionDataId)(hc.withExtraHeaders(headers = "mtditid" -> user.mtditid))
 
-    response.map { response: RestoreClaimResponse =>
+    response.map { (response: RestoreClaimResponse) =>
       if (response.result.isLeft) pagerDutyLoggerService.pagerDutyLog(response.httpResponse, response.getClass.getSimpleName)
       response.result
     }

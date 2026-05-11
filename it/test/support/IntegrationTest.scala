@@ -25,9 +25,10 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.HeaderNames
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.ws.{BodyWritable, WSClient, WSResponse}
+import play.api.libs.ws.{DefaultBodyWritables, BodyWritable, WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.{Application, Environment, Mode}
+import play.api.libs.ws.DefaultBodyWritables
 import support.builders.UserBuilder.aUser
 import support.helpers.{PlaySessionCookieBaker, WireMockServer}
 import support.providers.TaxYearProvider
@@ -37,13 +38,15 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable, ExecutionContext, Future}
 
+
 trait IntegrationTest extends AnyWordSpec
   with Matchers
   with GuiceOneServerPerSuite
   with WireMockServer
   with WireMockStubs
   with BeforeAndAfterAll
-  with TaxYearProvider {
+  with TaxYearProvider
+  with DefaultBodyWritables {
 
   protected implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
   protected implicit val headerCarrier: HeaderCarrier = HeaderCarrier().withExtraHeaders(headers = "mtditid" -> aUser.mtditid)

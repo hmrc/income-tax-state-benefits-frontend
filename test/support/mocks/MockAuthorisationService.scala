@@ -17,24 +17,17 @@
 package support.mocks
 
 import models.authorisation.Enrolment.{Agent, Individual, Nino}
-import org.scalamock.handlers.CallHandler4
-import org.scalatest.TestSuite
 import services.AuthorisationService
 import support.builders.UserBuilder.{aUser, anAgentUser}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
-
-trait MockAuthorisationService extends MockAuthConnector { _: TestSuite =>
+trait MockAuthorisationService extends MockAuthConnector {
 
   protected val authorisationService: AuthorisationService = new AuthorisationService(mockAuthConnector)
 
-  def mockAuthAsAgent(): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
+  def mockAuthAsAgent(): Unit = {
     val agentRetrievals: Some[AffinityGroup] = Some(AffinityGroup.Agent)
     val enrolments: Enrolments = Enrolments(Set(
       Enrolment(Individual.key, Seq(EnrolmentIdentifier(Individual.value, aUser.mtditid)), "Activated"),
@@ -45,7 +38,7 @@ trait MockAuthorisationService extends MockAuthConnector { _: TestSuite =>
     mockAuthorise(Retrievals.allEnrolments, enrolments)
   }
 
-  def mockAuth(nino: Option[String]): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
+  def mockAuth(nino: Option[String]): Unit = {
     val enrolments = Enrolments(Set(
       Enrolment(Individual.key, Seq(EnrolmentIdentifier(Individual.value, "1234567890")), "Activated"),
       Enrolment(Agent.key, Seq(EnrolmentIdentifier(Agent.value, "0987654321")), "Activated")

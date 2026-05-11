@@ -19,68 +19,54 @@ package support.mocks
 import connectors.StateBenefitsConnector
 import connectors.errors.ApiError
 import models.{IncomeTaxUserData, StateBenefitsUserData, User}
-import org.scalamock.handlers.{CallHandler2, CallHandler3}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
 import scala.concurrent.Future
 
-trait MockStateBenefitsConnector extends MockFactory { _: TestSuite =>
+trait MockStateBenefitsConnector extends MockitoSugar {
 
   protected val mockStateBenefitsConnector: StateBenefitsConnector = mock[StateBenefitsConnector]
 
   def mockGetIncomeTaxUserData(user: User,
                                taxYear: Int,
-                               result: Either[ApiError, IncomeTaxUserData]): CallHandler3[User, Int, HeaderCarrier, Future[Either[ApiError, IncomeTaxUserData]]] = {
-    (mockStateBenefitsConnector.getIncomeTaxUserData(_: User, _: Int)(_: HeaderCarrier))
-      .expects(user, taxYear, *)
-      .returning(Future.successful(result))
-  }
+                               result: Either[ApiError, IncomeTaxUserData]): Unit =
+    when(mockStateBenefitsConnector.getIncomeTaxUserData(eqTo(user), eqTo(taxYear))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockGetUserSessionData(user: User,
                              sessionDataId: UUID,
-                             result: Either[ApiError, StateBenefitsUserData]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, StateBenefitsUserData]]] = {
-    (mockStateBenefitsConnector.getUserSessionData(_: User, _: UUID)(_: HeaderCarrier))
-      .expects(user, sessionDataId, *)
-      .returning(Future.successful(result))
-  }
+                             result: Either[ApiError, StateBenefitsUserData]): Unit =
+    when(mockStateBenefitsConnector.getUserSessionData(eqTo(user), eqTo(sessionDataId))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockCreateSessionData(stateBenefitsUserData: StateBenefitsUserData,
-                            result: Either[ApiError, UUID]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, UUID]]] = {
-    (mockStateBenefitsConnector.createSessionData(_: StateBenefitsUserData)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, *)
-      .returning(Future.successful(result))
-  }
+                            result: Either[ApiError, UUID]): Unit =
+    when(mockStateBenefitsConnector.createSessionData(eqTo(stateBenefitsUserData))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockUpdateSessionData(stateBenefitsUserData: StateBenefitsUserData,
-                            result: Either[ApiError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
-    (mockStateBenefitsConnector.updateSessionData(_: StateBenefitsUserData)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, *)
-      .returning(Future.successful(result))
-  }
+                            result: Either[ApiError, Unit]): Unit =
+    when(mockStateBenefitsConnector.updateSessionData(eqTo(stateBenefitsUserData))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockSaveClaim(stateBenefitsUserData: StateBenefitsUserData,
-                    result: Either[ApiError, Unit]): CallHandler2[StateBenefitsUserData, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
-    (mockStateBenefitsConnector.saveClaim(_: StateBenefitsUserData)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, *)
-      .returning(Future.successful(result))
-  }
+                    result: Either[ApiError, Unit]): Unit =
+    when(mockStateBenefitsConnector.saveClaim(eqTo(stateBenefitsUserData))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockRemoveClaim(user: User,
                       sessionDataId: UUID,
-                      result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
-    (mockStateBenefitsConnector.removeClaim(_: User, _: UUID)(_: HeaderCarrier))
-      .expects(user, sessionDataId, *)
-      .returning(Future.successful(result))
-  }
+                      result: Either[ApiError, Unit]): Unit =
+    when(mockStateBenefitsConnector.removeClaim(eqTo(user), eqTo(sessionDataId))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockRestoreClaim(user: User,
                        sessionDataId: UUID,
-                       result: Either[ApiError, Unit]): CallHandler3[User, UUID, HeaderCarrier, Future[Either[ApiError, Unit]]] = {
-    (mockStateBenefitsConnector.restoreClaim(_: User, _: UUID)(_: HeaderCarrier))
-      .expects(user, sessionDataId, *)
-      .returning(Future.successful(result))
-  }
+                       result: Either[ApiError, Unit]): Unit =
+    when(mockStateBenefitsConnector.restoreClaim(eqTo(user), eqTo(sessionDataId))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 }

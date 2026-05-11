@@ -17,9 +17,9 @@
 package support.mocks
 
 import models.audit.AuditModel
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Writes
 import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,13 +27,11 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.Future
 
-trait MockAuditService extends MockFactory { _: TestSuite =>
+trait MockAuditService extends MockitoSugar {
 
   val mockAuditService: AuditService = mock[AuditService]
 
-  def mockSendAudit[T](event: AuditModel[T]): CallHandler[Future[AuditResult]] = {
-    (mockAuditService.sendAudit(_: AuditModel[T])(_: HeaderCarrier, _: Writes[T]))
-      .expects(event, *, *)
-      .returning(Future.successful(AuditResult.Success))
-  }
+  def mockSendAudit[T](event: AuditModel[T]): Unit =
+    when(mockAuditService.sendAudit(eqTo(event))(any[HeaderCarrier](), any[Writes[T]]()))
+      .thenReturn(Future.successful(AuditResult.Success))
 }

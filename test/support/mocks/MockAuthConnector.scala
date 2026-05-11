@@ -16,9 +16,9 @@
 
 package support.mocks
 
-import org.scalamock.handlers.CallHandler4
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
@@ -26,14 +26,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuthConnector extends MockFactory { _: TestSuite =>
+trait MockAuthConnector extends MockitoSugar {
 
   protected val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-  def mockAuthorise[A](retrieval: Retrieval[A],
-                       result: A): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, retrieval, *, *)
-      .returning(Future.successful(result))
-  }
+  def mockAuthorise[A](retrieval: Retrieval[A], result: A): Unit =
+    when(mockAuthConnector.authorise(any[Predicate](), eqTo(retrieval))(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(result))
 }

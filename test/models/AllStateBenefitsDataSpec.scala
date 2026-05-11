@@ -81,8 +81,7 @@ class AllStateBenefitsDataSpec extends UnitTest {
           |""".stripMargin)
 
       val allStateBenefitsData = AllStateBenefitsData(
-        stateBenefitsData = None,
-        customerAddedStateBenefitsData = None
+        stateBenefitsData = None
       )
 
       Json.toJson(allStateBenefitsData) shouldBe jsValue

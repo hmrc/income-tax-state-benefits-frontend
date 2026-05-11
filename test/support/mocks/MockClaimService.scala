@@ -17,64 +17,52 @@
 package support.mocks
 
 import models.StateBenefitsUserData
-import org.scalamock.handlers.CallHandler3
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import services.ClaimService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-trait MockClaimService extends MockFactory { _: TestSuite =>
+trait MockClaimService extends MockitoSugar {
 
   protected val mockClaimService: ClaimService = mock[ClaimService]
 
   def mockUpdateStartDate(stateBenefitsUserData: StateBenefitsUserData,
                           startDate: LocalDate,
-                          result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
-    (mockClaimService.updateStartDate(_: StateBenefitsUserData, _: LocalDate)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, startDate, *)
-      .returning(Future.successful(result))
-  }
+                          result: Either[Unit, StateBenefitsUserData]): Unit =
+    when(mockClaimService.updateStartDate(eqTo(stateBenefitsUserData), eqTo(startDate))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockUpdateEndDateQuestion(stateBenefitsUserData: StateBenefitsUserData,
                                 question: Boolean,
-                                result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
-    (mockClaimService.updateEndDateQuestion(_: StateBenefitsUserData, _: Boolean)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, question, *)
-      .returning(Future.successful(result))
-  }
+                                result: Either[Unit, StateBenefitsUserData]): Unit =
+    when(mockClaimService.updateEndDateQuestion(eqTo(stateBenefitsUserData), eqTo(question))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockUpdateEndDate(stateBenefitsUserData: StateBenefitsUserData,
                         endDate: LocalDate,
-                        result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, LocalDate, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
-    (mockClaimService.updateEndDate(_: StateBenefitsUserData, _: LocalDate)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, endDate, *)
-      .returning(Future.successful(result))
-  }
+                        result: Either[Unit, StateBenefitsUserData]): Unit =
+    when(mockClaimService.updateEndDate(eqTo(stateBenefitsUserData), eqTo(endDate))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockUpdateAmount(stateBenefitsUserData: StateBenefitsUserData,
                        amount: BigDecimal,
-                       result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
-    (mockClaimService.updateAmount(_: StateBenefitsUserData, _: BigDecimal)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, amount, *)
-      .returning(Future.successful(result))
-  }
+                       result: Either[Unit, StateBenefitsUserData]): Unit =
+    when(mockClaimService.updateAmount(eqTo(stateBenefitsUserData), eqTo(amount))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockUpdateTaxPaidQuestion(stateBenefitsUserData: StateBenefitsUserData,
                                 question: Boolean,
-                                result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, Boolean, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
-    (mockClaimService.updateTaxPaidQuestion(_: StateBenefitsUserData, _: Boolean)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, question, *)
-      .returning(Future.successful(result))
-  }
+                                result: Either[Unit, StateBenefitsUserData]): Unit =
+    when(mockClaimService.updateTaxPaidQuestion(eqTo(stateBenefitsUserData), eqTo(question))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 
   def mockUpdateTaxPaidAmount(stateBenefitsUserData: StateBenefitsUserData,
                               amount: BigDecimal,
-                              result: Either[Unit, StateBenefitsUserData]): CallHandler3[StateBenefitsUserData, BigDecimal, HeaderCarrier, Future[Either[Unit, StateBenefitsUserData]]] = {
-    (mockClaimService.updateTaxPaidAmount(_: StateBenefitsUserData, _: BigDecimal)(_: HeaderCarrier))
-      .expects(stateBenefitsUserData, amount, *)
-      .returning(Future.successful(result))
-  }
+                              result: Either[Unit, StateBenefitsUserData]): Unit =
+    when(mockClaimService.updateTaxPaidAmount(eqTo(stateBenefitsUserData), eqTo(amount))(any[HeaderCarrier]()))
+      .thenReturn(Future.successful(result))
 }

@@ -50,7 +50,7 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
   override def parser: BodyParser[AnyContent] = cc.parsers.default
 
   private val minimumConfidenceLevel: Int = ConfidenceLevel.L250.level
-  private lazy val agentErrorRedirectResult: Result = Redirect(AgentAuthErrorController.show)
+  private lazy val agentErrorRedirectResult: Result = Redirect(AgentAuthErrorController.show())
 
   override def invokeBlock[A](request: Request[A], block: AuthorisationRequest[A] => Future[Result]): Future[Result] = {
     implicit val req: Request[A] = request
@@ -85,7 +85,7 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
           case (None, _) =>
             val logMessage = s"[AuthorisedAction][individualAuthentication] - User has no MTD IT enrolment. Redirecting user to sign up for MTD."
             logger.info(logMessage)
-            Future.successful(Redirect(IndividualAuthErrorController.show))
+            Future.successful(Redirect(IndividualAuthErrorController.show()))
         }
       case _ =>
         logger.info("[AuthorisedAction][individualAuthentication] User has confidence level below 250, routing user to IV uplift.")
@@ -130,7 +130,7 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
                                     (implicit request: Request[A]): Future[Result] = {
     if (isSupportingAgent) {
       logger.warn(s"$agentAuthLogString - Secondary agent unauthorised")
-      Future.successful(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show))
+      Future.successful(Redirect(controllers.errors.routes.SupportingAgentAuthErrorController.show()))
     } else {
       EnrolmentHelper.getEnrolmentValueOpt(Agent.key, Agent.value, enrolments) match {
         case Some(arn) =>
@@ -140,7 +140,7 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
           ))
         case None =>
           logger.info(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-          Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show))
+          Future.successful(Redirect(controllers.errors.routes.YouNeedAgentServicesController.show()))
       }
     }
   }
@@ -171,7 +171,7 @@ class AuthorisedAction @Inject()(errorHandler: ErrorHandler,
 
   private def redirectToUnauthorisedUserErrorPage(): Result = {
     logger.info(s"[AuthorisedAction][invokeBlock] - User failed to authenticate")
-    Redirect(UnauthorisedUserErrorController.show)
+    Redirect(UnauthorisedUserErrorController.show())
   }
 
   private def redirectToSignInPage(): Result = {

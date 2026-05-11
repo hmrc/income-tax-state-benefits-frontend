@@ -15,12 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Details as GovukDetailsModel}
 
 @this(govukDetails : GovukDetails)
 
 @(title: String, content: Html)(implicit messages:Messages)
 
-@govukDetails(Details(
+@govukDetails(GovukDetailsModel(
     summary = Text(messages(title)),
     content = HtmlContent(content)
 ))

@@ -29,7 +29,7 @@ class SupportingAgentAuthErrorControllerSpec extends ControllerUnitTest {
 
   "The show method" should {
     "return an UNAUTHORIZED response when .show() is called" in {
-      val fakeRequest = FakeRequest(GET, routes.SupportingAgentAuthErrorController.show.url)
+      val fakeRequest = FakeRequest(GET, routes.SupportingAgentAuthErrorController.show().url)
       val result = underTest.show()(fakeRequest)
 
       status(result) shouldBe UNAUTHORIZED

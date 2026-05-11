@@ -17,11 +17,10 @@
 package support.mocks
 
 import config.AppConfig
-import org.scalamock.handlers.CallHandler0
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 
-trait MockAppConfig extends MockFactory { _: TestSuite =>
+trait MockAppConfig extends MockitoSugar {
   val mockAppConfig: AppConfig = mock[AppConfig]
 
   val baseUrl = "/update-and-submit-income-tax-return/state-benefits"
@@ -29,20 +28,12 @@ trait MockAppConfig extends MockFactory { _: TestSuite =>
   val signInUrl: String = s"$baseUrl/signIn"
   val sessionCookieServiceEnabled: Boolean = false
 
-  def mockSignInUrl(): CallHandler0[String] =
-    (() => mockAppConfig.signInUrl)
-      .expects()
-      .returning(signInUrl)
-      .anyNumberOfTimes()
+  def mockSignInUrl(): Unit =
+    when(mockAppConfig.signInUrl).thenReturn(signInUrl)
 
-  def mockViewAndChangeUrl(): CallHandler0[String] =
-    (() => mockAppConfig.viewAndChangeEnterUtrUrl)
-      .expects()
-      .returning(viewAndChangeUrl)
-      .anyNumberOfTimes()
+  def mockViewAndChangeUrl(): Unit =
+    when(mockAppConfig.viewAndChangeEnterUtrUrl).thenReturn(viewAndChangeUrl)
 
-  def mockSessionServiceEnabled(response: Boolean): CallHandler0[Boolean] =
-    (() => mockAppConfig.sessionCookieServiceEnabled)
-      .expects()
-      .returning(response)
+  def mockSessionServiceEnabled(response: Boolean): Unit =
+    when(mockAppConfig.sessionCookieServiceEnabled).thenReturn(response)
 }

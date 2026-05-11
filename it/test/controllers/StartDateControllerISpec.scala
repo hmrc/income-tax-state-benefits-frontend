@@ -67,7 +67,7 @@ class StartDateControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
-        val formData = Map(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+        val formData = Map[String, Seq[String]](s"$day" -> Seq("1"), s"$month" -> Seq("1"), s"$year" -> Seq(taxYearEOY.toString))
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
 
@@ -82,7 +82,7 @@ class StartDateControllerISpec extends IntegrationTest {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         updateSessionDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithExpectedDate)), HttpResponse(NO_CONTENT, ""))
-        val formData = Map(s"$day" -> "1", s"$month" -> "1", s"$year" -> taxYearEOY.toString)
+        val formData = Map[String, Seq[String]](s"$day" -> Seq("1"), s"$month" -> Seq("1"), s"$year" -> Seq(taxYearEOY.toString))
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
 

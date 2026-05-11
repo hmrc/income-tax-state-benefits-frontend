@@ -62,7 +62,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
       val underTest = actionsProvider.priorDataFor(taxYearEOY)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show())
     }
 
     "handle internal server error when getPriorData result in error" in {
@@ -100,7 +100,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
       val underTest = actionsProvider.priorDataWithViewStateBenefitsAudit(taxYearEOY, JobSeekersAllowance)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show())
     }
 
     "handle internal server error when getPriorData result in error" in {
@@ -144,7 +144,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
       val underTest = actionsProvider.endOfYearSessionDataFor(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show())
     }
 
     "redirect to Income Tax Submission Overview when in year" in {
@@ -182,7 +182,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
       val underTest = actionsProvider.reviewClaimWithAuditing(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show())
     }
 
     "handle internal server error when getUserSessionData result in error" in {
@@ -222,7 +222,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
       val underTest = actionsProvider.reviewClaimSaveAndContinue(taxYearEOY, JobSeekersAllowance, sessionDataId)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show())
     }
 
     "redirect to Income Tax Submission Overview when in year" in {
@@ -282,7 +282,7 @@ class ActionsProviderSpec extends ControllerUnitTest
 
       val underTest = actionsProvider.endOfYear(taxYearEOY)(block = anyBlock)
 
-      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show)
+      await(underTest(fakeIndividualRequest)) shouldBe Redirect(UnauthorisedUserErrorController.show())
     }
 
     "redirect to Income Tax Submission Overview when in year" in {

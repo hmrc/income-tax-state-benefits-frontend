@@ -19,7 +19,9 @@ package actions
 import config.AppConfig
 import models.authorisation.SessionValues.{TAX_YEAR, VALID_TAX_YEARS}
 import models.requests.AuthorisationRequest
-import org.scalamock.scalatest.MockFactory
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.eq as eqTo
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.status
@@ -32,7 +34,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearActionSpec extends UnitTest
-  with MockFactory
+  with MockitoSugar
   with TaxYearProvider
   with FakeRequestProvider {
 
@@ -56,7 +58,7 @@ class TaxYearActionSpec extends UnitTest
       "the tax year is within the list of valid tax years, and the tax year is equal to the session value if the feature switch is on" in {
         lazy val userRequest = AuthorisationRequest(aUser, request)
         lazy val result = {
-          (() => mockAppConfig.taxYearErrorFeature).expects() returning true
+          when(mockAppConfig.taxYearErrorFeature).thenReturn(true)
           await(taxYearAction(validTaxYear).refine(userRequest))
         }
 
@@ -67,7 +69,7 @@ class TaxYearActionSpec extends UnitTest
         lazy val userRequest = anAuthorisationRequest.copy(request = fakeAgentRequest.withSession(TAX_YEAR -> validTaxYear.toString, VALID_TAX_YEARS -> validTaxYears))
 
         lazy val result = {
-          (() => mockAppConfig.taxYearErrorFeature).expects() returning false
+          when(mockAppConfig.taxYearErrorFeature).thenReturn(false)
           await(taxYearAction(validTaxYear).refine(userRequest))
         }
 
@@ -79,8 +81,8 @@ class TaxYearActionSpec extends UnitTest
       "no valid tax years exist in session" which {
         lazy val userRequest = anAuthorisationRequest.copy(request = fakeIndividualRequest.withSession(TAX_YEAR -> validTaxYear.toString))
         lazy val result = {
-          mockAppConfig.incomeTaxSubmissionStartUrl _ expects validTaxYear returning
-            "controllers.routes.StartPageController.show(validTaxYear).url"
+          when(mockAppConfig.incomeTaxSubmissionStartUrl(eqTo(validTaxYear)))
+            .thenReturn("controllers.routes.StartPageController.show(validTaxYear).url")
 
           taxYearAction(validTaxYear).refine(userRequest)
         }
@@ -97,9 +99,9 @@ class TaxYearActionSpec extends UnitTest
       "the tax year is different from that in session and the feature switch is off" which {
         lazy val userRequest = anAuthorisationRequest.copy(request = request)
         lazy val result = {
-          (() => mockAppConfig.taxYearErrorFeature).expects() returning false
-          mockAppConfig.incomeTaxSubmissionOverviewUrl _ expects taxYearNotInSession returning
-            "controllers.routes.OverviewPageController.show(taxYearNotInSession).url"
+          when(mockAppConfig.taxYearErrorFeature).thenReturn(false)
+          when(mockAppConfig.incomeTaxSubmissionOverviewUrl(eqTo(taxYearNotInSession)))
+            .thenReturn("controllers.routes.OverviewPageController.show(taxYearNotInSession).url")
 
           taxYearAction(taxYearNotInSession).refine(userRequest)
         }
@@ -120,7 +122,7 @@ class TaxYearActionSpec extends UnitTest
       "the tax year is outside list of valid tax years and the feature switch is on" which {
         lazy val userRequest = anAuthorisationRequest.copy(request = request)
         lazy val result = {
-          (() => mockAppConfig.taxYearErrorFeature).expects() returning true
+          when(mockAppConfig.taxYearErrorFeature).thenReturn(true)
           taxYearAction(invalidTaxYear).refine(userRequest)
         }
 
@@ -129,7 +131,7 @@ class TaxYearActionSpec extends UnitTest
         }
 
         "has the tax year error page redirect url" in {
-          redirectUrl(result.map(_.left.toOption.get)) shouldBe controllers.errors.routes.TaxYearErrorController.show.url
+          redirectUrl(result.map(_.left.toOption.get)) shouldBe controllers.errors.routes.TaxYearErrorController.show().url
         }
       }
     }

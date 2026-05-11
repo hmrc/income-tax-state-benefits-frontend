@@ -21,6 +21,7 @@ import connectors.ConnectorFailureLogger.FromResultToConnectorFailureLogger
 import models.mongo.JourneyAnswers
 import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
