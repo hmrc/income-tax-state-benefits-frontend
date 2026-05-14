@@ -28,7 +28,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.{DefaultBodyWritables, BodyWritable, WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.{Application, Environment, Mode}
-import play.api.libs.ws.DefaultBodyWritables
 import support.builders.UserBuilder.aUser
 import support.helpers.{PlaySessionCookieBaker, WireMockServer}
 import support.providers.TaxYearProvider

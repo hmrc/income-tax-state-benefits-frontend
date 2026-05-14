@@ -50,6 +50,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(inConfig(Test)(testSettings) *)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+    excludeDependencies += ExclusionRule("org.scala-lang", "scala-reflect"),
     TwirlKeys.templateImports ++= twirlImports,
     Assets / pipelineStages := Seq(gzip),
     scalacOptions ++= Seq(
@@ -81,6 +82,7 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
   .settings(DefaultBuildSettings.itSettings())
+  .settings(excludeDependencies += ExclusionRule("org.scala-lang", "scala-reflect"))
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork := true,
