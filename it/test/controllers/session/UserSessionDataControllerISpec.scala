@@ -45,7 +45,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
     "redirect to income tax submission overview when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        urlPost(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
+        urlPost(url(taxYear), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, Seq[String]]())
       }
 
       result.status shouldBe SEE_OTHER
@@ -57,7 +57,7 @@ class UserSessionDataControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         createSessionDataStub(StateBenefitsUserData(taxYearEOY, JobSeekersAllowance, aUser), HttpResponse(CREATED, Json.toJson(sessionDataId).toString))
-        urlPost(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
+        urlPost(url(taxYearEOY), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, Seq[String]]())
       }
 
       result.status shouldBe SEE_OTHER

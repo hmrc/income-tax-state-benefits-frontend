@@ -18,7 +18,7 @@ package connectors
 
 import connectors.errors.{ApiError, SingleErrorBody}
 import models.IncomeTaxUserData
-import org.scalamock.scalatest.MockFactory
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.Json
 import support.ConnectorIntegrationTest
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class StateBenefitsConnectorISpec extends ConnectorIntegrationTest
   with MockPagerDutyLoggerService
   with TaxYearProvider
-  with MockFactory {
+  with MockitoSugar {
 
   private val nino = aStateBenefitsUserData.nino
   private val sessionDataId = aStateBenefitsUserData.sessionDataId.get

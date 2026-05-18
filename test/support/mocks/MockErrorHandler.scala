@@ -18,29 +18,25 @@ package support.mocks
 
 import config.ErrorHandler
 import models.requests.AuthorisationRequest
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Request, Result}
 
-trait MockErrorHandler extends MockFactory { _: TestSuite =>
+trait MockErrorHandler extends MockitoSugar {
 
   protected val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
 
-  def mockHandleError(status: Int, result: Result): Unit = {
-    (mockErrorHandler.handleError(_: Int)(_: Request[_]))
-      .expects(status, *)
-      .returns(result)
-  }
+  def mockHandleError(status: Int, result: Result): Unit =
+    when(mockErrorHandler.handleError(eqTo(status))(any[Request[_]]()))
+      .thenReturn(result)
 
-  def mockInternalServerError(result: Result): Unit = {
-    (mockErrorHandler.internalServerError()(_: AuthorisationRequest[_]))
-      .expects(*)
-      .returns(result)
-  }
-  def mockInternalServerError(): Unit = {
-    (mockErrorHandler.internalServerError()(_: Request[_]))
-      .expects(*)
-      .returns(InternalServerError("There is a problem."))
-  }
+  def mockInternalServerError(result: Result): Unit =
+    when(mockErrorHandler.internalServerError()(any[AuthorisationRequest[_]]()))
+      .thenReturn(result)
+
+  def mockInternalServerError(): Unit =
+    when(mockErrorHandler.internalServerError()(any[Request[_]]()))
+      .thenReturn(InternalServerError("There is a problem."))
 }

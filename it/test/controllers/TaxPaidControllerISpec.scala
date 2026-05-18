@@ -66,7 +66,7 @@ class TaxPaidControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
-        val formData = Map(s"$amount" -> "100")
+        val formData = Map[String, Seq[String]](s"$amount" -> Seq("100"))
         urlPost(url(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = formData)
       }
 
@@ -81,7 +81,7 @@ class TaxPaidControllerISpec extends IntegrationTest {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         updateSessionDataStub(aStateBenefitsUserData.copy(claim = Some(modelWithNewAmount)), HttpResponse(NO_CONTENT, ""))
-        val formData = Map(s"$amount" -> "100")
+        val formData = Map[String, Seq[String]](s"$amount" -> Seq("100"))
         urlPost(url(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = formData)
       }
 

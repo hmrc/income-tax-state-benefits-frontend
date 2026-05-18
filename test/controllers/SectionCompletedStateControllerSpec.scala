@@ -22,8 +22,7 @@ import models.BenefitType.JobSeekersAllowance
 import models.Done
 import models.authorisation.SessionValues.TAX_YEAR
 import models.mongo.{JourneyAnswers, JourneyStatus}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues.convertOptionToValuable
 import org.scalatest.freespec.AnyFreeSpec

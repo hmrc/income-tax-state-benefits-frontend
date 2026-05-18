@@ -45,7 +45,7 @@ object DateForm extends InputFilters {
       day -> trimmedText.transform[String](filter, identity),
       month -> trimmedText.transform[String](filter, identity),
       year -> trimmedText.transform[String](filter, identity)
-    )(DateFormData.apply)(DateFormData.unapply)
+    )(DateFormData.apply)(m => Some(Tuple.fromProductTyped(m)))
   )
 
   def validateStartDate(formData: DateFormData,

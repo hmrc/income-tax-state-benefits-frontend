@@ -15,11 +15,11 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{DateInput as GovukDateInputModel}
 @import play.api.data.FormError
 
 @this(
-    govukDateInput : GovukDateInput,
-    headingHelper: Heading
+    govukDateInput : GovukDateInput
 )
 
 @(
@@ -79,7 +79,7 @@
 }
 
 @govukDateInput(
-    DateInput(
+    GovukDateInputModel(
         id,
         Some(name),
         hint = hint.map(hintHtml => Hint(content = HtmlContent(hintHtml))),

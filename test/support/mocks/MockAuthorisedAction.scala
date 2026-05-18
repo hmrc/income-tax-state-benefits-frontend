@@ -18,9 +18,9 @@ package support.mocks
 
 import actions.AuthorisedAction
 import models.authorisation.Enrolment.{Agent, Individual, Nino}
-import org.scalamock.handlers.CallHandler4
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.stubMessagesControllerComponents
 import services.AuthorisationService
 import support.builders.UserBuilder.aUser
@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAuthorisedAction extends AppConfigStubProvider
-  with MockFactory with MockErrorHandler with MockSessionDataService { _: TestSuite =>
+  with MockitoSugar with MockErrorHandler with MockSessionDataService {
 
   private val mockAuthConnector = mock[AuthConnector]
   private val mockAuthService = new AuthorisationService(mockAuthConnector)
@@ -45,7 +45,7 @@ trait MockAuthorisedAction extends AppConfigStubProvider
     mockSessionDataService
   )(mockAuthService, appConfigStub, stubMessagesControllerComponents())
 
-  protected def mockAuthAsAgent(): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
+  protected def mockAuthAsAgent(): Unit = {
     val enrolments: Enrolments = Enrolments(Set(
       Enrolment(Individual.key, Seq(EnrolmentIdentifier(Individual.value, aUser.mtditid)), "Activated"),
       Enrolment(Agent.key, Seq(EnrolmentIdentifier(Agent.value, "0987654321")), "Activated")
@@ -53,16 +53,14 @@ trait MockAuthorisedAction extends AppConfigStubProvider
 
     val agentRetrievals: Some[AffinityGroup] = Some(AffinityGroup.Agent)
 
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, Retrievals.affinityGroup, *, *)
-      .returning(Future.successful(agentRetrievals))
+    when(mockAuthConnector.authorise(any[Predicate](), eqTo(Retrievals.affinityGroup))(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(agentRetrievals))
 
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, Retrievals.allEnrolments, *, *)
-      .returning(Future.successful(enrolments))
+    when(mockAuthConnector.authorise(any[Predicate](), eqTo(Retrievals.allEnrolments))(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(enrolments))
   }
 
-  protected def mockAuthAsIndividual(nino: Option[String]): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
+  protected def mockAuthAsIndividual(nino: Option[String]): Unit = {
     val enrolments = Enrolments(Set(
       Enrolment(Individual.key, Seq(EnrolmentIdentifier(Individual.value, aUser.mtditid)), "Activated"),
       Enrolment(Agent.key, Seq(EnrolmentIdentifier(Agent.value, "0987654321")), "Activated")
@@ -70,18 +68,14 @@ trait MockAuthorisedAction extends AppConfigStubProvider
       Seq(Enrolment(Nino.key, Seq(EnrolmentIdentifier(Nino.value, unwrappedNino)), "Activated"))
     ))
 
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, Retrievals.affinityGroup, *, *)
-      .returning(Future.successful(Some(AffinityGroup.Individual)))
+    when(mockAuthConnector.authorise(any[Predicate](), eqTo(Retrievals.affinityGroup))(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(Some(AffinityGroup.Individual)))
 
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, Retrievals.allEnrolments and Retrievals.confidenceLevel, *, *)
-      .returning(Future.successful(enrolments and ConfidenceLevel.L250))
+    when(mockAuthConnector.authorise(any[Predicate](), eqTo(Retrievals.allEnrolments and Retrievals.confidenceLevel))(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(enrolments and ConfidenceLevel.L250))
   }
 
-  protected def mockFailToAuthenticate(): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] = {
-    (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, *, *, *)
-      .returning(Future.failed(InsufficientConfidenceLevel()))
-  }
+  protected def mockFailToAuthenticate(): Unit =
+    when(mockAuthConnector.authorise(any[Predicate](), any[Retrieval[_]]())(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.failed(InsufficientConfidenceLevel()))
 }

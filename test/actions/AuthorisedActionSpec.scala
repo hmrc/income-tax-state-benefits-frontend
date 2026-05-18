@@ -23,8 +23,9 @@ import models.errors.MissingAgentClientDetails
 import models.requests.AuthorisationRequest
 import models.session.UserSessionData
 import org.apache.pekko.actor.ActorSystem
-import org.scalamock.handlers.CallHandler4
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.{HeaderNames, Status => TestStatus}
 import play.api.mvc.Results.{InternalServerError, Ok}
 import play.api.mvc._
@@ -47,7 +48,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthorisedActionSpec extends ControllerUnitTest
   with FakeRequestProvider
   with MockAuthorisationService
-  with MockFactory
+  with MockitoSugar
   with MockSessionDataService
   with MockErrorHandler
   with MockAppConfig
@@ -111,15 +112,13 @@ class AuthorisedActionSpec extends ControllerUnitTest
     ))
 
     def mockAuthReturnException(exception: Exception,
-                                predicate: Predicate): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] =
-      (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-        .expects(predicate, *, *, *)
-        .returning(Future.failed(exception))
+                                predicate: Predicate): Unit =
+      when(mockAuthConnector.authorise(eqTo(predicate), any[Retrieval[_]]())(any[HeaderCarrier](), any[ExecutionContext]()))
+        .thenReturn(Future.failed(exception))
 
-    def mockAuthReturn(enrolments: Enrolments, predicate: Predicate): CallHandler4[Predicate, Retrieval[_], HeaderCarrier, ExecutionContext, Future[Any]] =
-      (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-        .expects(predicate, *, *, *)
-        .returning(Future.successful(enrolments))
+    def mockAuthReturn(enrolments: Enrolments, predicate: Predicate): Unit =
+      when(mockAuthConnector.authorise(eqTo(predicate), any[Retrieval[_]]())(any[HeaderCarrier](), any[ExecutionContext]()))
+        .thenReturn(Future.successful(enrolments))
 
     def testAuth: AuthorisedAction = {
       mockViewAndChangeUrl()
@@ -229,7 +228,7 @@ class AuthorisedActionSpec extends ControllerUnitTest
         }
 
         "returns a redirect to the correct page" in {
-          result.header.headers.getOrElse("Location", "/") shouldBe controllers.errors.routes.IndividualAuthErrorController.show.url
+          result.header.headers.getOrElse("Location", "/") shouldBe controllers.errors.routes.IndividualAuthErrorController.show().url
         }
       }
     }
@@ -436,9 +435,8 @@ class AuthorisedActionSpec extends ControllerUnitTest
       "the authorisation service returns an AuthorisationException exception" in {
         object AuthException extends AuthorisationException("Some reason")
         lazy val result = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, *, *, *)
-            .returning(Future.failed(AuthException))
+          when(mockAuthConnector.authorise(any[Predicate](), any[Retrieval[_]]())(any[HeaderCarrier](), any[ExecutionContext]()))
+            .thenReturn(Future.failed(AuthException))
 
           underTest.invokeBlock(fakeAgentRequest, block)
         }
@@ -449,9 +447,8 @@ class AuthorisedActionSpec extends ControllerUnitTest
       "render ISE" when {
         "an unexpected exception is caught that is not related to Authorisation" in {
 
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, *, *, *)
-            .returning(Future.failed(new Exception("bang")))
+          when(mockAuthConnector.authorise(any[Predicate](), any[Retrieval[_]]())(any[HeaderCarrier](), any[ExecutionContext]()))
+            .thenReturn(Future.failed(new Exception("bang")))
 
           mockInternalServerError()
           val result = underTest.invokeBlock(fakeAgentRequest, block)
@@ -465,9 +462,8 @@ class AuthorisedActionSpec extends ControllerUnitTest
         lazy val result = {
           mockGetSessionDataException(aUser.sessionId)(MissingAgentClientDetails("No session data"))
 
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, Retrievals.affinityGroup, *, *)
-            .returning(Future.successful(Some(AffinityGroup.Agent)))
+          when(mockAuthConnector.authorise(any[Predicate](), eqTo(Retrievals.affinityGroup))(any[HeaderCarrier](), any[ExecutionContext]()))
+            .thenReturn(Future.successful(Some(AffinityGroup.Agent)))
 
           underTest.invokeBlock(fakeRequestWithNino, block)
         }
@@ -482,9 +478,8 @@ class AuthorisedActionSpec extends ControllerUnitTest
         object NoActiveSession extends NoActiveSession("Some reason")
 
         lazy val result = {
-          (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
-            .expects(*, *, *, *)
-            .returning(Future.failed(NoActiveSession))
+          when(mockAuthConnector.authorise(any[Predicate](), any[Retrieval[_]]())(any[HeaderCarrier](), any[ExecutionContext]()))
+            .thenReturn(Future.failed(NoActiveSession))
           underTest.invokeBlock(fakeIndividualRequest, block)
         }
 

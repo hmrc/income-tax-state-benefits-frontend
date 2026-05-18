@@ -18,7 +18,9 @@ package filters
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Results.Ok
 import play.api.mvc._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
@@ -32,7 +34,7 @@ import scala.concurrent.Future
 class SessionIdFilterSpec extends UnitTest
   with FutureAwaits with DefaultAwaitTimeout
   with MockUUIDGenerator
-  with MockFactory {
+  with MockitoSugar {
 
   private val materializer: Materializer = Materializer.matFromSystem(ActorSystem.create("some-name"))
   private val cookieBaker = mock[SessionCookieBaker]
@@ -61,8 +63,8 @@ class SessionIdFilterSpec extends UnitTest
       val session: Session = requestHeader.session + (SessionKeys.sessionId -> sessionId)
 
       mockRandomUUID(result = "some-uuid")
-      (cookieBaker.encodeAsCookie(_: Session)).expects(session).returning(Cookie("some-name", "some-value"))
-      (cookieHeaderEncoding.encodeCookieHeader(_: Seq[Cookie])).expects(Seq(Cookie("some-name", "some-value"))).returning("some-value")
+      when(cookieBaker.encodeAsCookie(eqTo(session))).thenReturn(Cookie("some-name", "some-value"))
+      when(cookieHeaderEncoding.encodeCookieHeader(eqTo(Seq(Cookie("some-name", "some-value"))))).thenReturn("some-value")
 
       val result = await(underTest.apply(function)(requestHeader))
 

@@ -16,9 +16,9 @@
 
 package support.mocks
 
-import org.scalamock.handlers.CallHandler3
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, argThat}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuditConnector extends MockFactory { _: TestSuite =>
+trait MockAuditConnector extends MockitoSugar {
 
   protected val mockAuditConnector: AuditConnector = mock[AuditConnector]
 
@@ -34,17 +34,14 @@ trait MockAuditConnector extends MockFactory { _: TestSuite =>
                             auditType: String,
                             eventTags: Map[String, String],
                             detail: JsValue,
-                            result: AuditResult): CallHandler3[ExtendedDataEvent, HeaderCarrier, ExecutionContext, Future[AuditResult]] = {
-    (mockAuditConnector.sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
-      .expects(
-        where {
-          (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
-            eventArg.auditSource == applicationName &&
-              eventArg.auditType == auditType &&
-              eventArg.detail == detail &&
-              eventArg.tags == eventTags
-        }
+                            result: AuditResult): Unit =
+    when(mockAuditConnector.sendExtendedEvent(
+      argThat[ExtendedDataEvent](e =>
+        e.auditSource == applicationName &&
+          e.auditType == auditType &&
+          e.detail == detail &&
+          e.tags == eventTags
       )
-      .returning(Future.successful(result))
-  }
+    )(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(result))
 }

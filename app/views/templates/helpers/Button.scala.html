@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.button.{Button as ButtonModel}
 
 @this(govukButton : GovukButton)
 
@@ -25,7 +26,7 @@
     href: Option[String] = None
 )(implicit messages: Messages)
 
-@govukButton(Button(
+@govukButton(ButtonModel(
     attributes = attributes,
     preventDoubleClick = Some(true),
     content = Text(messages(alternativeText)),

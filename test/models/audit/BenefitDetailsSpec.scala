@@ -16,12 +16,15 @@
 
 package models.audit
 
+import play.api.libs.json.Json
 import support.UnitTest
 import support.builders.ClaimCYAModelBuilder.aClaimCYAModel
 
+import java.time.{Instant, LocalDate}
+
 class BenefitDetailsSpec extends UnitTest {
 
-  ".apply(...)" should {
+  ".apply(...)" must {
     "create object from ClaimCYAModel" in {
       BenefitDetails.apply(aClaimCYAModel) shouldBe BenefitDetails(
         startDate = aClaimCYAModel.startDate,
@@ -31,6 +34,42 @@ class BenefitDetailsSpec extends UnitTest {
         amount = aClaimCYAModel.amount,
         taxPaid = aClaimCYAModel.taxPaid
       )
+    }
+  }
+
+  "writes" must {
+    "write a fully populated BenefitDetails to Json" in {
+        val underTest = BenefitDetails(
+          startDate = LocalDate.parse("2019-04-23"),
+          endDate = Some(LocalDate.parse("2020-08-13")),
+          dateIgnored = Some(Instant.parse("2019-07-08T05:23:00Z")),
+          submittedOn = Some(Instant.parse("2020-03-13T19:23:00Z")),
+          amount = Some(300.00),
+          taxPaid = Some(50.00)
+        )
+
+        Json.toJson(underTest) shouldBe Json.parse(
+          """
+            |{
+            |  "startDate": "2019-04-23",
+            |  "endDate": "2020-08-13",
+            |  "dateIgnored": "2019-07-08T05:23:00Z",
+            |  "submittedOn": "2020-03-13T19:23:00Z",
+            |  "amount": 300.0,
+            |  "taxPaid": 50.0
+            |}
+            |""".stripMargin)
+    }
+
+    "write a minimal BenefitDetails to Json" in {
+        val underTest = BenefitDetails(startDate = LocalDate.parse("2019-04-23"))
+
+        Json.toJson(underTest) shouldBe Json.parse(
+          """
+            |{
+            |  "startDate": "2019-04-23"
+            |}
+            |""".stripMargin)
     }
   }
 }

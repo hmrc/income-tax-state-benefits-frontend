@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{SummaryList as GovukSummaryListModel}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 @this(govukSummaryList : GovukSummaryList)
@@ -24,7 +25,7 @@
     attributes: Map[String, String] = Map.empty
 )
 
-@govukSummaryList(SummaryList(
+@govukSummaryList(GovukSummaryListModel(
     rows = rows,
     attributes = attributes
 ))

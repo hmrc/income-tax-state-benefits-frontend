@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SectionCompletedStateController @Inject()(implicit val cc: MessagesControllerComponents,
                                                 authAction: AuthorisedAction,
                                                 view: SectionCompletedStateView,
-                                                implicit val appConfig: AppConfig,
+                                                val appConfig: AppConfig,
                                                 sectionCompletedService: SectionCompletedService,
                                                 ec: ExecutionContext
                                                ) extends FrontendController(cc) with I18nSupport {

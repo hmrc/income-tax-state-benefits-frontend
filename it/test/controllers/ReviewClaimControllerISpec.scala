@@ -67,7 +67,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
     "redirect to Overview Page when in year" in {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
-        urlPost(saveAndContinueUrl(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
+        urlPost(saveAndContinueUrl(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, Seq[String]]())
       }
 
       result.status shouldBe SEE_OTHER
@@ -80,7 +80,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(newClaim).toString))
         saveStateBenefitStub(newClaim, HttpResponse(NO_CONTENT, ""))
-        urlPost(saveAndContinueUrl(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
+        urlPost(saveAndContinueUrl(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, Seq[String]]())
       }
 
       result.status shouldBe SEE_OTHER
@@ -93,7 +93,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
       lazy val result: WSResponse = {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
-        urlPost(restoreClaim(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, String]())
+        urlPost(restoreClaim(taxYear, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYear)), body = Map[String, Seq[String]]())
       }
 
       result.status shouldBe SEE_OTHER
@@ -105,7 +105,7 @@ class ReviewClaimControllerISpec extends IntegrationTest {
         authoriseAgentOrIndividual(isAgent = false)
         userSessionDataStub(aUser.nino, sessionDataId, HttpResponse(OK, Json.toJson(aStateBenefitsUserData).toString))
         restoreClaimStub(aUser.nino, sessionDataId, HttpResponse(NO_CONTENT, ""))
-        urlPost(restoreClaim(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, String]())
+        urlPost(restoreClaim(taxYearEOY, sessionDataId), headers = Seq(HeaderNames.COOKIE -> playSessionCookies(taxYearEOY)), body = Map[String, Seq[String]]())
       }
 
       result.status shouldBe SEE_OTHER
